@@ -168,3 +168,24 @@ test('AK-16: Menüpunkte brechen nicht um', async ({ page }, info) => {
     expect(box.height, name).toBeLessThan(40);
   }
 });
+
+for (const path of [
+  '/',
+  '/projects',
+  '/services',
+  '/about',
+  '/faqs',
+  '/en',
+  '/en/projects',
+  '/en/services',
+  '/en/about',
+  '/en/faqs',
+]) {
+  test(`AK-17: Kopfzeile passt ins Fenster auf ${path}`, async ({ page }, info) => {
+    test.skip(info.project.name === 'mobile-360', 'Desktop-Navigation');
+    await page.goto(path);
+    await page.evaluate(() => document.fonts.ready);
+    const overflow = await page.$eval('header nav', (el) => el.scrollWidth - el.clientWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+}

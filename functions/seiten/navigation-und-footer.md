@@ -35,6 +35,7 @@ Globale Navigation und Footer wie auf der Lovable-Seite (`Navbar.tsx`, `Footer.t
 - AK-7: Alle Texte in Navigation und Footer erreichen mindestens 4,5:1 (axe in hell und dunkel).
 - AK-8: Alle Texte gibt es auf Deutsch und Englisch.
 - AK-15: Im Dunkelmodus trennt eine dezente Linie (`white/10`) den Footer vom Inhalt.
+- AK-17: Die Kopfzeile ist auf keiner Seite breiter als das Fenster (768 und 1280 px, DE und EN), auch mit hervorgehobenem aktivem Menüpunkt. Mona Sans läuft breiter als Inter, deshalb haben die Menülinks zwischen 768 und 1023 px weniger Innenabstand (`md:px-2.5 lg:px-3.5`). (AK-16, kein Umbruch der Menüpunkte, steht in `startseite.md`.)
 
 ## Sprachen (DE/EN)
 

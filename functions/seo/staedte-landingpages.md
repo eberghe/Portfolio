@@ -19,12 +19,12 @@ Inhalte liegen vorerst im Code (`lib/content/local.ts`), nicht in Supabase: eine
 ## Akzeptanzkriterien
 
 - AK-1: `/webdesign-augsburg` und `/en/web-design-augsburg` liefern 200, stehen in der Sitemap, haben eigenen Title (endet auf „| Erik Bergheimer“, höchstens 70 Zeichen) und Description (höchstens 160 Zeichen), beide nennen Augsburg; hreflang verweist wechselseitig.
-- AK-2: JSON-LD `ProfessionalService` mit `areaServed` (Augsburg als `City`) und `provider` Person, dazu `BreadcrumbList` Start › Seite.
+- AK-2: JSON-LD `ProfessionalService` mit Namen „Erik Bergheimer – …“ (kein Seitentitel), eigener `address` (Königsbrunn), `areaServed` (Augsburg als `City`) und `provider` Person, dazu `BreadcrumbList` Start › Seite.
 - AK-3: Genau eine h1, sie nennt Leistung und Ort („Webdesign & Webflow in Augsburg“).
 - AK-4: Block „Vor Ort und remote“ als Beschreibungsliste mit Standort, Einsatzgebiet und Arbeitsweise; keine Straße.
 - AK-5: Leistungs-Karten verlinken auf `/services/<slug>` (Linkname = Leistung).
 - AK-6: Ortsbezogene FAQ (mindestens 4 Fragen, jede nennt Augsburg oder die Umgebung) als Akkordeon, JSON-LD `FAQPage` aus denselben Daten.
-- AK-7: Footer verlinkt die Landingpage; Leistungsseiten der Stadt-Leistungen verlinken sie im Ortssatz.
+- AK-7: Footer verlinkt die Landingpage; Leistungsseiten der Stadt-Leistungen verlinken sie im Ortssatz mit eigenem Linktext („Mehr zu Webdesign in Augsburg“), kein nacktes Stichwort.
 - AK-8: DE und EN haben die gleiche Struktur (gleiche Zahl an Leistungen, Gründen, Fragen).
 - AK-9: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel).
 
@@ -35,3 +35,8 @@ Abschnitte mit h2, Karten mit h3, FAQ über `FaqList` (Frage als Überschrift in
 ## Tests
 
 `tests/unit/lokal.test.tsx` (AK-2 bis AK-8), `tests/e2e/lokal.spec.ts` (AK-1, AK-9).
+
+## Blinder Kritiker (2026-10-04)
+
+Behoben: nacktes Stichwort als Link im Ortssatz (AK-7), Seitentitel als Name und fehlende Adresse im JSON-LD (AK-2), „wenige Minuten südlich“ (jetzt „direkt südlich“), „ohne Plugins und Updates“ überzogen, Anfahrt ungeklärt („besprechen wir im Angebot“), erzwungenes „in Augsburg“ in zwei Überschriften, englische Übersetzungsfloskeln.
+Offen: Lokale Belege (Kundschaft oder Projekte aus der Region) fehlen, Frage an Erik in Issue #14. Überschriften in `summary` betreffen die FAQ seitenweit (in Chromium korrekt). Footer-Link bleibt in der Rechtszeile, bis es mehrere Städte gibt.

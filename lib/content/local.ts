@@ -8,6 +8,8 @@ export interface LocalPageText {
   metaDescription: string;
   /** Linktext im Footer und im Ortssatz der Leistungsseiten */
   footerLink: string;
+  /** Linktext im Ortssatz der Leistungsseiten */
+  serviceLink: string;
   eyebrow: string;
   title: string;
   lead: string;
@@ -42,18 +44,19 @@ export const localPages: LocalPage[] = [
       metaDescription:
         'Webdesigner in Augsburg: Webflow-Websites, UX/UI-Design und Barrierefreiheit aus Königsbrunn. Persönlich vor Ort in Augsburg oder remote.',
       footerLink: 'Webdesign Augsburg',
+      serviceLink: 'Mehr zu Webdesign in Augsburg',
       eyebrow: 'Augsburg & Umgebung',
       title: 'Webdesign & Webflow in Augsburg',
       lead: 'Du suchst eine Website, die gut aussieht, schnell lädt, gefunden wird und für alle funktioniert? Ich gestalte und baue sie, persönlich und direkt aus der Region.',
       localTitle: 'Vor Ort in Augsburg, remote in ganz Deutschland',
       localText:
-        'Ich arbeite von Königsbrunn aus, wenige Minuten südlich von Augsburg. Workshops und Abstimmungen machen wir gerne bei dir vor Ort, alles andere läuft bequem per Video-Call.',
+        'Ich arbeite von Königsbrunn aus, direkt südlich von Augsburg. Workshops und Abstimmungen machen wir gerne bei dir vor Ort, alles andere läuft bequem per Video-Call.',
       facts: [
         { term: 'Standort', detail: 'Königsbrunn bei Augsburg' },
         { term: 'Vor Ort', detail: 'Augsburg und Umgebung' },
         { term: 'Remote', detail: 'Ganz Deutschland, auf Deutsch oder Englisch' },
       ],
-      servicesTitle: 'Was ich in Augsburg für dich mache',
+      servicesTitle: 'Was ich für dich mache',
       servicesText: 'Von der ersten Skizze bis zur fertigen Website, alles aus einer Hand.',
       reasonsTitle: 'Warum ein Webdesigner aus der Region?',
       reasons: [
@@ -74,7 +77,7 @@ export const localPages: LocalPage[] = [
       faqs: [
         {
           q: 'Kommst du für Workshops nach Augsburg?',
-          a: 'Ja. Kickoff, Workshops und wichtige Abstimmungen machen wir gerne bei dir in Augsburg oder der Umgebung. Zwischendurch arbeiten wir per Video-Call, das spart dir Zeit.',
+          a: 'Ja. Kickoff, Workshops und wichtige Abstimmungen machen wir gerne bei dir in Augsburg oder der Umgebung. Zwischendurch arbeiten wir per Video-Call, das spart dir Zeit. Die Anfahrt besprechen wir im Angebot.',
         },
         {
           q: 'Arbeitest du nur mit Unternehmen aus Augsburg?',
@@ -86,14 +89,14 @@ export const localPages: LocalPage[] = [
         },
         {
           q: 'Warum Webflow für meine Website in Augsburg?',
-          a: 'Mit Webflow bekommst du eine schnelle, sichere Website, die du selbst pflegen kannst, ohne Plugins und Updates. Ich richte sie so ein, dass du Texte und Bilder ohne Programmierkenntnisse änderst; bei Fragen bin ich in der Nähe von Augsburg erreichbar.',
+          a: 'Mit Webflow bekommst du eine schnelle, sichere Website, die du selbst pflegen kannst, ohne Plugin-Pflege und Sicherheitsupdates, um die du dich kümmern musst. Ich richte sie so ein, dass du Texte und Bilder ohne Programmierkenntnisse änderst; bei Fragen bin ich in der Nähe von Augsburg erreichbar.',
         },
         {
           q: 'Wie starten wir?',
           a: 'Mit einem kostenlosen Erstgespräch, per Video oder bei dir in Augsburg. Danach bekommst du ein klares Angebot mit Ablauf und Zeitplan.',
         },
       ],
-      ctaTitle: 'Lass uns in Augsburg sprechen',
+      ctaTitle: 'Lass uns sprechen',
       ctaText:
         'Erzähl mir, was du vorhast. Im kostenlosen Erstgespräch klären wir, wo du stehst und wie deine neue Website aussehen kann.',
     },
@@ -102,23 +105,24 @@ export const localPages: LocalPage[] = [
       metaDescription:
         'Web designer in Augsburg: Webflow websites, UX/UI design and accessibility from Königsbrunn. On site in Augsburg or remotely.',
       footerLink: 'Web design Augsburg',
-      eyebrow: 'Augsburg & surroundings',
+      serviceLink: 'More on web design in Augsburg',
+      eyebrow: 'Augsburg & area',
       title: 'Web design & Webflow in Augsburg',
       lead: 'Looking for a website that looks good, loads fast, gets found and works for everyone? I design and build it, personally and right here in the region.',
       localTitle: 'On site in Augsburg, remote across Germany',
       localText:
-        'I work from Königsbrunn, a few minutes south of Augsburg. We can hold workshops and check-ins at your place; everything else runs smoothly over video calls.',
+        'I work from Königsbrunn, just south of Augsburg. We can hold workshops and check-ins at your place; everything else runs smoothly over video calls.',
       facts: [
         { term: 'Location', detail: 'Königsbrunn near Augsburg' },
         { term: 'On site', detail: 'Augsburg and surroundings' },
         { term: 'Remote', detail: 'All of Germany, in German or English' },
       ],
-      servicesTitle: 'What I do for you in Augsburg',
+      servicesTitle: 'What I do for you',
       servicesText: 'From the first sketch to the finished website, all from one person.',
       reasonsTitle: 'Why a web designer from the region?',
       reasons: [
         {
-          title: 'Short distances',
+          title: 'Close by',
           text: 'We can meet, look at your website together and settle decisions at the table instead of in long email threads.',
         },
         {
@@ -127,14 +131,14 @@ export const localPages: LocalPage[] = [
         },
         {
           title: 'Accessible and findable',
-          text: 'Accessibility to WCAG, clean technology and local search engine optimisation are part of the plan from day one.',
+          text: 'WCAG-compliant accessibility, clean technology and local search engine optimisation are part of the plan from day one.',
         },
       ],
       faqTitle: 'Questions about web design in Augsburg',
       faqs: [
         {
           q: 'Do you come to Augsburg for workshops?',
-          a: 'Yes. Kick-off, workshops and key check-ins can happen at your place in or around Augsburg. In between we work over video calls, which saves you time.',
+          a: 'Yes. Kick-off, workshops and key check-ins can happen at your place in or around Augsburg. In between we work over video calls, which saves you time. Travel is agreed in the offer.',
         },
         {
           q: 'Do you only work with businesses in Augsburg?',
@@ -146,14 +150,14 @@ export const localPages: LocalPage[] = [
         },
         {
           q: 'Why Webflow for my website in Augsburg?',
-          a: 'Webflow gives you a fast, secure website you can maintain yourself, without plugins or updates. I set it up so you can change text and images without coding, and I am close by in the Augsburg area if you need help.',
+          a: 'Webflow gives you a fast, secure website you can maintain yourself, without plugin upkeep or security updates to worry about. I set it up so you can change text and images without coding, and I am close by in the Augsburg area if you need help.',
         },
         {
           q: 'How do we start?',
           a: 'With a free intro call, by video or at your place in Augsburg. Afterwards you get a clear offer with process and timeline.',
         },
       ],
-      ctaTitle: "Let's talk in Augsburg",
+      ctaTitle: "Let's talk",
       ctaText:
         "Tell me what you're planning. In a free intro call we'll work out where you are and what your new website could look like.",
     },

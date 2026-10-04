@@ -20,6 +20,12 @@ describe('AK-2: strukturierte Daten', () => {
     expect(data['@type']).toBe('ProfessionalService');
     expect(data.areaServed).toContainEqual({ '@type': 'City', name: 'Augsburg' });
     expect(data.provider['@type']).toBe('Person');
+    expect(data.name).toMatch(/^Erik Bergheimer/);
+    expect(data.address).toMatchObject({
+      '@type': 'PostalAddress',
+      addressLocality: 'Königsbrunn',
+      addressCountry: 'DE',
+    });
     expect(data.url).toBe('https://erik-bergheimer.de/webdesign-augsburg');
     expect(localJsonLd(page, 'en').url).toBe('https://erik-bergheimer.de/en/web-design-augsburg');
   });
@@ -88,11 +94,11 @@ describe('AK-7: Querverlinkung', () => {
   it('Leistungsseiten der Stadt verlinken sie im Ortssatz', () => {
     for (const slug of page.services) {
       const { unmount } = render(<ServiceDetail service={services.find((s) => s.slug === slug)!} locale="de" />);
-      expect(screen.getByRole('link', { name: page.de.footerLink })).toHaveAttribute('href', '/webdesign-augsburg');
+      expect(screen.getByRole('link', { name: page.de.serviceLink })).toHaveAttribute('href', '/webdesign-augsburg');
       unmount();
     }
     render(<ServiceDetail service={services.find((s) => s.slug === 'photography')!} locale="de" />);
-    expect(screen.queryByRole('link', { name: page.de.footerLink })).toBeNull();
+    expect(screen.queryByRole('link', { name: page.de.serviceLink })).toBeNull();
   });
 });
 

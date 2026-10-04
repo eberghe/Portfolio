@@ -116,7 +116,7 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
                   href={localizedPath(local.path, locale)}
                   className="text-primary-text underline underline-offset-4 hover:no-underline"
                 >
-                  {local[locale].footerLink}
+                  {local[locale].serviceLink}
                 </Link>
               </>
             )}

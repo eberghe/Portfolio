@@ -4,9 +4,10 @@ import { notFoundText } from '@/lib/content/not-found';
 import { localizedPath, type Locale } from '@/lib/i18n';
 
 // 404-Seite, siehe functions/seiten/nicht-gefunden.md
-export default function NotFound({ locale, bilingual = false }: { locale: Locale; bilingual?: boolean }) {
+export default function NotFound({ locale }: { locale: Locale }) {
   const t = notFoundText[locale];
-  const en = notFoundText.en;
+  const other: Locale = locale === 'de' ? 'en' : 'de';
+  const o = notFoundText[other];
   return (
     <div className="max-w-[900px] mx-auto px-6 sm:px-7 py-16">
       <p className="text-[11px] font-medium tracking-widest uppercase text-text3 mb-3">404</p>
@@ -25,21 +26,20 @@ export default function NotFound({ locale, bilingual = false }: { locale: Locale
           </li>
         ))}
       </ul>
-      {bilingual && (
-        <section lang="en" aria-labelledby="not-found-en" className="mt-12 pt-8 border-t border-border">
-          <h2 id="not-found-en" className="text-[17px] font-medium mb-2">
-            {en.title}
-          </h2>
-          <p className="text-sm text-text2 leading-relaxed mb-4">{en.short}</p>
-          <Link
-            href={localizedPath('/', 'en')}
-            className="inline-flex items-center gap-2 min-h-11 text-[13px] font-medium text-primary-text underline underline-offset-2"
-          >
-            {en.homeLink}
-            <ArrowRight size={14} aria-hidden="true" />
-          </Link>
-        </section>
-      )}
+
+      <section lang={other} aria-labelledby="not-found-other" className="mt-12 pt-8 border-t border-border">
+        <h2 id="not-found-other" className="text-[17px] font-medium mb-2">
+          {o.title}
+        </h2>
+        <p className="text-sm text-text2 leading-relaxed mb-4">{o.short}</p>
+        <Link
+          href={localizedPath('/', other)}
+          className="inline-flex items-center gap-2 min-h-11 text-[13px] font-medium text-primary-text underline underline-offset-2"
+        >
+          {o.homeLink}
+          <ArrowRight size={14} aria-hidden="true" />
+        </Link>
+      </section>
     </div>
   );
 }

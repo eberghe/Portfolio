@@ -15,15 +15,14 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL('https://erik-bergheimer.de'),
     title: notFoundText[await locale()].metaTitle,
-    robots: { index: false },
   };
 }
 
 export default async function GlobalNotFound() {
   const l = await locale();
   return (
-    <SiteShell locale={l}>
-      <NotFound locale={l} bilingual={l === 'de'} />
+    <SiteShell locale={l} notFound>
+      <NotFound locale={l} />
     </SiteShell>
   );
 }

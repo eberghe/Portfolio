@@ -21,10 +21,11 @@ Technik: Eine globale 404 (`app/global-not-found.tsx`) deckt alle unbekannten Ad
 
 ## Akzeptanzkriterien
 
-- AK-1: Unbekannte Adressen liefern Status 404 mit Title „Seite nicht gefunden | Erik Bergheimer" (EN „Page not found | Erik Bergheimer") und `noindex`.
+- AK-1: Unbekannte Adressen liefern Status 404 mit Title „Seite nicht gefunden | Erik Bergheimer" (EN „Page not found | Erik Bergheimer") und genau einer `noindex`-Angabe.
 - AK-2: Genau eine h1; Links zu Startseite, Leistungen, Projekten und Kontakt in der jeweiligen Sprache.
 - AK-3: Unbekannte Leistungen und Projekte unter `/en` zeigen die englische Fassung (`lang="en"`).
-- AK-4: Adressen ohne Sprachzuordnung enthalten einen englischen Abschnitt mit `lang="en"` und Link zur englischen Startseite.
+- AK-4: Die deutsche 404 enthält einen englischen Abschnitt (`lang="en"`, Link zur englischen Startseite), die englische einen deutschen (`lang="de"`, Link zur deutschen Startseite).
+- AK-6: Auf der 404 ist kein Menüpunkt als aktuell markiert, und der Sprachumschalter führt zur Startseite der anderen Sprache statt auf die nächste 404.
 - AK-5: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel).
 
 ## Barrierefreiheit
@@ -50,6 +51,10 @@ Keine.
 ## Tests
 
 `tests/unit/nicht-gefunden.test.tsx` (AK-2, AK-4), `tests/e2e/nicht-gefunden.spec.ts` (AK-1, AK-3, AK-5).
+
+## Befunde Blinder Kritiker (Runde 1)
+
+Behoben (mit Test): Sprachumschalter führte auf die nächste 404, Menüpunkt „Projekte" als aktuell markiert (AK-6); englische 404 ohne deutschen Gegenabschnitt (AK-4); `noindex` doppelt (AK-1).
 
 ## Offene Fragen
 

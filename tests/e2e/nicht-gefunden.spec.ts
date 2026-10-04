@@ -16,7 +16,7 @@ test('AK-1/AK-3: Status 404, Title, noindex, Sprache', async ({ request }) => {
     const html = await res.text();
     expect(html, path).toContain(`<html lang="${lang}"`);
     expect(html, path).toContain(`<title>${title.replace('&', '&amp;')}</title>`);
-    expect(html, path).toMatch(/<meta name="robots" content="noindex/);
+    expect(html.match(/<meta name="robots" content="noindex/g), path).toHaveLength(1);
   }
 });
 

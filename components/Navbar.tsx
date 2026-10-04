@@ -14,9 +14,11 @@ const NAV_ITEMS = [
   { path: '/faqs', key: 'faqs' },
 ] as const;
 
-export default function Navbar({ locale }: { locale: Locale }) {
+/** notFound: auf der 404 ist kein Menüpunkt aktiv, der Sprachwechsel führt zur anderen Startseite (nicht-gefunden.md AK-6) */
+export default function Navbar({ locale, notFound = false }: { locale: Locale; notFound?: boolean }) {
   const t = messages[locale].nav;
-  const pathname = usePathname();
+  const realPath = usePathname();
+  const pathname = notFound ? '' : realPath;
   const otherLocale: Locale = locale === 'de' ? 'en' : 'de';
   const [dark, setDark] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -147,7 +149,7 @@ export default function Navbar({ locale }: { locale: Locale }) {
 
           <div className="flex items-center gap-2">
             <a
-              href={alternatePath(pathname, otherLocale)}
+              href={notFound ? localizedPath('/', otherLocale) : alternatePath(pathname, otherLocale)}
               hrefLang={otherLocale}
               lang={otherLocale}
               className="h-9 min-w-9 px-2 sm:px-2.5 rounded-lg border border-border flex items-center justify-center text-[13px] text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition"

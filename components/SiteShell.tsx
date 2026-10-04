@@ -13,7 +13,15 @@ import Navbar from './Navbar';
 const themeScript = `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark')}catch(e){}})()`;
 
 /** Gemeinsames HTML-Gerüst beider Sprach-Root-Layouts. */
-export default function SiteShell({ locale, children }: { locale: Locale; children: ReactNode }) {
+export default function SiteShell({
+  locale,
+  notFound = false,
+  children,
+}: {
+  locale: Locale;
+  notFound?: boolean;
+  children: ReactNode;
+}) {
   return (
     <html lang={locale} suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-head-element -- App Router: SiteShell ist das Root-Layout */}
@@ -28,7 +36,7 @@ export default function SiteShell({ locale, children }: { locale: Locale; childr
         >
           {messages[locale].skipLink}
         </a>
-        <Navbar locale={locale} />
+        <Navbar locale={locale} notFound={notFound} />
         <main id="inhalt" tabIndex={-1} className="focus:outline-none">
           {children}
         </main>

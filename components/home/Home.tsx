@@ -27,6 +27,7 @@ export default function Home({ locale }: { locale: Locale }) {
           <h1 className="text-5xl md:text-[56px] font-light leading-[1.08] tracking-[-2px] text-foreground mb-6">
             {t.greeting}
             <span className="text-primary-text">Erik</span>
+            <span className="sr-only">, </span>
             <span className="block text-[20px] md:text-[22px] text-text2 font-normal tracking-normal mt-3">
               {t.role}
             </span>
@@ -53,7 +54,7 @@ export default function Home({ locale }: { locale: Locale }) {
             alt={t.heroAlt}
             fill
             priority
-            sizes="(min-width: 768px) 50vw, 100vw"
+            sizes="(min-width: 768px) 100vh, 100vw"
             className="object-cover"
           />
         </div>
@@ -90,6 +91,8 @@ export default function Home({ locale }: { locale: Locale }) {
               <li key={s.slug}>
                 <Link
                   href={href(`/services/${s.slug}`)}
+                  aria-labelledby={`leistung-${s.slug}`}
+                  aria-describedby={`leistung-${s.slug}-text`}
                   className={`block rounded-2xl p-6 border group relative h-full ${cardHover} ${
                     accent ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border'
                   }`}
@@ -116,8 +119,14 @@ export default function Home({ locale }: { locale: Locale }) {
                   >
                     {text.label}
                   </span>
-                  <h3 className={`text-base font-medium mb-2 ${accent ? '' : 'text-foreground'}`}>{text.title}</h3>
+                  <h3
+                    id={`leistung-${s.slug}`}
+                    className={`text-base font-medium mb-2 ${accent ? '' : 'text-foreground'}`}
+                  >
+                    {text.title}
+                  </h3>
                   <span
+                    id={`leistung-${s.slug}-text`}
                     className={`block text-[13px] leading-relaxed ${accent ? 'text-primary-foreground' : 'text-text2'}`}
                   >
                     {text.short}
@@ -162,6 +171,8 @@ export default function Home({ locale }: { locale: Locale }) {
               <li key={p.id}>
                 <Link
                   href={href(`/projects/${p.id}`)}
+                  aria-labelledby={`projekt-${p.id}`}
+                  aria-describedby={`projekt-${p.id}-typ projekt-${p.id}-text`}
                   className={`bg-card border border-border rounded-2xl overflow-hidden group h-full flex flex-col ${cardHover}`}
                 >
                   <span className="relative block overflow-hidden h-[180px]" style={{ background: p.color }}>
@@ -174,11 +185,18 @@ export default function Home({ locale }: { locale: Locale }) {
                     />
                   </span>
                   <span className="p-5 flex-1 flex flex-col">
-                    <span className="text-[10px] font-medium tracking-wider uppercase text-primary-text mb-1.5">
+                    <span
+                      id={`projekt-${p.id}-typ`}
+                      className="text-[10px] font-medium tracking-wider uppercase text-primary-text mb-1.5"
+                    >
                       {text.type}
                     </span>
-                    <h3 className="text-[15px] font-medium text-foreground mb-1.5">{p.title}</h3>
-                    <span className="text-xs text-text2 leading-relaxed">{text.desc}</span>
+                    <h3 id={`projekt-${p.id}`} className="text-[15px] font-medium text-foreground mb-1.5">
+                      {text.title}
+                    </h3>
+                    <span id={`projekt-${p.id}-text`} className="text-xs text-text2 leading-relaxed">
+                      {text.desc}
+                    </span>
                   </span>
                 </Link>
               </li>

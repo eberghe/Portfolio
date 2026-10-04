@@ -7,7 +7,7 @@ export const homeContent = {
     metaDescription:
       'UX/UI Designer & Webflow Expert aus Augsburg & Innsbruck. Digitale Erlebnisse, die Sinn ergeben, gut aussehen und funktionieren.',
     available: 'Verfügbar für Projekte',
-    greeting: 'Hi, Ich bin ',
+    greeting: 'Hi, ich bin ',
     role: 'UX/UI Designer & Webflow Expert',
     intro:
       'Ich bin UX-Designer und Webflow-Experte. Ich gestalte digitale Erlebnisse, die sinnvoll sind, gut aussehen und sich menschlich anfühlen.',
@@ -16,7 +16,7 @@ export const homeContent = {
     heroAlt: 'Erik Bergheimer, UX/UI Designer und Webflow-Experte, im Porträt',
     stats: [
       { value: '6+', label: 'Jahre UX Erfahrung' },
-      { value: '5', label: 'Featured Projekte' },
+      { value: '5', label: 'Projekte im Portfolio' },
       { value: '3', label: 'Länder & Remote' },
       { value: 'Augsburg & Innsbruck', label: 'Aktueller Standort', small: true },
     ],
@@ -48,14 +48,14 @@ export const homeContent = {
     heroAlt: 'Portrait of Erik Bergheimer, UX/UI designer and Webflow expert',
     stats: [
       { value: '6+', label: 'Years UX experience' },
-      { value: '5', label: 'Featured projects' },
+      { value: '5', label: 'Projects in portfolio' },
       { value: '3', label: 'Countries & remote' },
       { value: 'Augsburg & Innsbruck', label: 'Current location', small: true },
     ],
     offer: 'What I offer',
     process: 'How we work together',
     processSteps: [
-      { title: 'Getting to know', text: 'Free first call: where are you now, where do you want to go?' },
+      { title: 'Intro call', text: 'Free first call: where are you now, where do you want to go?' },
       { title: 'Analysis & offer', text: 'I review your website and workflows and send you a clear offer.' },
       { title: 'Build', text: 'Concept, design and development with regular check-ins.' },
       { title: 'Launch & care', text: 'Testing including accessibility, launch and ongoing optimisation if you like.' },
@@ -68,43 +68,54 @@ export const homeContent = {
 export const featuredProjects = [
   {
     id: 'sightkick',
-    title: "SIGHT'KICK",
     image: { src: '/images/project-sightkick.png', width: 1920, height: 977 },
     color: '#c8ddf0',
     de: {
-      type: 'UX/UI · Gamification · Master',
+      title: "SIGHT'KICK",
+      type: 'UX/UI · Gamification · Masterarbeit',
       desc: 'Eine spielerische App, die Sightseeing in Innsbruck komplett neu denkt.',
     },
     en: {
-      type: 'UX/UI · Gamification · Master',
+      title: "SIGHT'KICK",
+      type: "UX/UI · Gamification · Master's thesis",
       desc: 'Gamified city exploration app for Innsbruck, classic sightseeing reimagined.',
     },
   },
   {
     id: 'cpr',
-    title: 'CPR App',
     image: { src: '/images/project-cpr.png', width: 1920, height: 977 },
     color: '#cde8e0',
-    de: { type: 'UX/UI · App Design', desc: 'Wie Kinder spielerisch lernen, Leben zu retten.' },
-    en: { type: 'UX/UI · App Design', desc: 'Children learn life-saving CPR techniques through play.' },
+    de: { title: 'CPR App', type: 'UX/UI · App-Design', desc: 'Wie Kinder spielerisch lernen, Leben zu retten.' },
+    en: {
+      title: 'CPR App',
+      type: 'UX/UI · App Design',
+      desc: 'Children learn life-saving CPR techniques through play.',
+    },
   },
   {
     id: 'indonesia',
-    title: 'Indonesia',
     image: { src: '/images/project-indonesia.png', width: 1824, height: 1368 },
     color: '#e8d8c0',
-    de: { type: 'Fotografie · Travel', desc: 'Indonesien durch mein Objektiv: Kultur, Menschen, Landschaft.' },
-    en: { type: 'Photography · Travel', desc: 'Culture & landscape of Indonesia through my lens.' },
+    de: {
+      title: 'Indonesien',
+      type: 'Fotografie · Reise',
+      desc: 'Indonesien durch mein Objektiv: Kultur, Menschen, Landschaft.',
+    },
+    en: { title: 'Indonesia', type: 'Photography · Travel', desc: 'Culture & landscape of Indonesia through my lens.' },
   },
   {
     id: 'webflow',
-    title: 'Webflow vs. Shopify',
     image: { src: '/images/project-webflow.png', width: 1728, height: 1117 },
     color: '#c8d8f0',
     de: {
-      type: 'Web · No-Code · Bachelor Thesis',
-      desc: 'Können No-Code Tools wirklich professionelle Shops liefern?',
+      title: 'Webflow vs. Shopify',
+      type: 'Web · No-Code · Bachelorarbeit',
+      desc: 'Können No-Code-Tools wirklich professionelle Shops liefern?',
     },
-    en: { type: 'Web · No-Code · Bachelor Thesis', desc: 'Can no-code tools deliver professional shops?' },
+    en: {
+      title: 'Webflow vs. Shopify',
+      type: "Web · No-Code · Bachelor's thesis",
+      desc: 'Can no-code tools deliver professional shops?',
+    },
   },
 ];

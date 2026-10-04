@@ -35,3 +35,24 @@ Texte in `lib/content/home.ts`, Leistungen in `lib/content/services.ts` (werden 
 
 ## Offene Fragen
 - Texte für KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design und Webflow-Entwicklung sowie die vier Ablauf-Schritte: Erik prüft die Entwürfe.
+
+## Befunde Blinder Kritiker (2026-10-04) und Umsetzung
+Behoben, jeweils mit Test:
+- AK-11: h1 „Hi, ich bin Erik" (klein „ich"), Rolle wird mit Pause vorgelesen.
+- AK-12: Kachel-Links heißen wie ihre Überschrift; Kategorie und Text sind Beschreibung (`aria-describedby`). Vorher wurde jede Kachel als langer Satz vorgelesen.
+- AK-13: „Featured Projekte: 5" widersprach den 4 gezeigten Projekten → „Projekte im Portfolio". Deutsche Projekttypen auf Deutsch (Masterarbeit, Bachelorarbeit, Indonesien).
+- AK-14: Hero-Foto wurde bei Tablet/Desktop zu klein geladen und unscharf hochskaliert → passende `sizes`.
+- AK-15: `scroll-padding-top`, damit der Sticky-Header fokussierte Elemente nicht verdeckt.
+- Navigation AK-16: Menüpunkte brechen bei 768 px nicht mehr um.
+- EN-Ablauf „Getting to know" → „Intro call".
+
+Entscheidungen bei Erik (Inhalt/Positionierung):
+- Nachname in der h1 („Hi, ich bin Erik Bergheimer") für SEO/GEO?
+- Button „Kontakt" → „Kostenloses Erstgespräch"?
+- „freiberuflich" und Einsatzgebiet (DE/AT/remote) im Hero ergänzen?
+- „3 Länder & Remote" präzisieren oder streichen.
+- Belege je Leistung (Kundenprojekte, Referenzen); „Beratung zum BFSG" ggf. als „Umsetzung der BFSG-Anforderungen" formulieren (klingt sonst nach Rechtsberatung).
+- Englische Begriffe auf der deutschen Seite („Webflow Expert", „Kernservice", „Travel & Editorial", „Design Systems").
+- Schriftgrößen (10–13 px) und unauffällige h2 sind Bestandsdesign; Anhebung nur mit Freigabe.
+
+Später: JSON-LD (Person/ProfessionalService) mit der SEO-Funktion.

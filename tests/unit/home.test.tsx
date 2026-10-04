@@ -10,7 +10,7 @@ describe.each([
     'de',
     '',
     {
-      h1: /Hi, Ich bin Erik/,
+      h1: /^Hi, ich bin Erik, UX\/UI Designer & Webflow Expert$/,
       offer: 'Was ich anbiete',
       process: 'So arbeiten wir zusammen',
       projects: 'Ausgewählte Projekte',
@@ -21,7 +21,7 @@ describe.each([
     'en',
     '/en',
     {
-      h1: /Hi, I'm Erik/,
+      h1: /^Hi, I'm Erik, UX\/UI Designer & Webflow Expert$/,
       offer: 'What I offer',
       process: 'How we work together',
       projects: 'Selected projects',
@@ -32,7 +32,8 @@ describe.each([
   it('AK-2: genau eine h1 und je Abschnitt eine h2', () => {
     render(<Home locale={locale} />);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(t.h1);
+    // AK-11: Rolle wird mit Pause vorgelesen, "ich" kleingeschrieben
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(t.h1);
     for (const name of [t.offer, t.process, t.projects]) {
       expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument();
     }
@@ -81,6 +82,30 @@ describe.each([
     expect(dl).not.toBeNull();
     expect(dl!.querySelectorAll('dt')).toHaveLength(4);
     expect(dl!.querySelectorAll('dd')).toHaveLength(4);
+  });
+});
+
+describe('AK-12: kurze Linknamen mit Beschreibung', () => {
+  it('Leistungs- und Projektlinks heißen wie ihre Überschrift, der Rest ist Beschreibung', () => {
+    render(<Home locale="de" />);
+    const ux = screen.getByRole('link', { name: 'UX/UI Design' });
+    expect(ux).toHaveAccessibleDescription(/Von der ersten Idee/);
+    const project = screen.getByRole('link', { name: "SIGHT'KICK" });
+    expect(project).toHaveAccessibleDescription(/Masterarbeit/);
+  });
+});
+
+describe('AK-13: Fakten stimmen mit dem Inhalt überein', () => {
+  it('keine "Featured"-Zahl, die den gezeigten Projekten widerspricht', () => {
+    render(<Home locale="de" />);
+    expect(screen.queryByText('Featured Projekte')).toBeNull();
+    expect(screen.getByText('Projekte im Portfolio')).toBeInTheDocument();
+  });
+
+  it('deutsche Projekttypen auf Deutsch', () => {
+    render(<Home locale="de" />);
+    expect(screen.getByText(/Bachelorarbeit/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Indonesien' })).toBeInTheDocument();
   });
 });
 

@@ -3,6 +3,8 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+  /* Sticky-Header (64 px) darf fokussierte Elemente nicht verdecken */
+  scroll-padding-top: 80px;
 }
 
 @media (prefers-reduced-motion: reduce) {

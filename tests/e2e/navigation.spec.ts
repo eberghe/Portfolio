@@ -158,3 +158,13 @@ test.describe('dunkel', () => {
     expect(scheme).toBe('dark');
   });
 });
+
+test('AK-16: Menüpunkte brechen nicht um', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile-360', 'Desktop-Navigation');
+  await page.goto('/');
+  const nav = page.getByRole('navigation', { name: 'Hauptnavigation' });
+  for (const name of ['Projekte', 'Services', 'Über mich', 'FAQs']) {
+    const box = (await nav.getByRole('link', { name, exact: true }).boundingBox())!;
+    expect(box.height, name).toBeLessThan(40);
+  }
+});

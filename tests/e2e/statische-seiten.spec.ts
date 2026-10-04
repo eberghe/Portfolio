@@ -41,3 +41,13 @@ for (const scheme of ['light', 'dark'] as const) {
     }
   });
 }
+
+test('faq AK-6: Fokusrahmen der Fragen 2 px', async ({ page }) => {
+  await page.goto('/faqs');
+  await page.locator('summary').first().focus();
+  // Tastaturfokus erzwingen, damit :focus-visible greift
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Tab');
+  const width = await page.evaluate(() => parseFloat(getComputedStyle(document.activeElement!).outlineWidth));
+  expect(width).toBeGreaterThanOrEqual(2);
+});

@@ -1,7 +1,8 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import About from '@/components/about/About';
-import { timeline, tools } from '@/lib/content/about';
+import { aboutContent, timeline, tools } from '@/lib/content/about';
+import { faqs } from '@/lib/content/faq';
 import { sitePaths } from '@/lib/routes';
 import { profilePageJsonLd } from '@/lib/structured-data';
 
@@ -56,5 +57,29 @@ describe('AK-6: Deutsch auf der deutschen Seite', () => {
   it('keine vermeidbaren englischen Begriffe', () => {
     const text = timeline.map((t) => `${t.de.title} ${t.de.text}`).join(' ');
     expect(text).not.toMatch(/Working Student|Bachelor Thesis|High School/);
+  });
+});
+
+describe('AK-8: Freelance', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    expect(aboutContent[locale].intro).toMatch(locale === 'de' ? /Freelancer|freiberuflich/ : /freelance/i);
+    expect(aboutContent[locale].intro).toMatch(/Augsburg/);
+  });
+});
+
+describe('AK-9: Zeitleiste', () => {
+  it('Vergangenheit, kein Bild doppelt', () => {
+    expect(timeline[0]!.de.text).not.toMatch(/ ist mein größter Traum|arbeite ich/);
+    expect(timeline[0]!.en.text).not.toMatch(/my biggest dream is|I'm working/);
+    const srcs = timeline.flatMap((t) => (t.image ? [t.image.src] : []));
+    expect(new Set(srcs).size).toBe(srcs.length);
+  });
+});
+
+describe('AK-10: Werkzeuge einheitlich', () => {
+  it('jedes Werkzeug im Laufband steht in der FAQ-Antwort, kein Dribbble', () => {
+    const answer = faqs.find((f) => f.id === 'tools')!.de.a;
+    for (const t of tools) expect(answer).toContain(t.name);
+    expect(tools.map((t) => t.name)).not.toContain('Dribbble');
   });
 });

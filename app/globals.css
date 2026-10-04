@@ -113,14 +113,16 @@ html {
   }
 
   a:focus-visible,
-  button:focus-visible {
+  button:focus-visible,
+  summary:focus-visible {
     outline: 2px solid hsl(var(--foreground));
     outline-offset: 4px;
     border-radius: 4px;
   }
 
   .dark a:focus-visible,
-  .dark button:focus-visible {
+  .dark button:focus-visible,
+  .dark summary:focus-visible {
     outline-color: white;
   }
 }

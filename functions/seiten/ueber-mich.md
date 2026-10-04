@@ -30,6 +30,9 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 - AK-4: Laufband hat einen Pause-Knopf mit `aria-pressed`; bei reduzierter Bewegung läuft es nicht.
 - AK-5: Zeitleiste ist ein `ol` mit 13 Einträgen, jedes mit `<time dateTime>` und Überschrift (h3).
 - AK-6: Keine englischen Begriffe auf der deutschen Seite, die eine deutsche Entsprechung haben („Working Student" → „Werkstudent", „Bachelor Thesis" → „Bachelorarbeit").
+- AK-8: Der Vorstellungstext sagt, dass Erik freiberuflich Projekte annimmt (Leistungen, Orte).
+- AK-9: Zeitleiste durchgehend in der Vergangenheit; kein Bild doppelt.
+- AK-10: Werkzeuge im Laufband und in der FAQ-Antwort stimmen überein; nur Werkzeuge, keine Plattformen (kein Dribbble).
 - AK-7: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel).
 
 ## Daten
@@ -43,3 +46,9 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 ## Offene Fragen
 
 - Altersangabe („25 Jahre") weglassen? Vorschlag: ja, weil sie veraltet.
+
+## Befunde Blinder Kritiker (Runde 1)
+
+Behoben (mit Test): Freelance-Tätigkeit fehlte (AK-8), Zeitform und doppeltes Foto (AK-9), Werkzeuge widersprachen der FAQ (AK-10), „Innsbruck · M.A. MCI" ausgeschrieben, TH Ingolstadt einheitlich benannt, Person-JSON-LD mit `image` (`knowsAbout` steht bereits am ProfessionalService der Startseite).
+
+Bewusst so gelassen: Schriftgrößen 11 px gehören zum bestehenden Design (Änderung nur mit Eriks OK).

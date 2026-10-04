@@ -66,3 +66,6 @@ Offen, bewusst später:
 - Eigene zweisprachige 404-Seite mit Navigation → kommt mit den Unterseiten
 - (erledigt, AK-15) Footer im Dunkelmodus mit dezenter Trennlinie, von Erik freigegeben
 - Gleicher Seitentitel DE/EN → mit SEO-Funktion entscheiden
+
+## Nachtrag
+- Das Herz im Footer-Satz „made with 🤍 in innsbruck" ist für Screenreader ausgeblendet und wird als „love" vorgelesen (der Satz ist als Englisch ausgezeichnet).

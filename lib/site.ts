@@ -24,6 +24,7 @@ export function person(locale: Locale) {
     email: EMAIL,
     jobTitle: jobTitle[locale],
     alumniOf: { '@type': 'CollegeOrUniversity', name: 'Technische Hochschule Ingolstadt' },
+    image: `${SITE_URL}/images/about/erik.jpg`,
     knowsLanguage: ['de', 'en'],
     workLocation: [
       { '@type': 'Place', name: 'Augsburg' },

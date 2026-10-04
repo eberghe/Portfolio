@@ -43,3 +43,7 @@ Keine.
 
 - Vollständige ladungsfähige Anschrift für das Impressum (Pflicht nach § 5 ECG in Österreich bzw. § 5 DDG in Deutschland).
 - Rechtliche Prüfung beider Texte (Generator oder Anwalt).
+
+## Befunde Blinder Kritiker (Runde 1)
+
+Offen, Entscheidung bei Erik: vollständige Anschrift (Impressum und Verantwortlicher), ggf. Unternehmensgegenstand/USt-ID, zuständige Aufsichtsbehörde, Speicherdauer der Logfiles. Englische Pfade (`/en/imprint`, `/en/privacy`) später mit Weiterleitung.

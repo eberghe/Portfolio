@@ -11,7 +11,7 @@ export const faqs: Faq[] = [
     id: 'leistungen',
     de: {
       q: 'Welche Leistungen bietest du an?',
-      a: 'UX/UI-Design, Webflow-Entwicklung, Barrierefreiheit-Beratung (WCAG und BFSG), KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design, Design Systems und Fotografie. Alle Details findest du unter Leistungen.',
+      a: 'UX/UI-Design, Webflow-Entwicklung, Barrierefreiheit-Beratung (WCAG, BFSG und das österreichische BaFG), KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design, Design Systems und Fotografie. Alle Details findest du unter Leistungen.',
     },
     en: {
       q: 'What services do you offer?',
@@ -44,11 +44,11 @@ export const faqs: Faq[] = [
     id: 'tools',
     de: {
       q: 'Welche Tools nutzt du?',
-      a: 'Figma, Webflow, Adobe Lightroom, Capture One, Notion sowie KI-Werkzeuge wie Claude und Gemini.',
+      a: 'Für Design Figma und Affinity, für Websites Webflow und VS Code, für Fotos Adobe Lightroom und Capture One. Mit KI arbeite ich mit Claude, Gemini, Lovable und Antigravity.',
     },
     en: {
       q: 'What tools do you use?',
-      a: 'Figma, Webflow, Adobe Lightroom, Capture One, Notion and AI tools such as Claude and Gemini.',
+      a: 'Figma and Affinity for design, Webflow and VS Code for websites, Adobe Lightroom and Capture One for photos. For AI work I use Claude, Gemini, Lovable and Antigravity.',
     },
   },
   {

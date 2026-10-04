@@ -135,3 +135,12 @@ describe('Footer', () => {
       expect(link).toHaveAttribute('href', '#seitenanfang');
   });
 });
+
+describe('Footer-Nachtrag', () => {
+  it('Herz-Emoji ist ausgeblendet, Screenreader hören „love"', () => {
+    render(<Footer locale="de" />);
+    const line = screen.getAllByText(/made with/)[0]!;
+    expect(line.querySelector('[aria-hidden="true"]')).toHaveTextContent('🤍');
+    expect(line).toHaveTextContent(/love/);
+  });
+});

@@ -21,6 +21,19 @@ const INSTAGRAM = 'https://www.instagram.com/erik.bergheimer/';
 const LINKEDIN = 'https://www.linkedin.com/in/erik-bergheimer/';
 
 // Footer-Texte mindestens white/60 (7,2:1 auf #0b1219), siehe functions/seiten/navigation-und-footer.md
+/** „made with 🤍 in innsbruck“: Herz für Screenreader als „love“ */
+function MadeWith({ text }: { text: string }) {
+  const [before, after] = text.split('🤍');
+  return (
+    <>
+      {before}
+      <span aria-hidden="true">🤍</span>
+      <span className="sr-only">love</span>
+      {after}
+    </>
+  );
+}
+
 export default function Footer({ locale }: { locale: Locale }) {
   const nav = messages[locale].nav;
   const t = messages[locale].footer;
@@ -110,7 +123,7 @@ export default function Footer({ locale }: { locale: Locale }) {
               </Link>
             </div>
             <p lang="en" className="text-[12px] text-white/60 flex-1 text-center">
-              {t.madeWith}
+              <MadeWith text={t.madeWith} />
             </p>
             <p className="text-[12px] text-white/60">© {year}, Erik Bergheimer</p>
           </div>
@@ -133,7 +146,7 @@ export default function Footer({ locale }: { locale: Locale }) {
             </div>
             <div className="flex items-center justify-between w-full mt-6">
               <p lang="en" className="text-[12px] text-white/60">
-                {t.madeWith}
+                <MadeWith text={t.madeWith} />
               </p>
               <a
                 href="#seitenanfang"

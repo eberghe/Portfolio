@@ -38,9 +38,9 @@ export const aboutContent = {
     badge: 'Augsburg & Innsbruck',
     title: 'Erik Bergheimer: UX/UI-Designer & Webflow-Entwickler',
     subtitle: 'Portfolio · Augsburg & Innsbruck',
-    facts: 'Innsbruck · M.A. MCI',
+    facts: 'Master Management, Communication & IT am MCI Innsbruck',
     intro:
-      'Ich bin Erik und habe meinen Bachelor in User Experience Design an der TH Ingolstadt gemacht. Seitdem habe ich in verschiedenen Unternehmen und Ländern gearbeitet, von Augsburg über Bali bis Innsbruck. Aktuell studiere ich Management, Communication & IT (M.A.) am MCI und arbeite nebenbei als Werkstudent im Business Development bei HERO Software.',
+      'Ich bin Erik und arbeite als Freelancer für UX/UI-Design, Webflow, Barrierefreiheit und KI-Beratung, vor Ort in Augsburg und Innsbruck oder remote. Meinen Bachelor in User Experience Design habe ich an der TH Ingolstadt gemacht. Seitdem habe ich in verschiedenen Unternehmen und Ländern gearbeitet, von Augsburg über Bali bis Innsbruck. Aktuell studiere ich Management, Communication & IT (M.A.) am MCI und arbeite nebenbei als Werkstudent im Business Development bei HERO Software.',
     photoAlt: 'Erik Bergheimer mit Sonnenbrille und schwarzem Hemd, lächelnd',
     tools: 'Tools, mit denen ich arbeite',
     pause: 'Animation anhalten',
@@ -55,9 +55,9 @@ export const aboutContent = {
     badge: 'Augsburg & Innsbruck',
     title: 'Erik Bergheimer: UX/UI Designer & Webflow Developer',
     subtitle: 'Portfolio · Augsburg & Innsbruck',
-    facts: 'Innsbruck · M.A. MCI',
+    facts: "Master's in Management, Communication & IT at MCI Innsbruck",
     intro:
-      "My name is Erik Bergheimer and I completed my Bachelor's degree in User Experience Design at the Technical University of Ingolstadt. I have gained work experience in different areas, companies and countries. I am currently working as a working student in Business Development at HERO Software and study Management, Communication and IT (M.A.) at MCI in Innsbruck.",
+      "I'm Erik, a freelance UX/UI designer and Webflow developer who also advises on accessibility and AI, on site in Augsburg and Innsbruck or remote. I completed my Bachelor's degree in User Experience Design at Technische Hochschule Ingolstadt (THI). I have gained work experience in different areas, companies and countries. I am currently working as a working student in Business Development at HERO Software and study Management, Communication and IT (M.A.) at MCI in Innsbruck.",
     photoAlt: 'Erik Bergheimer wearing sunglasses and a black shirt, smiling',
     tools: 'Tools I work with',
     pause: 'Pause animation',
@@ -83,7 +83,6 @@ export const tools = [
   { name: 'Affinity', src: '/images/logos/affinity.png', width: 80, height: 80 },
   { name: 'Antigravity', src: '/images/logos/antigravity.png', width: 80, height: 80 },
   { name: 'VS Code', src: '/images/logos/vscode.png', width: 80, height: 80 },
-  { name: 'Dribbble', src: '/images/logos/dribbble.png', width: 80, height: 80 },
 ];
 
 export const timeline: TimelineItem[] = [
@@ -91,11 +90,11 @@ export const timeline: TimelineItem[] = [
     date: '2018-07',
     de: {
       title: 'Abitur & IKEA',
-      text: 'Nach dem Abitur in Königsbrunn ist mein größter Traum, ins Ausland zu gehen. Davor arbeite ich bei IKEA, um für dieses Abenteuer zu sparen.',
+      text: 'Nach dem Abitur in Königsbrunn war mein größter Traum, ins Ausland zu gehen. Davor arbeitete ich bei IKEA, um für dieses Abenteuer zu sparen.',
     },
     en: {
       title: 'High school & IKEA',
-      text: "After graduating from high school in Königsbrunn, Germany, my biggest dream is to go abroad. Before that, I'm working at IKEA to save up for this adventure.",
+      text: 'After graduating from high school in Königsbrunn, Germany, my biggest dream was to go abroad. Before that, I worked at IKEA to save up for this adventure.',
     },
   },
   {
@@ -217,7 +216,6 @@ export const timeline: TimelineItem[] = [
   },
   {
     date: '2023-09',
-    image: team23,
     de: {
       title: 'UX/UI-Designer bei TEAM23 (Vollzeit)',
       text: 'Im September 2023 startete ich als UX/UI-Designer in Vollzeit bei TEAM23!',

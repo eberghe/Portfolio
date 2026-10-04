@@ -1,14 +1,29 @@
 import { expect, test } from '@playwright/test';
+import { localizedPath } from '@/lib/i18n';
 import { axe } from './helpers';
 
 // functions/seiten/rechtliches.md, faq.md, ueber-mich.md
 const pages = ['/impressum', '/datenschutz', '/faqs', '/about'];
 
+test('rechtliches AK-8: englische Adressen, alte leiten weiter', async ({ request }) => {
+  for (const [old, now] of [
+    ['/en/impressum', '/en/imprint'],
+    ['/en/datenschutz', '/en/privacy'],
+  ] as const) {
+    const res = await request.get(old, { maxRedirects: 0 });
+    expect(res.status(), old).toBe(308);
+    expect(res.headers().location).toBe(now);
+    const html = await (await request.get(now)).text();
+    expect(html).toContain('<html lang="en"');
+    expect(html).toMatch(new RegExp(`hrefLang="de" href="https://erik-bergheimer.de${old.slice(3)}"`));
+  }
+});
+
 test('AK-1: Seiten erreichbar mit eigenem Title, Rechtliches noindex', async ({ request }) => {
   const titles = new Set<string>();
   for (const prefix of ['', '/en'])
     for (const p of pages) {
-      const res = await request.get(prefix + p);
+      const res = await request.get(localizedPath(p, prefix ? 'en' : 'de'));
       expect(res.status(), prefix + p).toBe(200);
       const html = await res.text();
       titles.add(html.match(/<title>([^<]*)<\/title>/)![1]!);

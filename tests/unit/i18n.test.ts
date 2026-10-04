@@ -9,6 +9,10 @@ describe('Pfade je Sprache', () => {
     ['/about', 'de', '/about'],
     ['/about', 'en', '/en/about'],
     ['/services/accessibility', 'en', '/en/services/accessibility'],
+    // rechtliches.md AK-8: englische Slugs
+    ['/impressum', 'en', '/en/imprint'],
+    ['/datenschutz', 'en', '/en/privacy'],
+    ['/impressum', 'de', '/impressum'],
   ] as const)('localizedPath(%s, %s) = %s', (path, locale, expected) => {
     expect(localizedPath(path, locale)).toBe(expected);
   });
@@ -19,6 +23,8 @@ describe('Pfade je Sprache', () => {
     ['/en', { locale: 'en', path: '/' }],
     ['/en/about', { locale: 'en', path: '/about' }],
     ['/english-page', { locale: 'de', path: '/english-page' }],
+    ['/en/imprint', { locale: 'en', path: '/impressum' }],
+    ['/en/privacy', { locale: 'en', path: '/datenschutz' }],
   ])('splitLocale(%s)', (pathname, expected) => {
     expect(splitLocale(pathname)).toEqual(expected);
   });
@@ -27,6 +33,8 @@ describe('Pfade je Sprache', () => {
     ['/about', 'en', '/en/about'],
     ['/en/about', 'de', '/about'],
     ['/en', 'de', '/'],
+    ['/en/imprint', 'de', '/impressum'],
+    ['/datenschutz', 'en', '/en/privacy'],
     ['/', 'en', '/en'],
   ] as const)('AK-3: alternatePath(%s, %s) = %s', (pathname, target, expected) => {
     expect(alternatePath(pathname, target)).toBe(expected);

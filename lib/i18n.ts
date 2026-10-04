@@ -2,10 +2,14 @@ export const locales = ['de', 'en'] as const;
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = 'de';
 
-/** Sprachneutraler Pfad ("/about") → URL der Sprache ("/about" bzw. "/en/about"). */
+/** Englische Slugs, wo sie vom deutschen abweichen (functions/mehrsprachigkeit/de-en.md) */
+const enSlugs: Record<string, string> = { '/impressum': '/imprint', '/datenschutz': '/privacy' };
+const deSlugs = Object.fromEntries(Object.entries(enSlugs).map(([de, en]) => [en, de]));
+
+/** Sprachneutraler (deutscher) Pfad ("/about") → URL der Sprache ("/about" bzw. "/en/about"). */
 export function localizedPath(path: string, locale: Locale): string {
   if (locale === defaultLocale) return path;
-  return path === '/' ? `/${locale}` : `/${locale}${path}`;
+  return path === '/' ? `/${locale}` : `/${locale}${enSlugs[path] ?? path}`;
 }
 
 /** URL → Sprache und sprachneutraler Pfad. */
@@ -13,7 +17,10 @@ export function splitLocale(pathname: string): { locale: Locale; path: string } 
   for (const locale of locales) {
     if (locale === defaultLocale) continue;
     if (pathname === `/${locale}`) return { locale, path: '/' };
-    if (pathname.startsWith(`/${locale}/`)) return { locale, path: pathname.slice(locale.length + 1) };
+    if (pathname.startsWith(`/${locale}/`)) {
+      const path = pathname.slice(locale.length + 1);
+      return { locale, path: deSlugs[path] ?? path };
+    }
   }
   return { locale: defaultLocale, path: pathname };
 }

@@ -130,7 +130,7 @@ describe('Footer', () => {
     render(<Footer locale="en" />);
     // Desktop- und Mobil-Variante liegen beide im DOM, CSS zeigt je Viewport nur eine.
     for (const link of screen.getAllByRole('link', { name: 'Imprint' }))
-      expect(link).toHaveAttribute('href', '/en/impressum');
+      expect(link).toHaveAttribute('href', '/en/imprint');
     for (const link of screen.getAllByRole('link', { name: 'Back to top' }))
       expect(link).toHaveAttribute('href', '#seitenanfang');
   });

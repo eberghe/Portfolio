@@ -9,7 +9,7 @@ Die Lovable-Seite schaltet die Sprache nur im Browser um (`src/lib/i18n.tsx`, `t
 ## Verhalten
 
 - Deutsch ist Standard unter den bisherigen Pfaden (`/services/...`, `/projects/...`, `/about`), damit keine bestehende URL bricht.
-- Englisch unter `/en/...` mit denselben Slugs.
+- Englisch unter `/en/...` mit denselben Slugs. Ausnahme: rechtliche Seiten heißen auf Englisch `/en/imprint` und `/en/privacy` (deutsch `/impressum`, `/datenschutz`); die Zuordnung steht zentral in `lib/i18n.ts`, hreflang, Sprachumschalter und Links folgen ihr automatisch. Alte Adressen `/en/impressum` und `/en/datenschutz` leiten dauerhaft (308) weiter.
 - Sprachumschalter führt auf die entsprechende Seite der anderen Sprache, nicht auf die Startseite.
 - Alle Texte liegen in Übersetzungsdateien bzw. Supabase mit Sprachfeld, nicht im Komponentencode. Die vorhandenen DE/EN-Texte aus dem Lovable-Repo werden übernommen.
 

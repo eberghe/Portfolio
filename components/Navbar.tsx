@@ -171,7 +171,7 @@ export default function Navbar({ locale }: { locale: Locale }) {
             <Link
               href={localizedPath('/contact', locale)}
               aria-current={isActive('/contact') ? 'page' : undefined}
-              className="hidden md:inline-flex bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] font-medium hover:opacity-90 transition-opacity"
+              className="hidden md:inline-flex bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
             >
               {t.contact}
             </Link>
@@ -223,7 +223,7 @@ export default function Navbar({ locale }: { locale: Locale }) {
         </nav>
         <Link
           href={localizedPath('/contact', locale)}
-          className="mt-6 block bg-primary text-primary-foreground px-4 py-4 rounded-lg text-lg font-medium text-center hover:opacity-90"
+          className="mt-6 block bg-primary text-primary-foreground px-4 py-4 rounded-lg text-lg font-medium text-center hover:bg-primary-hover"
         >
           {t.contact}
         </Link>

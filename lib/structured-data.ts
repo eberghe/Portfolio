@@ -144,3 +144,14 @@ export function profilePageJsonLd(locale: Locale) {
     mainEntity: person(locale),
   };
 }
+
+/** ContactPage (kontakt.md AK-3) */
+export function contactPageJsonLd(locale: Locale) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    url: absolute('/contact', locale),
+    inLanguage: locale,
+    about: { '@id': `${SITE_URL}/#person` },
+  };
+}

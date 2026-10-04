@@ -39,7 +39,7 @@ export default function Home({ locale }: { locale: Locale }) {
           <div className="flex flex-wrap gap-3 items-center">
             <Link
               href={href('/contact')}
-              className="bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[13px] font-medium hover:opacity-90 transition-opacity"
+              className="bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
             >
               {t.contact}
             </Link>

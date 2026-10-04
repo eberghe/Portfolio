@@ -114,8 +114,8 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
         </h2>
         <p className="text-[13px] text-text2 mb-6 max-w-[400px] mx-auto">{t.talk}</p>
         <Link
-          href={localizedPath('/contact', locale)}
-          className="inline-flex bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[13px] font-medium hover:opacity-90 transition-opacity"
+          href={localizedPath(`/contact?leistung=${service.slug}`, locale)}
+          className="inline-flex bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
         >
           {t.cta}
         </Link>

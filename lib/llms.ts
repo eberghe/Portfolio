@@ -25,6 +25,11 @@ export function llmsTxt() {
     link('Home', '/', 'Introduction, services and featured projects.'),
     link('Services', '/services', 'Overview of all services.'),
     link('Projects', '/projects', 'Selected UX/UI, Webflow and photography case studies.'),
+    link(
+      'Contact',
+      '/contact',
+      'Project enquiry in four short steps (service, project, scope, contact) or direct contact.',
+    ),
     '',
     '## Services',
     '',

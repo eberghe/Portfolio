@@ -181,6 +181,8 @@ describe('meta-und-schema AK-5: llms.txt nennt Kontakt und Arbeitsweise', () => 
     expect(txt).toMatch(/remote/);
     expect(txt).toMatch(/German and English/);
     expect(txt).toContain('BFSG');
+    // Kontaktseite mit Anfrage-Assistent (functions/seiten/kontakt.md)
+    expect(txt).toContain('[Contact](https://erik-bergheimer.de/en/contact)');
   });
 });
 

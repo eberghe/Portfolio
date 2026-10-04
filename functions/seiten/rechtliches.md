@@ -23,7 +23,7 @@ Pflichtangaben und Datenschutzinformation, erreichbar aus dem Footer jeder Seite
 
 - AK-1: Beide Seiten existieren in DE und EN, je genau eine h1, Abschnitte als h2, mit eigenem Title und Description.
 - AK-2: Impressum nennt Name, Ort, E-Mail (als Link) und Verantwortlichen.
-- AK-3: Datenschutz nennt Verantwortlichen, Hosting bei Vercel, Logfiles, Cookies/Browser-Speicher und die Betroffenenrechte; erwähnt keinen Dienst, den die Seite nicht nutzt (Web3Forms, Google Analytics als genutzt).
+- AK-3: Datenschutz nennt Verantwortlichen, Hosting bei Vercel, Logfiles, Cookies/Browser-Speicher, das Anfrageformular (Supabase in der EU, Benachrichtigung über Resend, IP nur als Hash) und die Betroffenenrechte; erwähnt keinen Dienst, den die Seite nicht nutzt (Web3Forms, Google Analytics als genutzt).
 - AK-4: Beide Seiten `noindex` und nicht in der Sitemap.
 - AK-5: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel).
 

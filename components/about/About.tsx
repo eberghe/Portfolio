@@ -109,7 +109,7 @@ export default function About({ locale }: { locale: Locale }) {
           <p className="text-[13px] text-text2 mb-5 max-w-[420px] mx-auto">{t.ctaText}</p>
           <Link
             href={localizedPath('/contact', locale)}
-            className="inline-flex bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[13px] font-medium hover:opacity-90 transition-opacity"
+            className="inline-flex bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
           >
             {t.cta}
           </Link>

@@ -36,7 +36,10 @@ describe('AK-2: Detailseite', () => {
     expect(screen.getByRole('list', { name: locale === 'de' ? 'Schlagworte' : 'Keywords' })).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: locale === 'de' ? 'Kostenloses Erstgespräch' : 'Free intro call' }),
-    ).toHaveAttribute('href', locale === 'de' ? '/contact' : '/en/contact');
+    ).toHaveAttribute(
+      'href',
+      locale === 'de' ? '/contact?leistung=accessibility' : '/en/contact?leistung=accessibility',
+    );
   });
 });
 

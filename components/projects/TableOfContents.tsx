@@ -86,7 +86,7 @@ export default function TableOfContents({ items, label }: { items: Item[]; label
           aria-expanded={open}
           aria-controls="inhaltsverzeichnis-mobil"
           aria-label={label}
-          className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:opacity-90 transition-opacity"
+          className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary-hover transition-colors"
         >
           {open ? <X size={20} aria-hidden="true" /> : <List size={20} aria-hidden="true" />}
         </button>

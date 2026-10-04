@@ -31,6 +31,7 @@ html {
 
     --primary: 161 36% 34%;
     --primary-foreground: 0 0% 100%;
+    --primary-hover: 161 36% 29%;
 
     --secondary: 120 6% 97%;
     --secondary-foreground: 207 30% 13%;
@@ -51,6 +52,7 @@ html {
     --radius: 0.5rem;
 
     --primary-text: 161 36% 34%;
+    --error-text: 0 72% 40%;
 
     /* Custom tokens */
     --primary-light: 150 25% 93%;
@@ -65,6 +67,7 @@ html {
   .dark {
     color-scheme: dark;
     --primary-text: 161 36% 43.5%;
+    --error-text: 0 85% 72%;
     --background: 207 40% 7%;
     --foreground: 210 30% 96%;
 
@@ -76,6 +79,7 @@ html {
 
     --primary: 161 36% 34%;
     --primary-foreground: 0 0% 100%;
+    --primary-hover: 161 36% 29%;
 
     --secondary: 210 20% 12%;
     --secondary-foreground: 210 30% 96%;
@@ -120,9 +124,18 @@ html {
     border-radius: 4px;
   }
 
+  input:focus-visible,
+  textarea:focus-visible,
+  [tabindex='-1']:focus-visible {
+    outline: 2px solid hsl(var(--foreground));
+    outline-offset: 2px;
+  }
+
   .dark a:focus-visible,
   .dark button:focus-visible,
-  .dark summary:focus-visible {
+  .dark summary:focus-visible,
+  .dark input:focus-visible,
+  .dark textarea:focus-visible {
     outline-color: white;
   }
 }
@@ -145,6 +158,12 @@ html {
   }
   .border-primary-border {
     border-color: hsl(var(--primary-border));
+  }
+  .text-error {
+    color: hsl(var(--error-text));
+  }
+  .border-error {
+    border-color: hsl(var(--error-text));
   }
   .text-primary-custom {
     color: hsl(var(--primary-text));

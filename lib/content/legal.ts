@@ -110,6 +110,14 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
           ],
         },
         {
+          title: 'Anfrageformular',
+          paragraphs: [
+            'Wenn du das Anfrageformular auf der Kontaktseite nutzt, speichere ich deine Angaben (gewählte Leistungen, Beschreibung, Website, Zeitrahmen, Budget, Name, E-Mail, optional Telefon) sowie den Zeitpunkt deiner Einwilligung, um deine Anfrage zu beantworten. Rechtsgrundlage: Art. 6 Abs. 1 lit. a und b DSGVO. Du kannst deine Einwilligung jederzeit per E-Mail an {email} widerrufen.',
+            'Die Daten liegen bei Supabase Inc. auf Servern in der EU (Frankfurt). Zum Schutz vor Missbrauch speichere ich statt deiner IP-Adresse nur einen verschlüsselten Prüfwert, mit dem sich wiederholte Anfragen begrenzen lassen. Über jede neue Anfrage werde ich per E-Mail über den Dienst Resend (Resend Inc., USA, EU-US Data Privacy Framework) benachrichtigt.',
+            'Die Angaben werden gelöscht, sobald die Anfrage erledigt ist und keine Aufbewahrungspflichten bestehen.',
+          ],
+        },
+        {
           title: 'Links zu sozialen Netzwerken',
           paragraphs: [
             'Die Links zu Instagram und LinkedIn sind einfache Links. Erst wenn du sie anklickst, wird eine Verbindung zum jeweiligen Anbieter aufgebaut.',
@@ -159,6 +167,14 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
           title: 'Contact by email',
           paragraphs: [
             'If you email me, I process your details to answer your enquiry. Legal basis: Art. 6 (1) (b) GDPR. The data is deleted once the conversation is completed and no retention obligations apply.',
+          ],
+        },
+        {
+          title: 'Enquiry form',
+          paragraphs: [
+            'If you use the enquiry form on the contact page, I store your details (selected services, description, website, timeframe, budget, name, email, optional phone) and the time of your consent in order to answer your enquiry. Legal basis: Art. 6 (1) (a) and (b) GDPR. You can withdraw your consent at any time by emailing {email}.',
+            'The data is stored with Supabase Inc. on servers in the EU (Frankfurt). To prevent abuse, I store only an encrypted check value instead of your IP address, which allows repeated enquiries to be limited. I am notified of each new enquiry by email via the service Resend (Resend Inc., USA, EU-US Data Privacy Framework).',
+            'The details are deleted once the enquiry is completed and no retention obligations apply.',
           ],
         },
         {

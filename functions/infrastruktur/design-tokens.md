@@ -49,3 +49,4 @@ Grün als Text im Dunkelmodus nutzt `--primary-text`; im hellen Modus ist `--pri
 - AK-2: Komponenten verwenden ausschließlich Tokens, keine freien Farbwerte.
 - AK-3: Hell- und Dunkelmodus funktionieren, Wahl bleibt gespeichert, `prefers-color-scheme` wird beim ersten Besuch berücksichtigt.
 - AK-4: Alle Text-Token-Kombinationen erfüllen 4,5:1 (automatischer Test über alle Text/Hintergrund-Paare, hell und dunkel).
+- AK-5: Auch im Hover-Zustand erreicht Button-Text 4,5:1. Der Bestand hellt grüne Buttons per `opacity-90` auf (weiß auf Grün nur 4,35:1); stattdessen dunkelt `--primary-hover` leicht ab. Fehlermeldungen nutzen `--error-text` (4,5:1 auf allen Hintergründen).

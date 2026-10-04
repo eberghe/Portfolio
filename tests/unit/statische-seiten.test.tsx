@@ -34,6 +34,10 @@ describe('rechtliches AK-3: Datenschutz', () => {
     expect(text).toMatch(locale === 'de' ? /Logfiles/ : /log files/);
     expect(text).toContain('localStorage');
     expect(text).not.toContain('Web3Forms');
+    // Anfrage-Assistent (functions/kontakt/anfrage-assistent.md)
+    expect(text).toContain('Supabase');
+    expect(text).toContain('Resend');
+    expect(text).toMatch(locale === 'de' ? /Anfrageformular/ : /enquiry form/);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
   });
 });

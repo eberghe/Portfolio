@@ -23,7 +23,10 @@ export function person(locale: Locale) {
     url: SITE_URL,
     email: EMAIL,
     jobTitle: jobTitle[locale],
-    alumniOf: { '@type': 'CollegeOrUniversity', name: 'Technische Hochschule Ingolstadt' },
+    alumniOf: [
+      { '@type': 'CollegeOrUniversity', name: 'Technische Hochschule Ingolstadt' },
+      { '@type': 'CollegeOrUniversity', name: 'MCI Management Center Innsbruck' },
+    ],
     image: `${SITE_URL}/images/about/erik.jpg`,
     knowsLanguage: ['de', 'en'],
     address: {

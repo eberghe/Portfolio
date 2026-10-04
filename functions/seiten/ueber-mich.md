@@ -28,11 +28,12 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 - AK-2: JSON-LD `ProfilePage` mit Person (`@id` `/#person`).
 - AK-3: Werkzeuge stehen genau einmal als Liste im Accessibility-Tree; das bewegte Laufband ist `aria-hidden` und enthält keine fokussierbaren Elemente.
 - AK-4: Laufband hat einen Pause-Knopf mit `aria-pressed`; bei reduzierter Bewegung läuft es nicht.
-- AK-5: Zeitleiste ist ein `ol` mit 13 Einträgen, jedes mit `<time dateTime>` und Überschrift (h3).
+- AK-5: Zeitleiste ist ein `ol` mit 14 Einträgen, jedes mit `<time dateTime>` und Überschrift (h3).
 - AK-6: Keine englischen Begriffe auf der deutschen Seite, die eine deutsche Entsprechung haben („Working Student" → „Werkstudent", „Bachelor Thesis" → „Bachelorarbeit").
 - AK-8: Der Vorstellungstext sagt, dass Erik freiberuflich Projekte annimmt (Leistungen, Orte).
 - AK-9: Zeitleiste durchgehend in der Vergangenheit; kein Bild doppelt.
 - AK-10: Werkzeuge im Laufband und in der FAQ-Antwort stimmen überein; nur Werkzeuge, keine Plattformen (kein Dribbble).
+- AK-11: Master abgeschlossen (Erik, 2026-10-04): letzter Eintrag der Zeitleiste ist „Masterabschluss am MCI“ (Monat 2026-09, von Erik zu bestätigen); kein Text sagt mehr, dass Erik am MCI studiert (Vorstellung, Innsbruck-Eintrag, `llms.txt`); Person-JSON-LD nennt in `alumniOf` TH Ingolstadt und MCI. Kein Umzugs-Eintrag zurück nach Deutschland (Erik).
 - AK-7: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel).
 
 ## Daten
@@ -41,7 +42,7 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 
 ## Tests
 
-`tests/unit/ueber-mich.test.tsx` (AK-2 bis AK-6), `tests/e2e/statische-seiten.spec.ts` (AK-1, AK-7).
+`tests/unit/ueber-mich.test.tsx` (AK-2 bis AK-6, AK-11), `tests/e2e/statische-seiten.spec.ts` (AK-1, AK-7).
 
 ## Offene Fragen
 

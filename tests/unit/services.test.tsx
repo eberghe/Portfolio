@@ -182,3 +182,16 @@ describe('AK-16: Einsatzort im Text', () => {
     expect(screen.getByText(/Augsburg/)).toHaveTextContent(/remote/);
   });
 });
+
+describe('AK-17: englische Abschluss-Überschrift (Issue #4)', () => {
+  it.each([
+    ['ux-ui-design', 'Interested in UX/UI design?'],
+    ['ai-consulting', 'Interested in AI consulting?'],
+    ['webflow-development', 'Interested in Webflow development?'],
+    ['accessibility', 'Interested in accessibility consulting?'],
+  ])('%s', (slug, name) => {
+    const service = services.find((s) => s.slug === slug)!;
+    render(<ServiceDetail service={service} locale="en" />);
+    expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument();
+  });
+});

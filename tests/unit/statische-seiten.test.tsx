@@ -89,3 +89,15 @@ describe('faq AK-4: aktuelle Inhalte', () => {
     expect(all).toContain('Augsburg');
   });
 });
+
+describe('faq AK-7: Frage zum Standort (Issue #3)', () => {
+  it.each(locales)('%s', (locale) => {
+    const f = faqs[1]!;
+    expect(f.id).toBe('standort');
+    expect(f[locale].q).toBe(locale === 'de' ? 'Wo bist du ansässig?' : 'Where are you based?');
+    expect(f[locale].a).toMatch(/Königsbrunn/);
+    expect(f[locale].a).toMatch(/Augsburg/);
+    expect(f[locale].a).toMatch(/remote/);
+    expect(faqJsonLd(locale).mainEntity[1]!.name).toBe(f[locale].q);
+  });
+});

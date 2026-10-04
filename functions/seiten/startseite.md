@@ -55,6 +55,11 @@ Behoben, jeweils mit Test:
 - Navigation AK-16: Menüpunkte brechen bei 768 px nicht mehr um.
 - EN-Ablauf „Getting to know" → „Intro call".
 
+Issues vom 2026-10-04 (umgesetzt mit Test):
+
+- AK-18 (Issue #6): Der Name der h1 lautet „Hi, ich bin Erik Bergheimer, UX/UI Designer & Webflow Expert“ ohne Leerzeichen vor dem Komma. Das Komma ist nur für Screenreader da (Schriftgröße 0 statt `sr-only`, weil die absolute Positionierung von `sr-only` im Accessibility-Tree ein Leerzeichen erzeugt).
+- AK-19 (Issue #5): „Projekte im Portfolio“ wird aus der Zahl der Projekte berechnet (heute 5, wie auf /projects); die Startseite zeigt davon bewusst 4 ausgewählte.
+
 Von Erik am 2026-10-04 entschieden und umgesetzt (AK-17):
 
 - h1 mit vollem Namen „Hi, ich bin Erik Bergheimer".

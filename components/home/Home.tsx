@@ -30,7 +30,8 @@ export default function Home({ locale }: { locale: Locale }) {
           <h1 className="text-5xl md:text-[56px] font-light leading-[1.08] tracking-[-2px] text-foreground mb-6">
             {t.greeting}
             <span className="text-primary-text">Erik Bergheimer</span>
-            <span className="sr-only">, </span>
+            {/* Komma nur für Screenreader; sr-only erzeugt im Accessibility-Tree ein Leerzeichen davor (AK-18) */}
+            <span className="text-[0px]">, </span>
             <span className="block text-[20px] md:text-[22px] text-text2 font-normal tracking-normal mt-3">
               {t.role}
             </span>

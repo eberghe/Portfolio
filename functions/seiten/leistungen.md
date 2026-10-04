@@ -46,6 +46,7 @@ Texte der bestehenden Leistungen aus Lovable; neue Leistungen sind Entwürfe, Er
 - AK-13: Auf Detailseiten ist „Leistungen" in der Navigation markiert (`aria-current="true"`, nicht `page`); JSON-LD `BreadcrumbList` (Start › Leistungen › Leistung).
 - AK-14: JSON-LD `Service` nennt Augsburg und Deutschland als Orte; `jobTitle` der Person in der Sprache der Seite.
 - AK-16: Detailseite nennt im Text den Einsatzort: Augsburg, vor Ort in Deutschland oder remote.
+- AK-17 (Issue #4): Die englische Abschluss-Überschrift „Interested in …?“ schreibt die Wörter des Leistungsnamens klein, außer Akronyme und Marken: „Interested in UX/UI design?“, „Interested in AI consulting?“, „Interested in Webflow development?“, „Interested in accessibility consulting?“.
 - AK-15: Jeder fokussierbare Link und Button zeigt beim Tab sofort einen 2 px Fokusrahmen (keine Übergangsanimation auf `outline`).
 
 ## Später

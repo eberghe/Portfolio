@@ -8,14 +8,14 @@ import { pageMetadata } from '@/lib/seo';
 // Gemeinsame Logik der DE- und EN-Routen für Leistungen (functions/seiten/leistungen.md)
 const suffix = { de: 'Leistung', en: 'Service' };
 const place = {
-  de: 'Aus Augsburg & Innsbruck, vor Ort oder remote.',
-  en: 'From Augsburg & Innsbruck, on site or remote.',
+  de: 'Aus Augsburg, vor Ort oder remote.',
+  en: 'From Augsburg, on site or remote.',
 };
 
 // Description mit Ort, höchstens 160 Zeichen (functions/seo/meta-und-schema.md AK-9)
 const withPlace = (short: string, locale: Locale) => {
   const long = `${short} ${place[locale]}`;
-  return long.length <= 160 ? long : `${short} Augsburg & Innsbruck.`;
+  return long.length <= 160 ? long : `${short} Augsburg.`;
 };
 
 export const serviceStaticParams = () => services.map((s) => ({ slug: s.slug }));

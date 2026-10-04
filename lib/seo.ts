@@ -55,8 +55,8 @@ export function pageMetadata({
 }
 
 const areaServed = {
-  de: ['Augsburg', 'Innsbruck', 'Deutschland', 'Österreich'],
-  en: ['Augsburg', 'Innsbruck', 'Germany', 'Austria'],
+  de: ['Augsburg', 'Deutschland'],
+  en: ['Augsburg', 'Germany'],
 };
 
 /** Person und ProfessionalService für die Startseite (AK-2) */

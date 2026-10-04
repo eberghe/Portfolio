@@ -17,7 +17,7 @@ describe('rechtliches AK-1/AK-2: Impressum', () => {
     expect(screen.getAllByRole('heading', { level: 2 }).length).toBeGreaterThanOrEqual(3);
     const main = document.body;
     expect(main).toHaveTextContent('Erik Bergheimer');
-    expect(main).toHaveTextContent('Innsbruck');
+    expect(main).toHaveTextContent('Königsbrunn');
     expect(screen.getByRole('link', { name: 'erb1209@outlook.de' })).toHaveAttribute(
       'href',
       'mailto:erb1209@outlook.de',
@@ -87,6 +87,5 @@ describe('faq AK-4: aktuelle Inhalte', () => {
     const all = faqs.map((f) => f[locale].a).join(' ');
     expect(all).not.toMatch(/Framer|Business Development/);
     expect(all).toContain('Augsburg');
-    expect(all).toContain('Innsbruck');
   });
 });

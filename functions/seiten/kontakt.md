@@ -14,7 +14,7 @@ Grüner Kopfbereich („Lass uns reden", „Projekt? Idee? Oder einfach Hallo sa
 
 - `/contact` (EN `/en/contact`), serverseitig gerendert, Design wie im Bestand.
 - Kopfbereich mit Überline, h1 und Einleitung wie im Bestand; Einleitung nennt, was nach der Anfrage passiert.
-- Links „Direktkontakt": E-Mail (`mailto:`), LinkedIn, Instagram als echte Links; Standort „Augsburg & Innsbruck" als Text. Darunter ein Satz zum Ablauf: Antwort per Mail, kostenloses Erstgespräch.
+- Links „Direktkontakt": E-Mail (`mailto:`), LinkedIn, Instagram als echte Links; Standort „Augsburg" als Text. Darunter ein Satz zum Ablauf: Antwort per Mail, kostenloses Erstgespräch.
 - Rechts der Anfrage-Assistent.
 
 ## Akzeptanzkriterien
@@ -39,7 +39,7 @@ Texte in `lib/content/contact.ts`.
 
 ## SEO / GEO
 
-Title „Kontakt & Projektanfrage | Erik Bergheimer", Description mit Augsburg & Innsbruck und Erstgespräch.
+Title „Kontakt & Projektanfrage | Erik Bergheimer", Description mit Augsburg und Erstgespräch.
 
 ## Daten
 

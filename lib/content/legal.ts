@@ -23,15 +23,20 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
     de: {
       metaTitle: 'Impressum | Erik Bergheimer',
       metaDescription:
-        'Impressum und Anbieterkennzeichnung der Website von Erik Bergheimer, UX/UI-Designer in Augsburg & Innsbruck.',
+        'Impressum und Anbieterkennzeichnung der Website von Erik Bergheimer, UX/UI-Designer in Augsburg.',
       title: 'Impressum',
       sections: [
         {
-          title: 'Angaben zum Anbieter',
-          paragraphs: ['Erik Bergheimer\nUX/UI-Designer & Webflow-Entwickler\nInnsbruck, Österreich'],
+          title: 'Angaben gemäß § 5 DDG',
+          paragraphs: [
+            'Erik Bergheimer\nUX/UI-Designer & Webflow-Entwickler\nWeißdornstraße 5\n86343 Königsbrunn\nDeutschland',
+          ],
         },
         { title: 'Kontakt', paragraphs: ['E-Mail: {email}\nWebsite: https://erik-bergheimer.de'] },
-        { title: 'Verantwortlich für den Inhalt', paragraphs: ['Erik Bergheimer (Anschrift wie oben)'] },
+        {
+          title: 'Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV',
+          paragraphs: ['Erik Bergheimer (Anschrift wie oben)'],
+        },
         {
           title: 'Haftungsausschluss',
           paragraphs: [
@@ -49,10 +54,15 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
     en: {
       metaTitle: 'Imprint | Erik Bergheimer',
       metaDescription:
-        'Imprint and provider information for the website of Erik Bergheimer, UX/UI designer in Augsburg & Innsbruck.',
+        'Imprint and provider information for the website of Erik Bergheimer, UX/UI designer in Augsburg.',
       title: 'Imprint',
       sections: [
-        { title: 'Provider', paragraphs: ['Erik Bergheimer\nUX/UI Designer & Webflow Developer\nInnsbruck, Austria'] },
+        {
+          title: 'Provider',
+          paragraphs: [
+            'Erik Bergheimer\nUX/UI Designer & Webflow Developer\nWeißdornstraße 5\n86343 Königsbrunn\nGermany',
+          ],
+        },
         { title: 'Contact', paragraphs: ['Email: {email}\nWebsite: https://erik-bergheimer.de'] },
         { title: 'Responsible for content', paragraphs: ['Erik Bergheimer (address as above)'] },
         {
@@ -83,7 +93,10 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
             'Der Schutz deiner personenbezogenen Daten ist mir wichtig. Diese Datenschutzerklärung informiert dich darüber, welche Daten beim Besuch dieser Website verarbeitet werden und welche Rechte dir nach der DSGVO zustehen.',
           ],
         },
-        { title: 'Verantwortlicher', paragraphs: ['Erik Bergheimer, Innsbruck, Österreich · {email}'] },
+        {
+          title: 'Verantwortlicher',
+          paragraphs: ['Erik Bergheimer\nWeißdornstraße 5\n86343 Königsbrunn\nDeutschland\nE-Mail: {email}'],
+        },
         {
           title: 'Hosting & Server-Logfiles',
           paragraphs: [
@@ -127,6 +140,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
           title: 'Deine Rechte',
           paragraphs: [
             'Du hast jederzeit das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht auf Beschwerde bei einer Aufsichtsbehörde. Anfragen richte bitte an: {email}.',
+            'Zuständige Aufsichtsbehörde: Bayerisches Landesamt für Datenschutzaufsicht (BayLDA), Promenade 18, 91522 Ansbach.',
           ],
         },
       ],
@@ -143,7 +157,10 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
             'The protection of your personal data is important to me. This privacy policy informs you about which data is processed when you visit this website and what rights you have under the GDPR.',
           ],
         },
-        { title: 'Controller', paragraphs: ['Erik Bergheimer, Innsbruck, Austria · {email}'] },
+        {
+          title: 'Controller',
+          paragraphs: ['Erik Bergheimer\nWeißdornstraße 5\n86343 Königsbrunn\nGermany\nEmail: {email}'],
+        },
         {
           title: 'Hosting & server log files',
           paragraphs: [
@@ -187,6 +204,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
           title: 'Your rights',
           paragraphs: [
             'You have the right at any time to information, correction, deletion, restriction of processing, data portability and objection, as well as the right to lodge a complaint with a supervisory authority. Please send requests to: {email}.',
+            'Competent supervisory authority: Bavarian Data Protection Authority (Bayerisches Landesamt für Datenschutzaufsicht, BayLDA), Promenade 18, 91522 Ansbach, Germany.',
           ],
         },
       ],

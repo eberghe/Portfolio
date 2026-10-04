@@ -10,7 +10,7 @@ export const faqText = {
   de: {
     metaTitle: 'FAQ: Zusammenarbeit, Ablauf, Dauer | Erik Bergheimer',
     metaDescription:
-      'Antworten auf häufige Fragen: Leistungen, Arbeit vor Ort in Augsburg & Innsbruck oder remote, Projektablauf, Dauer und Verfügbarkeit.',
+      'Antworten auf häufige Fragen: Leistungen, Arbeit vor Ort in Augsburg oder remote, Projektablauf, Dauer und Verfügbarkeit.',
     title: 'FAQs',
     intro: 'Häufig gestellte Fragen',
     more: 'Deine Frage ist nicht dabei?',
@@ -19,7 +19,7 @@ export const faqText = {
   en: {
     metaTitle: 'FAQ: collaboration, process, timelines | Erik Bergheimer',
     metaDescription:
-      'Answers to common questions: services, working on site in Augsburg & Innsbruck or remotely, project process, timelines and availability.',
+      'Answers to common questions: services, working on site in Augsburg or remotely, project process, timelines and availability.',
     title: 'FAQs',
     intro: 'Frequently asked questions',
     more: 'Your question is not listed?',

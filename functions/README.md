@@ -17,6 +17,7 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Über mich](seiten/ueber-mich.md)
 - [Kontakt](seiten/kontakt.md)
 - [Seite nicht gefunden (404)](seiten/nicht-gefunden.md)
+- [Standort Deutschland](seiten/standort.md)
 
 ## Mehrsprachigkeit
 

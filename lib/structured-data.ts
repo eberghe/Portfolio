@@ -7,15 +7,11 @@ import { EMAIL, SITE_URL, absoluteUrl as absolute, person } from '@/lib/site';
 const areaServed = {
   de: [
     { '@type': 'City', name: 'Augsburg' },
-    { '@type': 'City', name: 'Innsbruck' },
     { '@type': 'Country', name: 'Deutschland' },
-    { '@type': 'Country', name: 'Österreich' },
   ],
   en: [
     { '@type': 'City', name: 'Augsburg' },
-    { '@type': 'City', name: 'Innsbruck' },
     { '@type': 'Country', name: 'Germany' },
-    { '@type': 'Country', name: 'Austria' },
   ],
 };
 

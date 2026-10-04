@@ -15,7 +15,7 @@ Pflichtangaben und Datenschutzinformation, erreichbar aus dem Footer jeder Seite
 
 - `/impressum` und `/datenschutz` (EN `/en/impressum`, `/en/datenschutz`), Pfade bleiben wie im Bestand.
 - Texte aus dem Bestand; angepasst an den neuen Stand: Hosting bei Vercel, keine Tracking-Cookies, Farbschema im Browser-Speicher (localStorage), Schriften lokal ausgeliefert, kein Kontaktformular (der Anfrage-Assistent ergänzt den Abschnitt, sobald er existiert, siehe `kontakt/anfrage-assistent.md`).
-- Neutrale Überschrift „Angaben zum Anbieter" statt veralteter Paragraphen. Rechtliche Prüfung und vollständige Anschrift liefert Erik.
+- Überschrift „Angaben gemäß § 5 DDG" mit vollständiger Anschrift in Königsbrunn (siehe `standort.md`). Rechtliche Prüfung liefert Erik.
 - E-Mail-Adresse als `mailto:`-Link.
 - Beide Seiten `robots: noindex`, aber in der Sitemap nicht enthalten.
 
@@ -41,9 +41,8 @@ Keine.
 
 ## Offene Fragen
 
-- Vollständige ladungsfähige Anschrift für das Impressum (Pflicht nach § 5 ECG in Österreich bzw. § 5 DDG in Deutschland).
 - Rechtliche Prüfung beider Texte (Generator oder Anwalt).
 
 ## Befunde Blinder Kritiker (Runde 1)
 
-Offen, Entscheidung bei Erik: vollständige Anschrift (Impressum und Verantwortlicher), ggf. Unternehmensgegenstand/USt-ID, zuständige Aufsichtsbehörde, Speicherdauer der Logfiles. Englische Pfade (`/en/imprint`, `/en/privacy`) später mit Weiterleitung.
+Erledigt: vollständige Anschrift und zuständige Aufsichtsbehörde (BayLDA), siehe `standort.md`. Offen, Entscheidung bei Erik: ggf. USt-ID, Speicherdauer der Logfiles. Englische Pfade (`/en/imprint`, `/en/privacy`) später mit Weiterleitung.

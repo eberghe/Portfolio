@@ -166,10 +166,10 @@ describe('AK-13: Breadcrumbs', () => {
 });
 
 describe('AK-14: Orte und Sprache im JSON-LD', () => {
-  it('Augsburg und Innsbruck, deutscher jobTitle', () => {
+  it('Augsburg und Deutschland, deutscher jobTitle', () => {
     const data = serviceJsonLd(services[0]!, 'de');
     const names = data.areaServed.map((a) => a.name);
-    expect(names).toEqual(expect.arrayContaining(['Augsburg', 'Innsbruck']));
+    expect(names).toEqual(expect.arrayContaining(['Augsburg', 'Deutschland']));
     expect(data.provider.jobTitle).toMatch(/Designer/);
     expect(data.provider.jobTitle).not.toBe(serviceJsonLd(services[0]!, 'en').provider.jobTitle);
   });
@@ -178,7 +178,7 @@ describe('AK-14: Orte und Sprache im JSON-LD', () => {
 describe('AK-16: Einsatzort im Text', () => {
   it.each(['de', 'en'] as const)('%s', (locale) => {
     render(<ServiceDetail service={services[1]!} locale={locale} />);
-    expect(screen.getByText(/Augsburg/)).toHaveTextContent(/Innsbruck/);
+    expect(screen.getByText(/Augsburg/)).toHaveTextContent(locale === 'de' ? /Deutschland/ : /Germany/);
     expect(screen.getByText(/Augsburg/)).toHaveTextContent(/remote/);
   });
 });

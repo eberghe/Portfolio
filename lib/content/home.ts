@@ -5,20 +5,20 @@ export const homeContent = {
   de: {
     metaTitle: 'Erik Bergheimer: UX/UI-Design & Webflow aus Augsburg',
     metaDescription:
-      'Freelancer in Augsburg & Innsbruck: UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung, vor Ort oder remote. Kostenloses Erstgespräch.',
+      'Freelancer in Augsburg: UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung, vor Ort oder remote. Kostenloses Erstgespräch.',
     available: 'Verfügbar für Projekte',
     greeting: 'Hi, ich bin ',
     role: 'UX/UI Designer & Webflow Expert',
     intro:
-      'Freiberuflicher UX/UI-Designer und Webflow-Entwickler aus Augsburg & Innsbruck, für Kunden in Deutschland, Österreich und remote. Ich gestalte digitale Erlebnisse, die sinnvoll sind, gut aussehen und sich menschlich anfühlen.',
+      'Freiberuflicher UX/UI-Designer und Webflow-Entwickler aus Augsburg, für Kunden in Deutschland und remote. Ich gestalte digitale Erlebnisse, die sinnvoll sind, gut aussehen und sich menschlich anfühlen.',
     contact: 'Kostenloses Erstgespräch',
     viewProjects: 'Projekte ansehen',
     heroAlt: 'Erik Bergheimer, UX/UI Designer und Webflow-Experte, im Porträt',
     stats: [
       { value: '6+', label: 'Jahre UX Erfahrung' },
       { value: '5', label: 'Projekte im Portfolio' },
-      { value: 'DE · AT', label: 'Vor Ort & remote' },
-      { value: 'Augsburg & Innsbruck', label: 'Aktueller Standort', small: true },
+      { value: 'Deutschland', label: 'Vor Ort & remote' },
+      { value: 'Augsburg', label: 'Aktueller Standort', small: true },
     ],
     offer: 'Was ich anbiete',
     process: 'So arbeiten wir zusammen',
@@ -37,20 +37,20 @@ export const homeContent = {
   en: {
     metaTitle: 'Erik Bergheimer: UX/UI design & Webflow, Augsburg',
     metaDescription:
-      'Freelancer in Augsburg & Innsbruck: UX/UI design, Webflow websites, accessibility and AI consulting, on site or remote. Book a free intro call.',
+      'Freelancer in Augsburg: UX/UI design, Webflow websites, accessibility and AI consulting, on site or remote. Book a free intro call.',
     available: 'Available for projects',
     greeting: "Hi, I'm ",
     role: 'UX/UI Designer & Webflow Expert',
     intro:
-      'Freelance UX/UI designer and Webflow developer based in Augsburg & Innsbruck, working with clients in Germany, Austria and remotely. I create digital experiences that are meaningful, look great, and feel human.',
+      'Freelance UX/UI designer and Webflow developer based in Augsburg, working with clients in Germany and remotely. I create digital experiences that are meaningful, look great, and feel human.',
     contact: 'Free intro call',
     viewProjects: 'View projects',
     heroAlt: 'Portrait of Erik Bergheimer, UX/UI designer and Webflow expert',
     stats: [
       { value: '6+', label: 'Years UX experience' },
       { value: '5', label: 'Projects in portfolio' },
-      { value: 'DE · AT', label: 'On site & remote' },
-      { value: 'Augsburg & Innsbruck', label: 'Current location', small: true },
+      { value: 'Germany', label: 'On site & remote' },
+      { value: 'Augsburg', label: 'Current location', small: true },
     ],
     offer: 'What I offer',
     process: 'How we work together',

@@ -28,7 +28,7 @@ export function person(locale: Locale) {
     knowsLanguage: ['de', 'en'],
     workLocation: [
       { '@type': 'Place', name: 'Augsburg' },
-      { '@type': 'Place', name: 'Innsbruck' },
+      { '@type': 'Country', name: 'Deutschland' },
     ],
     sameAs: ['https://www.linkedin.com/in/erik-bergheimer/', 'https://www.instagram.com/erik.bergheimer/'],
   } as const;

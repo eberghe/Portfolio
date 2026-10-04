@@ -21,7 +21,7 @@ const INSTAGRAM = 'https://www.instagram.com/erik.bergheimer/';
 const LINKEDIN = 'https://www.linkedin.com/in/erik-bergheimer/';
 
 // Footer-Texte mindestens white/60 (7,2:1 auf #0b1219), siehe functions/seiten/navigation-und-footer.md
-/** „made with 🤍 in innsbruck“: Herz für Screenreader als „love“ */
+/** „made with 🤍 in augsburg“: Herz für Screenreader als „love“ */
 function MadeWith({ text }: { text: string }) {
   const [before, after] = text.split('🤍');
   return (

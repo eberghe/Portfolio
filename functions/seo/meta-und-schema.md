@@ -10,19 +10,19 @@ Jede Seite liefert Suchmaschinen und KI-Suchsystemen (ChatGPT, Perplexity, Googl
 
 - Ein gemeinsamer Helfer `pageMetadata()` (`lib/seo.ts`) erzeugt für jede Seite Title, Description, Canonical, `hreflang`-Alternativen (de, en, x-default → de), Open Graph und Twitter Card. Seiten rufen nur diesen Helfer auf.
 - Vorschaubild (`og:image`): Projekte ihr Titelbild, sonst das Porträt von der Startseite.
-- Startseite: JSON-LD `Person` und `ProfessionalService` (Augsburg, Innsbruck, DE/AT).
+- Startseite: JSON-LD `Person` und `ProfessionalService` (Augsburg, Deutschland).
 - `llms.txt` wird aus denselben Inhalten erzeugt wie die Seiten (Leistungen, Projekte), damit nichts veraltet.
 
 ## Akzeptanzkriterien
 
 - AK-1: Jede Seite hat eindeutigen Title (≤ 70 Zeichen), Description (≤ 160), absolutes Canonical auf sich selbst, `hreflang` de/en/x-default, `og:title`, `og:description`, `og:url`, `og:image`, `og:locale` (de_DE/en_US) und `twitter:card`.
-- AK-2: Startseite: JSON-LD `Person` und `ProfessionalService` mit `areaServed` (Augsburg, Innsbruck, Deutschland, Österreich).
+- AK-2: Startseite: JSON-LD `Person` und `ProfessionalService` mit `areaServed` (Augsburg, Deutschland).
 - AK-3: Breadcrumbs mit `BreadcrumbList` auf Detailseiten (umgesetzt in `seiten/leistungen.md`, `seiten/projekte.md`).
 - AK-4: Inhalt ist ohne JavaScript vollständig im HTML.
 - AK-6: Eine Form je URL: die Startseite heißt überall `https://erik-bergheimer.de` (ohne Schrägstrich), in Canonical, hreflang, Sitemap und JSON-LD.
-- AK-7: Person-JSON-LD hat `@id` (`/#person`), `email`, `alumniOf` (TH Ingolstadt), `knowsLanguage` (de, en), `workLocation` (Augsburg, Innsbruck); `Service.provider` und `CreativeWork.author` verweisen auf dieselbe `@id`. `ProfessionalService` hat `email`.
+- AK-7: Person-JSON-LD hat `@id` (`/#person`), `email`, `alumniOf` (TH Ingolstadt), `knowsLanguage` (de, en), `workLocation` (Augsburg, Deutschland); `Service.provider` und `CreativeWork.author` verweisen auf dieselbe `@id`. `ProfessionalService` hat `email`.
 - AK-8: `og:image` im Format 1200 × 630, höchstens 300 KB; Projekte `og:type=article`; englische Seiten `og:locale=en_GB` (britische Schreibweise).
-- AK-9: Title der Startseite höchstens 60 Zeichen; Description 120 bis 160 Zeichen mit Ort und „kostenloses Erstgespräch". Beschreibungen der Leistungsseiten nennen Augsburg und Innsbruck.
+- AK-9: Title der Startseite höchstens 60 Zeichen; Description 120 bis 160 Zeichen mit Ort und „kostenloses Erstgespräch". Beschreibungen der Leistungsseiten nennen Augsburg.
 - AK-5: `/llms.txt` mit Kurzprofil und absoluten Links zu allen Leistungen und Projekten (DE und EN), erzeugt aus den Inhaltsdaten; nennt Kontakt (E-Mail, Erstgespräch), Arbeitsweise (vor Ort DE/AT oder remote), Sprachen und BFSG.
 
 ## Sprachen

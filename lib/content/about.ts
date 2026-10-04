@@ -34,13 +34,13 @@ export const aboutContent = {
   de: {
     metaTitle: 'Über mich: Erik Bergheimer, UX/UI-Designer | Erik Bergheimer',
     metaDescription:
-      'Erik Bergheimer: UX/UI-Designer und Webflow-Entwickler aus Augsburg & Innsbruck. B.Sc. User Experience Design (TH Ingolstadt), M.A. am MCI Innsbruck.',
-    badge: 'Augsburg & Innsbruck',
+      'Erik Bergheimer: UX/UI-Designer und Webflow-Entwickler aus Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. am MCI Innsbruck.',
+    badge: 'Augsburg',
     title: 'Erik Bergheimer: UX/UI-Designer & Webflow-Entwickler',
-    subtitle: 'Portfolio · Augsburg & Innsbruck',
+    subtitle: 'Portfolio · Augsburg',
     facts: 'Master Management, Communication & IT am MCI Innsbruck',
     intro:
-      'Ich bin Erik und arbeite als Freelancer für UX/UI-Design, Webflow, Barrierefreiheit und KI-Beratung, vor Ort in Augsburg und Innsbruck oder remote. Meinen Bachelor in User Experience Design habe ich an der TH Ingolstadt gemacht. Seitdem habe ich in verschiedenen Unternehmen und Ländern gearbeitet, von Augsburg über Bali bis Innsbruck. Aktuell studiere ich Management, Communication & IT (M.A.) am MCI und arbeite nebenbei als Werkstudent im Business Development bei HERO Software.',
+      'Ich bin Erik und arbeite als Freelancer für UX/UI-Design, Webflow, Barrierefreiheit und KI-Beratung, vor Ort in Augsburg oder remote. Meinen Bachelor in User Experience Design habe ich an der TH Ingolstadt gemacht. Seitdem habe ich in verschiedenen Unternehmen und Ländern gearbeitet, von Augsburg über Bali bis Innsbruck. Aktuell studiere ich Management, Communication & IT (M.A.) am MCI und arbeite nebenbei als Werkstudent im Business Development bei HERO Software.',
     photoAlt: 'Erik Bergheimer mit Sonnenbrille und schwarzem Hemd, lächelnd',
     tools: 'Tools, mit denen ich arbeite',
     pause: 'Animation anhalten',
@@ -51,13 +51,13 @@ export const aboutContent = {
   en: {
     metaTitle: 'About Erik Bergheimer, UX/UI designer | Erik Bergheimer',
     metaDescription:
-      'Erik Bergheimer: UX/UI designer and Webflow developer from Augsburg & Innsbruck. B.Sc. User Experience Design (TH Ingolstadt), M.A. at MCI Innsbruck.',
-    badge: 'Augsburg & Innsbruck',
+      'Erik Bergheimer: UX/UI designer and Webflow developer from Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. at MCI Innsbruck.',
+    badge: 'Augsburg',
     title: 'Erik Bergheimer: UX/UI Designer & Webflow Developer',
-    subtitle: 'Portfolio · Augsburg & Innsbruck',
+    subtitle: 'Portfolio · Augsburg',
     facts: "Master's in Management, Communication & IT at MCI Innsbruck",
     intro:
-      "I'm Erik, a freelance UX/UI designer and Webflow developer who also advises on accessibility and AI, on site in Augsburg and Innsbruck or remote. I completed my Bachelor's degree in User Experience Design at Technische Hochschule Ingolstadt (THI). I have gained work experience in different areas, companies and countries. I am currently working as a working student in Business Development at HERO Software and study Management, Communication and IT (M.A.) at MCI in Innsbruck.",
+      "I'm Erik, a freelance UX/UI designer and Webflow developer who also advises on accessibility and AI, on site in Augsburg or remote. I completed my Bachelor's degree in User Experience Design at Technische Hochschule Ingolstadt (THI). I have gained work experience in different areas, companies and countries. I am currently working as a working student in Business Development at HERO Software and study Management, Communication and IT (M.A.) at MCI in Innsbruck.",
     photoAlt: 'Erik Bergheimer wearing sunglasses and a black shirt, smiling',
     tools: 'Tools I work with',
     pause: 'Pause animation',

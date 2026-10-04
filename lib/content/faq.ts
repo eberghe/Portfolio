@@ -22,11 +22,11 @@ export const faqs: Faq[] = [
     id: 'remote',
     de: {
       q: 'Arbeitest du auch remote?',
-      a: 'Klar, ich bin komplett remote-fähig, das hat sogar von Bali aus super funktioniert. Termine vor Ort sind in und um Augsburg und Innsbruck genauso möglich.',
+      a: 'Klar, ich bin komplett remote-fähig, das hat sogar von Bali aus super funktioniert. Termine vor Ort sind in und um Augsburg genauso möglich.',
     },
     en: {
       q: 'Do you work remotely?',
-      a: 'Yes, I am fully remote-capable; it even worked well from Bali. On-site meetings in and around Augsburg and Innsbruck are just as possible.',
+      a: 'Yes, I am fully remote-capable; it even worked well from Bali. On-site meetings in and around Augsburg are just as possible.',
     },
   },
   {

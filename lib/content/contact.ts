@@ -14,7 +14,7 @@ export type ErrorCode = 'required' | 'tooShort' | 'tooLong' | 'invalid';
 const de = {
   metaTitle: 'Kontakt & Projektanfrage | Erik Bergheimer',
   metaDescription:
-    'Projekt in vier kurzen Schritten anfragen oder direkt schreiben. Antwort per E-Mail, meist mit Termin fürs kostenlose Erstgespräch. Augsburg & Innsbruck.',
+    'Projekt in vier kurzen Schritten anfragen oder direkt schreiben. Antwort per E-Mail, meist mit Termin fürs kostenlose Erstgespräch. Aus Augsburg.',
   eyebrow: 'Lass uns reden',
   title: 'Projekt? Idee? Oder einfach Hallo sagen?',
   intro:
@@ -22,7 +22,7 @@ const de = {
   direct: 'Direktkontakt',
   email: 'E-Mail',
   location: 'Standort',
-  locationValue: 'Augsburg & Innsbruck',
+  locationValue: 'Augsburg',
   newTab: '(öffnet in neuem Tab)',
   directNote: 'Lieber direkt? Schreib mir eine E-Mail oder eine Nachricht auf LinkedIn.',
 
@@ -118,7 +118,7 @@ export type ContactText = typeof de;
 const en: ContactText = {
   metaTitle: 'Contact & project enquiry | Erik Bergheimer',
   metaDescription:
-    'Send a project enquiry in four short steps or write directly. Reply by email, usually with a date for a free intro call. Augsburg & Innsbruck.',
+    'Send a project enquiry in four short steps or write directly. Reply by email, usually with a date for a free intro call. Based in Augsburg.',
   eyebrow: "Let's talk",
   title: 'Project? Idea? Just say hi.',
   intro:
@@ -126,7 +126,7 @@ const en: ContactText = {
   direct: 'Direct contact',
   email: 'Email',
   location: 'Location',
-  locationValue: 'Augsburg & Innsbruck',
+  locationValue: 'Augsburg',
   newTab: '(opens in a new tab)',
   directNote: 'Prefer to write directly? Send me an email or a message on LinkedIn.',
 

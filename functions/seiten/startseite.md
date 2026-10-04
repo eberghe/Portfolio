@@ -59,8 +59,8 @@ Von Erik am 2026-10-04 entschieden und umgesetzt (AK-17):
 
 - h1 mit vollem Namen „Hi, ich bin Erik Bergheimer".
 - Hauptbutton „Kostenloses Erstgespräch" / „Free intro call".
-- Hero-Text nennt „freiberuflich" und Einsatzgebiet (Augsburg & Innsbruck, Kunden in DE, AT und remote).
-- Faktenleiste: „3 Länder & Remote" ersetzt durch „DE · AT – Vor Ort & remote".
+- Hero-Text nennt „freiberuflich" und Einsatzgebiet (Augsburg, Kunden in Deutschland und remote; siehe `standort.md`).
+- Faktenleiste: „3 Länder & Remote" ersetzt durch „Deutschland – Vor Ort & remote".
 - Barrierefreiheit: „Umsetzung der BFSG-Anforderungen" statt „Beratung zum BFSG".
 
 Noch offen:

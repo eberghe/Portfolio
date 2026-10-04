@@ -64,7 +64,7 @@ describe('meta-und-schema AK-2: Startseite JSON-LD', () => {
     const graph = homeJsonLd('de')['@graph'];
     expect(graph.map((n) => n['@type'])).toEqual(['Person', 'ProfessionalService']);
     const names = JSON.stringify(graph[1]);
-    for (const n of ['Augsburg', 'Innsbruck', 'Deutschland', 'Österreich']) expect(names).toContain(n);
+    for (const n of ['Augsburg', 'Deutschland']) expect(names).toContain(n);
   });
 });
 
@@ -128,7 +128,7 @@ describe('meta-und-schema AK-7: verknüpfte Entitäten', () => {
     expect(p.email).toMatch(/@/);
     expect(JSON.stringify(p.alumniOf)).toContain('Ingolstadt');
     expect(p.knowsLanguage).toEqual(['de', 'en']);
-    expect(JSON.stringify(p.workLocation)).toContain('Innsbruck');
+    expect(JSON.stringify(p.workLocation)).toContain('Augsburg');
     expect((homeJsonLd('de')['@graph'][1] as Record<string, unknown>).email).toMatch(/@/);
   });
 
@@ -168,7 +168,6 @@ describe('meta-und-schema AK-9: Startseite und Leistungen', () => {
     (slug, l) => {
       const d = serviceMetadata(slug, l).description!;
       expect(d).toMatch(/Augsburg/);
-      expect(d).toMatch(/Innsbruck/);
       expect(d.length).toBeLessThanOrEqual(160);
     },
   );

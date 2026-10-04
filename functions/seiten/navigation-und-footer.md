@@ -68,4 +68,4 @@ Offen, bewusst später:
 - Gleicher Seitentitel DE/EN → mit SEO-Funktion entscheiden
 
 ## Nachtrag
-- Das Herz im Footer-Satz „made with 🤍 in innsbruck" ist für Screenreader ausgeblendet und wird als „love" vorgelesen (der Satz ist als Englisch ausgezeichnet).
+- Das Herz im Footer-Satz „made with 🤍 in augsburg" ist für Screenreader ausgeblendet und wird als „love" vorgelesen (der Satz ist als Englisch ausgezeichnet).

@@ -16,7 +16,7 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 ## Verhalten
 
 - `/about` (EN `/en/about`).
-- Hero wie im Bestand; Badge je Sprache („Augsburg & Innsbruck"); Alter wird aus dem Geburtsjahr nicht berechnet, sondern weggelassen (Erik bestätigt). Chips mit den aktuellen Leistungen.
+- Hero wie im Bestand; Badge „Augsburg" (siehe `standort.md`); Alter wird aus dem Geburtsjahr nicht berechnet, sondern weggelassen (Erik bestätigt). Chips mit den aktuellen Leistungen.
 - Tools: Liste der Werkzeuge (einmal im Accessibility-Tree, keine Links). Das Laufband ist Dekoration (`aria-hidden`), läuft nur bei `prefers-reduced-motion: no-preference` und hat einen Pause-Knopf (`aria-pressed`).
 - Zeitleiste als geordnete Liste (`ol`), Datum als `<time>`, Bilder mit beschreibendem Alt-Text oder dekorativ, wenn sie nur die Überschrift wiederholen. Die Füll-Linie beim Scrollen entfällt; Linie und Punkte bleiben statisch (Design).
 - JSON-LD `ProfilePage` mit `mainEntity` = Person (gleiche `@id` wie überall).

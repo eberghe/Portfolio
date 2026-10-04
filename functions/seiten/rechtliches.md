@@ -46,4 +46,4 @@ Keine.
 
 ## Befunde Blinder Kritiker (Runde 1)
 
-Erledigt: vollständige Anschrift und zuständige Aufsichtsbehörde (BayLDA), siehe `standort.md`. Offen, Entscheidung bei Erik: ggf. USt-ID, Speicherdauer der Logfiles. Erledigt: englische Pfade `/en/imprint` und `/en/privacy` (AK-8).
+Erledigt: vollständige Anschrift und zuständige Aufsichtsbehörde (BayLDA), siehe `standort.md`. Offen, Entscheidung bei Erik: ggf. USt-ID, Speicherdauer der Logfiles. Erledigt: englische Pfade `/en/imprint` und `/en/privacy` (AK-8). Blinder Kritiker dazu: ohne Befund außer einer zweistufigen Weiterleitung bei `/en/impressum/` (Slash am Ende, Next entfernt ihn zuerst); bewusst so gelassen, da kosmetisch.

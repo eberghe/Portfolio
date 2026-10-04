@@ -49,4 +49,7 @@ Grün als Text im Dunkelmodus nutzt `--primary-text`; im hellen Modus ist `--pri
 - AK-2: Komponenten verwenden ausschließlich Tokens, keine freien Farbwerte.
 - AK-3: Hell- und Dunkelmodus funktionieren, Wahl bleibt gespeichert, `prefers-color-scheme` wird beim ersten Besuch berücksichtigt.
 - AK-4: Alle Text-Token-Kombinationen erfüllen 4,5:1 (automatischer Test über alle Text/Hintergrund-Paare, hell und dunkel).
+- AK-6 (Erik, 2026-10-04): Schrift ist **Mona Sans** (variable, Gewicht 200 bis 900) statt Inter, selbst gehostet über `@fontsource-variable/mona-sans`, Fallback `system-ui`. Keine Anfrage an fremde Server.
+- AK-7 (Erik, 2026-10-04): Alle Überschriften (`h1` bis `h4`) sind fett (`font-weight: 700`). Ausnahme: die Rollen-Zeile in der Startseiten-h1 („UX/UI Designer & Webflow Expert“) bleibt normal, weil sie optisch eine Unterzeile ist.
+- AK-8: Datenschutzerklärung nennt die tatsächlich genutzte Schrift (Mona Sans).
 - AK-5: Auch im Hover-Zustand erreicht Button-Text 4,5:1. Der Bestand hellt grüne Buttons per `opacity-90` auf (weiß auf Grün nur 4,35:1); stattdessen dunkelt `--primary-hover` leicht ab. Fehlermeldungen nutzen `--error-text` (4,5:1 auf allen Hintergründen).

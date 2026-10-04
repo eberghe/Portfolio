@@ -29,7 +29,7 @@ test.describe('Grundgerüst', () => {
     expect(overflow).toBeLessThanOrEqual(0);
   });
 
-  test('AK-5: Schrift Inter wird selbst gehostet', async ({ page }) => {
+  test('AK-5: Schrift Mona Sans wird selbst gehostet', async ({ page }) => {
     const external: string[] = [];
     page.on('request', (r) => {
       if (!r.url().startsWith('http://localhost')) external.push(r.url());
@@ -39,6 +39,29 @@ test.describe('Grundgerüst', () => {
     await page.evaluate(() => document.fonts.ready);
     expect(external).toEqual([]);
     const font = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
-    expect(font).toMatch(/Inter/);
+    expect(font).toMatch(/Mona Sans/);
+    expect(font).not.toMatch(/Inter/);
   });
 });
+
+// functions/infrastruktur/design-tokens.md AK-7
+for (const path of [
+  '/',
+  '/en',
+  '/services',
+  '/services/accessibility',
+  '/projects',
+  '/about',
+  '/faqs',
+  '/contact',
+  '/impressum',
+]) {
+  test(`design-tokens AK-7: Überschriften fett auf ${path}`, async ({ page }) => {
+    await page.goto(path);
+    const weights = await page.$$eval('h1, h2, h3, h4', (els) =>
+      els.map((el) => ({ text: el.textContent?.slice(0, 40), weight: getComputedStyle(el).fontWeight })),
+    );
+    expect(weights.length).toBeGreaterThan(0);
+    for (const w of weights) expect(w, w.text).toMatchObject({ weight: '700' });
+  });
+}

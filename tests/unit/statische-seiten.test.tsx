@@ -101,3 +101,11 @@ describe('faq AK-7: Frage zum Standort (Issue #3)', () => {
     expect(faqJsonLd(locale).mainEntity[1]!.name).toBe(f[locale].q);
   });
 });
+
+describe('design-tokens AK-8: Datenschutz nennt die Schrift', () => {
+  it.each(locales)('%s', (locale) => {
+    render(<LegalPage kind="datenschutz" locale={locale} />);
+    expect(document.body.textContent).toContain('Mona Sans');
+    expect(document.body.textContent).not.toMatch(/\bInter\b/);
+  });
+});

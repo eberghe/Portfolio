@@ -27,7 +27,7 @@ export default function Home({ locale }: { locale: Locale }) {
             />
             {t.available}
           </p>
-          <h1 className="text-5xl md:text-[56px] font-light leading-[1.08] tracking-[-2px] text-foreground mb-6">
+          <h1 className="text-5xl md:text-[56px] font-bold leading-[1.08] tracking-[-2px] text-foreground mb-6">
             {t.greeting}
             <span className="text-primary-text">Erik Bergheimer</span>
             {/* Komma nur für Screenreader; sr-only erzeugt im Accessibility-Tree ein Leerzeichen davor (AK-18) */}
@@ -83,7 +83,7 @@ export default function Home({ locale }: { locale: Locale }) {
       </dl>
 
       <section aria-labelledby="angebot" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pb-16">
-        <h2 id="angebot" className="text-[11px] font-medium tracking-widest text-text3 uppercase mt-16 mb-6">
+        <h2 id="angebot" className="text-[11px] font-bold tracking-widest text-text3 uppercase mt-16 mb-6">
           {t.offer}
         </h2>
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -125,7 +125,7 @@ export default function Home({ locale }: { locale: Locale }) {
                   </span>
                   <h3
                     id={`leistung-${s.slug}`}
-                    className={`text-base font-medium mb-2 ${accent ? '' : 'text-foreground'}`}
+                    className={`text-base font-bold mb-2 ${accent ? '' : 'text-foreground'}`}
                   >
                     {text.title}
                   </h3>
@@ -143,7 +143,7 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="ablauf" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pb-16">
-        <h2 id="ablauf" className="text-[11px] font-medium tracking-widest text-text3 uppercase mb-6">
+        <h2 id="ablauf" className="text-[11px] font-bold tracking-widest text-text3 uppercase mb-6">
           {t.process}
         </h2>
         <ol className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
@@ -152,7 +152,7 @@ export default function Home({ locale }: { locale: Locale }) {
               <span aria-hidden="true" className="block text-[36px] font-light leading-none text-primary-text mb-4">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <h3 className="text-base font-medium text-foreground mb-2">{step.title}</h3>
+              <h3 className="text-base font-bold text-foreground mb-2">{step.title}</h3>
               <p className="text-[13px] leading-relaxed text-text2">{step.text}</p>
             </li>
           ))}
@@ -161,7 +161,7 @@ export default function Home({ locale }: { locale: Locale }) {
 
       <section aria-labelledby="projekte" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pb-20">
         <div className="flex items-center justify-between gap-4 mb-5 mt-4">
-          <h2 id="projekte" className="text-[11px] font-medium tracking-widest text-text3 uppercase">
+          <h2 id="projekte" className="text-[11px] font-bold tracking-widest text-text3 uppercase">
             {t.projects}
           </h2>
           <Link href={href('/projects')} className="py-1 text-xs text-primary-text hover:underline">
@@ -195,7 +195,7 @@ export default function Home({ locale }: { locale: Locale }) {
                     >
                       {text.type}
                     </span>
-                    <h3 id={`projekt-${p.id}`} className="text-[15px] font-medium text-foreground mb-1.5">
+                    <h3 id={`projekt-${p.id}`} className="text-[15px] font-bold text-foreground mb-1.5">
                       {text.title}
                     </h3>
                     <span id={`projekt-${p.id}-text`} className="text-xs text-text2 leading-relaxed">

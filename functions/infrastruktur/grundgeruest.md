@@ -9,7 +9,7 @@ Technische Basis für alle weiteren Funktionen: Next.js (App Router) + TypeScrip
 ## Verhalten
 
 - Root-Layout mit `lang="de"`, Skip-Link „Zum Inhalt springen", `main#inhalt`.
-- Schrift Inter selbst gehostet über `@fontsource` (keine Anfragen an Google, DSGVO).
+- Schrift selbst gehostet über `@fontsource` (seit 2026-10-04 Mona Sans, siehe `design-tokens.md` AK-6) (keine Anfragen an Google, DSGVO).
 - Tailwind 3.4, damit die Klassen aus dem Lovable-Code 1:1 funktionieren.
 - Playwright testet in 360, 768 und 1280 px.
 
@@ -19,7 +19,7 @@ Technische Basis für alle weiteren Funktionen: Next.js (App Router) + TypeScrip
 - AK-2: Genau eine h1; erster Tab-Stopp ist der Skip-Link zu `main#inhalt`.
 - AK-3: axe (WCAG 2.2 AA): 0 Verstöße.
 - AK-4: Keine horizontale Scrollbar in allen Viewports.
-- AK-5: Keine Anfragen an fremde Server; Body-Schrift ist Inter.
+- AK-5: Keine Anfragen an fremde Server; Body-Schrift ist Mona Sans.
 
 ## Tests
 

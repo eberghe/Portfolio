@@ -34,7 +34,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
     <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
       <JsonLd data={projectsItemListJsonLd(locale, projects)} />
       <div className="py-16 border-b border-border mb-10">
-        <h1 className="text-[32px] font-medium tracking-tight mb-3">{t.title}</h1>
+        <h1 className="text-[32px] font-bold tracking-tight mb-3">{t.title}</h1>
         <p className="text-[15px] text-text2 max-w-[500px]">{t.intro}</p>
       </div>
       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-20">
@@ -69,7 +69,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
                   >
                     {data.type}
                   </span>
-                  <h2 id={`projekt-${p.slug}`} className="text-[15px] font-medium text-foreground mb-1.5">
+                  <h2 id={`projekt-${p.slug}`} className="text-[15px] font-bold text-foreground mb-1.5">
                     {data.title}
                   </h2>
                   <span id={`projekt-${p.slug}-text`} className="text-xs text-text2 leading-relaxed">
@@ -93,7 +93,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
               <span className="text-[10px] font-medium tracking-wider uppercase text-text2 mb-1.5">
                 {c.type[locale]}
               </span>
-              <h2 className="text-[15px] font-medium text-foreground mb-1.5">{c[locale].title}</h2>
+              <h2 className="text-[15px] font-bold text-foreground mb-1.5">{c[locale].title}</h2>
               <span className="text-xs text-text2 leading-relaxed">{c[locale].tagline}</span>
               <span className="sr-only">{t.soon}</span>
             </span>

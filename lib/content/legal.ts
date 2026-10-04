@@ -113,7 +113,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
         {
           title: 'Schriften',
           paragraphs: [
-            'Die Schrift Inter wird von diesem Server ausgeliefert. Es besteht keine Verbindung zu Google Fonts oder anderen Schriftdiensten.',
+            'Die Schrift Mona Sans wird von diesem Server ausgeliefert. Es besteht keine Verbindung zu Google Fonts oder anderen Schriftdiensten.',
           ],
         },
         {
@@ -177,7 +177,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
         {
           title: 'Fonts',
           paragraphs: [
-            'The Inter typeface is served from this server. There is no connection to Google Fonts or other font services.',
+            'The Mona Sans typeface is served from this server. There is no connection to Google Fonts or other font services.',
           ],
         },
         {

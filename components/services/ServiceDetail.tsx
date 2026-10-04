@@ -63,7 +63,7 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-12 border-b border-border">
         <div className="motion-safe:animate-fade-in">
           <p className="text-[10px] font-medium tracking-wider uppercase text-text3 mb-3">{content.label}</p>
-          <h1 className="text-[32px] font-medium tracking-tight mb-4">{content.title}</h1>
+          <h1 className="text-[32px] font-bold tracking-tight mb-4">{content.title}</h1>
           <p className="text-[15px] text-text2 leading-relaxed mb-4">{content.description}</p>
           <p className="text-[13px] text-text2 leading-relaxed mb-8">{t.place}</p>
           <ul aria-label={overviewText[locale].keywords} className="flex flex-wrap gap-2">
@@ -86,7 +86,7 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
             >
               <Icon size={22} className="text-primary-text" />
             </span>
-            <h2 id="enthalten" className="text-sm font-medium text-foreground mb-5">
+            <h2 id="enthalten" className="text-sm font-bold text-foreground mb-5">
               {t.included}
             </h2>
             <ul className="space-y-3.5">
@@ -102,7 +102,7 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
       </div>
 
       <section aria-labelledby="passend" className="py-12 border-b border-border">
-        <h2 id="passend" className="text-sm font-medium text-foreground mb-5">
+        <h2 id="passend" className="text-sm font-bold text-foreground mb-5">
           {t.related}
         </h2>
         <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -121,7 +121,7 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
       </section>
 
       <section aria-labelledby="interesse" className="py-16 text-center">
-        <h2 id="interesse" className="text-xl font-medium mb-3">
+        <h2 id="interesse" className="text-xl font-bold mb-3">
           {t.interested(content.title)}
         </h2>
         <p className="text-[13px] text-text2 mb-6 max-w-[400px] mx-auto">{t.talk}</p>

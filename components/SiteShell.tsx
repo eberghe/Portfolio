@@ -1,9 +1,5 @@
 import type { ReactNode } from 'react';
-import '@fontsource/inter/300.css';
-import '@fontsource/inter/300-italic.css';
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/500.css';
-import '@fontsource/inter/600.css';
+import '@fontsource-variable/mona-sans/wght.css';
 import '@/app/globals.css';
 import { messages, type Locale } from '@/lib/i18n';
 import Footer from './Footer';

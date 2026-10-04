@@ -7,6 +7,16 @@ import { pageMetadata } from '@/lib/seo';
 
 // Gemeinsame Logik der DE- und EN-Routen für Leistungen (functions/seiten/leistungen.md)
 const suffix = { de: 'Leistung', en: 'Service' };
+const place = {
+  de: 'Aus Augsburg & Innsbruck, vor Ort oder remote.',
+  en: 'From Augsburg & Innsbruck, on site or remote.',
+};
+
+// Description mit Ort, höchstens 160 Zeichen (functions/seo/meta-und-schema.md AK-9)
+const withPlace = (short: string, locale: Locale) => {
+  const long = `${short} ${place[locale]}`;
+  return long.length <= 160 ? long : `${short} Augsburg & Innsbruck.`;
+};
 
 export const serviceStaticParams = () => services.map((s) => ({ slug: s.slug }));
 
@@ -22,7 +32,7 @@ export function serviceMetadata(slug: string, locale: Locale): Metadata {
     path: `/services/${slug}`,
     locale,
     title: `${t.title} – ${suffix[locale]} | Erik Bergheimer`,
-    description: t.short,
+    description: withPlace(t.short, locale),
   });
 }
 

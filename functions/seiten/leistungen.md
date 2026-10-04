@@ -45,6 +45,7 @@ Texte der bestehenden Leistungen aus Lovable; neue Leistungen sind Entwürfe, Er
 - AK-12: Übersicht: Meta-Description nennt alle acht Leistungen; JSON-LD `ItemList` mit allen Detailseiten. Kein doppeltes „Kern"-Abzeichen neben „Kernservice".
 - AK-13: Auf Detailseiten ist „Leistungen" in der Navigation markiert (`aria-current="true"`, nicht `page`); JSON-LD `BreadcrumbList` (Start › Leistungen › Leistung).
 - AK-14: JSON-LD `Service` nennt Augsburg und Innsbruck als Orte; `jobTitle` der Person in der Sprache der Seite.
+- AK-16: Detailseite nennt im Text den Einsatzort: Augsburg, Innsbruck, vor Ort in Deutschland und Österreich oder remote.
 - AK-15: Jeder fokussierbare Link und Button zeigt beim Tab sofort einen 2 px Fokusrahmen (keine Übergangsanimation auf `outline`).
 
 ## Später

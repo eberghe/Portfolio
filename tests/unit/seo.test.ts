@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import robots from '@/app/robots';
 import sitemap from '@/app/sitemap';
@@ -6,6 +8,9 @@ import { services } from '@/lib/content/services';
 import { llmsTxt } from '@/lib/llms';
 import { sitePaths } from '@/lib/routes';
 import { homeJsonLd, pageMetadata } from '@/lib/seo';
+import { homeContent } from '@/lib/content/home';
+import { serviceMetadata } from '@/lib/pages/services';
+import { projectJsonLd, serviceJsonLd } from '@/lib/structured-data';
 
 // functions/seo/meta-und-schema.md, functions/seo/sitemap-und-redirects.md
 const base = 'https://erik-bergheimer.de';
@@ -32,12 +37,12 @@ describe('meta-und-schema AK-1: pageMetadata', () => {
       title: 'Accessibility consulting – Service | Erik Bergheimer',
       description: 'WCAG audits.',
       url: `${base}/en/services/accessibility`,
-      locale: 'en_US',
+      locale: 'en_GB',
       alternateLocale: ['de_DE'],
       siteName: 'Erik Bergheimer',
     });
     const images = meta.openGraph?.images;
-    expect(JSON.stringify(images)).toContain('/images/hero-erik.png');
+    expect(JSON.stringify(images)).toContain('/images/og-erik.jpg');
     expect(meta.twitter).toMatchObject({ card: 'summary_large_image' });
   });
 
@@ -45,9 +50,7 @@ describe('meta-und-schema AK-1: pageMetadata', () => {
     expect(pageMetadata({ path: '/', locale: 'en', title: 't', description: 'd' }).alternates?.canonical).toBe(
       `${base}/en`,
     );
-    expect(pageMetadata({ path: '/', locale: 'de', title: 't', description: 'd' }).alternates?.canonical).toBe(
-      `${base}/`,
-    );
+    expect(pageMetadata({ path: '/', locale: 'de', title: 't', description: 'd' }).alternates?.canonical).toBe(base);
   });
 
   it('eigenes Vorschaubild', () => {
@@ -81,7 +84,11 @@ describe('sitemap AK-1', () => {
 
   it('mit hreflang-Alternativen', () => {
     const e = entries.find((x) => x.url === `${base}/projects/cpr`)!;
-    expect(e.alternates?.languages).toEqual({ de: `${base}/projects/cpr`, en: `${base}/en/projects/cpr` });
+    expect(e.alternates?.languages).toEqual({
+      de: `${base}/projects/cpr`,
+      en: `${base}/en/projects/cpr`,
+      'x-default': `${base}/projects/cpr`,
+    });
   });
 });
 
@@ -103,5 +110,83 @@ describe('meta-und-schema AK-5: llms.txt', () => {
     }
     for (const p of projects) expect(txt).toContain(`(${base}/projects/${p.slug})`);
     expect(txt).not.toContain('webflow-framer');
+  });
+});
+
+describe('meta-und-schema AK-6: eine Form je URL', () => {
+  it('Startseite ohne Schrägstrich in Sitemap und JSON-LD', () => {
+    expect(sitemap().map((e) => e.url)).toContain(base);
+    expect(sitemap().map((e) => e.url)).not.toContain(`${base}/`);
+    expect(JSON.stringify(homeJsonLd('de'))).not.toContain(`"${base}/"`);
+  });
+});
+
+describe('meta-und-schema AK-7: verknüpfte Entitäten', () => {
+  it('Person mit @id, E-Mail, Ausbildung, Sprachen, Orten', () => {
+    const p = homeJsonLd('de')['@graph'][0] as Record<string, unknown>;
+    expect(p['@id']).toBe(`${base}/#person`);
+    expect(p.email).toMatch(/@/);
+    expect(JSON.stringify(p.alumniOf)).toContain('Ingolstadt');
+    expect(p.knowsLanguage).toEqual(['de', 'en']);
+    expect(JSON.stringify(p.workLocation)).toContain('Innsbruck');
+    expect((homeJsonLd('de')['@graph'][1] as Record<string, unknown>).email).toMatch(/@/);
+  });
+
+  it('Service und CreativeWork verweisen auf dieselbe Person', () => {
+    expect(serviceJsonLd(services[0]!, 'en').provider['@id']).toBe(`${base}/#person`);
+    expect(projectJsonLd(projects[0]!, 'de').author['@id']).toBe(`${base}/#person`);
+  });
+});
+
+describe('meta-und-schema AK-8: Vorschaubild und Typ', () => {
+  it('og-Bild 1200 × 630, höchstens 300 KB', () => {
+    const buf = readFileSync(resolve(process.cwd(), 'public/images/og-erik.jpg'));
+    expect(buf.length).toBeLessThanOrEqual(300 * 1024);
+    // JPEG SOF0/SOF2: Höhe und Breite nach dem Marker
+    let i = 2;
+    while (i < buf.length && !(buf[i] === 0xff && (buf[i + 1] === 0xc0 || buf[i + 1] === 0xc2))) i++;
+    expect([buf.readUInt16BE(i + 7), buf.readUInt16BE(i + 5)]).toEqual([1200, 630]);
+  });
+
+  it('Projekte sind Artikel', () => {
+    const m = pageMetadata({ path: '/projects/cpr', locale: 'de', title: 't', description: 'd', type: 'article' });
+    expect(m.openGraph).toMatchObject({ type: 'article' });
+  });
+});
+
+describe('meta-und-schema AK-9: Startseite und Leistungen', () => {
+  it.each(['de', 'en'] as const)('Startseite (%s)', (l) => {
+    expect(homeContent[l].metaTitle.length).toBeLessThanOrEqual(60);
+    const d = homeContent[l].metaDescription;
+    expect(d.length).toBeGreaterThanOrEqual(120);
+    expect(d.length).toBeLessThanOrEqual(160);
+    expect(d).toMatch(l === 'de' ? /Erstgespräch/ : /intro call/);
+  });
+
+  it.each(services.flatMap((s) => (['de', 'en'] as const).map((l) => [s.slug, l] as const)))(
+    'Leistung %s (%s) nennt Ort',
+    (slug, l) => {
+      const d = serviceMetadata(slug, l).description!;
+      expect(d).toMatch(/Augsburg/);
+      expect(d).toMatch(/Innsbruck/);
+      expect(d.length).toBeLessThanOrEqual(160);
+    },
+  );
+});
+
+describe('meta-und-schema AK-5: llms.txt nennt Kontakt und Arbeitsweise', () => {
+  it('E-Mail, remote, Sprachen, BFSG', () => {
+    const txt = llmsTxt();
+    expect(txt).toContain('erb1209@outlook.de');
+    expect(txt).toMatch(/remote/);
+    expect(txt).toMatch(/German and English/);
+    expect(txt).toContain('BFSG');
+  });
+});
+
+describe('sitemap AK-1: x-default', () => {
+  it('zeigt auf die deutsche Seite', () => {
+    const e = sitemap().find((x) => x.url === `${base}/en/services`)!;
+    expect(e.alternates?.languages).toMatchObject({ 'x-default': `${base}/services` });
   });
 });

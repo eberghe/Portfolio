@@ -1,7 +1,7 @@
 import type { Project } from '@/lib/content/projects';
 import { services, type Service } from '@/lib/content/services';
-import { localizedPath, messages, type Locale } from '@/lib/i18n';
-import { SITE_URL, person } from '@/lib/site';
+import { messages, type Locale } from '@/lib/i18n';
+import { SITE_URL, absoluteUrl as absolute, person } from '@/lib/site';
 
 const areaServed = {
   de: [
@@ -17,8 +17,6 @@ const areaServed = {
     { '@type': 'Country', name: 'Austria' },
   ],
 };
-
-const absolute = (path: string, locale: Locale) => `${SITE_URL}${localizedPath(path, locale)}`;
 
 /** JSON-LD für eine Leistungsseite (functions/seiten/leistungen.md, AK-3, AK-14) */
 export function serviceJsonLd(service: Service, locale: Locale) {

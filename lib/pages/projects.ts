@@ -23,6 +23,7 @@ export function projectMetadata(slug: string, locale: Locale): Metadata {
     title: t.metaTitle,
     description: t.metaDescription,
     image: project.thumbnail.src,
+    type: 'article',
   });
 }
 

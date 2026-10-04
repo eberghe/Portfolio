@@ -3,9 +3,9 @@ import type { Locale } from '@/lib/i18n';
 // Texte der Startseite, siehe functions/seiten/startseite.md
 export const homeContent = {
   de: {
-    metaTitle: 'Erik Bergheimer — UX/UI Designer & Webflow Expert aus Augsburg & Innsbruck',
+    metaTitle: 'Erik Bergheimer: UX/UI-Design & Webflow aus Augsburg',
     metaDescription:
-      'UX/UI Designer & Webflow Expert aus Augsburg & Innsbruck. Digitale Erlebnisse, die Sinn ergeben, gut aussehen und funktionieren.',
+      'Freelancer in Augsburg & Innsbruck: UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung, vor Ort oder remote. Kostenloses Erstgespräch.',
     available: 'Verfügbar für Projekte',
     greeting: 'Hi, ich bin ',
     role: 'UX/UI Designer & Webflow Expert',
@@ -35,9 +35,9 @@ export const homeContent = {
     viewAll: 'Alle Projekte ansehen',
   },
   en: {
-    metaTitle: 'Erik Bergheimer — UX/UI Designer & Webflow Expert in Augsburg & Innsbruck',
+    metaTitle: 'Erik Bergheimer: UX/UI design & Webflow, Augsburg',
     metaDescription:
-      'UX/UI Designer & Webflow Expert from Augsburg & Innsbruck. Digital experiences that make sense, look great and work.',
+      'Freelancer in Augsburg & Innsbruck: UX/UI design, Webflow websites, accessibility and AI consulting, on site or remote. Book a free intro call.',
     available: 'Available for projects',
     greeting: "Hi, I'm ",
     role: 'UX/UI Designer & Webflow Expert',

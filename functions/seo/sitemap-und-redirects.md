@@ -9,7 +9,7 @@ Status: In Arbeit
 
 ## Akzeptanzkriterien
 
-- AK-1: `sitemap.xml` enthält jede fertige Seite in DE und EN genau einmal, mit `hreflang`-Alternativen; jede URL darin liefert Status 200.
+- AK-1: `sitemap.xml` enthält jede fertige Seite in DE und EN genau einmal, mit `hreflang`-Alternativen (de, en, x-default); jede URL darin liefert Status 200.
 - AK-2: `robots.txt` erlaubt Crawling, sperrt `/projekt-` und verweist auf die Sitemap.
 - AK-3: Alle 19 bisherigen URLs liefern 200 oder 301 auf die neue URL, kein 404 (offen, bis Über mich, Kontakt, FAQ, Impressum, Datenschutz gebaut sind).
 - AK-4: `llms.txt` wird aus den Inhaltsdaten erzeugt (siehe `seo/meta-und-schema.md` AK-5).

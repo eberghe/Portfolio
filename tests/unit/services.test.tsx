@@ -171,3 +171,11 @@ describe('AK-14: Orte und Sprache im JSON-LD', () => {
     expect(data.provider.jobTitle).not.toBe(serviceJsonLd(services[0]!, 'en').provider.jobTitle);
   });
 });
+
+describe('AK-16: Einsatzort im Text', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    render(<ServiceDetail service={services[1]!} locale={locale} />);
+    expect(screen.getByText(/Augsburg/)).toHaveTextContent(/Innsbruck/);
+    expect(screen.getByText(/Augsburg/)).toHaveTextContent(/remote/);
+  });
+});

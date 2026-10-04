@@ -12,6 +12,7 @@ const text = {
     back: 'Alle Leistungen',
     included: 'Das ist enthalten',
     related: 'Passende Leistungen',
+    place: 'Ich arbeite von Augsburg und Innsbruck aus: vor Ort in Deutschland und Österreich oder remote.',
     interested: (title: string) => `Interesse an ${title}?`,
     talk: 'Im kostenlosen Erstgespräch klären wir unverbindlich, was du brauchst und wie ich dir helfen kann.',
     cta: 'Kostenloses Erstgespräch',
@@ -20,6 +21,7 @@ const text = {
     back: 'All services',
     included: "What's included",
     related: 'Related services',
+    place: 'I work from Augsburg and Innsbruck: on site in Germany and Austria, or remote.',
     interested: (title: string) => `Interested in ${title.charAt(0).toLowerCase()}${title.slice(1)}?`,
     talk: 'In a free, no-obligation intro call we work out what you need and how I can help.',
     cta: 'Free intro call',
@@ -50,7 +52,8 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
         <div className="motion-safe:animate-fade-in">
           <p className="text-[10px] font-medium tracking-wider uppercase text-text3 mb-3">{content.label}</p>
           <h1 className="text-[32px] font-medium tracking-tight mb-4">{content.title}</h1>
-          <p className="text-[15px] text-text2 leading-relaxed mb-8">{content.description}</p>
+          <p className="text-[15px] text-text2 leading-relaxed mb-4">{content.description}</p>
+          <p className="text-[13px] text-text2 leading-relaxed mb-8">{t.place}</p>
           <ul aria-label={overviewText[locale].keywords} className="flex flex-wrap gap-2">
             {content.tags.map((tag) => (
               <li

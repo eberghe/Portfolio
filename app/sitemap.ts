@@ -7,7 +7,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return sitePaths().flatMap((path) =>
     (['de', 'en'] as const).map((locale) => ({
       url: absoluteUrl(path, locale),
-      alternates: { languages: { de: absoluteUrl(path, 'de'), en: absoluteUrl(path, 'en') } },
+      alternates: {
+        languages: { de: absoluteUrl(path, 'de'), en: absoluteUrl(path, 'en'), 'x-default': absoluteUrl(path, 'de') },
+      },
     })),
   );
 }

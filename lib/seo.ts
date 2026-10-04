@@ -1,16 +1,14 @@
 import type { Metadata } from 'next';
 import { services } from '@/lib/content/services';
-import { localizedPath, type Locale } from '@/lib/i18n';
-import { SITE_URL, person } from '@/lib/site';
+import type { Locale } from '@/lib/i18n';
+import { EMAIL, SITE_URL, absoluteUrl, person } from '@/lib/site';
+
+export { absoluteUrl };
 
 // Meta-Daten aller Seiten, siehe functions/seo/meta-und-schema.md
-const ogLocale: Record<Locale, string> = { de: 'de_DE', en: 'en_US' };
-const DEFAULT_IMAGE = '/images/hero-erik.png';
-
-export const absoluteUrl = (path: string, locale: Locale) => {
-  const p = localizedPath(path, locale);
-  return `${SITE_URL}${p}`;
-};
+// Englische Texte nutzen britische Schreibweise (optimisation, analyse)
+const ogLocale: Record<Locale, string> = { de: 'de_DE', en: 'en_GB' };
+const DEFAULT_IMAGE = '/images/og-erik.jpg';
 
 interface PageMeta {
   /** Pfad ohne Sprachpräfix, z. B. "/services/accessibility" */
@@ -18,12 +16,21 @@ interface PageMeta {
   locale: Locale;
   title: string;
   description: string;
-  /** Vorschaubild, Standard: Porträt */
+  /** Vorschaubild, Standard: Porträt im Format 1200 × 630 */
   image?: string;
+  /** Open-Graph-Typ, Projekte: article */
+  type?: 'website' | 'article';
 }
 
 /** Title, Description, Canonical, hreflang, Open Graph und Twitter Card (AK-1) */
-export function pageMetadata({ path, locale, title, description, image = DEFAULT_IMAGE }: PageMeta): Metadata {
+export function pageMetadata({
+  path,
+  locale,
+  title,
+  description,
+  image = DEFAULT_IMAGE,
+  type = 'website',
+}: PageMeta): Metadata {
   const url = absoluteUrl(path, locale);
   const other: Locale = locale === 'de' ? 'en' : 'de';
   return {
@@ -40,7 +47,7 @@ export function pageMetadata({ path, locale, title, description, image = DEFAULT
       siteName: 'Erik Bergheimer',
       locale: ogLocale[locale],
       alternateLocale: [ogLocale[other]],
-      type: 'website',
+      type,
       images: [{ url: `${SITE_URL}${image}` }],
     },
     twitter: { card: 'summary_large_image', title, description, images: [`${SITE_URL}${image}`] },
@@ -54,7 +61,7 @@ const areaServed = {
 
 /** Person und ProfessionalService für die Startseite (AK-2) */
 export function homeJsonLd(locale: Locale) {
-  const personNode = { ...person(locale), '@id': `${SITE_URL}/#person` };
+  const personNode = person(locale);
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -65,6 +72,7 @@ export function homeJsonLd(locale: Locale) {
         name: 'Erik Bergheimer',
         url: absoluteUrl('/', locale),
         image: `${SITE_URL}${DEFAULT_IMAGE}`,
+        email: EMAIL,
         founder: { '@id': personNode['@id'] },
         areaServed: areaServed[locale].map((name, i) => ({ '@type': i < 2 ? 'City' : 'Country', name })),
         knowsAbout: services.map((s) => s[locale].title),

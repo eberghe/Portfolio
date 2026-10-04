@@ -11,7 +11,7 @@ export function llmsTxt() {
     '',
     '> Freelance UX/UI designer and Webflow developer based in Augsburg (Germany). Clients in Germany and remote. Accessibility, AI consulting, website & process optimisation, brand design.',
     '',
-    "Erik Bergheimer holds a Bachelor's in User Experience Design (TH Ingolstadt) and studies Management, Communication & IT (M.A.) at MCI Innsbruck. The site is available in German (default) and English (/en).",
+    "Erik Bergheimer holds a Bachelor's in User Experience Design (TH Ingolstadt) and a Master's in Management, Communication & IT (M.A.) from MCI Innsbruck. The site is available in German (default) and English (/en).",
     '',
     '## Working with Erik',
     '',

@@ -54,3 +54,14 @@ test('AK-15: fokussierte Elemente verschwinden nicht unter dem Header', async ({
   const padding = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop));
   expect(padding).toBeGreaterThanOrEqual(64);
 });
+
+test('AK-18: h1-Name ohne Leerzeichen vor dem Komma (Issue #6)', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
+    'Hi, ich bin Erik Bergheimer, UX/UI Designer & Webflow Expert',
+  );
+  await page.goto('/en');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
+    "Hi, I'm Erik Bergheimer, UX/UI Designer & Webflow Expert",
+  );
+});

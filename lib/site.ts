@@ -23,7 +23,10 @@ export function person(locale: Locale) {
     url: SITE_URL,
     email: EMAIL,
     jobTitle: jobTitle[locale],
-    alumniOf: { '@type': 'CollegeOrUniversity', name: 'Technische Hochschule Ingolstadt' },
+    alumniOf: [
+      { '@type': 'CollegeOrUniversity', name: 'Technische Hochschule Ingolstadt' },
+      { '@type': 'CollegeOrUniversity', name: 'MCI Management Center Innsbruck' },
+    ],
     image: `${SITE_URL}/images/about/erik.jpg`,
     knowsLanguage: ['de', 'en'],
     address: {
@@ -36,7 +39,7 @@ export function person(locale: Locale) {
     },
     workLocation: [
       { '@type': 'Place', name: 'Augsburg' },
-      { '@type': 'Country', name: 'Deutschland' },
+      { '@type': 'Country', name: locale === 'de' ? 'Deutschland' : 'Germany' },
     ],
     sameAs: ['https://www.linkedin.com/in/erik-bergheimer/', 'https://www.instagram.com/erik.bergheimer/'],
   } as const;

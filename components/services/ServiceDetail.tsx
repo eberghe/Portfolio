@@ -7,6 +7,18 @@ import { breadcrumbJsonLd, serviceJsonLd } from '@/lib/structured-data';
 import { overviewText } from './ServicesOverview';
 
 // Detailseite einer Leistung, übernommen aus Lovable (ServiceDetailPage.tsx). Siehe functions/seiten/leistungen.md
+
+/** Leistungsname klein im Satz, außer Akronyme (UX/UI, AI) und Marken (AK-17) */
+const brands = ['Webflow'];
+const lowerFirst = (title: string) =>
+  title
+    .split(' ')
+    .map((word) =>
+      (word.length > 1 && word[1] === word[1]!.toUpperCase()) || brands.includes(word)
+        ? word
+        : word.charAt(0).toLowerCase() + word.slice(1),
+    )
+    .join(' ');
 const text = {
   de: {
     back: 'Alle Leistungen',
@@ -22,7 +34,7 @@ const text = {
     included: "What's included",
     related: 'Related services',
     place: 'I work from Augsburg: on site in Germany, or remote.',
-    interested: (title: string) => `Interested in ${title.charAt(0).toLowerCase()}${title.slice(1)}?`,
+    interested: (title: string) => `Interested in ${lowerFirst(title)}?`,
     talk: 'In a free, no-obligation intro call we work out what you need and how I can help.',
     cta: 'Free intro call',
   },

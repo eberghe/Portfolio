@@ -55,6 +55,7 @@ for (const path of [
   '/faqs',
   '/contact',
   '/impressum',
+  '/datenschutz',
 ]) {
   test(`design-tokens AK-7: Überschriften fett auf ${path}`, async ({ page }) => {
     await page.goto(path);
@@ -63,5 +64,14 @@ for (const path of [
     );
     expect(weights.length).toBeGreaterThan(0);
     for (const w of weights) expect(w, w.text).toMatchObject({ weight: '700' });
+  });
+
+  test(`design-tokens AK-9: Überschriften passen in ihre Spalte auf ${path}`, async ({ page }) => {
+    await page.goto(path);
+    await page.evaluate(() => document.fonts.ready);
+    const overflow = await page.$$eval('h1, h2, h3, h4', (els) =>
+      els.filter((el) => el.scrollWidth > el.clientWidth + 1).map((el) => el.textContent?.slice(0, 40)),
+    );
+    expect(overflow).toEqual([]);
   });
 }

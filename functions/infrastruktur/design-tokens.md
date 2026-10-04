@@ -52,4 +52,9 @@ Grün als Text im Dunkelmodus nutzt `--primary-text`; im hellen Modus ist `--pri
 - AK-6 (Erik, 2026-10-04): Schrift ist **Mona Sans** (variable, Gewicht 200 bis 900) statt Inter, selbst gehostet über `@fontsource-variable/mona-sans`, Fallback `system-ui`. Keine Anfrage an fremde Server.
 - AK-7 (Erik, 2026-10-04): Alle Überschriften (`h1` bis `h4`) sind fett (`font-weight: 700`). Ausnahme: die Rollen-Zeile in der Startseiten-h1 („UX/UI Designer & Webflow Expert“) bleibt normal, weil sie optisch eine Unterzeile ist.
 - AK-8: Datenschutzerklärung nennt die tatsächlich genutzte Schrift (Mona Sans).
+- AK-9 (Blinder Kritiker): Keine Überschrift ist breiter als ihre Spalte (360/768/1280). Die Startseiten-h1 ist bei 768 px kleiner (40 px), weil die Hero-Spalte dort schmal ist; die Rechtstexte-h1 („Datenschutzerklärung“) ist auf dem Handy 26 px und trennt per `hyphens: auto`. Die Rollen-Zeile bricht ausgewogen um (`text-wrap: balance`), die Laufweite großer Überschriften ist −0,03 em statt −2 px.
 - AK-5: Auch im Hover-Zustand erreicht Button-Text 4,5:1. Der Bestand hellt grüne Buttons per `opacity-90` auf (weiß auf Grün nur 4,35:1); stattdessen dunkelt `--primary-hover` leicht ab. Fehlermeldungen nutzen `--error-text` (4,5:1 auf allen Hintergründen).
+
+## Befunde Blinder Kritiker (Mona Sans, 2026-10-04)
+
+Bestätigt: Mona Sans wird selbst gehostet geladen, echtes Gewicht 700 (kein künstliches Fett), alle h1–h4 fett, kein horizontales Scrollen. Behoben mit Test (AK-9): Startseiten-h1 ragte bei 768 px aus der Spalte, „Datenschutzerklärung“ bei 360 px; dazu ausgewogener Umbruch der Rollen-Zeile und etwas weitere Laufweite der großen h1.

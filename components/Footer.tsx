@@ -1,0 +1,125 @@
+import { ArrowUp, Mail } from 'lucide-react';
+import Link from 'next/link';
+import { localizedPath, messages, type Locale } from '@/lib/i18n';
+import Instagram from './icons/Instagram';
+import Logo from './Logo';
+
+const NAV_ITEMS = [
+  { path: '/projects', key: 'projects' },
+  { path: '/services', key: 'services' },
+  { path: '/about', key: 'about' },
+  { path: '/contact', key: 'contact' },
+  { path: '/faqs', key: 'faqs' },
+] as const;
+
+const EMAIL = 'erb1209@outlook.de';
+const INSTAGRAM = 'https://www.instagram.com/erik.bergheimer/';
+
+// Footer-Texte mindestens white/60 (7,2:1 auf #0b1219), siehe functions/seiten/navigation-und-footer.md
+export default function Footer({ locale }: { locale: Locale }) {
+  const nav = messages[locale].nav;
+  const t = messages[locale].footer;
+  const href = (path: string) => localizedPath(path, locale);
+  const year = 2026;
+
+  const socials = [
+    { icon: Instagram, label: 'Instagram', href: INSTAGRAM },
+    { icon: Mail, label: t.email, href: `mailto:${EMAIL}` },
+  ];
+
+  return (
+    <footer className="relative py-20 md:py-28 px-8 md:px-12 bg-[#0b1219]">
+      <div className="max-w-[1100px] mx-auto flex flex-col gap-10 md:gap-20">
+        <div className="flex items-center justify-between">
+          <Link
+            href={href('/')}
+            aria-label={`Erik Bergheimer – ${nav.home}`}
+            className="hover:scale-95 transition-transform duration-200 w-fit shrink-0 text-white"
+          >
+            <Logo className="h-3.5 w-auto" />
+          </Link>
+          <nav aria-label={t.label} className="hidden md:block">
+            <ul className="flex items-center gap-8">
+              {NAV_ITEMS.map((item) => (
+                <li key={item.path}>
+                  <Link href={href(item.path)} className="text-[13px] text-white/60 hover:text-white transition-colors">
+                    {nav[item.key]}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <ul className="flex gap-4">
+            {socials.map(({ icon: Icon, label, href: url }) => (
+              <li key={label}>
+                <a
+                  href={url}
+                  aria-label={label}
+                  className="flex items-center justify-center min-w-6 min-h-6 text-white/60 hover:text-white transition-colors"
+                  {...(url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  <Icon size={18} aria-hidden="true" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <ul className="flex flex-col gap-4 md:hidden">
+          {NAV_ITEMS.map((item) => (
+            <li key={item.path}>
+              <Link href={href(item.path)} className="text-base text-white/60 hover:text-white transition-colors">
+                {nav[item.key]}
+              </Link>
+            </li>
+          ))}
+        </ul>
+
+        <div className="border-t border-white/10 pt-8 flex flex-col gap-3">
+          <div className="hidden md:flex items-center w-full">
+            <div className="flex items-center gap-4">
+              <Link href={href('/impressum')} className="text-[12px] text-white/60 hover:text-white transition-colors">
+                {t.imprint}
+              </Link>
+              <Link href={href('/datenschutz')} className="text-[12px] text-white/60 hover:text-white transition-colors">
+                {t.privacy}
+              </Link>
+            </div>
+            <p className="text-[12px] text-white/60 flex-1 text-center">{t.madeWith}</p>
+            <p className="text-[12px] text-white/60">© {year}, Erik Bergheimer</p>
+          </div>
+
+          <div className="flex flex-col gap-3 md:hidden">
+            <div className="flex items-center justify-between w-full">
+              <Link href={href('/impressum')} className="text-[12px] text-white/60 hover:text-white transition-colors">
+                {t.imprint}
+              </Link>
+              <Link href={href('/datenschutz')} className="text-[12px] text-white/60 hover:text-white transition-colors">
+                {t.privacy}
+              </Link>
+              <p className="text-[12px] text-white/60">© {year}, Erik Bergheimer</p>
+            </div>
+            <div className="flex items-center justify-between w-full mt-6">
+              <p className="text-[12px] text-white/60">{t.madeWith}</p>
+              <a
+                href="#inhalt"
+                aria-label={t.backToTop}
+                className="flex items-center justify-center min-w-6 min-h-6 text-white/60 hover:text-white transition-colors"
+              >
+                <ArrowUp size={16} aria-hidden="true" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a
+        href="#inhalt"
+        className="hidden md:flex absolute bottom-8 right-8 md:right-12 items-center gap-2 text-[13px] text-white/60 hover:text-white transition-colors"
+      >
+        <span>{t.backToTop}</span>
+        <ArrowUp size={16} aria-hidden="true" />
+      </a>
+    </footer>
+  );
+}

@@ -1,0 +1,194 @@
+'use client';
+
+import { Moon, Sun } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { alternatePath, localizedPath, messages, type Locale } from '@/lib/i18n';
+import Logo from './Logo';
+
+const NAV_ITEMS = [
+  { path: '/projects', key: 'projects' },
+  { path: '/services', key: 'services' },
+  { path: '/about', key: 'about' },
+  { path: '/faqs', key: 'faqs' },
+] as const;
+
+export default function Navbar({ locale }: { locale: Locale }) {
+  const t = messages[locale].nav;
+  const pathname = usePathname();
+  const otherLocale: Locale = locale === 'de' ? 'en' : 'de';
+  const [dark, setDark] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+  const burgerRef = useRef<HTMLButtonElement>(null);
+
+  // Zustand aus dem Theme-Skript im <head> übernehmen (siehe ThemeScript)
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- einmaliger Abgleich mit dem DOM nach dem Hydrieren
+    setDark(document.documentElement.classList.contains('dark'));
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- Menü bei Seitenwechsel schließen
+    setMobileOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMobileOpen(false);
+        burgerRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [mobileOpen]);
+
+  // Beim Runterscrollen ausblenden, beim Hochscrollen einblenden
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (!mobileOpen) setHidden(y > lastScrollY.current && y > 80);
+      lastScrollY.current = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [mobileOpen]);
+
+  const toggleDark = () => {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle('dark', next);
+    try {
+      localStorage.setItem('theme', next ? 'dark' : 'light');
+    } catch {
+      // Speichern nicht möglich (z. B. privater Modus): Wahl gilt nur für diese Seite
+    }
+  };
+
+  const isActive = (path: string) => pathname === localizedPath(path, locale);
+  const linkClass = (active: boolean) =>
+    active
+      ? 'bg-primary-light dark:bg-white/10 text-primary-text dark:text-white font-medium'
+      : 'text-text2 hover:bg-bg2 hover:text-foreground';
+
+  return (
+    <header
+      className={`sticky top-0 z-[100] bg-background/95 backdrop-blur-md border-b border-border motion-safe:transition-transform motion-safe:duration-300 ${
+        hidden && !mobileOpen ? '-translate-y-full' : 'translate-y-0'
+      }`}
+    >
+      <nav aria-label={t.label} className="flex items-center justify-between px-6 md:px-8 h-16">
+        <Link
+          href={localizedPath('/', locale)}
+          aria-label={`Erik Bergheimer – ${t.home}`}
+          className="shrink-0 text-foreground hover:scale-95 transition-transform duration-200"
+        >
+          <Logo className="h-3.5 w-auto" />
+        </Link>
+
+        <ul className="hidden md:flex gap-1">
+          {NAV_ITEMS.map((item) => {
+            const active = isActive(item.path);
+            return (
+              <li key={item.path}>
+                <Link
+                  href={localizedPath(item.path, locale)}
+                  aria-current={active ? 'page' : undefined}
+                  className={`block px-3.5 py-2 rounded-lg text-[13px] transition-all duration-150 ${linkClass(active)}`}
+                >
+                  {t[item.key]}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="flex items-center gap-2">
+          <a
+            href={alternatePath(pathname, otherLocale)}
+            hrefLang={otherLocale}
+            lang={otherLocale}
+            className="h-9 px-2.5 rounded-lg border border-border flex items-center justify-center text-[13px] text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition-all"
+          >
+            {t.switchLanguage}
+          </a>
+
+          <button
+            type="button"
+            onClick={toggleDark}
+            aria-pressed={dark}
+            aria-label={t.darkMode}
+            className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition-all"
+          >
+            {dark ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
+          </button>
+
+          <Link
+            href={localizedPath('/contact', locale)}
+            aria-current={isActive('/contact') ? 'page' : undefined}
+            className="hidden md:inline-flex bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] font-medium hover:opacity-90 transition-opacity"
+          >
+            {t.contact}
+          </Link>
+
+          <button
+            ref={burgerRef}
+            type="button"
+            onClick={() => setMobileOpen((o) => !o)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            aria-label={t.menu}
+            className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-1"
+          >
+            <span
+              aria-hidden="true"
+              className={`block w-4 h-0.5 bg-foreground transition-all ${mobileOpen ? 'rotate-45 translate-y-[3px]' : ''}`}
+            />
+            <span
+              aria-hidden="true"
+              className={`block w-4 h-0.5 bg-foreground transition-all ${mobileOpen ? '-rotate-45 -translate-y-[3px]' : ''}`}
+            />
+          </button>
+        </div>
+
+        <div
+          id="mobile-menu"
+          hidden={!mobileOpen}
+          className="fixed inset-0 top-16 bg-background px-6 py-8 md:hidden z-[100] overflow-y-auto motion-safe:animate-fade-in"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        >
+          <ul className="flex flex-col gap-2">
+            {NAV_ITEMS.map((item) => {
+              const active = isActive(item.path);
+              return (
+                <li key={item.path}>
+                  <Link
+                    href={localizedPath(item.path, locale)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`block px-4 py-4 rounded-lg text-lg ${linkClass(active)}`}
+                  >
+                    {t[item.key]}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <Link
+            href={localizedPath('/contact', locale)}
+            className="mt-6 block bg-primary text-primary-foreground px-4 py-4 rounded-lg text-lg font-medium text-center hover:opacity-90"
+          >
+            {t.contact}
+          </Link>
+        </div>
+      </nav>
+    </header>
+  );
+}

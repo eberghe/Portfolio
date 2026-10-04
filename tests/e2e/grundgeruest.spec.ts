@@ -36,7 +36,8 @@ test.describe('Grundgerüst', () => {
       if (!r.url().startsWith('http://localhost')) external.push(r.url());
     });
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('load');
+    await page.evaluate(() => document.fonts.ready);
     expect(external).toEqual([]);
     const font = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
     expect(font).toMatch(/Inter/);

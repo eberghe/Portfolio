@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { localizedPath, messages, type Locale } from '@/lib/i18n';
 import Instagram from './icons/Instagram';
+import Linkedin from './icons/Linkedin';
 import Logo from './Logo';
 
 const NAV_ITEMS = [
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
 
 const EMAIL = 'erb1209@outlook.de';
 const INSTAGRAM = 'https://www.instagram.com/erik.bergheimer/';
+const LINKEDIN = 'https://www.linkedin.com/in/erik-bergheimer/';
 
 // Footer-Texte mindestens white/60 (7,2:1 auf #0b1219), siehe functions/seiten/navigation-und-footer.md
 export default function Footer({ locale }: { locale: Locale }) {
@@ -29,13 +31,14 @@ export default function Footer({ locale }: { locale: Locale }) {
 
   const socials = [
     { icon: Instagram, label: 'Instagram', href: INSTAGRAM },
+    { icon: Linkedin, label: 'LinkedIn', href: LINKEDIN },
     { icon: Mail, label: t.email, href: `mailto:${EMAIL}` },
   ];
 
   return (
-    <footer className="relative py-20 md:py-28 px-8 md:px-12 bg-[#0b1219]">
+    <footer className="relative py-20 md:py-28 px-6 sm:px-8 md:px-12 bg-[#0b1219] dark:border-t dark:border-white/10">
       <div className="max-w-[1100px] mx-auto flex flex-col gap-10 md:gap-20">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-y-6">
           <Link
             href={href('/')}
             aria-label={`Erik Bergheimer – ${nav.home}`}
@@ -58,7 +61,7 @@ export default function Footer({ locale }: { locale: Locale }) {
               ))}
             </ul>
           </nav>
-          <ul className="flex gap-4">
+          <ul className="flex gap-1 md:gap-4">
             {socials.map(({ icon: Icon, label, href: url }) => (
               <li key={label}>
                 <a

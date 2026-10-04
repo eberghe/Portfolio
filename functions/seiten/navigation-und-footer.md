@@ -19,7 +19,7 @@ Globale Navigation und Footer wie auf der Lovable-Seite (`Navbar.tsx`, `Footer.t
 - Navigation blendet sich beim Runterscrollen aus und beim Hochscrollen ein (wie bisher); bei `prefers-reduced-motion` ohne Animation.
 - Sprachlink führt auf dieselbe Seite in der anderen Sprache (`/about` ↔ `/en/about`), Text „English" bzw. „Deutsch" mit passendem `lang`.
 - Dunkelmodus: speichert die Wahl, beim ersten Besuch gilt `prefers-color-scheme`, kein Aufblitzen beim Laden.
-- Footer: Links wie bisher, Social-Links als echte Links (Instagram, E-Mail), „Nach oben"-Link zu `#inhalt`. Footer-Texte mindestens `white/60`.
+- Footer: Links wie bisher, Social-Links als echte Links (Instagram, LinkedIn, E-Mail), „Nach oben"-Link zu `#inhalt`. Footer-Texte mindestens `white/60`.
 
 ## Akzeptanzkriterien
 - AK-1: Navigation ist ein `nav` mit sprachrichtigem Namen („Hauptnavigation" / „Main navigation").
@@ -30,6 +30,7 @@ Globale Navigation und Footer wie auf der Lovable-Seite (`Navbar.tsx`, `Footer.t
 - AK-6: Footer-Social-Links sind Links mit Ziel (Instagram, `mailto:`), keine Buttons ohne Funktion.
 - AK-7: Alle Texte in Navigation und Footer erreichen mindestens 4,5:1 (axe in hell und dunkel).
 - AK-8: Alle Texte gibt es auf Deutsch und Englisch.
+- AK-15: Im Dunkelmodus trennt eine dezente Linie (`white/10`) den Footer vom Inhalt.
 
 ## Sprachen (DE/EN)
 Deutsch unter den bisherigen Pfaden, Englisch unter `/en/...` mit denselben Slugs. Texte in `lib/i18n.ts`.
@@ -38,7 +39,7 @@ Deutsch unter den bisherigen Pfaden, Englisch unter `/en/...` mit denselben Slug
 `tests/unit/i18n.test.ts` (AK-3 Pfadzuordnung, AK-8), `tests/unit/navigation.test.tsx` (AK-1 bis AK-6), `tests/e2e/navigation.spec.ts` (AK-4, AK-5, AK-7 im Browser).
 
 ## Offene Fragen
-- LinkedIn-URL fehlt im Lovable-Code (dort nur Icon ohne Link); kommt dazu, sobald Erik sie nennt.
+- (erledigt) LinkedIn ergänzt.
 
 ## Befunde Blinder Kritiker (2026-10-04) und Umsetzung
 Behoben, jeweils mit Test:
@@ -53,5 +54,5 @@ Behoben, jeweils mit Test:
 Offen, bewusst später:
 - canonical, hreflang, robots.txt, sitemap.xml → `seo/meta-und-schema.md`, `seo/sitemap-und-redirects.md`
 - Eigene zweisprachige 404-Seite mit Navigation → kommt mit den Unterseiten
-- Footer im Dunkelmodus kaum vom Inhalt abgegrenzt → Design-Entscheidung bei Erik
+- (erledigt, AK-15) Footer im Dunkelmodus mit dezenter Trennlinie, von Erik freigegeben
 - Gleicher Seitentitel DE/EN → mit SEO-Funktion entscheiden

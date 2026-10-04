@@ -89,6 +89,11 @@ describe('Footer', () => {
       expect(link).toHaveAttribute('aria-current', 'page');
   });
 
+  it('AK-15: Footer ist im Dunkelmodus durch eine Linie abgegrenzt', () => {
+    const { container } = render(<Footer locale="de" />);
+    expect(container.querySelector('footer')).toHaveClass('dark:border-t', 'dark:border-white/10');
+  });
+
   it('AK-8: englischer Satz auf der deutschen Seite ist als Englisch ausgezeichnet', () => {
     render(<Footer locale="de" />);
     for (const el of screen.getAllByText(/made with/)) expect(el).toHaveAttribute('lang', 'en');
@@ -108,6 +113,10 @@ describe('Footer', () => {
       'https://www.instagram.com/erik.bergheimer/',
     );
     expect(screen.getByRole('link', { name: 'E-Mail' })).toHaveAttribute('href', expect.stringMatching(/^mailto:/));
+    expect(screen.getByRole('link', { name: 'LinkedIn' })).toHaveAttribute(
+      'href',
+      'https://www.linkedin.com/in/erik-bergheimer/',
+    );
   });
 
   it('AK-8: Links folgen der Sprache', () => {

@@ -83,6 +83,24 @@ describe('Navbar', () => {
 });
 
 describe('Footer', () => {
+  it('AK-2: aktueller Link im Footer hat aria-current="page"', () => {
+    render(<Footer locale="de" />);
+    for (const link of screen.getAllByRole('link', { name: 'Über mich' }))
+      expect(link).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('AK-8: englischer Satz auf der deutschen Seite ist als Englisch ausgezeichnet', () => {
+    render(<Footer locale="de" />);
+    for (const el of screen.getAllByText(/made with/)) expect(el).toHaveAttribute('lang', 'en');
+  });
+
+  it('AK-1: Footer-Links liegen auf allen Breiten in einer Navigation', () => {
+    render(<Footer locale="de" />);
+    const navs = screen.getAllByRole('navigation', { name: 'Fußzeile' });
+    const linksInNav = navs.flatMap((n) => within(n).queryAllByRole('link', { name: 'Projekte' }));
+    expect(linksInNav).toHaveLength(screen.getAllByRole('link', { name: 'Projekte' }).length);
+  });
+
   it('AK-6: Social-Links sind echte Links', () => {
     render(<Footer locale="de" />);
     expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAttribute(
@@ -95,7 +113,9 @@ describe('Footer', () => {
   it('AK-8: Links folgen der Sprache', () => {
     render(<Footer locale="en" />);
     // Desktop- und Mobil-Variante liegen beide im DOM, CSS zeigt je Viewport nur eine.
-    for (const link of screen.getAllByRole('link', { name: 'Imprint' })) expect(link).toHaveAttribute('href', '/en/impressum');
-    for (const link of screen.getAllByRole('link', { name: 'Back to top' })) expect(link).toHaveAttribute('href', '#inhalt');
+    for (const link of screen.getAllByRole('link', { name: 'Imprint' }))
+      expect(link).toHaveAttribute('href', '/en/impressum');
+    for (const link of screen.getAllByRole('link', { name: 'Back to top' }))
+      expect(link).toHaveAttribute('href', '#seitenanfang');
   });
 });

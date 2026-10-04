@@ -5,12 +5,19 @@ html {
   overflow-x: hidden;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
+    color-scheme: light;
     --background: 0 0% 100%;
     --foreground: 207 30% 13%;
 
@@ -54,6 +61,7 @@ html {
   }
 
   .dark {
+    color-scheme: dark;
     --primary-text: 161 36% 43.5%;
     --background: 207 40% 7%;
     --foreground: 210 30% 96%;
@@ -140,8 +148,12 @@ html {
 }
 
 @keyframes scroll-logos {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-33.333%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
 }
 
 .animate-scroll-logos {

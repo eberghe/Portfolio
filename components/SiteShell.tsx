@@ -21,6 +21,7 @@ export default function SiteShell({ locale, children }: { locale: Locale; childr
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
+        <span id="seitenanfang" />
         <a
           href="#inhalt"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-foreground"

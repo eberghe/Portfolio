@@ -39,3 +39,19 @@ Deutsch unter den bisherigen Pfaden, Englisch unter `/en/...` mit denselben Slug
 
 ## Offene Fragen
 - LinkedIn-URL fehlt im Lovable-Code (dort nur Icon ohne Link); kommt dazu, sobald Erik sie nennt.
+
+## Befunde Blinder Kritiker (2026-10-04) und Umsetzung
+Behoben, jeweils mit Test:
+- AK-9: Offenes Menü füllt den Bildschirm (vorher durch `backdrop-filter` am Header auf 32 px Höhe beschnitten); Menü liegt jetzt außerhalb des Headers.
+- AK-10: Fokus bleibt im offenen Menü (Hintergrund `inert`, Tab läuft im Kreis).
+- AK-11: Wechsel auf Desktop-Breite schließt das Menü und hebt die Scroll-Sperre auf.
+- AK-12: Kein horizontales Scrollen bei 320 und 360 px in beiden Sprachen (Logo mobil kleiner, Sprachlink zeigt mobil „EN"/„DE", Screenreader hören den vollen Namen).
+- AK-13: Icon-Links im Footer mobil mindestens 44×44 px, Textlinks mit mehr Klickfläche.
+- AK-14: „Nach oben" führt ganz nach oben, Navigation wird sichtbar.
+- `aria-current` auch im Footer, Footer-Links mobil ebenfalls in einer `nav`, „made with …" mit `lang="en"`, `color-scheme` folgt dem Dunkelmodus.
+
+Offen, bewusst später:
+- canonical, hreflang, robots.txt, sitemap.xml → `seo/meta-und-schema.md`, `seo/sitemap-und-redirects.md`
+- Eigene zweisprachige 404-Seite mit Navigation → kommt mit den Unterseiten
+- Footer im Dunkelmodus kaum vom Inhalt abgegrenzt → Design-Entscheidung bei Erik
+- Gleicher Seitentitel DE/EN → mit SEO-Funktion entscheiden

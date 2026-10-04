@@ -28,6 +28,8 @@ export default function Navbar({ locale }: { locale: Locale }) {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- einmaliger Abgleich mit dem DOM nach dem Hydrieren
     setDark(document.documentElement.classList.contains('dark'));
+    // Signal für E2E-Tests: interaktive Elemente sind bereit
+    document.documentElement.dataset.hydrated = 'true';
   }, []);
 
   useEffect(() => {
@@ -38,15 +40,43 @@ export default function Navbar({ locale }: { locale: Locale }) {
   useEffect(() => {
     if (!mobileOpen) return;
     document.body.style.overflow = 'hidden';
+    // Alles außer Header und Menü unerreichbar machen, solange das Menü offen ist
+    const background = Array.from(document.body.children).filter(
+      (el) => el.tagName !== 'HEADER' && el.id !== 'mobile-menu' && el.tagName !== 'SCRIPT',
+    ) as HTMLElement[];
+    background.forEach((el) => (el.inert = true));
+    const desktop = window.matchMedia('(min-width: 768px)');
+    const onBreakpoint = () => {
+      if (desktop.matches) setMobileOpen(false);
+    };
+    desktop.addEventListener('change', onBreakpoint);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setMobileOpen(false);
         burgerRef.current?.focus();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      // Fokus zwischen Header und Menü im Kreis führen
+      const focusables = Array.from(
+        document.querySelectorAll<HTMLElement>('header a[href], header button, #mobile-menu a[href]'),
+      ).filter((el) => el.offsetParent !== null);
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (!first || !last) return;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
       }
     };
     document.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = '';
+      background.forEach((el) => (el.inert = false));
+      desktop.removeEventListener('change', onBreakpoint);
       document.removeEventListener('keydown', onKey);
     };
   }, [mobileOpen]);
@@ -80,91 +110,97 @@ export default function Navbar({ locale }: { locale: Locale }) {
       : 'text-text2 hover:bg-bg2 hover:text-foreground';
 
   return (
-    <header
-      className={`sticky top-0 z-[100] bg-background/95 backdrop-blur-md border-b border-border motion-safe:transition-transform motion-safe:duration-300 ${
-        hidden && !mobileOpen ? '-translate-y-full' : 'translate-y-0'
-      }`}
-    >
-      <nav aria-label={t.label} className="flex items-center justify-between px-6 md:px-8 h-16">
-        <Link
-          href={localizedPath('/', locale)}
-          aria-label={`Erik Bergheimer – ${t.home}`}
-          className="shrink-0 text-foreground hover:scale-95 transition-transform duration-200"
-        >
-          <Logo className="h-3.5 w-auto" />
-        </Link>
-
-        <ul className="hidden md:flex gap-1">
-          {NAV_ITEMS.map((item) => {
-            const active = isActive(item.path);
-            return (
-              <li key={item.path}>
-                <Link
-                  href={localizedPath(item.path, locale)}
-                  aria-current={active ? 'page' : undefined}
-                  className={`block px-3.5 py-2 rounded-lg text-[13px] transition-all duration-150 ${linkClass(active)}`}
-                >
-                  {t[item.key]}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-
-        <div className="flex items-center gap-2">
-          <a
-            href={alternatePath(pathname, otherLocale)}
-            hrefLang={otherLocale}
-            lang={otherLocale}
-            className="h-9 px-2.5 rounded-lg border border-border flex items-center justify-center text-[13px] text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition-all"
-          >
-            {t.switchLanguage}
-          </a>
-
-          <button
-            type="button"
-            onClick={toggleDark}
-            aria-pressed={dark}
-            aria-label={t.darkMode}
-            className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition-all"
-          >
-            {dark ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
-          </button>
-
+    <>
+      <header
+        className={`sticky top-0 z-[100] bg-background/95 backdrop-blur-md border-b border-border motion-safe:transition-transform motion-safe:duration-300 ${
+          hidden && !mobileOpen ? '-translate-y-full' : 'translate-y-0'
+        }`}
+      >
+        <nav aria-label={t.label} className="flex items-center justify-between gap-2 px-4 sm:px-6 md:px-8 h-16">
           <Link
-            href={localizedPath('/contact', locale)}
-            aria-current={isActive('/contact') ? 'page' : undefined}
-            className="hidden md:inline-flex bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] font-medium hover:opacity-90 transition-opacity"
+            href={localizedPath('/', locale)}
+            aria-label={`Erik Bergheimer – ${t.home}`}
+            className="shrink-0 py-3 text-foreground hover:scale-95 transition-transform duration-200"
           >
-            {t.contact}
+            <Logo className="h-3 sm:h-3.5 w-auto" />
           </Link>
 
-          <button
-            ref={burgerRef}
-            type="button"
-            onClick={() => setMobileOpen((o) => !o)}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
-            aria-label={t.menu}
-            className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-1"
-          >
-            <span
-              aria-hidden="true"
-              className={`block w-4 h-0.5 bg-foreground transition-all ${mobileOpen ? 'rotate-45 translate-y-[3px]' : ''}`}
-            />
-            <span
-              aria-hidden="true"
-              className={`block w-4 h-0.5 bg-foreground transition-all ${mobileOpen ? '-rotate-45 -translate-y-[3px]' : ''}`}
-            />
-          </button>
-        </div>
+          <ul className="hidden md:flex gap-1">
+            {NAV_ITEMS.map((item) => {
+              const active = isActive(item.path);
+              return (
+                <li key={item.path}>
+                  <Link
+                    href={localizedPath(item.path, locale)}
+                    aria-current={active ? 'page' : undefined}
+                    className={`block px-3.5 py-2 rounded-lg text-[13px] transition-all duration-150 ${linkClass(active)}`}
+                  >
+                    {t[item.key]}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
 
-        <div
-          id="mobile-menu"
-          hidden={!mobileOpen}
-          className="fixed inset-0 top-16 bg-background px-6 py-8 md:hidden z-[100] overflow-y-auto motion-safe:animate-fade-in"
-          style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
-        >
+          <div className="flex items-center gap-2">
+            <a
+              href={alternatePath(pathname, otherLocale)}
+              hrefLang={otherLocale}
+              lang={otherLocale}
+              className="h-9 min-w-9 px-2 sm:px-2.5 rounded-lg border border-border flex items-center justify-center text-[13px] text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition-all"
+            >
+              <span aria-hidden="true" className="sm:hidden">
+                {otherLocale.toUpperCase()}
+              </span>
+              <span className="sr-only sm:not-sr-only">{t.switchLanguage}</span>
+            </a>
+
+            <button
+              type="button"
+              onClick={toggleDark}
+              aria-pressed={dark}
+              aria-label={t.darkMode}
+              className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition-all"
+            >
+              {dark ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
+            </button>
+
+            <Link
+              href={localizedPath('/contact', locale)}
+              aria-current={isActive('/contact') ? 'page' : undefined}
+              className="hidden md:inline-flex bg-primary text-primary-foreground px-4 py-2 rounded-lg text-[13px] font-medium hover:opacity-90 transition-opacity"
+            >
+              {t.contact}
+            </Link>
+
+            <button
+              ref={burgerRef}
+              type="button"
+              onClick={() => setMobileOpen((o) => !o)}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
+              aria-label={t.menu}
+              className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-1"
+            >
+              <span
+                aria-hidden="true"
+                className={`block w-4 h-0.5 bg-foreground transition-all ${mobileOpen ? 'rotate-45 translate-y-[3px]' : ''}`}
+              />
+              <span
+                aria-hidden="true"
+                className={`block w-4 h-0.5 bg-foreground transition-all ${mobileOpen ? '-rotate-45 -translate-y-[3px]' : ''}`}
+              />
+            </button>
+          </div>
+        </nav>
+      </header>
+      <div
+        id="mobile-menu"
+        hidden={!mobileOpen}
+        className="fixed inset-x-0 bottom-0 top-16 bg-background px-6 py-8 md:hidden z-[100] overflow-y-auto motion-safe:animate-fade-in"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      >
+        <nav aria-label={t.menu}>
           <ul className="flex flex-col gap-2">
             {NAV_ITEMS.map((item) => {
               const active = isActive(item.path);
@@ -181,14 +217,14 @@ export default function Navbar({ locale }: { locale: Locale }) {
               );
             })}
           </ul>
-          <Link
-            href={localizedPath('/contact', locale)}
-            className="mt-6 block bg-primary text-primary-foreground px-4 py-4 rounded-lg text-lg font-medium text-center hover:opacity-90"
-          >
-            {t.contact}
-          </Link>
-        </div>
-      </nav>
-    </header>
+        </nav>
+        <Link
+          href={localizedPath('/contact', locale)}
+          className="mt-6 block bg-primary text-primary-foreground px-4 py-4 rounded-lg text-lg font-medium text-center hover:opacity-90"
+        >
+          {t.contact}
+        </Link>
+      </div>
+    </>
   );
 }

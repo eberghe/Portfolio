@@ -26,6 +26,7 @@ Pflichtangaben und Datenschutzinformation, erreichbar aus dem Footer jeder Seite
 - AK-3: Datenschutz nennt Verantwortlichen, Hosting bei Vercel, Logfiles, Cookies/Browser-Speicher, das Anfrageformular (Supabase in der EU, Benachrichtigung über Resend, IP nur als Hash) und die Betroffenenrechte; erwähnt keinen Dienst, den die Seite nicht nutzt (Web3Forms, Google Analytics als genutzt).
 - AK-4: Beide Seiten `noindex` und nicht in der Sitemap.
 - AK-5: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel).
+- AK-8: Englische Fassungen liegen unter `/en/imprint` und `/en/privacy`; `/en/impressum` und `/en/datenschutz` leiten dauerhaft weiter. Footer, Sprachumschalter und hreflang verweisen auf die passende Adresse der jeweils anderen Sprache.
 
 ## Sprachen
 
@@ -45,4 +46,4 @@ Keine.
 
 ## Befunde Blinder Kritiker (Runde 1)
 
-Erledigt: vollständige Anschrift und zuständige Aufsichtsbehörde (BayLDA), siehe `standort.md`. Offen, Entscheidung bei Erik: ggf. USt-ID, Speicherdauer der Logfiles. Englische Pfade (`/en/imprint`, `/en/privacy`) später mit Weiterleitung.
+Erledigt: vollständige Anschrift und zuständige Aufsichtsbehörde (BayLDA), siehe `standort.md`. Offen, Entscheidung bei Erik: ggf. USt-ID, Speicherdauer der Logfiles. Erledigt: englische Pfade `/en/imprint` und `/en/privacy` (AK-8).

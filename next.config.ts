@@ -10,13 +10,18 @@ const nextConfig: NextConfig = {
   // Eine 404-Seite für Adressen außerhalb beider Sprach-Layouts (functions/seiten/nicht-gefunden.md)
   experimental: { globalNotFound: true },
   async redirects() {
-    return ['', '/en'].flatMap((prefix) =>
-      mergedServices.map(([from, to]) => ({
-        source: `${prefix}/services/${from}`,
-        destination: `${prefix}/services/${to}`,
-        permanent: true,
-      })),
-    );
+    return [
+      ...['', '/en'].flatMap((prefix) =>
+        mergedServices.map(([from, to]) => ({
+          source: `${prefix}/services/${from}`,
+          destination: `${prefix}/services/${to}`,
+          permanent: true,
+        })),
+      ),
+      // Englische Slugs der rechtlichen Seiten (functions/seiten/rechtliches.md AK-8)
+      { source: '/en/impressum', destination: '/en/imprint', permanent: true },
+      { source: '/en/datenschutz', destination: '/en/privacy', permanent: true },
+    ];
   },
 };
 

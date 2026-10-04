@@ -39,7 +39,7 @@ export function person(locale: Locale) {
     },
     workLocation: [
       { '@type': 'Place', name: 'Augsburg' },
-      { '@type': 'Country', name: 'Deutschland' },
+      { '@type': 'Country', name: locale === 'de' ? 'Deutschland' : 'Germany' },
     ],
     sameAs: ['https://www.linkedin.com/in/erik-bergheimer/', 'https://www.instagram.com/erik.bergheimer/'],
   } as const;

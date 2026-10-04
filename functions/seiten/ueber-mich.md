@@ -34,6 +34,7 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 - AK-9: Zeitleiste durchgehend in der Vergangenheit; kein Bild doppelt.
 - AK-10: Werkzeuge im Laufband und in der FAQ-Antwort stimmen überein; nur Werkzeuge, keine Plattformen (kein Dribbble).
 - AK-11: Master abgeschlossen (Erik, 2026-10-04): letzter Eintrag der Zeitleiste ist „Masterabschluss am MCI“ (Monat 2026-09, von Erik zu bestätigen); kein Text sagt mehr, dass Erik am MCI studiert (Vorstellung, Innsbruck-Eintrag, `llms.txt`); Person-JSON-LD nennt in `alumniOf` TH Ingolstadt und MCI. Kein Umzugs-Eintrag zurück nach Deutschland (Erik).
+- AK-12: Vorstellung und Zeitleiste stehen durchgehend in der Vergangenheit (auch HERO Software); die Vorstellung sagt in DE und EN dasselbe (Orte Augsburg, Bali, Innsbruck). Person-JSON-LD nennt den Arbeitsort-Staat in der Sprache der Seite (Deutschland/Germany).
 - AK-7: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel).
 
 ## Daten
@@ -42,7 +43,7 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 
 ## Tests
 
-`tests/unit/ueber-mich.test.tsx` (AK-2 bis AK-6, AK-11), `tests/e2e/statische-seiten.spec.ts` (AK-1, AK-7).
+`tests/unit/ueber-mich.test.tsx` (AK-2 bis AK-6, AK-11, AK-12), `tests/e2e/statische-seiten.spec.ts` (AK-1, AK-7).
 
 ## Offene Fragen
 
@@ -53,3 +54,8 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 Behoben (mit Test): Freelance-Tätigkeit fehlte (AK-8), Zeitform und doppeltes Foto (AK-9), Werkzeuge widersprachen der FAQ (AK-10), „Innsbruck · M.A. MCI" ausgeschrieben, TH Ingolstadt einheitlich benannt, Person-JSON-LD mit `image` (`knowsAbout` steht bereits am ProfessionalService der Startseite).
 
 Bewusst so gelassen: Schriftgrößen 11 px gehören zum bestehenden Design (Änderung nur mit Eriks OK).
+
+## Befunde Blinder Kritiker (Runde 2, Masterabschluss)
+
+Behoben (mit Test, AK-12): HERO-Eintrag in Vergangenheit, Vorstellung DE/EN angeglichen, doppeltes „working“, Arbeitsort-Staat im EN-JSON-LD. Ohne Test mitbehoben: „Sie zeigte mir“ (Workation), „Bis zur Abreise“ statt „Davor“ (IKEA).
+Als Issue angelegt: Ort im Kopfbereich doppelt, „Sept“ vs. „Sep“ im EN-Datum, einheitliche Hochschulnamen mit `sameAs`, About-Seite fehlt in `llms.txt`, „?.“ in `llms.txt`.

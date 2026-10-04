@@ -107,3 +107,12 @@ describe('AK-11: Master abgeschlossen', () => {
     expect(alumni).toContain('MCI');
   });
 });
+
+describe('AK-12: Vergangenheit und Parität', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    const all = [aboutContent[locale].intro, ...timeline.map((t) => t[locale].text)].join(' ');
+    expect(all).not.toMatch(/arbeite (ich )?jetzt|I'm now working|I am currently/);
+    expect(aboutContent[locale].intro).toMatch(/Bali/);
+    expect(JSON.stringify(person(locale).workLocation)).toContain(locale === 'de' ? 'Deutschland' : 'Germany');
+  });
+});

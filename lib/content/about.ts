@@ -57,7 +57,7 @@ export const aboutContent = {
     subtitle: 'Portfolio · Augsburg',
     facts: 'M.A. in Management, Communication & IT, MCI Innsbruck',
     intro:
-      "I'm Erik, a freelance UX/UI designer and Webflow developer who also advises on accessibility and AI, on site in Augsburg or remote. I completed my Bachelor's degree in User Experience Design at Technische Hochschule Ingolstadt (THI). I have gained work experience in different areas, companies and countries. In 2026 I completed my Master's degree in Management, Communication and IT (M.A.) at MCI in Innsbruck, alongside working as a working student in Business Development at HERO Software.",
+      "I'm Erik, a freelance UX/UI designer and Webflow developer who also advises on accessibility and AI, on site in Augsburg or remote. I completed my Bachelor's degree in User Experience Design at Technische Hochschule Ingolstadt (THI). Since then I have worked for different companies and in different countries, from Augsburg to Bali to Innsbruck. In 2026 I completed my Master's degree in Management, Communication and IT (M.A.) at MCI in Innsbruck, alongside a working-student role in Business Development at HERO Software.",
     photoAlt: 'Erik Bergheimer wearing sunglasses and a black shirt, smiling',
     tools: 'Tools I work with',
     pause: 'Pause animation',
@@ -90,11 +90,11 @@ export const timeline: TimelineItem[] = [
     date: '2018-07',
     de: {
       title: 'Abitur & IKEA',
-      text: 'Nach dem Abitur in Königsbrunn war mein größter Traum, ins Ausland zu gehen. Davor arbeitete ich bei IKEA, um für dieses Abenteuer zu sparen.',
+      text: 'Nach dem Abitur in Königsbrunn war mein größter Traum, ins Ausland zu gehen. Bis zur Abreise arbeitete ich bei IKEA, um für dieses Abenteuer zu sparen.',
     },
     en: {
       title: 'High school & IKEA',
-      text: 'After graduating from high school in Königsbrunn, Germany, my biggest dream was to go abroad. Before that, I worked at IKEA to save up for this adventure.',
+      text: 'After graduating from high school in Königsbrunn, Germany, my biggest dream was to go abroad. Until I left, I worked at IKEA to save up for this adventure.',
     },
   },
   {
@@ -236,7 +236,7 @@ export const timeline: TimelineItem[] = [
     ),
     de: {
       title: 'Workation auf Bali, Indonesien',
-      text: 'Von Februar bis April 2024 machte ich eine Workation auf Bali. Es zeigte mir, wie Remote-Arbeit gelingen kann, auch über Zeitzonen hinweg. In dieser Zeit lernte ich viel über mich selbst und wie ich in einer digitalen Organisation arbeite.',
+      text: 'Von Februar bis April 2024 machte ich eine Workation auf Bali. Sie zeigte mir, wie Remote-Arbeit gelingen kann, auch über Zeitzonen hinweg. In dieser Zeit lernte ich viel über mich selbst und wie ich in einer digitalen Organisation arbeite.',
     },
     en: {
       title: 'Workation in Bali, Indonesia',
@@ -272,11 +272,11 @@ export const timeline: TimelineItem[] = [
     ),
     de: {
       title: 'Werkstudent Business Development bei HERO Software',
-      text: 'Nach vier lohnenden Jahren bei TEAM23 war es Zeit für eine neue Herausforderung und frische Perspektiven. Ich arbeite jetzt als Werkstudent im Business Development bei HERO Software.',
+      text: 'Nach vier lohnenden Jahren bei TEAM23 war es Zeit für eine neue Herausforderung und frische Perspektiven. Im September 2025 wechselte ich als Werkstudent ins Business Development bei HERO Software.',
     },
     en: {
       title: 'Working student in business development at HERO Software',
-      text: "After four rewarding years at TEAM23, I decided it was time for a new challenge and fresh perspectives. I'm now working as a Business Development working student at HERO Software, embracing exciting opportunities to grow and expand my skills.",
+      text: 'After four rewarding years at TEAM23, I decided it was time for a new challenge and fresh perspectives. In September 2025 I joined HERO Software as a working student in Business Development.',
     },
   },
   {

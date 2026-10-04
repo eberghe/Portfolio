@@ -95,6 +95,20 @@ export function projectJsonLd(project: Project, locale: Locale) {
   };
 }
 
+/** ItemList aller Projekte für die Übersicht (projekte.md AK-11) */
+export function projectsItemListJsonLd(locale: Locale, list: Project[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: list.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: p[locale].title,
+      url: absolute(`/projects/${p.slug}`, locale),
+    })),
+  };
+}
+
 /** BreadcrumbList Start › Projekte › Projekt (projekte.md AK-4) */
 export function projectBreadcrumbJsonLd(project: Project, locale: Locale) {
   return breadcrumbList(

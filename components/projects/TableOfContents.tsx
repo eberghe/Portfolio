@@ -94,6 +94,10 @@ export default function TableOfContents({ items, label }: { items: Item[]; label
           id="inhaltsverzeichnis-mobil"
           aria-label={label}
           hidden={!open}
+          onBlur={(e) => {
+            const next = e.relatedTarget as Node | null;
+            if (!next || (!e.currentTarget.contains(next) && next !== button.current)) setOpen(false);
+          }}
           className="fixed bottom-20 right-6 z-50 bg-card border border-border rounded-2xl shadow-xl p-5 w-[260px] max-w-[calc(100vw-3rem)] max-h-[60vh] overflow-y-auto"
         >
           {heading}

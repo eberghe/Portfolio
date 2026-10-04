@@ -51,7 +51,7 @@ for (const scheme of ['light', 'dark'] as const) {
     test('AK-9: geöffnete Lightbox ohne axe-Verstöße', async ({ page }) => {
       await page.goto('/en/projects/morocco');
       await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
-      await page.getByRole('button', { name: /Image 1 of 6/ }).click();
+      await page.getByRole('button', { name: /image 1 of 6/i }).click();
       await expect(page.getByRole('dialog')).toBeVisible();
       expect(await axe(page)).toEqual([]);
     });

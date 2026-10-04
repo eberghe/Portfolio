@@ -16,14 +16,14 @@ export interface GalleryImage {
 const text = {
   de: {
     position: (i: number, n: number) => `Bild ${i} von ${n}`,
-    enlarge: 'vergrößern',
+    enlarge: (i: number, n: number, alt: string) => `Bild ${i} von ${n} vergrößern: ${alt}`,
     close: 'Schließen',
     prev: 'Vorheriges Bild',
     next: 'Nächstes Bild',
   },
   en: {
     position: (i: number, n: number) => `Image ${i} of ${n}`,
-    enlarge: 'enlarge',
+    enlarge: (i: number, n: number, alt: string) => `Enlarge image ${i} of ${n}: ${alt}`,
     close: 'Close',
     prev: 'Previous image',
     next: 'Next image',
@@ -96,6 +96,7 @@ export default function ImageGallery({
           <li key={img.src}>
             <button
               type="button"
+              aria-label={t.enlarge(i + 1, n, img.alt)}
               ref={(el) => {
                 triggers.current[i] = el;
               }}
@@ -115,9 +116,6 @@ export default function ImageGallery({
                   variant === 'grid' ? 'h-full object-cover' : 'h-auto'
                 }`}
               />
-              <span className="sr-only">
-                , {t.position(i + 1, n)} {t.enlarge}
-              </span>
             </button>
           </li>
         ))}

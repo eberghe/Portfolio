@@ -1,9 +1,10 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import ProjectDetail from '@/components/projects/ProjectDetail';
 import ProjectsOverview from '@/components/projects/ProjectsOverview';
 import { comingSoon, projects, type Project } from '@/lib/content/projects';
-import { projectJsonLd, projectBreadcrumbJsonLd } from '@/lib/structured-data';
+import { services } from '@/lib/content/services';
+import { projectBreadcrumbJsonLd, projectJsonLd, projectsItemListJsonLd } from '@/lib/structured-data';
 
 // functions/seiten/projekte.md
 const find = (slug: string) => projects.find((p) => p.slug === slug)!;
@@ -124,5 +125,92 @@ describe('AK-8: Übersicht', () => {
       expect(screen.getByText(c.de.title)).toBeInTheDocument();
       expect(screen.queryByRole('link', { name: c.de.title })).toBeNull();
     }
+  });
+});
+
+describe('AK-10: Meta-Daten', () => {
+  it.each(projects.flatMap((p) => locales.map((l) => [p.slug, l, p] as const)))('%s (%s)', (_s, l, p) => {
+    expect(p[l].metaTitle).toMatch(/\| Erik Bergheimer$/);
+    expect(p[l].metaTitle.length).toBeLessThanOrEqual(70);
+    expect(p[l].metaDescription.length).toBeLessThanOrEqual(160);
+  });
+});
+
+describe('AK-11: ItemList', () => {
+  it('alle Projekte', () => {
+    const data = projectsItemListJsonLd('de', projects);
+    expect(data.itemListElement).toHaveLength(projects.length);
+    expect(data.itemListElement[0]).toMatchObject({ url: 'https://erik-bergheimer.de/projects/cpr' });
+  });
+});
+
+describe('AK-12: Kommt bald', () => {
+  it('Titel vor Status, Bildfläche dekorativ', () => {
+    render(<ProjectsOverview locale="de" />);
+    const heading = screen.getByRole('heading', { name: 'PreMatch' });
+    const item = heading.closest('li')!;
+    const text = item.textContent!;
+    expect(text.indexOf('PreMatch')).toBeLessThan(text.lastIndexOf('Kommt bald'));
+    for (const el of item.querySelectorAll('[aria-hidden="true"]')) expect(el.textContent).not.toContain('PreMatch');
+    expect(item.querySelector('[aria-hidden="true"]')).toHaveTextContent('Kommt bald');
+  });
+});
+
+describe('AK-13: mobiles Inhaltsverzeichnis', () => {
+  it('schließt, wenn der Fokus es verlässt', () => {
+    render(<ProjectDetail project={find('webflow')} locale="de" />);
+    const button = screen.getByRole('button', { name: 'Inhaltsverzeichnis' });
+    fireEvent.click(button);
+    expect(button).toHaveAttribute('aria-expanded', 'true');
+    const panel = document.getElementById(button.getAttribute('aria-controls')!)!;
+    fireEvent.focusOut(within(panel).getAllByRole('link').at(-1)!, { relatedTarget: document.body });
+    expect(button).toHaveAttribute('aria-expanded', 'false');
+  });
+});
+
+describe('AK-14: Namen der Galerie-Buttons', () => {
+  it('DE und EN', () => {
+    const p = find('indonesia');
+    const { unmount } = render(<ProjectDetail project={p} locale="de" />);
+    expect(screen.getByRole('button', { name: `Bild 1 von 7 vergrößern: ${p.gallery[0]!.alt.de}` })).toBeTruthy();
+    unmount();
+    render(<ProjectDetail project={p} locale="en" />);
+    expect(screen.getByRole('button', { name: `Enlarge image 1 of 7: ${p.gallery[0]!.alt.en}` })).toBeTruthy();
+  });
+});
+
+describe('AK-15: Phasen als Liste', () => {
+  it('„Unser Prozess" ist eine Liste', () => {
+    render(<ProjectDetail project={find('cpr')} locale="de" />);
+    const heading = screen.getByRole('heading', { level: 3, name: 'Unser Prozess' });
+    const list = within(heading.parentElement!).getByRole('list');
+    expect(within(list).getAllByRole('listitem')).toHaveLength(3);
+  });
+});
+
+describe('AK-16: Titelbild', () => {
+  it.each(locales)('beschreibender Alt-Text (%s)', (l) => {
+    for (const p of projects) expect(p.thumbnail.alt[l].length, p.slug).toBeGreaterThan(15);
+    const p = find('cpr');
+    render(<ProjectDetail project={p} locale={l} />);
+    expect(screen.getByRole('img', { name: p.thumbnail.alt[l] })).toBeInTheDocument();
+  });
+});
+
+describe('AK-17: passende Leistung', () => {
+  it('Webflow vs. Shopify verlinkt Webflow-Entwicklung', () => {
+    render(<ProjectDetail project={find('webflow')} locale="de" />);
+    expect(screen.getByRole('link', { name: /Webflow-Entwicklung/ })).toHaveAttribute(
+      'href',
+      '/services/webflow-development',
+    );
+  });
+
+  it('jede Leistung existiert', () => {
+    for (const p of projects)
+      expect(
+        services.some((s) => s.slug === p.service),
+        p.slug,
+      ).toBe(true);
   });
 });

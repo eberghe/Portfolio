@@ -46,7 +46,9 @@ export interface Project extends Record<Locale, ProjectText> {
   timeline?: string;
   tools: string;
   team?: string;
-  thumbnail: { src: string; width: number; height: number };
+  thumbnail: { src: string; width: number; height: number; alt: Record<Locale, string> };
+  /** Slug der passenden Leistung (AK-17) */
+  service: string;
   gallery: ProjectImage[];
   /** Bilder unter einem Unterabschnitt, Schlüssel = id des Unterabschnitts */
   inlineImages: Record<string, ProjectImage[]>;
@@ -65,7 +67,12 @@ export const projects: Project[] = [
       src: '/images/project-cpr.png',
       width: 1920,
       height: 977,
+      alt: {
+        de: 'Smartphones mit Screens der CPR-Trainings-App: Login, Training und Statistik',
+        en: 'Smartphones showing screens of the CPR training app: login, training and statistics',
+      },
     },
+    service: 'ux-ui-design',
     gallery: [],
     inlineImages: {
       personae: [
@@ -110,7 +117,7 @@ export const projects: Project[] = [
     de: {
       title: 'CPR Training AR App',
       tagline: 'Kinder als Lebensretter ausbilden mit Augmented Reality',
-      body: 'CPR steht für Cardiopulmonary Reanimation, eine lebensrettende Notfallmaßnahme. Wir wollten Kindern beibringen, diese Technik zu erlernen und zu potentiellen Lebensrettern zu werden.',
+      body: 'CPR steht für Cardiopulmonary Resuscitation (kardiopulmonale Reanimation), eine lebensrettende Notfallmaßnahme. Wir wollten Kindern beibringen, diese Technik zu erlernen und zu potentiellen Lebensrettern zu werden.',
       type: 'UX/UI · App-Design',
       role: 'UX-Designer, Interface-Designer',
       metaTitle: 'CPR Training AR App: Erste Hilfe für Kinder mit AR | Erik Bergheimer',
@@ -222,12 +229,12 @@ export const projects: Project[] = [
     en: {
       title: 'CPR Training AR App',
       tagline: 'Teaching kids lifesaving skills through Augmented Reality',
-      body: 'CPR stands for Cardiopulmonary Reanimation, a life-saving emergency procedure. We wanted to help kids learn this technique to become potential lifesavers.',
+      body: 'CPR stands for Cardiopulmonary Resuscitation, a life-saving emergency procedure. We wanted to help kids learn this technique to become potential lifesavers.',
       type: 'UX/UI · App design',
       role: 'UX designer, interface designer',
-      metaTitle: 'CPR Training AR App | Teaching Kids Lifesaving Skills through Augmented Reality',
+      metaTitle: 'CPR Training AR App: teaching kids CPR with AR | Erik Bergheimer',
       metaDescription:
-        "In this UX/UI university project, I helped design a digital solution to teach children CPR using augmented reality. My role included concept development, wireframing, and UI design for both the teacher's app and the kids' AR interface.",
+        "University UX/UI project: an AR app that teaches children CPR. My role: concept, wireframes and UI for the teacher app and the kids' AR interface.",
       sections: [
         {
           id: 'overview',
@@ -342,7 +349,12 @@ export const projects: Project[] = [
       src: '/images/project-sightkick.png',
       width: 1920,
       height: 977,
+      alt: {
+        de: "Moodboard zu SIGHT'KICK: Innsbrucker Altstadt, Seilbahn, Bergsee, Logo, Schrift und App-Screen",
+        en: "SIGHT'KICK moodboard: Innsbruck old town, cable car, mountain lake, logo, typeface and app screen",
+      },
     },
+    service: 'ux-ui-design',
     gallery: [],
     inlineImages: {},
     de: {
@@ -351,7 +363,7 @@ export const projects: Project[] = [
       body: 'Dieses Masterprojekt im Kurs "Marketing & Sales" konzentrierte sich auf die Konzeption und Gestaltung einer mobilen App, die das touristische Erlebnis in Innsbruck revolutionieren soll. Meine Rolle war vielseitig: UX/UI Designer, Konzeptentwickler und Designer der finalen Präsentation.',
       type: 'UX/UI · Gamification · Masterprojekt',
       role: 'UX/UI-Designer',
-      metaTitle: "SIGHT'KICK: gamifizierte Stadterkundung für Innsbruck | Erik Bergheimer",
+      metaTitle: "SIGHT'KICK: Stadterkundung als Spiel in Innsbruck | Erik Bergheimer",
       metaDescription:
         "SIGHT'KICK ist ein App-Konzept, das Reisenden Innsbruck spielerisch zeigt. Als UX/UI-Designer und Konzeptentwickler habe ich das Erlebnis gestaltet.",
       sections: [
@@ -359,7 +371,7 @@ export const projects: Project[] = [
           id: 'challenge',
           title: 'Die Herausforderung',
           content:
-            'Traditionelles Sightseeing wird oft durch typische Probleme erschwert: begrenzte Zeit, Informationsüberflutung und Schwierigkeiten, sich in neuen Städten zurechtzufinden. Meine Aufgabe war es, ein Erlebnis zu schaffen, das mühsame Planung durch spontane, aber geführte Entdeckung ersetzt. Das Ziel: „Lerne Innsbruck kennen wie niemand sonst!"',
+            'Traditionelles Sightseeing wird oft durch typische Probleme erschwert: begrenzte Zeit, Informationsüberflutung und Schwierigkeiten, sich in neuen Städten zurechtzufinden. Meine Aufgabe war es, ein Erlebnis zu schaffen, das mühsame Planung durch spontane, aber geführte Entdeckung ersetzt. Das Ziel: „Lerne Innsbruck kennen wie niemand sonst!“',
         },
         {
           id: 'solution',
@@ -393,7 +405,7 @@ export const projects: Project[] = [
             },
             {
               id: 'social',
-              title: 'Social Sharing',
+              title: 'Teilen in sozialen Medien',
               content:
                 'Integrierte Funktionen ermöglichen es, Abenteuer mit Freunden und Familie in sozialen Medien zu teilen.',
             },
@@ -432,7 +444,7 @@ export const projects: Project[] = [
           subsections: [
             {
               id: 'ux-efficiency',
-              title: 'UX/UI Effizienz',
+              title: 'Effizienz in UX/UI',
               content:
                 'Der Einsatz von Tools wie Figma war essenziell für die extrem schnelle Erstellung von Low-Fidelity-Prototypen und gab dem Team kreative Freiheit zum frühen Erkunden von Designlösungen.',
             },
@@ -458,9 +470,9 @@ export const projects: Project[] = [
       body: 'This Master\'s project from the course "Marketing & Sales" focused on conceptualizing and designing a mobile application to revolutionize how tourists experience Innsbruck. My role was multifaceted: UX/UI Designer, Concept Developer, and Designer of the final presentation slides.',
       type: "UX/UI · Gamification · Master's project",
       role: 'UX/UI designer',
-      metaTitle: "SIGHT'KICK | Gamified City Discovery App for Innsbruck – UX/UI & Concept Design",
+      metaTitle: "SIGHT'KICK: gamified city discovery for Innsbruck | Erik Bergheimer",
       metaDescription:
-        "SIGHT'KICK is a gamified mobile app concept designed to transform how tourists explore Innsbruck. As the UX/UI designer and concept developer, I created a playful, personalized city discovery experience.",
+        "SIGHT'KICK is an app concept that turns exploring Innsbruck into a game. As UX/UI designer and concept developer I shaped the experience.",
       sections: [
         {
           id: 'challenge',
@@ -568,7 +580,12 @@ export const projects: Project[] = [
       src: '/images/project-indonesia.png',
       width: 1824,
       height: 1368,
+      alt: {
+        de: 'Hochland in Indonesien mit Nebel im Tal bei Sonnenaufgang',
+        en: 'Highland in Indonesia with mist in the valley at sunrise',
+      },
     },
+    service: 'photography',
     gallery: [
       {
         src: '/images/projects/indonesia-1.jpg',
@@ -666,7 +683,12 @@ export const projects: Project[] = [
       src: '/images/project-webflow.png',
       width: 1728,
       height: 1117,
+      alt: {
+        de: 'Markenauftritt von BlueBird: Logo, Kappen mit Vogel-Logo, Farbpalette und Schriften',
+        en: 'BlueBird brand identity: logo, caps with the bird logo, colour palette and typefaces',
+      },
     },
+    service: 'webflow-development',
     gallery: [],
     inlineImages: {},
     download: {
@@ -682,13 +704,13 @@ export const projects: Project[] = [
       body: 'Für meine Bachelorarbeit im Studiengang User Experience Design habe ich untersucht, wie weit Low-/No-Code Tools gehen können, wenn man sie auf einen komplexen Anwendungsfall wie E-Commerce anwendet. Plattformen wie Webflow und Shopify versprechen, digitale Gestaltung zu demokratisieren. Aber können sie wirklich professionelle, skalierbare und benutzerfreundliche Online-Shops liefern, ganz ohne Code?\n\nDafür habe ich eine fiktive Modemarke namens BlueBird entworfen und den gesamten Shop auf beiden Plattformen umgesetzt. Das Ergebnis: ein detaillierter, praxisnaher Vergleich zweier sehr unterschiedlicher Entwicklungsansätze.',
       type: 'Web · No-Code · Bachelorarbeit',
       role: 'Forschung & Entwicklung',
-      metaTitle: 'Webflow vs. Shopify: Bachelorarbeit zu No-Code-E-Commerce | Erik Bergheimer',
+      metaTitle: 'Webflow vs. Shopify: Bachelorarbeit No-Code-Shops | Erik Bergheimer',
       metaDescription:
         'Können Low-/No-Code-Tools wie Webflow und Shopify professionelle Online-Shops liefern? Eine praxisnahe Bachelorarbeit, die beide Plattformen vergleicht.',
       sections: [
         {
           id: 'research',
-          title: 'Research & Problem',
+          title: 'Recherche & Fragestellung',
           content:
             'Meine Forschung drehte sich um zwei zentrale Fragen: Erstens, welche Einschränkungen und Herausforderungen haben Designer, wenn sie Low-/No-Code Tools wie Webflow und Shopify für den Aufbau eines E-Commerce nutzen? Und zweitens, welche praktischen Empfehlungen lassen sich daraus für andere ableiten?\n\nStatt mich nur auf Theorie oder Vergleiche aus zweiter Hand zu stützen, habe ich einen identischen Shop in beiden Plattformen gebaut. So konnte ich den Design- und Entwicklungsprozess von beiden Seiten erleben und herausfinden, wo jedes Tool glänzt und wo es an seine Grenzen stößt.',
         },
@@ -706,7 +728,7 @@ export const projects: Project[] = [
         },
         {
           id: 'development',
-          title: 'Development & Implementation',
+          title: 'Umsetzung',
           content: '',
           subsections: [
             {
@@ -749,9 +771,9 @@ export const projects: Project[] = [
       body: "For my bachelor's thesis in User Experience Design, I explored how far Low-/No-Code tools can go when applied to a complex use case like e-commerce. Platforms like Webflow and Shopify claim to democratize digital creation, but I wanted to test whether they could truly deliver professional, scalable, and usable online shops without requiring a line of code.\n\nTo do this, I designed and developed a fictional fashion brand called BlueBird. I then implemented the entire store experience on both Webflow and Shopify, documenting every part of the journey to create a detailed, side-by-side comparison.",
       type: 'Web · No-code · Bachelor thesis',
       role: 'Researcher & developer',
-      metaTitle: 'Webflow vs. Shopify | Low-/No-Code E-Commerce Bachelor Thesis',
+      metaTitle: 'Webflow vs. Shopify: no-code e-commerce thesis | Erik Bergheimer',
       metaDescription:
-        'Can Low-/No-Code tools like Webflow and Shopify deliver professional e-commerce experiences? A practice-driven bachelor thesis comparing both platforms.',
+        'Can no-code tools like Webflow and Shopify deliver professional online shops? A hands-on bachelor thesis comparing both platforms.',
       sections: [
         {
           id: 'research',
@@ -819,7 +841,12 @@ export const projects: Project[] = [
       src: '/images/project-morocco.png',
       width: 768,
       height: 1024,
+      alt: {
+        de: 'Marokkanische Flagge an einem Mast vor sonnigem Himmel',
+        en: 'Moroccan flag on a pole against a sunny sky',
+      },
     },
+    service: 'photography',
     gallery: [
       {
         src: '/images/projects/morocco-1.jpg',
@@ -880,7 +907,7 @@ export const projects: Project[] = [
     de: {
       title: 'Marokko',
       tagline: 'Alltag und Schönheit in Marokko',
-      body: 'In Texturen und Traditionen Marokkos eingetaucht: Alltag und atemberaubende Szenerie in einer Serie evokatativer Bilder.\n\nVon belebten Souks in Marrakesch bis zu stillen Wüstenlandschaften, eine Geschichte voller Kontraste, Farben und Geschichte.',
+      body: 'In Texturen und Traditionen Marokkos eingetaucht: Alltag und atemberaubende Szenerie in einer Serie eindrucksvoller Bilder.\n\nVon belebten Souks in Marrakesch bis zu stillen Wüstenlandschaften, eine Geschichte voller Kontraste, Farben und Geschichte.',
       type: 'Fotografie · Dokumentarisch',
       role: 'Fotograf',
       metaTitle: 'Marokko: Dokumentarfotografie | Erik Bergheimer',
@@ -904,7 +931,7 @@ export const projects: Project[] = [
 export const comingSoon = [
   {
     slug: 'prematch',
-    type: { de: 'UX/UI · Masterarbeit', en: 'UX/UI · Master thesis' },
+    type: { de: 'UX/UI · Masterarbeit', en: "UX/UI · Master's thesis" },
     de: { title: 'PreMatch', tagline: 'App für Fußball-Tipps' },
     en: { title: 'PreMatch', tagline: 'Football prediction app' },
     color: '#d0d8e8',
@@ -912,8 +939,8 @@ export const comingSoon = [
   {
     slug: 'rose',
     type: { de: 'UX/UI · Digital-Business-Projekt', en: 'UX/UI · Digital business project' },
-    de: { title: 'ROSE Bikes App', tagline: 'Master-Projekt in Digital Business' },
-    en: { title: 'ROSE Bikes App', tagline: 'Master project in digital business' },
+    de: { title: 'ROSE Bikes App', tagline: 'Masterprojekt in Digital Business' },
+    en: { title: 'ROSE Bikes App', tagline: "Master's project in digital business" },
     color: '#e0d0d8',
   },
   {

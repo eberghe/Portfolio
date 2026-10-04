@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import type { Project, ProjectImage } from '@/lib/content/projects';
+import { services } from '@/lib/content/services';
 import { localizedPath, type Locale } from '@/lib/i18n';
 import { projectBreadcrumbJsonLd, projectJsonLd } from '@/lib/structured-data';
 import ImageGallery from './ImageGallery';
@@ -22,6 +23,7 @@ const text = {
     source: 'Quelle',
     visuals: 'Bildmaterial',
     cta: 'Ähnliches Projekt anfragen',
+    service: 'Passende Leistung',
     backShort: 'Zurück',
   },
   en: {
@@ -36,6 +38,7 @@ const text = {
     source: 'Source',
     visuals: 'Visuals',
     cta: 'Request a similar project',
+    service: 'Related service',
     backShort: 'Back',
   },
 };
@@ -47,11 +50,23 @@ function Paragraphs({ content, className }: { content: string; className: string
       {content
         .split('\n\n')
         .filter((p) => p.trim())
-        .map((p, i) => (
-          <p key={i} className={`${className} whitespace-pre-line`}>
-            {p}
-          </p>
-        ))}
+        .map((p, i) => {
+          const lines = p.split('\n');
+          // Zeilen der Form „Phase: Inhalt" sind eine Aufzählung (AK-15)
+          if (lines.length > 1 && lines.every((l) => /^[^:]{1,40}: \S/.test(l)))
+            return (
+              <ul key={i} className={`${className} list-disc pl-5 space-y-1`}>
+                {lines.map((l) => (
+                  <li key={l}>{l}</li>
+                ))}
+              </ul>
+            );
+          return (
+            <p key={i} className={`${className} whitespace-pre-line`}>
+              {p}
+            </p>
+          );
+        })}
     </>
   );
 }
@@ -63,6 +78,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
   const content = project[locale];
   const sections = content.sections;
   const href = (path: string) => localizedPath(path, locale);
+  const service = services.find((s) => s.slug === project.service);
 
   const meta = [
     { label: t.type, value: content.type },
@@ -73,7 +89,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
   ];
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 sm:px-7 md:px-12 pt-8 pb-16">
+    <div className="max-w-[1100px] mx-auto px-6 sm:px-7 md:px-12 pt-8 pb-28 lg:pb-16">
       <JsonLd data={projectJsonLd(project, locale)} />
       <JsonLd data={projectBreadcrumbJsonLd(project, locale)} />
 
@@ -94,7 +110,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
           src={project.thumbnail.src}
           width={project.thumbnail.width}
           height={project.thumbnail.height}
-          alt=""
+          alt={project.thumbnail.alt[locale]}
           priority
           sizes="(min-width: 1100px) 1004px, 100vw"
           className="w-full h-auto object-cover"
@@ -182,6 +198,18 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
             {project.download.label[locale]}
           </a>
         </div>
+      )}
+
+      {service && (
+        <p className="mt-10 pt-7 border-t border-border text-[13px] text-text2">
+          {t.service}:{' '}
+          <Link
+            href={href(`/services/${service.slug}`)}
+            className="text-primary-text font-medium underline underline-offset-2"
+          >
+            {service[locale].title}
+          </Link>
+        </p>
       )}
 
       <div className="mt-7 flex flex-wrap gap-2.5">

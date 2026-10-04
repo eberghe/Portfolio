@@ -2,7 +2,9 @@ import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { comingSoon, projects } from '@/lib/content/projects';
+import JsonLd from '@/components/JsonLd';
 import { localizedPath, type Locale } from '@/lib/i18n';
+import { projectsItemListJsonLd } from '@/lib/structured-data';
 
 // Projektübersicht, übernommen aus Lovable (ProjectsPage.tsx). Siehe functions/seiten/projekte.md
 export const projectsOverviewText = {
@@ -30,6 +32,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
   const t = projectsOverviewText[locale];
   return (
     <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
+      <JsonLd data={projectsItemListJsonLd(locale, projects)} />
       <div className="py-16 border-b border-border mb-10">
         <h1 className="text-[32px] font-medium tracking-tight mb-3">{t.title}</h1>
         <p className="text-[15px] text-text2 max-w-[500px]">{t.intro}</p>
@@ -80,6 +83,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
         {comingSoon.map((c) => (
           <li key={c.slug} className={card}>
             <span
+              aria-hidden="true"
               className="relative overflow-hidden h-[180px] flex items-center justify-center"
               style={{ background: c.color }}
             >
@@ -91,6 +95,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
               </span>
               <h2 className="text-[15px] font-medium text-foreground mb-1.5">{c[locale].title}</h2>
               <span className="text-xs text-text2 leading-relaxed">{c[locale].tagline}</span>
+              <span className="sr-only">{t.soon}</span>
             </span>
           </li>
         ))}

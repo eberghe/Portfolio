@@ -7,6 +7,8 @@ const mergedServices = [
 ];
 
 const nextConfig: NextConfig = {
+  // Eine 404-Seite für Adressen außerhalb beider Sprach-Layouts (functions/seiten/nicht-gefunden.md)
+  experimental: { globalNotFound: true },
   async redirects() {
     return ['', '/en'].flatMap((prefix) =>
       mergedServices.map(([from, to]) => ({

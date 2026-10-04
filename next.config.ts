@@ -1,5 +1,21 @@
 import type { NextConfig } from 'next';
 
-const nextConfig: NextConfig = {};
+// Zusammengelegte Leistungen (functions/seiten/leistungen.md, AK-4)
+const mergedServices = [
+  ['webflow-framer', 'webflow-development'],
+  ['business-development', 'website-process-optimization'],
+];
+
+const nextConfig: NextConfig = {
+  async redirects() {
+    return ['', '/en'].flatMap((prefix) =>
+      mergedServices.map(([from, to]) => ({
+        source: `${prefix}/services/${from}`,
+        destination: `${prefix}/services/${to}`,
+        permanent: true,
+      })),
+    );
+  },
+};
 
 export default nextConfig;

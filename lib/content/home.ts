@@ -1,4 +1,5 @@
 import type { Locale } from '@/lib/i18n';
+import { projects } from '@/lib/content/projects';
 
 // Texte der Startseite, siehe functions/seiten/startseite.md
 export const homeContent = {
@@ -16,7 +17,7 @@ export const homeContent = {
     heroAlt: 'Erik Bergheimer, UX/UI Designer und Webflow-Experte, im Porträt',
     stats: [
       { value: '6+', label: 'Jahre UX Erfahrung' },
-      { value: '5', label: 'Projekte im Portfolio' },
+      { value: String(projects.length), label: 'Projekte im Portfolio' },
       { value: 'Deutschland', label: 'Vor Ort & remote' },
       { value: 'Augsburg', label: 'Aktueller Standort', small: true },
     ],
@@ -48,7 +49,7 @@ export const homeContent = {
     heroAlt: 'Portrait of Erik Bergheimer, UX/UI designer and Webflow expert',
     stats: [
       { value: '6+', label: 'Years UX experience' },
-      { value: '5', label: 'Projects in portfolio' },
+      { value: String(projects.length), label: 'Projects in portfolio' },
       { value: 'Germany', label: 'On site & remote' },
       { value: 'Augsburg', label: 'Current location', small: true },
     ],

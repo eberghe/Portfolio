@@ -19,14 +19,25 @@ export const faqs: Faq[] = [
     },
   },
   {
+    id: 'standort',
+    de: {
+      q: 'Wo bist du ansässig?',
+      a: 'Ich wohne und arbeite in Königsbrunn bei Augsburg. Termine vor Ort sind in Augsburg und Umgebung möglich, alles andere läuft remote, in ganz Deutschland und darüber hinaus.',
+    },
+    en: {
+      q: 'Where are you based?',
+      a: 'I live and work in Königsbrunn near Augsburg, Germany. In-person meetings are possible in and around Augsburg; everything else happens remotely, across Germany and beyond.',
+    },
+  },
+  {
     id: 'remote',
     de: {
       q: 'Arbeitest du auch remote?',
-      a: 'Klar, ich bin komplett remote-fähig, das hat sogar von Bali aus super funktioniert. Termine vor Ort sind in und um Augsburg genauso möglich.',
+      a: 'Klar, ich bin komplett remote-fähig, das hat sogar von Bali aus super funktioniert.',
     },
     en: {
       q: 'Do you work remotely?',
-      a: 'Yes, I am fully remote-capable; it even worked well from Bali. On-site meetings in and around Augsburg are just as possible.',
+      a: 'Yes, I am fully remote-capable; it even worked well from Bali.',
     },
   },
   {

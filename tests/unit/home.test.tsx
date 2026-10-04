@@ -1,6 +1,8 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Home from '@/components/home/Home';
+import { homeContent } from '@/lib/content/home';
+import { projects } from '@/lib/content/projects';
 import { services } from '@/lib/content/services';
 
 // functions/seiten/startseite.md
@@ -136,5 +138,12 @@ describe('AK-10: Leistungstexte', () => {
         expect(s[l].short.trim(), `${s.slug} ${l}`).not.toBe('');
       }
     }
+  });
+});
+
+describe('AK-19: Projektzahl aus den Daten (Issue #5)', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    const stat = homeContent[locale].stats.find((s) => /Projekt|Project/.test(s.label))!;
+    expect(stat.value).toBe(String(projects.length));
   });
 });

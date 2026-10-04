@@ -101,7 +101,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
         {t.back}
       </Link>
 
-      <h1 className="text-[30px] font-medium tracking-tight mb-2">{content.title}</h1>
+      <h1 className="text-[30px] font-bold tracking-tight mb-2">{content.title}</h1>
       <p className="text-[15px] text-primary-text mb-3">{content.tagline}</p>
       <Paragraphs content={content.body} className="text-sm text-text2 leading-[1.8] mb-5" />
 
@@ -131,7 +131,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
 
       {project.metrics && project.metrics.length > 0 && (
         <section aria-labelledby="kennzahlen" className="mb-10">
-          <h2 id="kennzahlen" className="text-[22px] font-medium tracking-tight mb-4">
+          <h2 id="kennzahlen" className="text-[22px] font-bold tracking-tight mb-4">
             {t.metrics}
           </h2>
           <dl className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -154,7 +154,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
           <div className="flex-1 min-w-0">
             {sections.map((section) => (
               <section key={section.id} aria-labelledby={section.id} className="mb-12">
-                <h2 id={section.id} className="text-[22px] font-medium tracking-tight mb-4 scroll-mt-24">
+                <h2 id={section.id} className="text-[22px] font-bold tracking-tight mb-4 scroll-mt-24">
                   {section.title}
                 </h2>
                 <Paragraphs content={section.content} className="text-sm text-text2 leading-[1.8] mb-6" />
@@ -162,7 +162,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
                   const images = project.inlineImages[sub.id] ?? [];
                   return (
                     <div key={sub.id} className="mb-8">
-                      <h3 id={sub.id} className="text-[17px] font-medium mb-3 scroll-mt-24">
+                      <h3 id={sub.id} className="text-[17px] font-bold mb-3 scroll-mt-24">
                         {sub.title}
                       </h3>
                       <Paragraphs content={sub.content} className="text-sm text-text2 leading-[1.8] mb-4" />
@@ -180,7 +180,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
 
       {project.gallery.length > 0 && (
         <section aria-labelledby="bildmaterial" className="mt-10 pt-7 border-t border-border">
-          <h2 id="bildmaterial" className="text-[11px] font-medium tracking-wider uppercase text-text3 mb-4">
+          <h2 id="bildmaterial" className="text-[11px] font-bold tracking-wider uppercase text-text3 mb-4">
             {t.visuals}
           </h2>
           <ImageGallery images={localized(project.gallery, locale)} locale={locale} variant="grid" />

@@ -31,7 +31,7 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
     <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
       <JsonLd data={servicesItemListJsonLd(locale)} />
       <div className="py-16 border-b border-border mb-10">
-        <h1 className="text-[32px] font-medium tracking-tight mb-3">{t.title}</h1>
+        <h1 className="text-[32px] font-bold tracking-tight mb-3">{t.title}</h1>
         <p className="text-[15px] text-text2 max-w-[500px]">{t.intro}</p>
       </div>
       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-20">
@@ -72,10 +72,7 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                 >
                   {text.label}
                 </span>
-                <h2
-                  id={`leistung-${s.slug}`}
-                  className={`text-base font-medium mb-2 ${accent ? '' : 'text-foreground'}`}
-                >
+                <h2 id={`leistung-${s.slug}`} className={`text-base font-bold mb-2 ${accent ? '' : 'text-foreground'}`}>
                   {text.title}
                 </h2>
                 <span

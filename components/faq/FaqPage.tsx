@@ -33,7 +33,7 @@ export default function FaqPage({ locale }: { locale: Locale }) {
     <div className="max-w-[900px] mx-auto px-6 sm:px-7">
       <JsonLd data={faqJsonLd(locale)} />
       <div className="py-14 border-b border-border mb-8">
-        <h1 className="text-[28px] font-medium tracking-tight mb-2">{t.title}</h1>
+        <h1 className="text-[28px] font-bold tracking-tight mb-2">{t.title}</h1>
         <p className="text-sm text-text2">{t.intro}</p>
       </div>
       <div className="pb-12 space-y-2">

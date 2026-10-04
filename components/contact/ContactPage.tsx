@@ -39,7 +39,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
       <section className="bg-primary text-primary-foreground px-6 sm:px-7 py-12">
         <div className="max-w-[900px] mx-auto">
           <p className="text-[11px] font-medium tracking-widest uppercase text-primary-foreground mb-3">{t.eyebrow}</p>
-          <h1 className="text-[30px] font-medium tracking-tight mb-2">{t.title}</h1>
+          <h1 className="text-[30px] font-bold tracking-tight mb-2">{t.title}</h1>
           <p className="text-[15px] text-primary-foreground max-w-[520px]">{t.intro}</p>
           <a
             href="#anfrage-titel"
@@ -53,7 +53,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
       <div className="max-w-[900px] mx-auto px-6 sm:px-7">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr]">
           <section aria-labelledby="direktkontakt" className="md:border-r border-border md:pr-8 py-8">
-            <h2 id="direktkontakt" className="text-[11px] font-medium tracking-wider uppercase text-text3 mb-4">
+            <h2 id="direktkontakt" className="text-[11px] font-bold tracking-wider uppercase text-text3 mb-4">
               {t.direct}
             </h2>
             <ul aria-labelledby="direktkontakt">
@@ -91,7 +91,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
           </section>
 
           <section aria-labelledby="anfrage-titel" className="md:pl-8 py-8 min-w-0 scroll-mt-20">
-            <h2 id="anfrage-titel" className="text-[11px] font-medium tracking-wider uppercase text-text3 mb-4">
+            <h2 id="anfrage-titel" className="text-[11px] font-bold tracking-wider uppercase text-text3 mb-4">
               {t.formTitle}
             </h2>
             <InquiryWizard locale={locale} />

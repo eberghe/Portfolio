@@ -22,7 +22,7 @@ export default function About({ locale }: { locale: Locale }) {
             />
             {t.badge}
           </p>
-          <h1 className="text-[32px] font-medium tracking-tight mb-2">{t.title}</h1>
+          <h1 className="text-[32px] font-bold tracking-tight mb-2">{t.title}</h1>
           <p className="text-sm text-primary-text mb-5">{t.subtitle}</p>
           <p className="flex items-center gap-1.5 text-[13px] text-text2 mb-6">
             <MapPin size={13} aria-hidden="true" />
@@ -54,7 +54,7 @@ export default function About({ locale }: { locale: Locale }) {
 
       <section aria-labelledby="werkzeuge" className="border-b border-border py-8 overflow-hidden">
         <div className="max-w-[1100px] mx-auto px-6 sm:px-8">
-          <h2 id="werkzeuge" className="text-[11px] font-medium tracking-widest uppercase text-text3 mb-6">
+          <h2 id="werkzeuge" className="text-[11px] font-bold tracking-widest uppercase text-text3 mb-6">
             {t.tools}
           </h2>
           <ul aria-label={t.tools} className="sr-only">
@@ -67,7 +67,7 @@ export default function About({ locale }: { locale: Locale }) {
       </section>
 
       <section className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16">
-        <h2 className="text-[11px] font-medium tracking-widest text-text3 uppercase mb-10">{t.journey}</h2>
+        <h2 className="text-[11px] font-bold tracking-widest text-text3 uppercase mb-10">{t.journey}</h2>
         <ol className="relative">
           <span aria-hidden="true" className="absolute left-[7px] top-0 bottom-0 w-[1.5px] bg-border" />
           {timeline.map((item) => (
@@ -87,7 +87,7 @@ export default function About({ locale }: { locale: Locale }) {
                     year: 'numeric',
                   })}
                 </time>
-                <h3 className="text-[15px] font-medium text-foreground mb-2 leading-snug">{item[locale].title}</h3>
+                <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">{item[locale].title}</h3>
                 <p className="text-[13px] text-text2 leading-relaxed">{item[locale].text}</p>
               </div>
               {item.image && (

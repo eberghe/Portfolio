@@ -27,6 +27,7 @@ const noScriptCss = '[data-schritt][hidden]{display:block!important}[data-nur-js
 const inputClass =
   'w-full bg-bg2 border rounded-lg px-3 py-2.5 text-[13px] text-foreground placeholder:text-text2 focus:border-primary transition-colors font-sans';
 const labelClass = 'text-[11px] font-medium tracking-wide uppercase text-text3 mb-1.5 block';
+const summaryHeadingClass = labelClass.replace('font-medium', 'font-bold');
 const choiceClass =
   'flex items-center gap-3 min-h-11 px-3 py-2 rounded-lg border border-border bg-bg2 text-[13px] text-foreground cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-light';
 const buttonClass =
@@ -127,11 +128,11 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
   if (state.status === 'sent') {
     return (
       <section aria-labelledby="anfrage-danke">
-        <h2 id="anfrage-danke" ref={thanks} tabIndex={-1} className="text-[22px] font-medium tracking-tight mb-2">
+        <h2 id="anfrage-danke" ref={thanks} tabIndex={-1} className="text-[22px] font-bold tracking-tight mb-2">
           {t.thanks(state.summary.name)}
         </h2>
         <p className="text-sm text-text2 leading-relaxed mb-6">{t.thanksText}</p>
-        <h3 className={labelClass}>{t.summary}</h3>
+        <h3 className={summaryHeadingClass}>{t.summary}</h3>
         <dl className="border border-border rounded-xl divide-y divide-border">
           {inquiryLines(state.summary).map(([label, value]) => (
             <div key={label} className="px-4 py-3">
@@ -183,7 +184,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
               headings.current[i] = el;
             }}
             tabIndex={-1}
-            className="text-[17px] font-medium text-foreground"
+            className="text-[17px] font-bold text-foreground"
           >
             {t.stepOf(i + 1, steps.length, t.steps[i]!)}
           </h3>
@@ -250,7 +251,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
           aria-labelledby="anfrage-hinweis"
           className="border border-border bg-bg2 rounded-xl p-4 mb-6"
         >
-          <h3 id="anfrage-hinweis" className="text-[13px] font-medium text-foreground mb-1">
+          <h3 id="anfrage-hinweis" className="text-[13px] font-bold text-foreground mb-1">
             {state.status === 'limited'
               ? t.limited
               : state.reason === 'unavailable'
@@ -303,7 +304,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
           aria-labelledby="anfrage-fehler-titel"
           className="border border-error rounded-xl p-4 mb-6"
         >
-          <h3 id="anfrage-fehler-titel" className="text-[13px] font-medium text-foreground mb-2">
+          <h3 id="anfrage-fehler-titel" className="text-[13px] font-bold text-foreground mb-2">
             {t.errorsTitle(errorList.length)}
           </h3>
           <ul className="list-disc pl-5 space-y-1">

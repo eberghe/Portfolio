@@ -138,7 +138,7 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
                   <Link
                     href={localizedPath(item.path, locale)}
                     aria-current={current(item.path)}
-                    className={`block whitespace-nowrap px-3.5 py-2 rounded-lg text-[13px] transition duration-150 ${linkClass(active)}`}
+                    className={`block whitespace-nowrap px-3.5 md:px-2.5 lg:px-3.5 py-2 rounded-lg text-[13px] transition duration-150 ${linkClass(active)}`}
                   >
                     {t[item.key]}
                   </Link>

@@ -1,3 +1,4 @@
+import { faqs } from '@/lib/content/faq';
 import type { Project } from '@/lib/content/projects';
 import { services, type Service } from '@/lib/content/services';
 import { messages, type Locale } from '@/lib/i18n';
@@ -117,4 +118,29 @@ export function projectBreadcrumbJsonLd(project: Project, locale: Locale) {
     ],
     locale,
   );
+}
+
+/** FAQPage (faq.md AK-3) */
+export function faqJsonLd(locale: Locale) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    inLanguage: locale,
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f[locale].q,
+      acceptedAnswer: { '@type': 'Answer', text: f[locale].a },
+    })),
+  };
+}
+
+/** ProfilePage für Über mich (ueber-mich.md AK-2) */
+export function profilePageJsonLd(locale: Locale) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    url: absolute('/about', locale),
+    inLanguage: locale,
+    mainEntity: person(locale),
+  };
 }

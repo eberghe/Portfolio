@@ -12,7 +12,9 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Leistungen](seiten/leistungen.md): Webflow-Entwicklung, Barrierefreiheit-Beratung, KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design, UX/UI-Design, Design-Systeme, Fotografie
 - [Beispiel-Projektablauf](seiten/projektablauf.md)
 - [Projekte / Case Studies](seiten/projekte.md)
-- [Über mich, FAQ, Rechtliches](seiten/statische-seiten.md)
+- [FAQ](seiten/faq.md)
+- [Impressum & Datenschutz](seiten/rechtliches.md)
+- [Über mich](seiten/ueber-mich.md)
 
 ## Mehrsprachigkeit
 

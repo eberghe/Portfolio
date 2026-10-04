@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { projects } from '../../lib/content/projects';
-import { axe } from './helpers';
+import { axe, openHydrated } from './helpers';
 
 // functions/seiten/projekte.md
 
@@ -19,8 +19,7 @@ test('AK-1: alle Projektseiten statisch erreichbar mit eigenem Title', async ({ 
 });
 
 test('AK-5: Lightbox ist ein modaler Dialog mit Tastaturbedienung', async ({ page }) => {
-  await page.goto('/projects/indonesia');
-  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await openHydrated(page, '/projects/indonesia');
   const trigger = page.getByRole('button', { name: /Bild 2 von 7/ });
   await trigger.click();
   const dialog = page.getByRole('dialog', { name: 'Bild 2 von 7' });
@@ -41,7 +40,7 @@ for (const scheme of ['light', 'dark'] as const) {
     test.use({ colorScheme: scheme });
     for (const path of ['/projects', '/projects/cpr', '/en/projects/indonesia', '/projects/webflow']) {
       test(`AK-9: ${path} ohne axe-Verstöße und ohne horizontales Scrollen`, async ({ page }) => {
-        await page.goto(path);
+        await openHydrated(page, path);
         expect(await axe(page)).toEqual([]);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
         expect(overflow).toBeLessThanOrEqual(0);
@@ -49,8 +48,7 @@ for (const scheme of ['light', 'dark'] as const) {
     }
 
     test('AK-9: geöffnete Lightbox ohne axe-Verstöße', async ({ page }) => {
-      await page.goto('/en/projects/morocco');
-      await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+      await openHydrated(page, '/en/projects/morocco');
       await page.getByRole('button', { name: /image 1 of 6/i }).click();
       await expect(page.getByRole('dialog')).toBeVisible();
       expect(await axe(page)).toEqual([]);

@@ -53,7 +53,7 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
         <div className="relative border-t md:border-t-0 md:border-l border-border overflow-hidden min-h-[300px] md:min-h-0">
           <Image
-            src="/images/hero-erik.png"
+            src="/images/hero-erik.jpg"
             alt={t.heroAlt}
             fill
             priority

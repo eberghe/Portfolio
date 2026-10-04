@@ -64,7 +64,7 @@ export const projects: Project[] = [
     tools: 'Photoshop, Illustrator, AfterEffects, PremierePro, XD',
     team: 'Dominik Dumberger, Martin Ferstl',
     thumbnail: {
-      src: '/images/project-cpr.png',
+      src: '/images/project-cpr.jpg',
       width: 1920,
       height: 977,
       alt: {
@@ -346,7 +346,7 @@ export const projects: Project[] = [
     tools: 'Figma, Google Docs, Google Meet',
     team: 'Tobias Brzezowsky, Johannes Erath, Atte Tuliara, Jonas Rümmele, Sami Agha Ali Nouri, Michael Grameiser',
     thumbnail: {
-      src: '/images/project-sightkick.png',
+      src: '/images/project-sightkick.jpg',
       width: 1920,
       height: 977,
       alt: {
@@ -680,7 +680,7 @@ export const projects: Project[] = [
     year: '2023',
     tools: 'Webflow · Shopify · Figma',
     thumbnail: {
-      src: '/images/project-webflow.png',
+      src: '/images/project-webflow.jpg',
       width: 1728,
       height: 1117,
       alt: {
@@ -838,7 +838,7 @@ export const projects: Project[] = [
     year: '2023',
     tools: 'Sony Alpha · Lightroom · Capture One',
     thumbnail: {
-      src: '/images/project-morocco.png',
+      src: '/images/project-morocco.jpg',
       width: 768,
       height: 1024,
       alt: {

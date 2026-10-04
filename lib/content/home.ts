@@ -68,7 +68,7 @@ export const homeContent = {
 export const featuredProjects = [
   {
     id: 'sightkick',
-    image: { src: '/images/project-sightkick.png', width: 1920, height: 977 },
+    image: { src: '/images/project-sightkick.jpg', width: 1920, height: 977 },
     color: '#c8ddf0',
     de: {
       title: "SIGHT'KICK",
@@ -83,7 +83,7 @@ export const featuredProjects = [
   },
   {
     id: 'cpr',
-    image: { src: '/images/project-cpr.png', width: 1920, height: 977 },
+    image: { src: '/images/project-cpr.jpg', width: 1920, height: 977 },
     color: '#cde8e0',
     de: { title: 'CPR App', type: 'UX/UI · App-Design', desc: 'Wie Kinder spielerisch lernen, Leben zu retten.' },
     en: {
@@ -105,7 +105,7 @@ export const featuredProjects = [
   },
   {
     id: 'webflow',
-    image: { src: '/images/project-webflow.png', width: 1728, height: 1117 },
+    image: { src: '/images/project-webflow.jpg', width: 1728, height: 1117 },
     color: '#c8d8f0',
     de: {
       title: 'Webflow vs. Shopify',

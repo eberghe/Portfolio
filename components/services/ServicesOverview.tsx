@@ -76,7 +76,10 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                 >
                   {text.label}
                 </span>
-                <h2 id={`leistung-${s.slug}`} className={`text-base font-medium mb-2 ${accent ? '' : 'text-foreground'}`}>
+                <h2
+                  id={`leistung-${s.slug}`}
+                  className={`text-base font-medium mb-2 ${accent ? '' : 'text-foreground'}`}
+                >
                   {text.title}
                 </h2>
                 <span

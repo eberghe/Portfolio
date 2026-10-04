@@ -3,7 +3,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { featuredProjects, homeContent } from '@/lib/content/home';
 import { services } from '@/lib/content/services';
+import JsonLd from '@/components/JsonLd';
 import { localizedPath, type Locale } from '@/lib/i18n';
+import { homeJsonLd } from '@/lib/seo';
 
 // Startseite, übernommen aus Lovable (HomePage.tsx). Siehe functions/seiten/startseite.md
 const cardHover =
@@ -15,6 +17,7 @@ export default function Home({ locale }: { locale: Locale }) {
 
   return (
     <>
+      <JsonLd data={homeJsonLd(locale)} />
       <section className="min-h-[calc(100vh-64px)] grid grid-cols-1 md:grid-cols-2 border-b border-border">
         <div className="flex flex-col justify-center px-6 sm:px-8 md:px-16 py-16 md:py-20 motion-safe:animate-fade-in">
           <p className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide mb-8 w-fit">

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { projectsOverviewText } from '@/components/projects/ProjectsOverview';
 import { projects } from '@/lib/content/projects';
 import type { Locale } from '@/lib/i18n';
+import { pageMetadata } from '@/lib/seo';
 
 // Gemeinsame Logik der DE- und EN-Routen für Projekte (functions/seiten/projekte.md)
 export const projectStaticParams = () => projects.map((p) => ({ slug: p.slug }));
@@ -14,10 +15,18 @@ export function findProject(slug: string) {
 }
 
 export function projectMetadata(slug: string, locale: Locale): Metadata {
-  const t = findProject(slug)[locale];
-  return { title: t.metaTitle, description: t.metaDescription };
+  const project = findProject(slug);
+  const t = project[locale];
+  return pageMetadata({
+    path: `/projects/${slug}`,
+    locale,
+    title: t.metaTitle,
+    description: t.metaDescription,
+    image: project.thumbnail.src,
+  });
 }
 
 export function projectsOverviewMetadata(locale: Locale): Metadata {
-  return { title: projectsOverviewText[locale].metaTitle, description: projectsOverviewText[locale].metaDescription };
+  const t = projectsOverviewText[locale];
+  return pageMetadata({ path: '/projects', locale, title: t.metaTitle, description: t.metaDescription });
 }

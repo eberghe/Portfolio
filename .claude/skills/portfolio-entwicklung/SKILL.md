@@ -53,7 +53,19 @@ Dieser Skill gilt für **jede** Änderung am Portfolio: neue Funktion, Bugfix, n
 - Er prüft u. a.: Screenreader-Erlebnis (nur Accessibility-Tree, kein visuelles Bild), Tastaturbedienung, Mobile, SEO/GEO, Verständlichkeit der Texte, Konsistenz mit dem Design.
 - Jeder Befund wird entweder behoben (neuer Test zuerst!) oder mit Begründung in der Funktionsdoku unter „Offene Fragen" festgehalten.
 
-### 5. Abschluss
+### 5. Nebenbei gefundene Probleme (Issues)
+
+Bei jeder Arbeit auf Probleme achten, auch außerhalb der eigentlichen Aufgabe (Bugs, A11y, SEO, Inhalte, Sicherheit).
+
+- **Klein und zusammenhängend** (gleiche Datei/Funktion, wenige Zeilen, kein neues Verhalten): direkt mitlösen, mit Test, im selben Commit erwähnen.
+- **Größer oder unabhängig**: nicht sofort lösen, sondern ein GitHub-Issue anlegen. Vorher nach Duplikaten suchen.
+  - Titel: `<bereich>: <Problem>`
+  - Inhalt: Beobachtung (Fundstelle, Schritte), Auswirkung, Vorschlag, betroffene Funktionsdatei in `functions/`
+  - Priorität als Label: `prio: hoch` (bricht Funktion, A11y-Blocker, rechtlich, Sicherheit), `prio: mittel` (spürbar, mit Umweg nutzbar), `prio: niedrig` (kosmetisch)
+  - Bereich als Label: `bug`, `a11y`, `seo`, `inhalt`, `design`, `technik`, `sicherheit`
+- Im Abschlussbericht an Erik die angelegten Issues mit Link nennen.
+
+### 6. Abschluss
 
 - Doku an den tatsächlichen Stand anpassen.
 - Commit-Message: `<bereich>: <was>` und Verweis auf die Funktionsdatei.
@@ -70,6 +82,7 @@ Dieser Skill gilt für **jede** Änderung am Portfolio: neue Funktion, Bugfix, n
 - [ ] DE und EN vorhanden, `hreflang` korrekt
 - [ ] Blinder Kritiker: keine offenen Befunde ohne Begründung
 - [ ] Design unverändert (Screenshot-Vergleich)
+- [ ] Nebenbei gefundene Probleme gelöst (klein) oder als Issue mit Priorität und Label angelegt (größer)
 
 ## Verbote
 

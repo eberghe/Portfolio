@@ -71,7 +71,6 @@ const de = {
   copied: 'Kopiert.',
   copyFailed: 'Kopieren nicht möglich. Bitte markiere den Text selbst.',
   retry: 'Erneut senden',
-  skipToForm: 'Zum Anfrageformular',
   truncated: '[gekürzt, vollständiger Text über „Angaben kopieren“]',
 
   errorsTitle: (n: number) => (n === 1 ? 'Bitte prüfe 1 Angabe:' : `Bitte prüfe ${n} Angaben:`),
@@ -176,7 +175,6 @@ const en: ContactText = {
   copied: 'Copied.',
   copyFailed: 'Copying is not possible. Please select the text yourself.',
   retry: 'Send again',
-  skipToForm: 'Go to the enquiry form',
   truncated: '[shortened, full text via “Copy details”]',
 
   errorsTitle: (n) => (n === 1 ? 'Please check 1 entry:' : `Please check ${n} entries:`),

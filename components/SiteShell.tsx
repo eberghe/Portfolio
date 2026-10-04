@@ -19,7 +19,7 @@ export default function SiteShell({
   children: ReactNode;
 }) {
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-head-element -- App Router: SiteShell ist das Root-Layout */}
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

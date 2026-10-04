@@ -7,6 +7,13 @@ html {
   scroll-padding-top: 80px;
 }
 
+/* Die Schritt-Buttons des Anfrage-Assistenten kleben auf dem Handy unten und dürfen fokussierte Felder nicht verdecken */
+@media (max-width: 639px) {
+  html {
+    scroll-padding-bottom: 80px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

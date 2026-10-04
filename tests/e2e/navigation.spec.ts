@@ -189,3 +189,15 @@ for (const path of [
     expect(overflow).toBeLessThanOrEqual(0);
   });
 }
+
+for (const from of ['/about', '/services', '/en/about']) {
+  test(`AK-18: Logo öffnet die Startseite oben (von ${from})`, async ({ page }) => {
+    await page.goto(from);
+    await page.locator('html[data-hydrated]').waitFor();
+    await page.locator('header nav a').first().click();
+    await page.waitForURL(from.startsWith('/en') ? '**/en' : (url) => url.pathname === '/');
+    await page.waitForTimeout(800);
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(page.getByRole('heading', { level: 1 })).toBeInViewport();
+  });
+}

@@ -3,6 +3,8 @@
 Jede Funktion der Seite ist hier beschrieben, **bevor** sie gebaut wird (siehe Skill `portfolio-entwicklung`).
 Vorlage für neue Dateien: [`_vorlage.md`](_vorlage.md).
 
+Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-bergheimer`.
+
 ## Seiten
 - [Startseite](seiten/startseite.md)
 - [Leistungen](seiten/leistungen.md): Webflow-Entwicklung, Barrierefreiheit-Beratung, KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design, UX/UI-Design, Design-Systeme, Fotografie
@@ -21,6 +23,7 @@ Vorlage für neue Dateien: [`_vorlage.md`](_vorlage.md).
 
 ## Kontakt
 - [Anfrage-Assistent statt Mail](kontakt/anfrage-assistent.md)
+- [Angebotsseiten für Kunden](kontakt/angebotsseiten.md)
 - [Website-Schnellcheck („wie viel besser kann deine Seite werden")](kontakt/website-schnellcheck.md)
 
 ## Qualität

@@ -6,6 +6,7 @@ Status: Entwurf
 - `anfragen`: Anfrage-Assistent (nur Server schreibt, nur Erik liest)
 - `fragen`: FAQ/GEO-Inhalte (öffentlich lesbar wenn veröffentlicht)
 - `staedte`, `stadt_leistung`: Städte-Landingpages
+- `angebote`, `angebot_optionen`: Angebotsseiten für Kunden (nur per Token, serverseitig)
 
 Texte mit Sprachfeld `sprache` (`de`/`en`) bzw. je Sprache eigene Spalten.
 

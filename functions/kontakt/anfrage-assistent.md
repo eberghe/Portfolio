@@ -2,6 +2,9 @@
 
 Status: Entwurf
 
+## Bestand
+Die Lovable-Seite nutzt ein einfaches Formular (Name, E-Mail, Nachricht) über Web3Forms, das als Mail ankommt.
+
 ## Zweck
 Kundenfreundlich anfragen ohne Mailprogramm: in wenigen Schritten Anliegen, Budget-Rahmen und Wunschtermin angeben.
 

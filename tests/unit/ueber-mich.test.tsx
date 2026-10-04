@@ -4,6 +4,8 @@ import About from '@/components/about/About';
 import { aboutContent, timeline, tools } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
 import { sitePaths } from '@/lib/routes';
+import { llmsTxt } from '@/lib/llms';
+import { person } from '@/lib/site';
 import { profilePageJsonLd } from '@/lib/structured-data';
 
 // functions/seiten/ueber-mich.md
@@ -45,7 +47,7 @@ describe('AK-5: Zeitleiste', () => {
     const ol = heading.parentElement!.querySelector('ol')!;
     const items = within(ol).getAllByRole('listitem');
     expect(items).toHaveLength(timeline.length);
-    expect(timeline.length).toBe(13);
+    expect(timeline.length).toBe(14);
     for (const li of items) {
       expect(li.querySelector('time[datetime]')).not.toBeNull();
       expect(within(li).getByRole('heading', { level: 3 })).toBeTruthy();
@@ -81,5 +83,36 @@ describe('AK-10: Werkzeuge einheitlich', () => {
     const answer = faqs.find((f) => f.id === 'tools')!.de.a;
     for (const t of tools) expect(answer).toContain(t.name);
     expect(tools.map((t) => t.name)).not.toContain('Dribbble');
+  });
+});
+
+describe('AK-11: Master abgeschlossen', () => {
+  it('Zeitleiste endet mit dem Abschluss', () => {
+    const last = timeline.at(-1)!;
+    expect(last.date).toBe('2026-09');
+    expect(last.de.title).toBe('Masterabschluss am MCI');
+    expect(last.en.title).toBe("Master's degree from MCI");
+  });
+
+  it.each(['de', 'en'] as const)('kein laufendes Studium mehr (%s)', (locale) => {
+    const all = [aboutContent[locale].intro, ...timeline.map((t) => t[locale].text)].join(' ');
+    expect(all).not.toMatch(/studiere (ich )?jetzt|Aktuell studiere|pursuing|currently .*study|and study /i);
+  });
+
+  it('llms.txt und JSON-LD', () => {
+    expect(llmsTxt()).not.toMatch(/studies Management/);
+    expect(llmsTxt()).toMatch(/Master's .*MCI Innsbruck/);
+    const alumni = JSON.stringify(person('de').alumniOf);
+    expect(alumni).toContain('Ingolstadt');
+    expect(alumni).toContain('MCI');
+  });
+});
+
+describe('AK-12: Vergangenheit und Parität', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    const all = [aboutContent[locale].intro, ...timeline.map((t) => t[locale].text)].join(' ');
+    expect(all).not.toMatch(/arbeite (ich )?jetzt|I'm now working|I am currently/);
+    expect(aboutContent[locale].intro).toMatch(/Bali/);
+    expect(JSON.stringify(person(locale).workLocation)).toContain(locale === 'de' ? 'Deutschland' : 'Germany');
   });
 });

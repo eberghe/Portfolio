@@ -49,13 +49,15 @@ describe('standort AK-3: kein Österreich in den Rechtstexten', () => {
 
 describe('standort AK-4: JSON-LD nur Deutschland', () => {
   it.each(locales)('%s', (locale) => {
-    const home = JSON.stringify(homeJsonLd(locale));
-    const service = JSON.stringify(serviceJsonLd(services[0]!, locale));
-    for (const json of [home, service]) {
-      expect(json).toContain('Augsburg');
-      expect(json).toContain(locale === 'de' ? 'Deutschland' : 'Germany');
-      expect(json).not.toMatch(/Innsbruck|Österreich|Austria/);
-    }
+    // Ortsfelder (areaServed, workLocation, address); alumniOf darf das MCI Innsbruck nennen
+    const [p, s] = homeJsonLd(locale)['@graph'] as Record<string, unknown>[];
+    const service = serviceJsonLd(services[0]!, locale);
+    const places = [p!.workLocation, p!.address, s!.areaServed, service.areaServed, service.provider.workLocation];
+    for (const json of places.map((x) => JSON.stringify(x))) expect(json).not.toMatch(/Innsbruck|Österreich|Austria/);
+    const all = places.map((x) => JSON.stringify(x)).join(' ');
+    expect(all).toContain('Augsburg');
+    expect(all).toContain(locale === 'de' ? 'Deutschland' : 'Germany');
+    expect(JSON.stringify(homeJsonLd(locale))).not.toMatch(/Österreich|Austria/);
   });
 });
 

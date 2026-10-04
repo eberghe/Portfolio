@@ -1,0 +1,150 @@
+/* Übernommen aus dem Lovable-Projekt (src/index.css). Siehe functions/infrastruktur/design-tokens.md */
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 207 30% 13%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 207 30% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 207 30% 13%;
+
+    --primary: 161 36% 34%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 120 6% 97%;
+    --secondary-foreground: 207 30% 13%;
+
+    --muted: 120 6% 95%;
+    --muted-foreground: 215 15% 47%;
+
+    --accent: 161 36% 34%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 0% / 0.08;
+    --input: 0 0% 0% / 0.12;
+    --ring: 161 36% 34%;
+
+    --radius: 0.5rem;
+
+    --primary-text: 161 36% 34%;
+
+    /* Custom tokens */
+    --primary-light: 150 25% 93%;
+    --primary-mid: 161 36% 34% / 0.15;
+    --primary-border: 161 36% 34% / 0.25;
+    --text2: 215 15% 44.5%;
+    --text3: 214 20% 44.5%;
+    --bg2: 120 6% 97%;
+    --bg3: 120 6% 94%;
+  }
+
+  .dark {
+    --primary-text: 161 36% 43.5%;
+    --background: 207 40% 7%;
+    --foreground: 210 30% 96%;
+
+    --card: 207 30% 13%;
+    --card-foreground: 210 30% 96%;
+
+    --popover: 207 30% 13%;
+    --popover-foreground: 210 30% 96%;
+
+    --primary: 161 36% 34%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 12%;
+    --secondary-foreground: 210 30% 96%;
+
+    --muted: 210 20% 12%;
+    --muted-foreground: 210 15% 55%;
+
+    --accent: 161 36% 34%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 30% 96%;
+
+    --border: 0 0% 100% / 0.07;
+    --input: 0 0% 100% / 0.12;
+    --ring: 161 36% 34%;
+
+    --primary-light: 161 36% 34% / 0.12;
+    --primary-mid: 161 36% 34% / 0.15;
+    --primary-border: 161 36% 34% / 0.2;
+    --text2: 210 20% 70%;
+    --text3: 205 20% 53%;
+    --bg2: 207 35% 9%;
+    --bg3: 207 30% 13%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid hsl(var(--foreground));
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  .dark a:focus-visible,
+  .dark button:focus-visible {
+    outline-color: white;
+  }
+}
+
+@layer utilities {
+  .text-text2 {
+    color: hsl(var(--text2));
+  }
+  .text-text3 {
+    color: hsl(var(--text3));
+  }
+  .bg-bg2 {
+    background: hsl(var(--bg2));
+  }
+  .bg-bg3 {
+    background: hsl(var(--bg3));
+  }
+  .bg-primary-light {
+    background: hsl(var(--primary-light));
+  }
+  .border-primary-border {
+    border-color: hsl(var(--primary-border));
+  }
+  .text-primary-custom {
+    color: hsl(var(--primary-text));
+  }
+}
+
+@keyframes scroll-logos {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+
+.animate-scroll-logos {
+  animation: scroll-logos 60s linear infinite;
+  width: max-content;
+}

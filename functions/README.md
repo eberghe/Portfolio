@@ -33,6 +33,7 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Teststrategie](qualitaet/teststrategie.md)
 
 ## Infrastruktur
+- [Grundgerüst (Next.js, Tests)](infrastruktur/grundgeruest.md)
 - [Supabase (Datenmodell, RLS)](infrastruktur/supabase.md)
 - [Vercel (Deploy, Previews, Umgebungsvariablen)](infrastruktur/vercel.md)
 - [Design-Tokens (Übernahme des bestehenden Designs)](infrastruktur/design-tokens.md)

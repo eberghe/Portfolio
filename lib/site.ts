@@ -26,6 +26,14 @@ export function person(locale: Locale) {
     alumniOf: { '@type': 'CollegeOrUniversity', name: 'Technische Hochschule Ingolstadt' },
     image: `${SITE_URL}/images/about/erik.jpg`,
     knowsLanguage: ['de', 'en'],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Weißdornstraße 5',
+      postalCode: '86343',
+      addressLocality: 'Königsbrunn',
+      addressRegion: 'Bayern',
+      addressCountry: 'DE',
+    },
     workLocation: [
       { '@type': 'Place', name: 'Augsburg' },
       { '@type': 'Country', name: 'Deutschland' },

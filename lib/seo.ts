@@ -74,7 +74,10 @@ export function homeJsonLd(locale: Locale) {
         image: `${SITE_URL}${DEFAULT_IMAGE}`,
         email: EMAIL,
         founder: { '@id': personNode['@id'] },
-        areaServed: areaServed[locale].map((name, i) => ({ '@type': i < 2 ? 'City' : 'Country', name })),
+        areaServed: [
+          { '@type': 'City', name: areaServed[locale][0] },
+          { '@type': 'Country', name: areaServed[locale][1] },
+        ],
         knowsAbout: services.map((s) => s[locale].title),
       },
     ],

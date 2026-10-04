@@ -58,7 +58,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
       title: 'Imprint',
       sections: [
         {
-          title: 'Provider',
+          title: 'Information pursuant to Section 5 DDG',
           paragraphs: [
             'Erik Bergheimer\nUX/UI Designer & Webflow Developer\nWeißdornstraße 5\n86343 Königsbrunn\nGermany',
           ],

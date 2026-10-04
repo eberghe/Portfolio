@@ -26,6 +26,10 @@ Interessenten sehen sofort, wo Erik vor Ort arbeitet. Suchmaschinen und KI-Antwo
 - AK-4: JSON-LD (`areaServed`, `workLocation`) nennt Augsburg und Deutschland/Germany, aber weder Innsbruck noch Österreich/Austria.
 - AK-5: Meta-Descriptions von Startseite, Leistungen, Kontakt, FAQ und Über mich sowie `llms.txt` nennen Augsburg und kein Innsbruck als Standort.
 - AK-6: Footer-Satz lautet „made with 🤍 in augsburg".
+- AK-7: Startseiten-JSON-LD: Augsburg ist `City`, Deutschland/Germany ist `Country`.
+- AK-8: `Person` im JSON-LD hat `address` (`PostalAddress`: Weißdornstraße 5, 86343 Königsbrunn, DE).
+- AK-9: Die Anschrift wird mit echten Zeilenumbrüchen (`<br>`) ausgegeben, nicht nur per CSS, damit Screenreader und Kopieren die Zeilen erhalten. EN-Impressum: Überschrift „Information pursuant to Section 5 DDG".
+- AK-10: Die FAQ nennt Barrierefreiheit-Regeln ohne Österreich-Bezug, in DE und EN gleich (WCAG, BFSG, European Accessibility Act).
 
 ## Barrierefreiheit
 
@@ -49,9 +53,14 @@ Keine.
 
 ## Tests
 
-`tests/unit/standort.test.tsx` (AK-1 bis AK-6); bestehende Orts-Tests in `seo.test.ts`, `services.test.tsx`, `statische-seiten.test.tsx` auf Augsburg/Deutschland umgestellt.
+`tests/unit/standort.test.tsx` (AK-1 bis AK-10); bestehende Orts-Tests in `seo.test.ts`, `services.test.tsx`, `statische-seiten.test.tsx` auf Augsburg/Deutschland umgestellt.
 
 ## Offene Fragen
 
 - Rechtliche Prüfung von Impressum und Datenschutz (Generator oder Anwalt) bleibt offen.
-- FAQ nennt beim Thema Barrierefreiheit weiterhin das österreichische BaFG als Fachwissen, nicht als Standort.
+
+## Befunde Blinder Kritiker (Runde 1)
+
+Behoben (mit Test): FAQ-BaFG (AK-10), City/Country im JSON-LD (AK-7), `address` im JSON-LD (AK-8), Zeilenumbrüche der Anschrift und EN-Überschrift (AK-9).
+Entscheidung bei Erik: Über mich nennt als letzte Station „Umzug nach Innsbruck" und „ich studiere jetzt am MCI", das widerspricht dem Standort Augsburg; Telefonnummer oder USt-ID im Impressum.
+Als Issue angelegt (größer oder unabhängig): FAQ-Frage zum Standort, „uX/UI" in EN-Überschrift, Leerzeichen vor Komma in der h1, „5 Projekte" bei 4 sichtbaren, FAQ-Fragen ohne Überschriften.

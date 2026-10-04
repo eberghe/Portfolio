@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { overviewText } from '@/components/services/ServicesOverview';
-import { faqText } from '@/components/faq/FaqPage';
+import FaqPage, { faqText } from '@/components/faq/FaqPage';
 import LegalPage from '@/components/legal/LegalPage';
 import { aboutContent } from '@/lib/content/about';
 import { contactText } from '@/lib/content/contact';
@@ -86,5 +86,46 @@ describe('standort AK-5: Descriptions und llms.txt nennen Augsburg', () => {
 describe('standort AK-6: Footer-Satz', () => {
   it.each(locales)('%s', (locale) => {
     expect(messages[locale].footer.madeWith).toBe('made with 🤍 in augsburg');
+  });
+});
+
+describe('standort AK-7: City und Country im Startseiten-JSON-LD', () => {
+  it.each(locales)('%s', (locale) => {
+    const service = homeJsonLd(locale)['@graph'][1] as { areaServed: { '@type': string; name: string }[] };
+    expect(service.areaServed).toEqual([
+      { '@type': 'City', name: 'Augsburg' },
+      { '@type': 'Country', name: locale === 'de' ? 'Deutschland' : 'Germany' },
+    ]);
+  });
+});
+
+describe('standort AK-8: Anschrift im Person-JSON-LD', () => {
+  it('PostalAddress', () => {
+    const p = homeJsonLd('de')['@graph'][0] as { address?: Record<string, string> };
+    expect(p.address).toEqual({
+      '@type': 'PostalAddress',
+      streetAddress: 'Weißdornstraße 5',
+      postalCode: '86343',
+      addressLocality: 'Königsbrunn',
+      addressRegion: 'Bayern',
+      addressCountry: 'DE',
+    });
+  });
+});
+
+describe('standort AK-9: Zeilenumbrüche der Anschrift', () => {
+  it.each(locales)('%s', (locale) => {
+    const { container } = render(<LegalPage kind="impressum" locale={locale} />);
+    const p = [...container.querySelectorAll('p')].find((el) => el.textContent!.includes('Weißdornstraße 5'))!;
+    expect(p.querySelectorAll('br').length).toBeGreaterThanOrEqual(3);
+    if (locale === 'en') expect(container).toHaveTextContent('Information pursuant to Section 5 DDG');
+  });
+});
+
+describe('standort AK-10: FAQ ohne Österreich', () => {
+  it.each(locales)('%s', (locale) => {
+    render(<FaqPage locale={locale} />);
+    expect(document.body.textContent).not.toMatch(/österreich|Austria|BaFG/i);
+    expect(document.body.textContent).toContain('European Accessibility Act');
   });
 });

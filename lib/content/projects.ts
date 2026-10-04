@@ -577,7 +577,7 @@ export const projects: Project[] = [
     year: '2024',
     tools: 'Sony Alpha · Adobe Lightroom',
     thumbnail: {
-      src: '/images/project-indonesia.png',
+      src: '/images/project-indonesia.jpg',
       width: 1824,
       height: 1368,
       alt: {

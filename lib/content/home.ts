@@ -94,7 +94,7 @@ export const featuredProjects = [
   },
   {
     id: 'indonesia',
-    image: { src: '/images/project-indonesia.png', width: 1824, height: 1368 },
+    image: { src: '/images/project-indonesia.jpg', width: 1824, height: 1368 },
     color: '#e8d8c0',
     de: {
       title: 'Indonesien',

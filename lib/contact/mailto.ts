@@ -30,7 +30,17 @@ export function inquiryText(i: Inquiry) {
     .join('\n\n');
 }
 
+/** Viele Mailprogramme kürzen mailto-Links über etwa 2000 Zeichen (Kritiker-Befund 3) */
+const MAX_MAILTO = 2000;
+
 export function inquiryMailto(i: Inquiry) {
   const subject = encodeURIComponent(contactText[i.sprache].mailSubject(i.name));
-  return `mailto:${EMAIL}?subject=${subject}&body=${encodeURIComponent(inquiryText(i))}`;
+  const build = (inq: Inquiry) => `mailto:${EMAIL}?subject=${subject}&body=${encodeURIComponent(inquiryText(inq))}`;
+  let url = build(i);
+  for (let n = i.beschreibung.length - 100; url.length > MAX_MAILTO && n > 0; n -= 100)
+    url = build({
+      ...i,
+      beschreibung: `${i.beschreibung.slice(0, n).trimEnd()} … ${contactText[i.sprache].truncated}`,
+    });
+  return url;
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft, ArrowRight, Mail } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Copy, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { startTransition, useActionState, useEffect, useRef, useState, type ReactNode } from 'react';
 import { submitInquiry } from '@/app/actions/inquiry';
@@ -46,6 +46,10 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
   const [focus, setFocus] = useState<Focus | null>(null);
   const requestFocus = (target: Focus['target']) => setFocus((f) => ({ target, n: (f?.n ?? 0) + 1 }));
   const [seen, setSeen] = useState(state);
+  const [length, setLength] = useState(() =>
+    state.status === 'invalid' ? String(state.values.beschreibung ?? '').length : 0,
+  );
+  const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle');
 
   const form = useRef<HTMLFormElement>(null);
   const headings = useRef<(HTMLHeadingElement | null)[]>([]);
@@ -123,12 +127,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
   if (state.status === 'sent') {
     return (
       <section aria-labelledby="anfrage-danke">
-        <h2
-          id="anfrage-danke"
-          ref={thanks}
-          tabIndex={-1}
-          className="text-[22px] font-medium tracking-tight mb-2 focus:outline-none"
-        >
+        <h2 id="anfrage-danke" ref={thanks} tabIndex={-1} className="text-[22px] font-medium tracking-tight mb-2">
           {t.thanks(state.summary.name)}
         </h2>
         <p className="text-sm text-text2 leading-relaxed mb-6">{t.thanksText}</p>
@@ -184,7 +183,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
               headings.current[i] = el;
             }}
             tabIndex={-1}
-            className="text-[17px] font-medium text-foreground focus:outline-none"
+            className="text-[17px] font-medium text-foreground"
           >
             {t.stepOf(i + 1, steps.length, t.steps[i]!)}
           </h3>
@@ -237,6 +236,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
             />
             <span className={`block text-[11px] truncate ${i === step ? 'text-foreground font-medium' : 'text-text3'}`}>
               {s}
+              {i < step && <span className="sr-only"> {t.done}</span>}
             </span>
           </li>
         ))}
@@ -248,7 +248,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
           tabIndex={-1}
           role="group"
           aria-labelledby="anfrage-hinweis"
-          className="border border-border bg-bg2 rounded-xl p-4 mb-6 focus:outline-none"
+          className="border border-border bg-bg2 rounded-xl p-4 mb-6"
         >
           <h3 id="anfrage-hinweis" className="text-[13px] font-medium text-foreground mb-1">
             {state.status === 'limited'
@@ -267,6 +267,29 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
                 <Mail size={15} aria-hidden="true" />
                 {t.fallbackLink}
               </a>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(state.text);
+                    setCopied('ok');
+                  } catch {
+                    setCopied('fail');
+                  }
+                }}
+                className="inline-flex items-center gap-2 min-h-11 ml-0 mt-2 sm:mt-0 sm:ml-2 border border-border text-foreground px-4 py-2.5 rounded-lg text-[13px] font-medium hover:border-primary transition-colors"
+              >
+                <Copy size={15} aria-hidden="true" />
+                {t.copy}
+              </button>
+              <p aria-live="polite" className="text-[12px] text-text2 mt-2">
+                {copied === 'ok' ? t.copied : copied === 'fail' ? t.copyFailed : ''}
+              </p>
+              {copied === 'fail' && (
+                <pre className="mt-2 text-[12px] text-foreground whitespace-pre-wrap break-words bg-background border border-border rounded-lg p-3 select-all">
+                  {state.text}
+                </pre>
+              )}
             </>
           )}
         </div>
@@ -278,7 +301,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
           tabIndex={-1}
           role="group"
           aria-labelledby="anfrage-fehler-titel"
-          className="border border-error rounded-xl p-4 mb-6 focus:outline-none"
+          className="border border-error rounded-xl p-4 mb-6"
         >
           <h3 id="anfrage-fehler-titel" className="text-[13px] font-medium text-foreground mb-2">
             {t.errorsTitle(errorList.length)}
@@ -345,9 +368,13 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
             rows={6}
             maxLength={3000}
             defaultValue={text('beschreibung')}
+            onChange={(e) => setLength(e.currentTarget.value.length)}
             className={`${inputClass} resize-y min-h-[140px] ${errors.beschreibung ? 'border-error' : 'border-border'}`}
             {...describe('beschreibung', 'anfrage-beschreibung-hinweis')}
           />
+          <p aria-live="polite" className="text-[12px] text-text2 mt-1.5 empty:hidden">
+            {length >= 2500 ? t.counter(length) : ''}
+          </p>
           {fieldError('beschreibung')}
           <label htmlFor={id('website')} className={`${labelClass} mt-5`}>
             {label(t.website, false)}
@@ -412,21 +439,24 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
                 value="ja"
                 defaultChecked={chosen('einwilligung', 'ja')}
                 className="w-4 h-4 mt-1 accent-primary shrink-0"
-                {...describe('einwilligung')}
+                {...describe('einwilligung', 'anfrage-einwilligung-hinweis')}
               />
               <span>
-                {t.consentBefore}
-                <Link
-                  href={localizedPath('/datenschutz', locale)}
-                  target="_blank"
-                  className="text-primary-text underline underline-offset-2"
-                >
-                  {t.consentLink}
-                  <span className="sr-only"> {t.newTab}</span>
-                </Link>
-                . <span className="text-foreground">{t.required}</span>
+                {t.consent} <span className="text-foreground">{t.required}</span>
               </span>
             </label>
+            <p id="anfrage-einwilligung-hinweis" className="text-[13px] text-text2 pl-7 mt-1">
+              {t.consentMore}{' '}
+              <Link
+                href={localizedPath('/datenschutz', locale)}
+                target="_blank"
+                className="text-primary-text underline underline-offset-2"
+              >
+                {t.consentLink}
+                <span className="sr-only"> {t.newTab}</span>
+              </Link>
+              .
+            </p>
             {fieldError('einwilligung')}
           </div>
         </>,
@@ -464,9 +494,13 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
           data-schritt
           hidden={step !== LAST}
           aria-disabled={pending || undefined}
-          className={`${buttonClass} bg-primary text-primary-foreground hover:bg-primary-hover aria-disabled:opacity-60`}
+          className={`${buttonClass} aria-disabled:opacity-60 ${
+            state.status === 'fallback'
+              ? 'border border-border text-text2 hover:text-foreground'
+              : 'bg-primary text-primary-foreground hover:bg-primary-hover'
+          }`}
         >
-          {pending ? t.sending : t.submit}
+          {pending ? t.sending : state.status === 'fallback' ? t.retry : t.submit}
         </button>
       </div>
     </form>

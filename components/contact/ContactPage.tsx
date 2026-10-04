@@ -41,6 +41,12 @@ export default function ContactPage({ locale }: { locale: Locale }) {
           <p className="text-[11px] font-medium tracking-widest uppercase text-primary-foreground mb-3">{t.eyebrow}</p>
           <h1 className="text-[30px] font-medium tracking-tight mb-2">{t.title}</h1>
           <p className="text-[15px] text-primary-foreground max-w-[520px]">{t.intro}</p>
+          <a
+            href="#anfrage-titel"
+            className="md:hidden inline-flex items-center min-h-11 mt-4 underline underline-offset-4 text-[14px] font-medium text-primary-foreground"
+          >
+            {t.skipToForm}
+          </a>
         </div>
       </section>
 
@@ -84,7 +90,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
             <p className="text-[13px] text-text2 leading-relaxed mt-5">{t.directNote}</p>
           </section>
 
-          <section aria-labelledby="anfrage-titel" className="md:pl-8 py-8 min-w-0">
+          <section aria-labelledby="anfrage-titel" className="md:pl-8 py-8 min-w-0 scroll-mt-20">
             <h2 id="anfrage-titel" className="text-[11px] font-medium tracking-wider uppercase text-text3 mb-4">
               {t.formTitle}
             </h2>

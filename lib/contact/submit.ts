@@ -1,4 +1,4 @@
-import { inquiryMailto } from './mailto';
+import { inquiryMailto, inquiryText } from './mailto';
 import type { InquiryState } from './state';
 import { fields, validateInquiry, type Inquiry } from './validate';
 
@@ -34,7 +34,8 @@ export async function handleInquiry(fd: FormData, { store, notify, ipHash }: Dep
   // Honeypot: Bots bekommen eine Erfolgsmeldung, gespeichert wird nichts (AK-3)
   if (String(fd.get('fax') ?? '').trim()) return { status: 'sent', summary: data };
 
-  if (!store) return { status: 'fallback', reason: 'unavailable', mailto: inquiryMailto(data) };
+  if (!store)
+    return { status: 'fallback', reason: 'unavailable', mailto: inquiryMailto(data), text: inquiryText(data) };
 
   try {
     if (ipHash && (await store.recentCount(ipHash, new Date(Date.now() - HOUR).toISOString())) >= LIMIT)
@@ -42,7 +43,7 @@ export async function handleInquiry(fd: FormData, { store, notify, ipHash }: Dep
     await store.save(data, ipHash);
   } catch (error) {
     console.error('Anfrage nicht gespeichert', error);
-    return { status: 'fallback', reason: 'failed', mailto: inquiryMailto(data) };
+    return { status: 'fallback', reason: 'failed', mailto: inquiryMailto(data), text: inquiryText(data) };
   }
 
   try {

@@ -21,7 +21,7 @@ async function fillAll(page: Page) {
   await page.getByRole('button', { name: 'Weiter' }).click();
   await page.getByRole('textbox', { name: /^Name/ }).fill('Alex Muster');
   await page.getByRole('textbox', { name: /^E-Mail/ }).fill('alex@beispiel.de');
-  await page.getByRole('checkbox', { name: /Datenschutzerklärung/ }).check();
+  await page.getByRole('checkbox', { name: /einverstanden/ }).check();
 }
 
 test('seite AK-1: erreichbar mit eigenem Title, canonical und hreflang', async ({ request }) => {
@@ -62,6 +62,26 @@ test('AK-2: Fehlerliste bekommt den Fokus, Link führt zum Feld', async ({ page 
   await expect(page.getByRole('checkbox').first()).toBeFocused();
 });
 
+test('Kritiker 1: „Anfrage senden" erst im letzten Schritt', async ({ page }) => {
+  await open(page, '/contact');
+  await expect(page.getByRole('button', { name: 'Weiter' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Anfrage senden' })).toBeHidden();
+});
+
+test('Kritiker 7: Fehlerliste und Schritt-Überschrift haben sichtbaren Fokus', async ({ page }) => {
+  await open(page, '/contact');
+  await page.getByRole('button', { name: 'Weiter' }).focus();
+  await page.keyboard.press('Enter');
+  const outline = () => page.evaluate(() => parseFloat(getComputedStyle(document.activeElement!).outlineWidth));
+  await expect(page.getByRole('group', { name: /Bitte prüfe/ })).toBeFocused();
+  expect(await outline()).toBeGreaterThanOrEqual(2);
+  await page.getByRole('checkbox', { name: 'Webflow-Entwicklung' }).check();
+  await page.getByRole('button', { name: 'Weiter' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('heading', { name: /Schritt 2 von 4/ })).toBeFocused();
+  expect(await outline()).toBeGreaterThanOrEqual(2);
+});
+
 test('AK-9: Vorauswahl über die Leistungsseite', async ({ page }) => {
   await open(page, '/services/accessibility');
   await page.getByRole('link', { name: 'Kostenloses Erstgespräch' }).click();
@@ -81,7 +101,7 @@ test.describe('ohne JavaScript', () => {
     await page.getByRole('textbox', { name: /Beschreibung/ }).fill('Wir brauchen einen barrierefreien Relaunch.');
     await page.getByRole('textbox', { name: /^Name/ }).fill('Alex Muster');
     await page.getByRole('textbox', { name: /^E-Mail/ }).fill('alex@beispiel.de');
-    await page.getByRole('checkbox', { name: /Datenschutzerklärung/ }).check();
+    await page.getByRole('checkbox', { name: /einverstanden/ }).check();
     await page.getByRole('button', { name: 'Anfrage senden' }).click();
     await expect(page.getByRole('link', { name: /Anfrage per E-Mail senden/ })).toBeVisible();
   });

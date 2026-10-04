@@ -14,7 +14,7 @@ export type ErrorCode = 'required' | 'tooShort' | 'tooLong' | 'invalid';
 const de = {
   metaTitle: 'Kontakt & Projektanfrage | Erik Bergheimer',
   metaDescription:
-    'Projekt in vier kurzen Schritten anfragen oder direkt schreiben. Antwort per E-Mail mit Terminvorschlag fürs kostenlose Erstgespräch. Augsburg & Innsbruck.',
+    'Projekt in vier kurzen Schritten anfragen oder direkt schreiben. Antwort per E-Mail, meist mit Termin fürs kostenlose Erstgespräch. Augsburg & Innsbruck.',
   eyebrow: 'Lass uns reden',
   title: 'Projekt? Idee? Oder einfach Hallo sagen?',
   intro:
@@ -40,7 +40,7 @@ const de = {
   servicesLegend: 'Wobei kann ich helfen? Mehrfachauswahl möglich.',
   other: 'Noch unklar oder etwas anderes',
   description: 'Beschreibung',
-  descriptionHint: 'Was hast du vor, und was soll am Ende besser sein? Ein paar Sätze reichen.',
+  descriptionHint: 'Was hast du vor, und was soll am Ende besser sein? Ein paar Sätze reichen (mindestens 20 Zeichen).',
   website: 'Aktuelle Website',
   websiteHint: 'Falls vorhanden, z. B. beispiel.de',
   timeframe: 'Wann soll es losgehen?',
@@ -61,10 +61,18 @@ const de = {
   name: 'Name',
   emailField: 'E-Mail',
   phone: 'Telefon',
-  consentBefore:
-    'Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden. Mehr in der ',
   consentLink: 'Datenschutzerklärung',
   honeypot: 'Bitte leer lassen',
+  consent: 'Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden.',
+  consentMore: 'Mehr dazu in der',
+  done: '(erledigt)',
+  counter: (n: number) => `${n} von 3000 Zeichen`,
+  copy: 'Angaben kopieren',
+  copied: 'Kopiert.',
+  copyFailed: 'Kopieren nicht möglich. Bitte markiere den Text selbst.',
+  retry: 'Erneut senden',
+  skipToForm: 'Zum Anfrageformular',
+  truncated: '[gekürzt, vollständiger Text über „Angaben kopieren“]',
 
   errorsTitle: (n: number) => (n === 1 ? 'Bitte prüfe 1 Angabe:' : `Bitte prüfe ${n} Angaben:`),
   errors: {
@@ -94,7 +102,7 @@ const de = {
   thanksText:
     'Deine Anfrage ist angekommen. Ich melde mich per E-Mail, meist mit einem Terminvorschlag für ein kostenloses Erstgespräch.',
   summary: 'Deine Angaben',
-  fallbackUnavailable: 'Das Formular kann gerade nicht senden.',
+  fallbackUnavailable: 'Das Formular lässt sich gerade nicht absenden.',
   fallbackFailed: 'Beim Senden ist etwas schiefgegangen.',
   fallbackText:
     'Deine Angaben sind nicht verloren: Der Link öffnet eine fertige E-Mail mit allem, was du eingegeben hast.',
@@ -110,7 +118,7 @@ export type ContactText = typeof de;
 const en: ContactText = {
   metaTitle: 'Contact & project enquiry | Erik Bergheimer',
   metaDescription:
-    'Send a project enquiry in four short steps or write directly. Reply by email with a date for a free intro call. Augsburg & Innsbruck.',
+    'Send a project enquiry in four short steps or write directly. Reply by email, usually with a date for a free intro call. Augsburg & Innsbruck.',
   eyebrow: "Let's talk",
   title: 'Project? Idea? Just say hi.',
   intro:
@@ -136,7 +144,8 @@ const en: ContactText = {
   servicesLegend: 'How can I help? Choose as many as you like.',
   other: 'Not sure yet or something else',
   description: 'Description',
-  descriptionHint: 'What are you planning, and what should be better afterwards? A few sentences are enough.',
+  descriptionHint:
+    'What are you planning, and what should be better afterwards? A few sentences are enough (at least 20 characters).',
   website: 'Current website',
   websiteHint: 'If you have one, e.g. example.com',
   timeframe: 'When should it start?',
@@ -157,9 +166,18 @@ const en: ContactText = {
   name: 'Name',
   emailField: 'Email',
   phone: 'Phone',
-  consentBefore: 'I agree that my details are stored to handle this enquiry. More in the ',
   consentLink: 'privacy policy',
   honeypot: 'Please leave empty',
+  consent: 'I agree that my details are stored to handle this enquiry.',
+  consentMore: 'More in the',
+  done: '(done)',
+  counter: (n) => `${n} of 3000 characters`,
+  copy: 'Copy details',
+  copied: 'Copied.',
+  copyFailed: 'Copying is not possible. Please select the text yourself.',
+  retry: 'Send again',
+  skipToForm: 'Go to the enquiry form',
+  truncated: '[shortened, full text via “Copy details”]',
 
   errorsTitle: (n) => (n === 1 ? 'Please check 1 entry:' : `Please check ${n} entries:`),
   errors: {
@@ -179,13 +197,13 @@ const en: ContactText = {
     },
     email: { required: 'Enter your email address.', invalid: 'Enter a valid email address, e.g. name@example.com.' },
     telefon: { invalid: 'The phone number may only contain digits, spaces and + / ( ) -.' },
-    einwilligung: { required: 'Please agree to the storage so I can reply.' },
+    einwilligung: { required: 'Please agree to me storing your details so I can reply.' },
   },
 
   thanks: (name) => `Thank you, ${name}.`,
   thanksText: 'Your enquiry has arrived. I will reply by email, usually suggesting a date for a free intro call.',
   summary: 'Your details',
-  fallbackUnavailable: 'The form cannot send right now.',
+  fallbackUnavailable: "The form can't be sent right now.",
   fallbackFailed: 'Something went wrong while sending.',
   fallbackText: 'Your details are not lost: the link opens a ready-made email with everything you entered.',
   fallbackLink: 'Send enquiry by email',

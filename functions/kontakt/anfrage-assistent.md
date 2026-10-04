@@ -45,6 +45,11 @@ Danach eine Bestätigung im selben Bereich: „Danke, <Name>. Ich melde mich per
 - AK-8: Nach dem Absenden: Bestätigung mit Namen und Zusammenfassung; der Fokus liegt auf der Bestätigung.
 - AK-9: `?leistung=<slug>` wählt die Leistung vor; unbekannte Slugs werden ignoriert.
 - AK-10: Ohne JavaScript sind alle Schritte sichtbar und absendbar.
+- AK-11: Die Einwilligung heißt nur „Ich bin einverstanden, … gespeichert werden. (Pflicht)"; der Link zur Datenschutzerklärung steht darunter und ist als Beschreibung verknüpft.
+- AK-12: Der Hinweis zur Beschreibung nennt die Mindestlänge; ab 2500 Zeichen erscheint ein Zähler („2600 von 3000 Zeichen") in einer Live-Region.
+- AK-13: Im Fortschritt sind erledigte Schritte für Screenreader als „(erledigt)" markiert.
+- AK-14: Der E-Mail-Link des Ausweichwegs bleibt unter 2000 Zeichen (lange Beschreibungen werden mit Hinweis gekürzt); daneben kopiert „Angaben kopieren" den vollen Text. Der Absende-Button tritt dann als „Erneut senden" zurück.
+- AK-15: „Anfrage senden" ist erst im letzten Schritt sichtbar; Fehlerliste und Schritt-Überschrift zeigen beim Fokus einen sichtbaren Rahmen.
 
 ## Barrierefreiheit
 
@@ -66,9 +71,17 @@ Umgebungsvariablen (nur in Vercel, nie im Code): `SUPABASE_URL` (oder `NEXT_PUBL
 
 ## Tests
 
-`tests/unit/anfrage.test.tsx` (AK-1 bis AK-9), `tests/e2e/kontakt.spec.ts` (AK-1, AK-2, AK-7, AK-10, axe).
+`tests/unit/anfrage.test.tsx` (AK-1 bis AK-9, AK-11 bis AK-14), `tests/e2e/kontakt.spec.ts` (AK-1, AK-2, AK-7, AK-10, AK-15, axe).
+
+## Befunde Blinder Kritiker (Runde 1)
+
+Behoben (mit Test): „Anfrage senden" in allen Schritten sichtbar, weil `inline-flex` das `hidden`-Attribut überschrieb (jetzt global `[hidden]{display:none!important}`, AK-15); Mindestlänge erst im Fehler genannt, kein Zähler (AK-12); mailto zu lang für manche Mailprogramme, Absende-Button konkurriert mit dem E-Mail-Weg (AK-14); Fokus auf Fehlerliste und Überschrift unsichtbar (AK-15); erledigte Schritte nicht angesagt (AK-13); Linktext mitten im Namen der Einwilligung (AK-11).
+Behoben (Text): „Das Formular lässt sich gerade nicht absenden."; englische Formulierungen.
+Verschoben: englische Slugs für Impressum und Datenschutz (`/en/datenschutz`).
 
 ## Offene Fragen
+
+- Antwortzeit nennen (z. B. „innerhalb von zwei Werktagen")? Nur, wenn Erik das zusagen will.
 
 - Terminbuchung direkt nach der Anfrage (z. B. Cal.com)? Bis dahin schlägt Erik Termine per Mail vor.
 - Bestätigungsmail an Kunden: bewusst weggelassen, weil ein Formular, das an beliebige Adressen Mails verschickt, für Spam missbraucht werden kann. Die Bestätigung steht auf der Seite.

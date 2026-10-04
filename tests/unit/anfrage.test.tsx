@@ -270,7 +270,7 @@ describe('Anfrage-Assistent im Browser', () => {
     next();
     type(/^Name/, valid.name);
     type(/E-Mail/, valid.email);
-    check(/Einwilligung|Datenschutzerklärung/);
+    check(/einverstanden/);
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Anfrage senden' })));
     await waitFor(() => expect(screen.getByRole('heading', { name: 'Schritt 2 von 4: Projekt' })).toBeVisible());
     expect(screen.getByRole('group', { name: /Bitte prüfe 1 Angabe/ })).toHaveFocus();
@@ -289,7 +289,7 @@ describe('Anfrage-Assistent im Browser', () => {
     next();
     type(/^Name/, valid.name);
     type(/E-Mail/, valid.email);
-    check(/Datenschutzerklärung/);
+    check(/einverstanden/);
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Anfrage senden' })));
     const thanks = await screen.findByRole('heading', { name: 'Danke, Alex Muster.' });
     expect(thanks).toHaveFocus();
@@ -305,6 +305,7 @@ describe('Anfrage-Assistent im Browser', () => {
       status: 'fallback',
       reason: 'unavailable',
       mailto: 'mailto:erb1209@outlook.de?subject=x',
+      text: 'x',
     });
     render(<InquiryWizard locale="en" />);
     check('Webflow development');
@@ -314,7 +315,7 @@ describe('Anfrage-Assistent im Browser', () => {
     next('Next');
     type(/^Name/, valid.name);
     type(/Email/, valid.email);
-    check(/privacy policy/);
+    check(/I agree/);
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Send enquiry' })));
     const link = await screen.findByRole('link', { name: /Send enquiry by email/ });
     expect(link).toHaveAttribute('href', 'mailto:erb1209@outlook.de?subject=x');
@@ -381,6 +382,13 @@ describe('Kontaktseite', () => {
     expect(data['@type']).toBe('ContactPage');
     expect(data.url).toBe('https://erik-bergheimer.de/contact');
     expect(data.about).toEqual({ '@id': 'https://erik-bergheimer.de/#person' });
+    // Kritiker-Befund 10: Name und Kontaktweg direkt auf der Seite
+    expect(data.name).toBeTruthy();
+    expect(data.mainEntity).toMatchObject({
+      '@type': 'Person',
+      email: 'erb1209@outlook.de',
+      contactPoint: { '@type': 'ContactPoint', email: 'erb1209@outlook.de', availableLanguage: ['de', 'en'] },
+    });
   });
 
   it.each(['de', 'en'] as const)('AK-1: Meta-Daten und Sitemap (%s)', (locale) => {
@@ -391,5 +399,81 @@ describe('Kontaktseite', () => {
       locale === 'de' ? 'https://erik-bergheimer.de/contact' : 'https://erik-bergheimer.de/en/contact',
     );
     expect(sitePaths()).toContain('/contact');
+  });
+});
+
+describe('Befunde Blinder Kritiker (Runde 1)', () => {
+  beforeEach(() => {
+    action.mockReset();
+    window.history.replaceState(null, '', '/contact');
+  });
+
+  it('AK-11: Einwilligung heißt ohne Linktext, Datenschutz-Link als Beschreibung', () => {
+    render(<InquiryWizard locale="de" />);
+    const box = screen.getByRole('checkbox', { name: /einverstanden/, hidden: true });
+    expect(box).toHaveAccessibleName(
+      'Ich bin einverstanden, dass meine Angaben zur Bearbeitung der Anfrage gespeichert werden. (Pflicht)',
+    );
+    expect(box).toHaveAccessibleDescription(/Datenschutzerklärung/);
+  });
+
+  it('AK-12: Hinweis nennt die Mindestlänge, Zähler ab 2500 Zeichen', async () => {
+    render(<InquiryWizard locale="de" />);
+    const field = screen.getByRole('textbox', { name: /Beschreibung/, hidden: true });
+    expect(field).toHaveAccessibleDescription(/mindestens 20 Zeichen/);
+    expect(screen.queryByText(/von 3000 Zeichen/)).toBeNull();
+    fireEvent.change(field, { target: { value: 'x'.repeat(2600) } });
+    const counter = await screen.findByText('2600 von 3000 Zeichen');
+    expect(counter.closest('[aria-live="polite"]')).not.toBeNull();
+  });
+
+  it('AK-13: erledigte Schritte werden im Fortschritt angesagt', () => {
+    render(<InquiryWizard locale="de" />);
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Webflow-Entwicklung' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    const progress = screen.getByRole('list', { name: 'Fortschritt' });
+    expect(within(progress).getAllByRole('listitem')[0]).toHaveTextContent('Leistung (erledigt)');
+    expect(within(progress).getAllByRole('listitem')[1]).not.toHaveTextContent('erledigt');
+  });
+
+  it('AK-14: Ausweichweg mit kurzem mailto und Kopier-Button für den vollen Text', async () => {
+    action.mockResolvedValue({
+      status: 'fallback',
+      reason: 'unavailable',
+      mailto: 'mailto:erb1209@outlook.de?subject=x',
+      text: 'Voller Text der Anfrage',
+    });
+    const writeText = vi.fn(async () => {});
+    Object.assign(navigator, { clipboard: { writeText } });
+    render(<InquiryWizard locale="de" />);
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Webflow-Entwicklung' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    fireEvent.change(screen.getByRole('textbox', { name: /Beschreibung/ }), { target: { value: valid.beschreibung } });
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+    fireEvent.change(screen.getByRole('textbox', { name: /^Name/ }), { target: { value: valid.name } });
+    fireEvent.change(screen.getByRole('textbox', { name: /E-Mail/ }), { target: { value: valid.email } });
+    fireEvent.click(screen.getByRole('checkbox', { name: /einverstanden/ }));
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Anfrage senden' })));
+    expect(
+      await screen.findByRole('heading', { name: 'Das Formular lässt sich gerade nicht absenden.' }),
+    ).toBeVisible();
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Angaben kopieren' })));
+    expect(writeText).toHaveBeenCalledWith('Voller Text der Anfrage');
+    expect(await screen.findByText('Kopiert.')).toBeInTheDocument();
+    // Absende-Button tritt hinter den E-Mail-Weg zurück
+    expect(screen.getByRole('button', { name: 'Erneut senden' })).not.toHaveClass('bg-primary');
+  });
+
+  it('AK-14: mailto kürzt lange Beschreibungen, der Server liefert den vollen Text mit', async () => {
+    const long = 'Wort '.repeat(600);
+    const state = await handleInquiry(formData({ ...valid, beschreibung: long }), { store: null, ipHash: null });
+    expect(state.status === 'fallback' && state.mailto.length).toBeLessThanOrEqual(2000);
+    expect(state.status === 'fallback' && state.text).toContain(long.trim());
+  });
+
+  it('seite AK-5: Sprunglink zum Formular für kleine Bildschirme', () => {
+    render(<ContactPage locale="de" />);
+    expect(screen.getByRole('link', { name: 'Zum Anfrageformular' })).toHaveAttribute('href', '#anfrage-titel');
   });
 });

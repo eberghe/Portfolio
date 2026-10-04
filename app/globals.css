@@ -116,6 +116,11 @@ html {
     @apply bg-background text-foreground font-sans;
   }
 
+  /* `hidden` gewinnt gegen display-Klassen wie inline-flex (Kritiker-Befund Kontakt 1) */
+  [hidden]:where(:not([hidden='until-found'])) {
+    display: none !important;
+  }
+
   a:focus-visible,
   button:focus-visible,
   summary:focus-visible {

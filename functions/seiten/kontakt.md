@@ -21,7 +21,8 @@ Grüner Kopfbereich („Lass uns reden", „Projekt? Idee? Oder einfach Hallo sa
 
 - AK-1: `/contact` und `/en/contact` sind erreichbar, haben eigenen Title (endet auf „| Erik Bergheimer"), Description (höchstens 160 Zeichen), canonical und hreflang und stehen in der Sitemap.
 - AK-2: Genau eine h1; Direktkontakt ist eine Liste echter Links (E-Mail, LinkedIn, Instagram); externe Links nennen ihr Ziel.
-- AK-3: JSON-LD `ContactPage` mit Verweis auf die Person (`@id`).
+- AK-3: JSON-LD `ContactPage` mit Name, Verweis auf die Person (`@id`) und eingebetteter Person mit E-Mail und `ContactPoint`.
+- AK-5: Auf kleinen Bildschirmen führt ein Sprunglink „Zum Anfrageformular" im Kopfbereich direkt zum Formular, weil der Direktkontakt davor steht.
 - AK-4: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel), auch mit sichtbaren Fehlermeldungen.
 
 ## Barrierefreiheit

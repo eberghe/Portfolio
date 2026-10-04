@@ -2,7 +2,7 @@ import { faqs } from '@/lib/content/faq';
 import type { Project } from '@/lib/content/projects';
 import { services, type Service } from '@/lib/content/services';
 import { messages, type Locale } from '@/lib/i18n';
-import { SITE_URL, absoluteUrl as absolute, person } from '@/lib/site';
+import { EMAIL, SITE_URL, absoluteUrl as absolute, person } from '@/lib/site';
 
 const areaServed = {
   de: [
@@ -150,8 +150,18 @@ export function contactPageJsonLd(locale: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
+    name: locale === 'de' ? 'Kontakt & Projektanfrage' : 'Contact & project enquiry',
     url: absolute('/contact', locale),
     inLanguage: locale,
     about: { '@id': `${SITE_URL}/#person` },
+    mainEntity: {
+      ...person(locale),
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: locale === 'de' ? 'Projektanfragen' : 'Project enquiries',
+        email: EMAIL,
+        availableLanguage: ['de', 'en'],
+      },
+    },
   };
 }

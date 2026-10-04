@@ -72,3 +72,25 @@ Offen, Entscheidung bei Erik:
 - Fotografie: was genau buchbar ist und welche Bilder gezeigt werden.
 
 Verschoben: eigene zweisprachige 404-Seite (`seo/sitemap-und-redirects.md`); Schriftgrößen gehören zum bestehenden Design.
+
+## Umbau nach Vorlage designme.agency (Issue #16, Erik 2026-10-04)
+
+Vorlage: designme.agency/services/brand-identity. Inhalte je Leistung in `lib/content/service-details.ts` (Entwürfe, Platzhalter mit `TODO(Erik)`, offene Fragen in Issue #14).
+
+Aufbau der Detailseite: Zurück-Link → Hero → Beleg-Projekt → Ablauf → Was enthalten ist → Pakete → Werkzeuge → FAQ → Passende Leistungen („Was danach kommt“) → Abschluss-CTA.
+
+- AK-18: Hero: Überline, h1 mit Suchbegriff (z. B. „Webflow-Entwicklung in Augsburg“), ein Satz, Beschreibung mit Einsatzort (AK-16), Schlagworte (AK-2), Button „Kostenloses Erstgespräch“ mit Vorauswahl der Leistung (`/contact?leistung=<slug>`).
+- AK-19: Ablauf als geordnete Liste mit 4 bis 5 Schritten; jeder Schritt hat Titel (h3), Dauer, Text und „Typische Ergebnisse“ als Liste.
+- AK-20: „Was enthalten ist“: Überschrift als Satz, genau 6 Karten (h3 + Text). Die bisherige Liste „Das ist enthalten“ (AK-2) bleibt als Leistungsumfang im Hero-Kasten.
+- AK-21: Zwei Pakete als Karten (h3, für wen, Liste der Inhalte), ohne Preise, jeweils mit Link zum Erstgespräch.
+- AK-22: FAQ je Leistung (4 bis 5 Fragen) als `details`/`summary` mit Frage als Überschrift; JSON-LD `FAQPage` aus denselben Daten.
+- AK-23: Hat die Leistung ein passendes Projekt, steht es als Fallstudien-Karte unter dem Hero (Link auf `/projects/<slug>`).
+- AK-24: Werkzeuge als Liste.
+- AK-25: Inhalte in DE und EN mit gleicher Struktur (gleiche Zahl an Schritten, Karten, Paketen und Fragen).
+- AK-26: Abschnitte blenden beim Scrollen ein (`data-reveal`); keine axe-Verstöße, kein horizontales Scrollen (AK-7).
+
+### Blinder Kritiker (Umbau, 2026-10-04)
+
+Behoben: Kleinstunternehmen-Ausnahme im BFSG-FAQ, „Informationen zur Barrierefreiheit (§ 14 BFSG)“ statt „Erklärung“, keine Versprechen voller Barrierefreiheit oder fester Rankings, Nutzungsrechte am Logo, Einwilligung bei Fotos, DSGVO-Hinweis bei KI, Einsatzort „Augsburg und Umgebung“, Leads ohne Doppelung zur Beschreibung, geschlechtergerechte Formulierungen, Paket-Links mit Paketnamen, Beschreibung in den Hero-Kasten, Kasten nicht mehr sticky, FAQ-Antworten mit Abstand zum Plus-Symbol, Fokusrahmen mit Abstand.
+Geprüft, kein Fehler: Überschriften in `summary` erscheinen in Chromium im Accessibility-Tree (group > heading).
+Offen: Hero-Containerbreiten der Seitentypen vereinheitlichen.

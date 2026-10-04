@@ -73,7 +73,7 @@ html {
 
   .dark {
     color-scheme: dark;
-    --primary-text: 161 36% 43.5%;
+    --primary-text: 161 36% 50%;
     --error-text: 0 85% 72%;
     --background: 207 40% 7%;
     --foreground: 210 30% 96%;
@@ -194,4 +194,42 @@ html {
 .animate-scroll-logos {
   animation: scroll-logos 60s linear infinite;
   width: max-content;
+}
+
+/* Animationen (functions/infrastruktur/animationen.md). Versteckt wird nur mit JavaScript und erlaubter Bewegung. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
+    transition:
+      opacity 0.6s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition-delay: calc(var(--reveal-i, 0) * 80ms);
+  }
+  html.js [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .sticky-stack > * {
+    position: sticky;
+    top: calc(96px + var(--stack-i, 0) * 16px);
+  }
+}
+
+/* Weiches Auf- und Zuklappen der Fragen, wo der Browser es kann (functions/infrastruktur/animationen.md) */
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  .faq-list details::details-content {
+    height: 0;
+    overflow: clip;
+    transition:
+      height 0.35s cubic-bezier(0.2, 0.7, 0.2, 1),
+      content-visibility 0.35s allow-discrete;
+  }
+  .faq-list details[open]::details-content {
+    height: auto;
+  }
 }

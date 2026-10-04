@@ -63,7 +63,7 @@ Statisch im Code (keine Supabase-Tabelle nötig).
 
 ## Tests
 
-`tests/unit/projects.test.tsx` (AK-2 bis AK-4, AK-6 bis AK-8, AK-10 bis AK-17), `tests/e2e/projekte.spec.ts` (AK-1, AK-5, AK-9).
+`tests/unit/projects.test.tsx` (AK-2 bis AK-4, AK-6 bis AK-8, AK-10 bis AK-17), `tests/e2e/projekte.spec.ts` (AK-1, AK-5, AK-9, AK-19, AK-23). Umbau: AK-18 bis AK-22 in `tests/unit/projects.test.tsx`.
 
 ## Befunde Blinder Kritiker (Runde 1)
 
@@ -77,3 +77,20 @@ Verschoben: canonical, hreflang, Open Graph seitenweit (`seo/meta-und-schema.md`
 ## Offene Fragen
 
 - „Kommt bald"-Projekte (PreMatch, ROSE Bikes App, Axium): bleiben sie, oder gibt es dazu schon Inhalte?
+
+## Umbau Übersicht nach Vorlage designme.agency/projects (Issue #18, Erik 2026-10-04)
+
+Aufbau `/projects`: Kopf (Überline, h1, Untertitel) → Filter → große Projektkarten im Wechsel → „Bald hier“ → Abschluss-CTA.
+
+- AK-18: Kopf mit Überline „Projekte“/„Projects“, genau einer h1 und einem Untertitel.
+- AK-19: Filter „Alle“, „UX/UI“, „Web“, „Fotografie“ (EN „All“, „UX/UI“, „Web“, „Photography“) als Buttons mit `aria-pressed` in einer benannten Gruppe; die Kategorie kommt aus der passenden Leistung des Projekts (`service`). Ein Klick blendet die übrigen Projekte aus (`hidden`), ein Status (`role="status"`) nennt die Anzahl („2 Projekte“). Der Filter erscheint nur mit JavaScript; ohne JavaScript sind alle Projekte sichtbar.
+- AK-20: Jedes Projekt ist eine große Karte: Bild (Zoom beim Hover nur ohne reduzierte Bewegung), Titel als h2 (Link auf die Detailseite, die ganze Karte ist klickbar; Typ und Untertitel als Beschreibung), Typ als sichtbare Chips (für Screenreader ausgeblendet, sonst doppelt), Jahr, Untertitel und „Fallstudie lesen“ (Fotoprojekte: „Fotoserie ansehen“). Ab 768 px steht das Bild abwechselnd links und rechts.
+- AK-21: „Kommt bald“-Projekte stehen in einem eigenen Abschnitt mit h2 „In Arbeit“/„In the pipeline“ und Titeln als h3 (AK-12 gilt weiter). Die Bildfläche ist im Dunkelmodus gedämpft.
+- AK-22: Abschluss-CTA mit h2 und Link „Kostenloses Erstgespräch“ zur Kontaktseite.
+- AK-24: Meta-Description nennt Augsburg (GEO).
+- AK-23: Karten blenden beim Scrollen ein (`data-reveal`); keine axe-Verstöße, kein horizontales Scrollen (AK-9), auch mit aktivem Filter.
+
+### Blinder Kritiker (Umbau Übersicht, 2026-10-04)
+
+Behoben: Typ doppelt vorgelesen (Chips jetzt `aria-hidden`, AK-20), grelle Pastellflächen im Dunkelmodus (AK-21), „Fallstudie lesen“ bei Fotoserien (AK-20), „No-Code-Tools“ und CPR-Untertitel, „Bald hier“ doppelt zum Status („In Arbeit“, AK-21), E-Mail bricht mitten im Wort, Filter-Umbruch bei 360 px, Pfeil ↗ bei internem Link, Augsburg in der Meta-Description (AK-24).
+Offen mit Begründung: Reihenfolge der Projekte ist bewusst „stärkstes zuerst“, nicht chronologisch. Ein Ergebnis-Satz je Projekt und eine Domain-E-Mail sind Inhaltsfragen (Issue #14). Filter in der URL wäre schön, ist aber nicht nötig.

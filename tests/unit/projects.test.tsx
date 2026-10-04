@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import ProjectDetail from '@/components/projects/ProjectDetail';
-import ProjectsOverview from '@/components/projects/ProjectsOverview';
+import ProjectsOverview, { projectsOverviewText } from '@/components/projects/ProjectsOverview';
 import { comingSoon, projects, type Project } from '@/lib/content/projects';
 import { services } from '@/lib/content/services';
 import { projectBreadcrumbJsonLd, projectJsonLd, projectsItemListJsonLd } from '@/lib/structured-data';
@@ -212,5 +212,76 @@ describe('AK-17: passende Leistung', () => {
         services.some((s) => s.slug === p.service),
         p.slug,
       ).toBe(true);
+  });
+});
+
+describe('Umbau Übersicht (Issue #18)', () => {
+  it('AK-24: Meta-Description nennt Augsburg', () => {
+    for (const l of locales) expect(projectsOverviewText[l].metaDescription).toContain('Augsburg');
+    for (const l of locales) expect(projectsOverviewText[l].metaDescription.length).toBeLessThanOrEqual(160);
+  });
+
+  it('AK-18: Überline, eine h1, Untertitel', () => {
+    const { container } = render(<ProjectsOverview locale="de" />);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(container.querySelector('header')).toHaveTextContent(/^Projekte/);
+    expect(container.querySelector('header p:last-child')!.textContent!.length).toBeGreaterThan(20);
+  });
+
+  it('AK-19: Filter mit aria-pressed blendet Projekte aus und nennt die Anzahl', () => {
+    render(<ProjectsOverview locale="de" />);
+    const group = screen.getByRole('group', { name: 'Projekte filtern' });
+    const all = within(group).getByRole('button', { name: 'Alle' });
+    expect(all).toHaveAttribute('aria-pressed', 'true');
+    const foto = within(group).getByRole('button', { name: 'Fotografie' });
+    expect(foto).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(foto);
+    expect(foto).toHaveAttribute('aria-pressed', 'true');
+    expect(all).toHaveAttribute('aria-pressed', 'false');
+    const photo = projects.filter((p) => p.service === 'photography');
+    for (const p of projects) {
+      const visible = photo.includes(p);
+      expect(screen.queryByRole('link', { name: p.de.title }) !== null, p.slug).toBe(visible);
+    }
+    expect(screen.getByRole('status')).toHaveTextContent(`${photo.length} Projekte`);
+    fireEvent.click(all);
+    for (const p of projects) expect(screen.getByRole('link', { name: p.de.title })).toBeInTheDocument();
+  });
+
+  it('AK-19: englische Filter', () => {
+    render(<ProjectsOverview locale="en" />);
+    const group = screen.getByRole('group', { name: 'Filter projects' });
+    for (const name of ['All', 'UX/UI', 'Web', 'Photography'])
+      expect(within(group).getByRole('button', { name })).toBeInTheDocument();
+  });
+
+  it('AK-20: große Karten mit h2, Chips, Jahr, Untertitel und „Fallstudie lesen“', () => {
+    render(<ProjectsOverview locale="de" />);
+    for (const p of projects) {
+      const h2 = screen.getByRole('heading', { level: 2, name: p.de.title });
+      const card = h2.closest('li')!;
+      // Chips sind sichtbar, für Screenreader steht der Typ schon in der Beschreibung des Links
+      const chips = card.querySelector('ul')!;
+      expect(chips).toHaveAttribute('aria-hidden', 'true');
+      expect([...chips.querySelectorAll('li')].map((li) => li.textContent)).toEqual(p.de.type.split(' · '));
+      expect(card).toHaveTextContent(p.year);
+      expect(card).toHaveTextContent(p.de.tagline);
+      expect(card).toHaveTextContent(p.service === 'photography' ? 'Fotoserie ansehen' : 'Fallstudie lesen');
+      expect(card).toHaveAttribute('data-reveal');
+    }
+  });
+
+  it('AK-21: Kommt bald als eigener Abschnitt mit h3', () => {
+    render(<ProjectsOverview locale="de" />);
+    const section = screen.getByRole('region', { name: 'In Arbeit' });
+    for (const c of comingSoon)
+      expect(within(section).getByRole('heading', { level: 3, name: c.de.title })).toBeInTheDocument();
+  });
+
+  it('AK-22: Abschluss-CTA zur Kontaktseite', () => {
+    render(<ProjectsOverview locale="en" />);
+    const h2s = screen.getAllByRole('heading', { level: 2 });
+    const cta = h2s[h2s.length - 1]!.closest('section')!;
+    expect(within(cta).getByRole('link', { name: 'Free intro call' })).toHaveAttribute('href', '/en/contact');
   });
 });

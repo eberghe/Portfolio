@@ -3,7 +3,11 @@ export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = 'de';
 
 /** Englische Slugs, wo sie vom deutschen abweichen (functions/mehrsprachigkeit/de-en.md) */
-const enSlugs: Record<string, string> = { '/impressum': '/imprint', '/datenschutz': '/privacy' };
+const enSlugs: Record<string, string> = {
+  '/impressum': '/imprint',
+  '/datenschutz': '/privacy',
+  '/webdesign-augsburg': '/web-design-augsburg',
+};
 const deSlugs = Object.fromEntries(Object.entries(enSlugs).map(([de, en]) => [en, de]));
 
 /** Sprachneutraler (deutscher) Pfad ("/about") → URL der Sprache ("/about" bzw. "/en/about"). */

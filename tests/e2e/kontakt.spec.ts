@@ -84,7 +84,7 @@ test('Kritiker 7: Fehlerliste und Schritt-Überschrift haben sichtbaren Fokus', 
 
 test('AK-9: Vorauswahl über die Leistungsseite', async ({ page }) => {
   await open(page, '/services/accessibility');
-  await page.getByRole('link', { name: 'Kostenloses Erstgespräch' }).click();
+  await page.getByRole('link', { name: 'Kostenloses Erstgespräch' }).first().click();
   await expect(page).toHaveURL(/\/contact\?leistung=accessibility$/);
   await expect(page.getByRole('checkbox', { name: 'Barrierefreiheit-Beratung' })).toBeChecked();
 });

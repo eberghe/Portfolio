@@ -335,10 +335,8 @@ describe('Anfrage-Assistent im Browser', () => {
   it('AK-9: Leistungsseite verlinkt die Kontaktseite mit Vorauswahl', () => {
     const service = services.find((s) => s.slug === 'accessibility')!;
     render(<ServiceDetail service={service} locale="en" />);
-    expect(screen.getByRole('link', { name: 'Free intro call' })).toHaveAttribute(
-      'href',
-      '/en/contact?leistung=accessibility',
-    );
+    for (const link of screen.getAllByRole('link', { name: 'Free intro call' }))
+      expect(link).toHaveAttribute('href', '/en/contact?leistung=accessibility');
   });
 
   it('AK-6/A11y: Pflichtfelder sind ausgeschrieben, Autocomplete gesetzt, Honeypot versteckt', () => {

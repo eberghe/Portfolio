@@ -51,7 +51,9 @@ describe.each([
 
   it('AK-4: Kontakt- und Projekt-Button', () => {
     render(<Home locale={locale} />);
-    expect(screen.getByRole('link', { name: t.contact })).toHaveAttribute('href', `${prefix}/contact`);
+    // Hero, Leistungen und Abschluss führen alle zum Kontakt
+    for (const link of screen.getAllByRole('link', { name: t.contact }))
+      expect(link).toHaveAttribute('href', `${prefix}/contact`);
   });
 
   it('AK-5: alle acht Leistungen verlinkt', () => {
@@ -75,7 +77,7 @@ describe.each([
 
   it('AK-7: Hero-Foto mit beschreibendem Alt-Text', () => {
     render(<Home locale={locale} />);
-    expect(screen.getByRole('img', { name: /Erik Bergheimer/ })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: homeContent[locale].heroAlt })).toBeInTheDocument();
   });
 
   it('AK-8: Faktenleiste als Beschreibungsliste', () => {
@@ -106,7 +108,7 @@ describe('AK-13: Fakten stimmen mit dem Inhalt überein', () => {
 
   it('deutsche Projekttypen auf Deutsch', () => {
     render(<Home locale="de" />);
-    expect(screen.getByText(/Bachelorarbeit/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Bachelorarbeit/).length).toBeGreaterThan(0);
     expect(screen.getByRole('link', { name: 'Indonesien' })).toBeInTheDocument();
   });
 });
@@ -114,7 +116,7 @@ describe('AK-13: Fakten stimmen mit dem Inhalt überein', () => {
 describe('AK-17: Entscheidungen von Erik (2026-10-04)', () => {
   it('Hero nennt freiberuflich und Einsatzgebiet', () => {
     render(<Home locale="de" />);
-    expect(screen.getByText(/freiberuflich/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/freiberuflich/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/Remote/i).length).toBeGreaterThan(0);
   });
 
@@ -145,5 +147,82 @@ describe('AK-19: Projektzahl aus den Daten (Issue #5)', () => {
   it.each(['de', 'en'] as const)('%s', (locale) => {
     const stat = homeContent[locale].stats.find((s) => /Projekt|Project/.test(s.label))!;
     expect(stat.value).toBe(String(projects.length));
+  });
+});
+
+// Umbau nach Vorlage designme.agency (Issue #17)
+describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
+  const t = {
+    de: {
+      tools: 'Werkzeuge, mit denen ich arbeite',
+      about: 'Über mich',
+      more: 'Mehr über mich',
+      cta: 'Erzähl mir, was du vorhast',
+      read: 'Fallstudie lesen',
+    },
+    en: {
+      tools: 'Tools I work with',
+      about: 'About me',
+      more: 'More about me',
+      cta: "Tell me what you're planning",
+      read: 'Read case study',
+    },
+  }[locale];
+  const prefix = locale === 'en' ? '/en' : '';
+
+  it('AK-20: Werkzeuge mit h2, Liste für Screenreader und Pause-Knopf', () => {
+    render(<Home locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.tools }).closest('section')!;
+    expect(within(section).getByRole('list')).toHaveTextContent('Figma');
+    expect(within(section).getByRole('button', { pressed: false })).toBeInTheDocument();
+  });
+
+  it('AK-21: Leistungen nummeriert, mit Merkmalen, als Sticky-Stapel', () => {
+    const { container } = render(<Home locale={locale} />);
+    const stack = container.querySelector('.sticky-stack')!;
+    expect(stack).not.toBeNull();
+    const cards = stack.querySelectorAll(':scope > li');
+    expect(cards).toHaveLength(8);
+    expect(cards[0]).toHaveTextContent('01');
+    expect(cards[7]).toHaveTextContent('08');
+    for (const card of cards) {
+      expect(card.querySelector('h3')).not.toBeNull();
+      const features = card.querySelectorAll('ul li');
+      expect(features.length).toBeGreaterThan(0);
+      expect(features.length).toBeLessThanOrEqual(4);
+    }
+    expect(within(stack as HTMLElement).getByRole('link', { name: services[0]![locale].title })).toHaveAttribute(
+      'href',
+      `${prefix}/services/${services[0]!.slug}`,
+    );
+  });
+
+  it('AK-22: Fallstudien-Karten mit Schlagworten und Hinweis', () => {
+    render(<Home locale={locale} />);
+    const link = screen.getByRole('link', { name: "SIGHT'KICK" });
+    expect(link).toHaveTextContent(t.read);
+    expect(within(link).getAllByRole('listitem').length).toBeGreaterThan(1);
+  });
+
+  it('AK-23: Über-mich-Abschnitt mit Link', () => {
+    render(<Home locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.about }).closest('section')!;
+    expect(within(section).getByRole('link', { name: t.more })).toHaveAttribute('href', `${prefix}/about`);
+    expect(within(section).getByRole('img')).toBeInTheDocument();
+  });
+
+  it('AK-24: Abschluss-CTA', () => {
+    render(<Home locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.cta }).closest('section')!;
+    expect(
+      within(section)
+        .getAllByRole('link')
+        .map((a) => a.getAttribute('href')),
+    ).toEqual(expect.arrayContaining([`${prefix}/contact`, 'mailto:erb1209@outlook.de']));
+  });
+
+  it('AK-25: Abschnitte blenden ein', () => {
+    const { container } = render(<Home locale={locale} />);
+    expect(container.querySelectorAll('[data-reveal]').length).toBeGreaterThan(10);
   });
 });

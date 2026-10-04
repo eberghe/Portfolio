@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { faqText } from '@/components/faq/FaqPage';
 import { aboutContent } from '@/lib/content/about';
+import type { LocalPage } from '@/lib/content/local';
 import { legal, type LegalKind } from '@/lib/content/legal';
 import type { Locale } from '@/lib/i18n';
 import { pageMetadata } from '@/lib/seo';
@@ -29,3 +30,6 @@ export const aboutMetadata = (locale: Locale) =>
     title: aboutContent[locale].metaTitle,
     description: aboutContent[locale].metaDescription,
   });
+
+export const localMetadata = (page: LocalPage, locale: Locale) =>
+  pageMetadata({ path: page.path, locale, title: page[locale].metaTitle, description: page[locale].metaDescription });

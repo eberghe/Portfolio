@@ -38,7 +38,8 @@ for (const scheme of ['light', 'dark'] as const) {
 
 test('AK-14: Hero-Foto wird scharf geladen (Quelle mindestens so groß wie die Fläche)', async ({ page }) => {
   await page.goto('/');
-  const img = page.getByRole('img', { name: /Erik Bergheimer/ });
+  // Hero-Foto (das Foto im Über-mich-Abschnitt hat einen anderen Alt-Text)
+  const img = page.getByRole('img', { name: /im Porträt/ });
   await expect(img).toBeVisible();
   await expect
     .poll(() =>

@@ -34,6 +34,25 @@ export const homeContent = {
     ],
     projects: 'Ausgewählte Projekte',
     viewAll: 'Alle Projekte ansehen',
+    tools: 'Werkzeuge, mit denen ich arbeite',
+    pause: 'Animation anhalten',
+    offerIntro:
+      'Acht Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Webflow-Website.',
+    learnMore: 'Mehr erfahren',
+    readCase: 'Fallstudie lesen',
+    tags: 'Schlagworte',
+    aboutTitle: 'Über mich',
+    // TODO(Erik): persönliche Notiz prüfen oder ersetzen (Issue #14)
+    aboutText: [
+      'Ich bin Erik, freiberuflicher UX/UI-Designer und Webflow-Entwickler aus Augsburg. Ich arbeite direkt mit dir, ohne Agentur-Umwege: Du sprichst mit der Person, die auch gestaltet und baut.',
+      'Mir ist wichtig, dass Websites für alle funktionieren. Deshalb denke ich Barrierefreiheit, Ladezeit und Auffindbarkeit von Anfang an mit, und setze KI dort ein, wo sie dir wirklich Arbeit abnimmt.',
+    ],
+    aboutMore: 'Mehr über mich',
+    aboutPhotoAlt: 'Erik Bergheimer mit Sonnenbrille und schwarzem Hemd, lächelnd',
+    ctaTitle: 'Erzähl mir, was du vorhast',
+    ctaText:
+      'Ob neue Website, Relaunch oder erst mal eine Idee: Im kostenlosen Erstgespräch klären wir, wo du stehst und wie ich helfen kann.',
+    ctaMail: 'Oder schreib direkt an',
   },
   en: {
     metaTitle: 'Erik Bergheimer: UX/UI design & Webflow, Augsburg',
@@ -63,6 +82,25 @@ export const homeContent = {
     ],
     projects: 'Selected projects',
     viewAll: 'View all projects',
+    tools: 'Tools I work with',
+    pause: 'Pause animation',
+    offerIntro:
+      'Eight services, one point of contact: from first user research and design to an accessible Webflow website.',
+    learnMore: 'Learn more',
+    readCase: 'Read case study',
+    tags: 'Tags',
+    aboutTitle: 'About me',
+    // TODO(Erik): review or replace the personal note (issue #14)
+    aboutText: [
+      "I'm Erik, a freelance UX/UI designer and Webflow developer based in Augsburg. You work with me directly, no agency layers: the person you talk to is the person who designs and builds.",
+      'I care about websites that work for everyone. That is why accessibility, speed and findability are part of every project from day one, and why I use AI where it genuinely saves you work.',
+    ],
+    aboutMore: 'More about me',
+    aboutPhotoAlt: 'Erik Bergheimer wearing sunglasses and a black shirt, smiling',
+    ctaTitle: "Tell me what you're planning",
+    ctaText:
+      "New website, relaunch or just an idea: in a free intro call we'll work out where you are and how I can help.",
+    ctaMail: 'Or email me at',
   },
 } satisfies Record<Locale, unknown>;
 

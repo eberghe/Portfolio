@@ -33,6 +33,13 @@ describe('Navbar', () => {
     expect(within(nav).getAllByRole('link', { name: 'Projekte' })[0]).not.toHaveAttribute('aria-current');
   });
 
+  it('Leistungen AK-13: auf Detailseiten ist Leistungen als aktueller Bereich markiert', () => {
+    pathname = '/services/accessibility';
+    render(<Navbar locale="de" />);
+    const nav = screen.getByRole('navigation', { name: 'Hauptnavigation' });
+    expect(within(nav).getAllByRole('link', { name: 'Leistungen' })[0]).toHaveAttribute('aria-current', 'true');
+  });
+
   it('AK-3: Sprachlink zeigt auf das englische Gegenstück', () => {
     render(<Navbar locale="de" />);
     const link = screen.getByRole('link', { name: 'English' });

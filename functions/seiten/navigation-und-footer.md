@@ -3,9 +3,11 @@
 Status: In Arbeit
 
 ## Zweck
+
 Globale Navigation und Footer wie auf der Lovable-Seite (`Navbar.tsx`, `Footer.tsx`, `Logo.tsx`), aber barrierefrei und zweisprachig über echte URLs.
 
 ## Bestand und Befunde (Lovable)
+
 - Sprachumschalter ist ein Button mit Flagge, ändert nur den Browser-Zustand, keine URL.
 - Mobiles Menü ist nur per `opacity` versteckt: Links bleiben per Tab erreichbar, obwohl unsichtbar. Burger-Button ohne `aria-expanded`.
 - Dunkelmodus-Button ohne Zustand (`aria-pressed`), Wahl wird nicht gespeichert.
@@ -14,6 +16,7 @@ Globale Navigation und Footer wie auf der Lovable-Seite (`Navbar.tsx`, `Footer.t
 - `aria-label="Main navigation"` auf Englisch auch auf deutschen Seiten.
 
 ## Verhalten
+
 - Desktop: Logo, Links (Projekte, Services, Über mich, FAQs), Sprachlink, Dunkelmodus, Kontakt-Button. Aktiver Link markiert mit `aria-current="page"`.
 - Mobil: Burger öffnet Vollbild-Menü. Geschlossen ist es per `hidden`/`inert` aus dem Tab-Fluss entfernt. Escape schließt und setzt den Fokus auf den Burger zurück.
 - Navigation blendet sich beim Runterscrollen aus und beim Hochscrollen ein (wie bisher); bei `prefers-reduced-motion` ohne Animation.
@@ -22,6 +25,7 @@ Globale Navigation und Footer wie auf der Lovable-Seite (`Navbar.tsx`, `Footer.t
 - Footer: Links wie bisher, Social-Links als echte Links (Instagram, LinkedIn, E-Mail), „Nach oben"-Link zu `#inhalt`. Footer-Texte mindestens `white/60`.
 
 ## Akzeptanzkriterien
+
 - AK-1: Navigation ist ein `nav` mit sprachrichtigem Namen („Hauptnavigation" / „Main navigation").
 - AK-2: Der Link zur aktuellen Seite hat `aria-current="page"`.
 - AK-3: Sprachlink zeigt auf das Gegenstück der aktuellen Seite; Text „English" (`lang="en"`) bzw. „Deutsch" (`lang="de"`).
@@ -33,16 +37,21 @@ Globale Navigation und Footer wie auf der Lovable-Seite (`Navbar.tsx`, `Footer.t
 - AK-15: Im Dunkelmodus trennt eine dezente Linie (`white/10`) den Footer vom Inhalt.
 
 ## Sprachen (DE/EN)
+
 Deutsch unter den bisherigen Pfaden, Englisch unter `/en/...` mit denselben Slugs. Texte in `lib/i18n.ts`.
 
 ## Tests
+
 `tests/unit/i18n.test.ts` (AK-3 Pfadzuordnung, AK-8), `tests/unit/navigation.test.tsx` (AK-1 bis AK-6), `tests/e2e/navigation.spec.ts` (AK-4, AK-5, AK-7 im Browser).
 
 ## Offene Fragen
+
 - (erledigt) LinkedIn ergänzt.
 
 ## Befunde Blinder Kritiker (2026-10-04) und Umsetzung
+
 Behoben, jeweils mit Test:
+
 - AK-9: Offenes Menü füllt den Bildschirm (vorher durch `backdrop-filter` am Header auf 32 px Höhe beschnitten); Menü liegt jetzt außerhalb des Headers.
 - AK-10: Fokus bleibt im offenen Menü (Hintergrund `inert`, Tab läuft im Kreis).
 - AK-11: Wechsel auf Desktop-Breite schließt das Menü und hebt die Scroll-Sperre auf.
@@ -52,6 +61,7 @@ Behoben, jeweils mit Test:
 - `aria-current` auch im Footer, Footer-Links mobil ebenfalls in einer `nav`, „made with …" mit `lang="en"`, `color-scheme` folgt dem Dunkelmodus.
 
 Offen, bewusst später:
+
 - canonical, hreflang, robots.txt, sitemap.xml → `seo/meta-und-schema.md`, `seo/sitemap-und-redirects.md`
 - Eigene zweisprachige 404-Seite mit Navigation → kommt mit den Unterseiten
 - (erledigt, AK-15) Footer im Dunkelmodus mit dezenter Trennlinie, von Erik freigegeben

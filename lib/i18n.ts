@@ -29,7 +29,7 @@ const de = {
     label: 'Hauptnavigation',
     home: 'Startseite',
     projects: 'Projekte',
-    services: 'Services',
+    services: 'Leistungen',
     about: 'Über mich',
     faqs: 'FAQs',
     contact: 'Kontakt',

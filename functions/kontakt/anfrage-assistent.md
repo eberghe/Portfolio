@@ -3,12 +3,15 @@
 Status: Entwurf
 
 ## Bestand
+
 Die Lovable-Seite nutzt ein einfaches Formular (Name, E-Mail, Nachricht) über Web3Forms, das als Mail ankommt.
 
 ## Zweck
+
 Kundenfreundlich anfragen ohne Mailprogramm: in wenigen Schritten Anliegen, Budget-Rahmen und Wunschtermin angeben.
 
 ## Verhalten
+
 1. Leistung wählen (Mehrfachauswahl)
 2. Kurz beschreiben, optional aktuelle Website-URL
 3. Zeitrahmen und Budget-Spanne
@@ -18,6 +21,7 @@ Kundenfreundlich anfragen ohne Mailprogramm: in wenigen Schritten Anliegen, Budg
 Speicherung in Supabase-Tabelle `anfragen`, Benachrichtigung an Erik, Bestätigungsmail an Kunden.
 
 ## Akzeptanzkriterien
+
 - AK-1: Funktioniert ohne Login; Fortschritt ist sichtbar und wird Screenreadern angesagt.
 - AK-2: Fehler werden am Feld und gesammelt angezeigt, Fokus springt zum ersten Fehler.
 - AK-3: Spam-Schutz ohne Captcha-Rätsel (Honeypot + Rate-Limit).
@@ -25,5 +29,6 @@ Speicherung in Supabase-Tabelle `anfragen`, Benachrichtigung an Erik, Bestätigu
 - AK-5: Erik erhält eine Benachrichtigung je Anfrage.
 
 ## Offene Fragen
+
 - Terminbuchung über welches Tool (z. B. Cal.com)?
 - Benachrichtigung per Mail, Slack oder beides?

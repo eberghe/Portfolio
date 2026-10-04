@@ -104,6 +104,9 @@ export default function Navbar({ locale }: { locale: Locale }) {
   };
 
   const isActive = (path: string) => pathname === localizedPath(path, locale);
+  // Unterseiten (z. B. /services/<slug>) markieren ihren Bereich: aria-current="true" statt "page"
+  const inSection = (path: string) => path !== '/' && pathname.startsWith(`${localizedPath(path, locale)}/`);
+  const current = (path: string) => (isActive(path) ? 'page' : inSection(path) ? 'true' : undefined);
   const linkClass = (active: boolean) =>
     active
       ? 'bg-primary-light dark:bg-white/10 text-primary-text dark:text-white font-medium'
@@ -127,13 +130,13 @@ export default function Navbar({ locale }: { locale: Locale }) {
 
           <ul className="hidden md:flex gap-1">
             {NAV_ITEMS.map((item) => {
-              const active = isActive(item.path);
+              const active = isActive(item.path) || inSection(item.path);
               return (
                 <li key={item.path}>
                   <Link
                     href={localizedPath(item.path, locale)}
-                    aria-current={active ? 'page' : undefined}
-                    className={`block whitespace-nowrap px-3.5 py-2 rounded-lg text-[13px] transition-all duration-150 ${linkClass(active)}`}
+                    aria-current={current(item.path)}
+                    className={`block whitespace-nowrap px-3.5 py-2 rounded-lg text-[13px] transition duration-150 ${linkClass(active)}`}
                   >
                     {t[item.key]}
                   </Link>
@@ -147,7 +150,7 @@ export default function Navbar({ locale }: { locale: Locale }) {
               href={alternatePath(pathname, otherLocale)}
               hrefLang={otherLocale}
               lang={otherLocale}
-              className="h-9 min-w-9 px-2 sm:px-2.5 rounded-lg border border-border flex items-center justify-center text-[13px] text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition-all"
+              className="h-9 min-w-9 px-2 sm:px-2.5 rounded-lg border border-border flex items-center justify-center text-[13px] text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition"
             >
               <span aria-hidden="true" className="sm:hidden">
                 {otherLocale.toUpperCase()}
@@ -160,7 +163,7 @@ export default function Navbar({ locale }: { locale: Locale }) {
               onClick={toggleDark}
               aria-pressed={dark}
               aria-label={t.darkMode}
-              className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition-all"
+              className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition"
             >
               {dark ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
             </button>
@@ -184,11 +187,11 @@ export default function Navbar({ locale }: { locale: Locale }) {
             >
               <span
                 aria-hidden="true"
-                className={`block w-4 h-0.5 bg-foreground transition-all ${mobileOpen ? 'rotate-45 translate-y-[3px]' : ''}`}
+                className={`block w-4 h-0.5 bg-foreground transition ${mobileOpen ? 'rotate-45 translate-y-[3px]' : ''}`}
               />
               <span
                 aria-hidden="true"
-                className={`block w-4 h-0.5 bg-foreground transition-all ${mobileOpen ? '-rotate-45 -translate-y-[3px]' : ''}`}
+                className={`block w-4 h-0.5 bg-foreground transition ${mobileOpen ? '-rotate-45 -translate-y-[3px]' : ''}`}
               />
             </button>
           </div>
@@ -203,12 +206,12 @@ export default function Navbar({ locale }: { locale: Locale }) {
         <nav aria-label={t.menu}>
           <ul className="flex flex-col gap-2">
             {NAV_ITEMS.map((item) => {
-              const active = isActive(item.path);
+              const active = isActive(item.path) || inSection(item.path);
               return (
                 <li key={item.path}>
                   <Link
                     href={localizedPath(item.path, locale)}
-                    aria-current={active ? 'page' : undefined}
+                    aria-current={current(item.path)}
                     className={`block px-4 py-4 rounded-lg text-lg ${linkClass(active)}`}
                   >
                     {t[item.key]}

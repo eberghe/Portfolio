@@ -23,6 +23,8 @@ export interface ServiceText {
   description: string;
   /** „Das ist enthalten" */
   features: string[];
+  /** Schlagworte in der Sprache der Seite */
+  tags: string[];
 }
 
 export interface Service extends Record<Locale, ServiceText> {
@@ -30,17 +32,18 @@ export interface Service extends Record<Locale, ServiceText> {
   icon: LucideIcon;
   /** Hervorgehobene Kachel auf der Startseite */
   featured?: boolean;
-  /** Schlagworte (sprachneutral) */
-  tags: string[];
+  /** Slugs der passenden Leistungen (2 bis 3), AK-9 */
+  related: string[];
 }
 
 export const services: Service[] = [
   {
     slug: 'ux-ui-design',
-    tags: ['Figma', 'Prototyping', 'User Research', 'Usability Testing', 'Wireframing'],
+    related: ['design-systems', 'accessibility', 'webflow-development'],
     icon: Layout,
     featured: true,
     de: {
+      tags: ['Figma', 'Prototyping', 'Nutzerforschung', 'Usability-Tests', 'Wireframes'],
       description:
         'Von der ersten Idee bis zum fertigen Interface: Nutzeranalyse, Wireframes, Prototypen und sauberes Handoff an die Entwicklung.',
       features: [
@@ -56,6 +59,7 @@ export const services: Service[] = [
         'Von der ersten Idee bis zum fertigen Interface. Ich gestalte digitale Produkte, die sich gut anfühlen und einfach funktionieren.',
     },
     en: {
+      tags: ['Figma', 'Prototyping', 'User research', 'Usability testing', 'Wireframing'],
       description:
         'From research through wireframes to final interface, user-centered, accessible, on point. I guide the entire design process: from initial user analysis through iterative prototypes to pixel-perfect developer handoff.',
       features: [
@@ -72,9 +76,10 @@ export const services: Service[] = [
   },
   {
     slug: 'webflow-development',
-    tags: ['Webflow', 'CMS', 'Animations', 'SEO'],
+    related: ['ux-ui-design', 'website-process-optimization', 'accessibility'],
     icon: Monitor,
     de: {
+      tags: ['Webflow', 'CMS', 'Animationen', 'SEO'],
       description:
         'Schnelle, animierte Websites ohne Code-Overhead. Ich baue responsive Seiten mit Webflow, inklusive CMS und Custom Interactions, barrierefrei und suchmaschinenfreundlich.',
       features: [
@@ -89,6 +94,7 @@ export const services: Service[] = [
       short: 'Schnelle, professionelle Websites mit Webflow, inklusive CMS, Animationen und sauberer Struktur.',
     },
     en: {
+      tags: ['Webflow', 'CMS', 'Animations', 'SEO'],
       description:
         'Fast, animated websites without code overhead. I build responsive sites in Webflow, including CMS and custom interactions, accessible and search-friendly.',
       features: [
@@ -105,9 +111,10 @@ export const services: Service[] = [
   },
   {
     slug: 'accessibility',
-    tags: ['WCAG 2.2', 'BFSG', 'Audit', 'Screenreader'],
+    related: ['ux-ui-design', 'website-process-optimization', 'webflow-development'],
     icon: Accessibility,
     de: {
+      tags: ['WCAG 2.2', 'BFSG', 'Audit', 'Screenreader'],
       description:
         'Barrierefreiheit ist kein Extra, sondern gehört dazu. Ich prüfe dein Produkt nach WCAG, setze die Anforderungen des BFSG um und gestalte Interfaces, die alle nutzen können.',
       features: [
@@ -122,6 +129,7 @@ export const services: Service[] = [
       short: 'WCAG-Audits und Umsetzung der BFSG-Anforderungen, damit dein Produkt für alle nutzbar ist.',
     },
     en: {
+      tags: ['WCAG 2.2', 'EAA', 'Audit', 'Screen reader'],
       description:
         'Accessibility is not an add-on, it is part of quality. I audit your product against WCAG, implement the European Accessibility Act requirements and design interfaces everyone can use.',
       features: [
@@ -139,9 +147,10 @@ export const services: Service[] = [
   },
   {
     slug: 'ai-consulting',
-    tags: ['KI', 'Automatisierung', 'Workshops', 'Prompting'],
+    related: ['website-process-optimization', 'ux-ui-design'],
     icon: Sparkles,
     de: {
+      tags: ['KI', 'Automatisierung', 'Workshops', 'Prompting'],
       description:
         'Ich finde mit dir die Stellen, an denen KI im Alltag wirklich Zeit spart, teste passende Werkzeuge und führe sie so ein, dass dein Team sie gern nutzt.',
       features: [
@@ -156,6 +165,7 @@ export const services: Service[] = [
       short: 'Wo KI dir wirklich Zeit spart: vom ersten Workshop bis zum eingeführten Werkzeug im Alltag.',
     },
     en: {
+      tags: ['AI', 'Automation', 'Workshops', 'Prompting'],
       description:
         'Together we find the places where AI actually saves time, test suitable tools and roll them out so your team enjoys using them.',
       features: [
@@ -172,9 +182,10 @@ export const services: Service[] = [
   },
   {
     slug: 'website-process-optimization',
-    tags: ['Analyse', 'Performance', 'Conversion', 'Prozesse'],
+    related: ['accessibility', 'ai-consulting', 'webflow-development'],
     icon: Workflow,
     de: {
+      tags: ['Analyse', 'Performance', 'Conversion', 'Prozesse'],
       description:
         'Ich analysiere deine Website und die Abläufe dahinter: Ladezeit, Barrierefreiheit, Suchmaschinen, Nutzerführung und interne Prozesse. Daraus entsteht ein klarer Plan, den wir gemeinsam umsetzen.',
       features: [
@@ -189,6 +200,7 @@ export const services: Service[] = [
       short: 'Ich analysiere deine Website und Abläufe und mache sie schneller, klarer und wirksamer.',
     },
     en: {
+      tags: ['Analysis', 'Performance', 'Conversion', 'Processes'],
       description:
         'I analyse your website and the workflows behind it: load time, accessibility, search, user journeys and internal processes. The result is a clear plan we implement together.',
       features: [
@@ -205,9 +217,10 @@ export const services: Service[] = [
   },
   {
     slug: 'brand-logo-design',
-    tags: ['Logo', 'Typografie', 'Styleguide', 'Branding'],
+    related: ['design-systems', 'webflow-development', 'ux-ui-design'],
     icon: PenTool,
     de: {
+      tags: ['Logo', 'Typografie', 'Styleguide', 'Branding'],
       description:
         'Ein Auftritt, der zu dir passt: Logo, Farben, Typografie und ein Styleguide, mit dem dein Auftritt auf Website, Social Media und Print gleich wirkt.',
       features: [
@@ -222,6 +235,7 @@ export const services: Service[] = [
       short: 'Logo, Typografie und Styleguide für einen Auftritt, der zu dir passt und überall gleich wirkt.',
     },
     en: {
+      tags: ['Logo', 'Typography', 'Style guide', 'Branding'],
       description:
         'A presence that fits you: logo, colours, typography and a style guide that keeps your brand consistent on web, social media and print.',
       features: [
@@ -238,9 +252,10 @@ export const services: Service[] = [
   },
   {
     slug: 'design-systems',
-    tags: ['Tokens', 'Components', 'Figma', 'Documentation'],
+    related: ['ux-ui-design', 'brand-logo-design', 'accessibility'],
     icon: Grid3x3,
     de: {
+      tags: ['Design-Tokens', 'Komponenten', 'Figma', 'Dokumentation'],
       description:
         'Ich baue Design Systems, die Teams schneller und konsistenter arbeiten lassen, mit Token-Architektur, Komponenten und klarer Doku.',
       features: [
@@ -251,10 +266,11 @@ export const services: Service[] = [
         'Design-Dev-Übergabe',
       ],
       label: 'Design Systems',
-      title: 'Skalierbare Systeme',
-      short: 'Konsistenz, die mitwächst.',
+      title: 'Design Systems',
+      short: 'Konsistenz, die mitwächst: Design-Tokens, Komponenten und Doku, mit denen dein Team schneller gestaltet.',
     },
     en: {
+      tags: ['Tokens', 'Components', 'Figma', 'Documentation'],
       description:
         'Scalable, token-based component libraries for consistent products. I build design systems that empower teams to work faster and more consistently.',
       features: [
@@ -265,15 +281,16 @@ export const services: Service[] = [
         'Design-dev handoff',
       ],
       label: 'Design Systems',
-      title: 'Scalable systems',
-      short: 'Consistency that scales.',
+      title: 'Design systems',
+      short: 'Consistency that scales: design tokens, components and docs that help your team design faster.',
     },
   },
   {
     slug: 'photography',
-    tags: ['Travel', 'Editorial', 'Lightroom', 'Capture One'],
+    related: ['brand-logo-design', 'ux-ui-design'],
     icon: Camera,
     de: {
+      tags: ['Reise', 'Editorial', 'Lightroom', 'Capture One'],
       description:
         'Reisen, Menschen, Kultur: Bilder, die Geschichten erzählen. Entstanden in Neuseeland, Indonesien, Marokko und quer durch Europa.',
       features: [
@@ -284,10 +301,11 @@ export const services: Service[] = [
         'Druck & digitale Auslieferung',
       ],
       label: 'Fotografie',
-      title: 'Travel & Editorial',
-      short: 'Echte Momente, ehrliche Bilder.',
+      title: 'Reise- & Editorial-Fotografie',
+      short: 'Echte Momente, ehrliche Bilder: Reise- und Editorial-Fotografie mit Bildbearbeitung und Bildauswahl.',
     },
     en: {
+      tags: ['Travel', 'Editorial', 'Lightroom', 'Capture One'],
       description:
         'Travel, people, culture: images that tell stories. Created on journeys through New Zealand, Indonesia, Morocco and Europe.',
       features: [
@@ -298,8 +316,8 @@ export const services: Service[] = [
         'Print & digital delivery',
       ],
       label: 'Photography',
-      title: 'Travel & Editorial',
-      short: 'Real moments, honest images.',
+      title: 'Travel & editorial photography',
+      short: 'Real moments, honest images: travel and editorial photography with editing and image selection.',
     },
   },
 ];

@@ -30,26 +30,31 @@ Dieser Skill gilt für **jede** Änderung am Portfolio: neue Funktion, Bugfix, n
 ## Ablauf für jede Änderung
 
 ### 1. Funktion beschreiben
+
 - Passende Datei in `functions/<bereich>/<funktion>.md` anlegen oder erweitern (Vorlage: `functions/_vorlage.md`).
 - Pflichtabschnitte: Zweck, Nutzer & Ziel, Verhalten, Akzeptanzkriterien (nummeriert, testbar), A11y, Mobile, SEO/GEO, Sprachen, Daten (Supabase-Tabellen), Offene Fragen.
 - Neue Datei in `functions/README.md` verlinken.
 - Eine Datei = eine Funktion. Wird eine Datei länger als ca. 150 Zeilen, aufteilen.
 
 ### 2. Tests schreiben (rot)
+
 - Für **jedes** Akzeptanzkriterium mindestens ein Test, der Kriterium-Nummer im Namen trägt, z. B. `it('AK-3: zeigt Fehlermeldung bei leerer E-Mail')`.
 - Seitenfunktionen: Playwright-Test inkl. `axe`-Check und Mobile-Viewport.
 - Tests laufen lassen und **bestätigen, dass sie rot sind** (aus dem richtigen Grund).
 
 ### 3. Entwickeln bis grün
+
 - Minimaler Code, bis alle Tests grün sind. Dann aufräumen, Tests bleiben grün.
 - Vor dem Commit lokal: `npm run lint && npm run typecheck && npm test && npm run test:e2e`.
 
 ### 4. Blinder Kritiker
+
 - Nach Grün startet ein separater Reviewer-Agent **ohne** Kenntnis der Implementierung oder der Doku-Absicht. Er bekommt nur die laufende Seite (bzw. Preview-URL) und die Checkliste aus `functions/qualitaet/blinder-kritiker.md`.
 - Er prüft u. a.: Screenreader-Erlebnis (nur Accessibility-Tree, kein visuelles Bild), Tastaturbedienung, Mobile, SEO/GEO, Verständlichkeit der Texte, Konsistenz mit dem Design.
 - Jeder Befund wird entweder behoben (neuer Test zuerst!) oder mit Begründung in der Funktionsdoku unter „Offene Fragen" festgehalten.
 
 ### 5. Abschluss
+
 - Doku an den tatsächlichen Stand anpassen.
 - Commit-Message: `<bereich>: <was>` und Verweis auf die Funktionsdatei.
 - PR mit Vercel-Preview-Link; kein Merge auf `main` ohne Eriks OK.

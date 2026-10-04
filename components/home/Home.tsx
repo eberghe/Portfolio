@@ -7,7 +7,7 @@ import { localizedPath, type Locale } from '@/lib/i18n';
 
 // Startseite, übernommen aus Lovable (HomePage.tsx). Siehe functions/seiten/startseite.md
 const cardHover =
-  'motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.15)]';
+  'motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.15)]';
 
 export default function Home({ locale }: { locale: Locale }) {
   const t = homeContent[locale];
@@ -42,7 +42,7 @@ export default function Home({ locale }: { locale: Locale }) {
             </Link>
             <Link
               href={href('/projects')}
-              className="border border-border text-text2 px-6 py-3 rounded-lg text-[13px] hover:text-foreground hover:border-muted-foreground transition-all"
+              className="border border-border text-text2 px-6 py-3 rounded-lg text-[13px] hover:text-foreground hover:border-muted-foreground transition"
             >
               {t.viewProjects}
             </Link>

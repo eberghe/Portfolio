@@ -1,26 +1,26 @@
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { services } from '@/lib/content/services';
+import JsonLd from '@/components/JsonLd';
 import { localizedPath, type Locale } from '@/lib/i18n';
+import { servicesItemListJsonLd } from '@/lib/structured-data';
 
 // Übersicht der Leistungen, übernommen aus Lovable (ServicesPage.tsx). Siehe functions/seiten/leistungen.md
 export const overviewText = {
   de: {
     metaTitle: 'Leistungen: UX/UI, Webflow, Barrierefreiheit, KI | Erik Bergheimer',
     metaDescription:
-      'Webflow-Entwicklung, Barrierefreiheit, KI-Beratung, Website-Optimierung, Brand-Design und UX/UI aus Augsburg & Innsbruck.',
-    title: 'Services',
+      'UX/UI, Webflow, Barrierefreiheit, KI-Beratung, Website-Optimierung, Brand-Design, Design Systems und Fotografie aus Augsburg & Innsbruck.',
+    title: 'Leistungen',
     intro: 'Was ich für dich tun kann: Design, Entwicklung und alles dazwischen.',
-    core: 'Kern',
     keywords: 'Schlagworte',
   },
   en: {
     metaTitle: 'Services: UX/UI, Webflow, accessibility, AI | Erik Bergheimer',
     metaDescription:
-      'Webflow development, accessibility, AI consulting, website optimisation, brand design and UX/UI from Augsburg & Innsbruck.',
+      'UX/UI, Webflow, accessibility, AI consulting, website optimisation, brand design, design systems and photography from Augsburg & Innsbruck.',
     title: 'Services',
     intro: 'What I can do for you: design, development and everything in between.',
-    core: 'Core',
     keywords: 'Keywords',
   },
 };
@@ -29,6 +29,7 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
   const t = overviewText[locale];
   return (
     <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
+      <JsonLd data={servicesItemListJsonLd(locale)} />
       <div className="py-16 border-b border-border mb-10">
         <h1 className="text-[32px] font-medium tracking-tight mb-3">{t.title}</h1>
         <p className="text-[15px] text-text2 max-w-[500px]">{t.intro}</p>
@@ -44,7 +45,7 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                 href={localizedPath(`/services/${s.slug}`, locale)}
                 aria-labelledby={`leistung-${s.slug}`}
                 aria-describedby={`leistung-${s.slug}-text`}
-                className={`block rounded-2xl p-6 border group relative h-full motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.15)] ${
+                className={`block rounded-2xl p-6 border group relative h-full motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.15)] ${
                   accent ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border'
                 }`}
               >
@@ -63,11 +64,6 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                   >
                     <Icon size={20} className={accent ? 'text-primary-foreground' : 'text-primary-text'} />
                   </span>
-                  {accent && (
-                    <span className="text-[10px] border border-primary-foreground/40 text-primary-foreground px-2 py-0.5 rounded font-medium tracking-wide uppercase">
-                      {t.core}
-                    </span>
-                  )}
                 </span>
                 <span
                   className={`block text-[10px] font-medium tracking-wider uppercase mb-2 ${
@@ -89,7 +85,7 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                   {text.short}
                 </span>
                 <span className="flex flex-wrap gap-1.5" aria-hidden="true">
-                  {s.tags.map((tag) => (
+                  {text.tags.map((tag) => (
                     <span
                       key={tag}
                       className={`text-[11px] px-2 py-0.5 rounded border ${

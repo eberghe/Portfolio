@@ -56,3 +56,20 @@ for (const scheme of ['light', 'dark'] as const) {
     }
   });
 }
+
+test('AK-15: Fokusrahmen beim Tab sofort 2 px breit', async ({ page }) => {
+  await page.goto('/services');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  const narrow: string[] = [];
+  for (let i = 0; i < 25; i++) {
+    await page.keyboard.press('Tab');
+    const r = await page.evaluate(() => {
+      const el = document.activeElement as HTMLElement;
+      const s = getComputedStyle(el);
+      const visible = el.getBoundingClientRect().width > 0;
+      return { name: el.textContent?.trim().slice(0, 30) ?? '', width: parseFloat(s.outlineWidth), visible };
+    });
+    if (r.visible && r.width < 2) narrow.push(r.name);
+  }
+  expect(narrow).toEqual([]);
+});

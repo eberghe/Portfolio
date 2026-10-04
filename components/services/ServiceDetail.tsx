@@ -1,25 +1,27 @@
 import { ArrowLeft, Check } from 'lucide-react';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
-import type { Service } from '@/lib/content/services';
+import { services, type Service } from '@/lib/content/services';
 import { localizedPath, type Locale } from '@/lib/i18n';
-import { serviceJsonLd } from '@/lib/structured-data';
+import { breadcrumbJsonLd, serviceJsonLd } from '@/lib/structured-data';
 import { overviewText } from './ServicesOverview';
 
 // Detailseite einer Leistung, übernommen aus Lovable (ServiceDetailPage.tsx). Siehe functions/seiten/leistungen.md
 const text = {
   de: {
-    back: 'Alle Services',
+    back: 'Alle Leistungen',
     included: 'Das ist enthalten',
-    interested: 'Interesse?',
-    talk: 'Lass uns darüber sprechen, wie ich dir helfen kann.',
+    related: 'Passende Leistungen',
+    interested: (title: string) => `Interesse an ${title}?`,
+    talk: 'Im kostenlosen Erstgespräch klären wir unverbindlich, was du brauchst und wie ich dir helfen kann.',
     cta: 'Kostenloses Erstgespräch',
   },
   en: {
     back: 'All services',
     included: "What's included",
-    interested: 'Interested?',
-    talk: "Let's talk about how I can help you.",
+    related: 'Related services',
+    interested: (title: string) => `Interested in ${title.charAt(0).toLowerCase()}${title.slice(1)}?`,
+    talk: 'In a free, no-obligation intro call we work out what you need and how I can help.',
     cta: 'Free intro call',
   },
 };
@@ -28,10 +30,12 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
   const t = text[locale];
   const content = service[locale];
   const Icon = service.icon;
+  const related = service.related.flatMap((slug) => services.filter((s) => s.slug === slug));
 
   return (
     <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
       <JsonLd data={serviceJsonLd(service, locale)} />
+      <JsonLd data={breadcrumbJsonLd(service, locale)} />
       <div className="pt-8 pb-4">
         <Link
           href={localizedPath('/services', locale)}
@@ -48,7 +52,7 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
           <h1 className="text-[32px] font-medium tracking-tight mb-4">{content.title}</h1>
           <p className="text-[15px] text-text2 leading-relaxed mb-8">{content.description}</p>
           <ul aria-label={overviewText[locale].keywords} className="flex flex-wrap gap-2">
-            {service.tags.map((tag) => (
+            {content.tags.map((tag) => (
               <li
                 key={tag}
                 className="bg-primary-light text-primary-text border border-primary-border px-3 py-1.5 rounded-full text-[11px] font-medium"
@@ -82,9 +86,28 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
         </section>
       </div>
 
+      <section aria-labelledby="passend" className="py-12 border-b border-border">
+        <h2 id="passend" className="text-sm font-medium text-foreground mb-5">
+          {t.related}
+        </h2>
+        <ul className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {related.map((r) => (
+            <li key={r.slug}>
+              <Link
+                href={localizedPath(`/services/${r.slug}`, locale)}
+                className="flex items-center gap-3 h-full rounded-xl border border-border bg-card p-4 text-[13px] font-medium text-foreground hover:border-primary/30 motion-safe:transition"
+              >
+                <r.icon size={18} aria-hidden="true" className="text-primary-text shrink-0" />
+                {r[locale].title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section aria-labelledby="interesse" className="py-16 text-center">
         <h2 id="interesse" className="text-xl font-medium mb-3">
-          {t.interested}
+          {t.interested(content.title)}
         </h2>
         <p className="text-[13px] text-text2 mb-6 max-w-[400px] mx-auto">{t.talk}</p>
         <Link

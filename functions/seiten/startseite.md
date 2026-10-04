@@ -46,12 +46,15 @@ Behoben, jeweils mit Test:
 - Navigation AK-16: Menüpunkte brechen bei 768 px nicht mehr um.
 - EN-Ablauf „Getting to know" → „Intro call".
 
-Entscheidungen bei Erik (Inhalt/Positionierung):
-- Nachname in der h1 („Hi, ich bin Erik Bergheimer") für SEO/GEO?
-- Button „Kontakt" → „Kostenloses Erstgespräch"?
-- „freiberuflich" und Einsatzgebiet (DE/AT/remote) im Hero ergänzen?
-- „3 Länder & Remote" präzisieren oder streichen.
-- Belege je Leistung (Kundenprojekte, Referenzen); „Beratung zum BFSG" ggf. als „Umsetzung der BFSG-Anforderungen" formulieren (klingt sonst nach Rechtsberatung).
+Von Erik am 2026-10-04 entschieden und umgesetzt (AK-17):
+- h1 mit vollem Namen „Hi, ich bin Erik Bergheimer".
+- Hauptbutton „Kostenloses Erstgespräch" / „Free intro call".
+- Hero-Text nennt „freiberuflich" und Einsatzgebiet (Augsburg & Innsbruck, Kunden in DE, AT und remote).
+- Faktenleiste: „3 Länder & Remote" ersetzt durch „DE · AT – Vor Ort & remote".
+- Barrierefreiheit: „Umsetzung der BFSG-Anforderungen" statt „Beratung zum BFSG".
+
+Noch offen:
+- Belege je Leistung (Kundenprojekte, Referenzen).
 - Englische Begriffe auf der deutschen Seite („Webflow Expert", „Kernservice", „Travel & Editorial", „Design Systems").
 - Schriftgrößen (10–13 px) und unauffällige h2 sind Bestandsdesign; Anhebung nur mit Freigabe.
 

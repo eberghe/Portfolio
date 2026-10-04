@@ -4,8 +4,8 @@ import { axe } from './helpers';
 // functions/seiten/startseite.md
 
 test('AK-1: Hero-Überschrift steht ohne JavaScript im HTML', async ({ request }) => {
-  expect(await (await request.get('/')).text()).toMatch(/<h1[^>]*>Hi, ich bin <span[^>]*>Erik/);
-  expect(await (await request.get('/en')).text()).toMatch(/<h1[^>]*>Hi, I(&#x27;|')m <span[^>]*>Erik/);
+  expect(await (await request.get('/')).text()).toMatch(/<h1[^>]*>Hi, ich bin <span[^>]*>Erik Bergheimer/);
+  expect(await (await request.get('/en')).text()).toMatch(/<h1[^>]*>Hi, I(&#x27;|')m <span[^>]*>Erik Bergheimer/);
 });
 
 test('AK-7: Hero-Foto wird mit Priorität geladen (Preload im <head>)', async ({ request }) => {

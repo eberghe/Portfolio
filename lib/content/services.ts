@@ -65,12 +65,13 @@ export const services: Service[] = [
     de: {
       label: 'Barrierefreiheit',
       title: 'Barrierefreiheit-Beratung',
-      short: 'WCAG-Audits und Beratung zum BFSG, damit dein Produkt für alle nutzbar ist.',
+      short: 'WCAG-Audits und Umsetzung der BFSG-Anforderungen, damit dein Produkt für alle nutzbar ist.',
     },
     en: {
       label: 'Accessibility',
       title: 'Accessibility consulting',
-      short: 'WCAG audits and guidance on accessibility law, so your product works for everyone.',
+      short:
+        'WCAG audits and implementing the European Accessibility Act requirements, so your product works for everyone.',
     },
   },
   {

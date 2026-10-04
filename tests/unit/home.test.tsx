@@ -10,22 +10,22 @@ describe.each([
     'de',
     '',
     {
-      h1: /^Hi, ich bin Erik, UX\/UI Designer & Webflow Expert$/,
+      h1: /^Hi, ich bin Erik Bergheimer, UX\/UI Designer & Webflow Expert$/,
       offer: 'Was ich anbiete',
       process: 'So arbeiten wir zusammen',
       projects: 'Ausgewählte Projekte',
-      contact: 'Kontakt',
+      contact: 'Kostenloses Erstgespräch',
     },
   ],
   [
     'en',
     '/en',
     {
-      h1: /^Hi, I'm Erik, UX\/UI Designer & Webflow Expert$/,
+      h1: /^Hi, I'm Erik Bergheimer, UX\/UI Designer & Webflow Expert$/,
       offer: 'What I offer',
       process: 'How we work together',
       projects: 'Selected projects',
-      contact: 'Get in touch',
+      contact: 'Free intro call',
     },
   ],
 ] as const)('Startseite (%s)', (locale, prefix, t) => {
@@ -106,6 +106,25 @@ describe('AK-13: Fakten stimmen mit dem Inhalt überein', () => {
     render(<Home locale="de" />);
     expect(screen.getByText(/Bachelorarbeit/)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Indonesien' })).toBeInTheDocument();
+  });
+});
+
+describe('AK-17: Entscheidungen von Erik (2026-10-04)', () => {
+  it('Hero nennt freiberuflich und Einsatzgebiet', () => {
+    render(<Home locale="de" />);
+    expect(screen.getByText(/freiberuflich/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/Remote/i).length).toBeGreaterThan(0);
+  });
+
+  it('keine unklare Angabe "Länder & Remote" mehr', () => {
+    render(<Home locale="de" />);
+    expect(screen.queryByText('Länder & Remote')).toBeNull();
+  });
+
+  it('Barrierefreiheit klingt nicht nach Rechtsberatung', () => {
+    const a11y = services.find((s) => s.slug === 'accessibility')!;
+    expect(a11y.de.short).not.toMatch(/Beratung zum BFSG/);
+    expect(a11y.de.short).toMatch(/Umsetzung der BFSG-Anforderungen/);
   });
 });
 

@@ -1,12 +1,10 @@
-import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import { axe } from './helpers';
 
 // functions/seiten/navigation-und-footer.md
 async function ready(page: Page) {
   await page.locator('html[data-hydrated]').waitFor({ state: 'attached' });
 }
-
-const AXE_TAGS = ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'];
 
 test('AK-3: Sprachlink wechselt auf die englische Seite mit lang="en"', async ({ page }) => {
   await page.goto('/');
@@ -60,8 +58,7 @@ for (const scheme of ['light', 'dark'] as const) {
       await page.goto('/');
       await ready(page);
       await ready(page);
-      const results = await new AxeBuilder({ page }).include('header').include('footer').withTags(AXE_TAGS).analyze();
-      expect(results.violations).toEqual([]);
+      expect(await axe(page, ['header', 'footer'])).toEqual([]);
     });
   });
 }

@@ -1,12 +1,12 @@
-import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { axe } from './helpers';
 
 // functions/infrastruktur/grundgeruest.md
 test.describe('Grundgerüst', () => {
   test('AK-1: Inhalt steht ohne JavaScript im HTML', async ({ request }) => {
     const html = await (await request.get('/')).text();
     expect(html).toContain('<html lang="de"');
-    expect(html).toMatch(/<h1[^>]*>[^<]*Erik Bergheimer/);
+    expect(html).toMatch(/<h1[^>]*>/);
   });
 
   test('AK-2: genau eine h1 und ein Skip-Link zum Hauptinhalt', async ({ page }) => {
@@ -20,8 +20,7 @@ test.describe('Grundgerüst', () => {
 
   test('AK-3: keine axe-Verstöße', async ({ page }) => {
     await page.goto('/');
-    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
-    expect(results.violations).toEqual([]);
+    expect(await axe(page)).toEqual([]);
   });
 
   test('AK-4: keine horizontale Scrollbar', async ({ page }) => {

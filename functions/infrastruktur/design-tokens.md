@@ -28,10 +28,19 @@ Das bestehende Design 1:1 übernehmen. Quelle: Lovable-Repo `eberghe/erik-berghe
 | Dunkel: primary als Text | 3,5 | | **nicht ausreichend** |
 | Dunkel: text3 | 4,0 | | **nicht ausreichend** |
 
-Entscheidung bei Erik: minimal abdunkeln/aufhellen, bis 4,5:1 erreicht ist (optisch kaum sichtbar), oder unverändert lassen.
+Entschieden (Erik, 2026-10-04): minimal anpassen, nur Helligkeit, Farbton und Sättigung bleiben. Zielwerte erfüllen 4,5:1 auf `background`, `bg2` und `bg3`:
+
+| Token | alt | neu |
+|---|---|---|
+| `--text2` (hell) | `215 15% 47%` | `215 15% 44.5%` |
+| `--text3` (hell) | `214 20% 61%` | `214 20% 44.5%` (deutlich dunkler, nahe `text2`) |
+| `--text3` (dunkel) | `205 20% 45%` | `205 20% 53%` |
+| `--primary-text` (neu, nur dunkel) | – | `161 36% 43.5%`; `--primary` für Buttons bleibt |
+
+Grün als Text im Dunkelmodus nutzt `--primary-text`; im hellen Modus ist `--primary-text` = `--primary`.
 
 ## Akzeptanzkriterien
 - AK-1: Screenshot-Vergleich alt vs. neu je Seite, Abweichung unter Schwellwert (bis auf freigegebene Kontrast-Korrekturen).
 - AK-2: Komponenten verwenden ausschließlich Tokens, keine freien Farbwerte.
 - AK-3: Hell- und Dunkelmodus funktionieren, Wahl bleibt gespeichert, `prefers-color-scheme` wird beim ersten Besuch berücksichtigt.
-- AK-4: Alle Text-Token-Kombinationen erfüllen 4,5:1 (automatischer Test), sobald Erik die Korrektur freigibt.
+- AK-4: Alle Text-Token-Kombinationen erfüllen 4,5:1 (automatischer Test über alle Text/Hintergrund-Paare, hell und dunkel).

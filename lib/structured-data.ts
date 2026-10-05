@@ -177,7 +177,7 @@ export function localJsonLd(page: LocalPage, locale: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
-    name: `Erik Bergheimer – ${t.title.replace(` in ${page.city}`, '')}`,
+    name: `Erik Bergheimer – ${t.title.replace(/ in [^ ]+$/, '')}`,
     description: t.metaDescription,
     url: absolute(page.path, locale),
     address: { ...person(locale).address, streetAddress: undefined },

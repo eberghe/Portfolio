@@ -308,6 +308,17 @@ describe('PreMatch (Masterarbeit)', () => {
       expect(within(friction).getByRole('img', { name: img.alt.de })).toBeInTheDocument();
   });
 
+  it('AK-29: Diagramme direkt unter dem Abschnitt, einspaltig', () => {
+    expect(p.inlineImages.benchmarking).toHaveLength(1);
+    expect(p.inlineImages.study).toHaveLength(4);
+    render(<ProjectDetail project={p} locale="de" />);
+    const study = screen.getByRole('region', { name: 'Phase III: Nutzerstudie' });
+    for (const img of p.inlineImages.study!)
+      expect(within(study).getByRole('img', { name: img.alt.de })).toBeInTheDocument();
+    expect(within(study).getAllByRole('list')[0]).toHaveClass('grid-cols-1');
+    for (const img of p.inlineImages.study!) expect(img.alt.de).toMatch(/\d/);
+  });
+
   it.each(locales)('AK-27: Kennzahlen mit Quelle in der Sprache (%s)', (locale) => {
     render(<ProjectDetail project={p} locale={locale} />);
     const region = screen.getByRole('region', { name: locale === 'de' ? 'Kennzahlen' : 'Key figures' });

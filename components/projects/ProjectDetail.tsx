@@ -160,6 +160,15 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
                   {section.title}
                 </h2>
                 <Paragraphs content={section.content} className="text-sm text-text2 leading-[1.8] mb-6" />
+                {(project.inlineImages[section.id] ?? []).length > 0 && (
+                  <div className="mb-8">
+                    <ImageGallery
+                      images={localized(project.inlineImages[section.id]!, locale)}
+                      locale={locale}
+                      variant="wide"
+                    />
+                  </div>
+                )}
                 {section.subsections?.map((sub) => {
                   const images = project.inlineImages[sub.id] ?? [];
                   return (

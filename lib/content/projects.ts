@@ -52,7 +52,7 @@ export interface Project extends Record<Locale, ProjectText> {
   /** Slug der passenden Leistung (AK-17) */
   service: string;
   gallery: ProjectImage[];
-  /** Bilder unter einem Unterabschnitt, Schlüssel = id des Unterabschnitts */
+  /** Bilder unter einem Unterabschnitt oder (einspaltig, AK-29) direkt unter einem Abschnitt, Schlüssel = id */
   inlineImages: Record<string, ProjectImage[]>;
   download?: { url: string; label: Record<Locale, string> };
   metrics?: ProjectMetric[];
@@ -77,6 +77,55 @@ export const projects: Project[] = [
     service: 'ux-ui-design',
     gallery: [],
     inlineImages: {
+      benchmarking: [
+        {
+          src: '/images/projects/prematch-chart-benchmark.jpg',
+          width: 2400,
+          height: 2043,
+          alt: {
+            de: 'Radar-Diagramm des Benchmarkings: Kicktipp, Tackle, Teamtip und Tipico in sieben Kategorien auf einer Skala von 1 bis 5. Bei „Social & Community“ liegen alle vier um 2, Kicktipp ist bei „Immersion & Narrative“ am schwächsten',
+            en: 'Benchmark radar chart: Kicktipp, Tackle, Teamtip and Tipico across seven categories on a scale of 1 to 5. All four sit around 2 on Social & Community, and Kicktipp is weakest on Immersion & Narrative',
+          },
+        },
+      ],
+      study: [
+        {
+          src: '/images/projects/prematch-chart-sus.jpg',
+          width: 2400,
+          height: 1193,
+          alt: {
+            de: 'Balkendiagramm SUS: Werte der zehn Teilnehmenden zwischen 80 und 100, Mittelwert 90,0 (Standardabweichung 6,7), alle im Bereich „exzellent“ ab 80',
+            en: 'SUS bar chart: scores of the ten participants between 80 and 100, mean 90.0 (SD 6.7), all in the excellent range from 80',
+          },
+        },
+        {
+          src: '/images/projects/prematch-chart-attrakdiff.jpg',
+          width: 1667,
+          height: 1780,
+          alt: {
+            de: 'AttrakDiff-Portfolio: Mittelwert von PreMatch bei pragmatischer Qualität 0,44 und hedonischer Qualität 1,36, also deutlich mehr Freude als reine Zweckmäßigkeit',
+            en: 'AttrakDiff portfolio: PreMatch mean at pragmatic quality 0.44 and hedonic quality 1.36, so clearly more enjoyment than pure usefulness',
+          },
+        },
+        {
+          src: '/images/projects/prematch-chart-intui.jpg',
+          width: 2400,
+          height: 998,
+          alt: {
+            de: 'INTUI-Skalen von 1 bis 7: Bauchgefühl 5,30, magisches Erlebnis 4,82, Sicherheit 4,37 und Verbalisierbarkeit 4,12, alle über der Mitte von 4',
+            en: 'INTUI scales from 1 to 7: gut feeling 5.30, magical experience 4.82, confidence 4.37 and verbalisability 4.12, all above the midpoint of 4',
+          },
+        },
+        {
+          src: '/images/projects/prematch-chart-nps.jpg',
+          width: 2400,
+          height: 1101,
+          alt: {
+            de: 'Net Promoter Score 70: sieben Promotoren, drei Passive und keine Kritiker, durchschnittliche Bewertung 9 von 10',
+            en: 'Net Promoter Score 70: seven promoters, three passives and no detractors, average rating 9 out of 10',
+          },
+        },
+      ],
       sketches: [
         {
           src: '/images/projects/prematch-sketch-home.jpg',

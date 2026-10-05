@@ -39,7 +39,7 @@ test.describe('Grundgerüst', () => {
     await page.evaluate(() => document.fonts.ready);
     expect(external).toEqual([]);
     const font = await page.evaluate(() => getComputedStyle(document.body).fontFamily);
-    expect(font).toMatch(/Mona Sans/);
+    expect(font).toMatch(/mona/i);
     expect(font).not.toMatch(/Inter/);
   });
 });

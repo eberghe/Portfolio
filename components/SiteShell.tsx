@@ -1,5 +1,5 @@
+import localFont from 'next/font/local';
 import type { ReactNode } from 'react';
-import '@fontsource-variable/mona-sans/wght.css';
 import '@/app/globals.css';
 import { messages, type Locale } from '@/lib/i18n';
 import Footer from './Footer';
@@ -7,6 +7,17 @@ import Navbar from './Navbar';
 import Logo from './Logo';
 import RevealObserver from './motion/RevealObserver';
 import SmoothScroll from './motion/SmoothScroll';
+
+// Mona Sans selbst gehostet über next/font: vorgeladen, mit größenangepasster Ersatzschrift gegen
+// Layout-Sprünge beim Laden (functions/infrastruktur/design-tokens.md AK-6, AK-10)
+const mona = localFont({
+  src: '../app/fonts/mona-sans-latin-wght-normal.woff2',
+  weight: '200 900',
+  style: 'normal',
+  display: 'swap',
+  variable: '--font-mona',
+  adjustFontFallback: 'Arial',
+});
 
 // Setzt vor dem ersten Zeichnen die Klasse "js" (Animationen, functions/infrastruktur/animationen.md)
 // und "dark": gespeicherte Wahl, sonst Systemeinstellung.
@@ -25,7 +36,7 @@ export default function SiteShell({
   children: ReactNode;
 }) {
   return (
-    <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang={locale} data-scroll-behavior="smooth" className={mona.variable} suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-head-element -- App Router: SiteShell ist das Root-Layout */}
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

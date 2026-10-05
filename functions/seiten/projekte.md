@@ -108,4 +108,5 @@ Erik hat Designsystem, zwei Skizzen, zwei Screens und die Arbeit selbst (.tex) g
 
 Behoben: Aussagen über Kicktipp und Tipico vorsichtiger formuliert, Studienergebnisse nicht überdehnt („deutet darauf hin“), Skala bei INTUI genannt, „Positive Friction“ einheitlich, Hexcode aus dem Alt-Text, englisch „tipping“ ersetzt. Mobil rückte der Fließtext aller Fallstudien um 48 px ein, weil der Abstand zum ausgeblendeten Inhaltsverzeichnis blieb (jetzt erst ab `lg`).
 Offen mit Begründung: Quelle steht je Kennzahl (wie in AK-2 festgelegt), die beiden Skizzen haben unterschiedliche Seitenverhältnisse (Originale), Handy-Screens sind bei 360 px klein, lassen sich aber per Klick vergrößern.
+
 - AK-29 (Diagramme, Erik 2026-10-05): Bilder können auch direkt unter einem Abschnitt stehen (`inlineImages` mit der id des Abschnitts) und erscheinen dann einspaltig in voller Textbreite, damit Diagramme lesbar bleiben (Klick vergrößert wie gewohnt). PreMatch zeigt so das Radar-Diagramm des Benchmarkings unter „Benchmarking“ und SUS, AttrakDiff, INTUI und NPS unter „Nutzerstudie“. Die Alt-Texte nennen die Kernwerte des Diagramms.

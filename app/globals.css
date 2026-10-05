@@ -254,6 +254,26 @@ html {
     animation-delay: calc(var(--w, 0) * 120ms + 80ms), 1s;
   }
 }
+/* Hero: Bausteine unter der h1 steigen gestaffelt ein, functions/infrastruktur/animationen.md AK-12 */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-rise {
+    /* backwards statt both: danach gilt wieder der eigene Stil, kein filter: blur(0) als Ebene */
+    animation: hero-rise-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation-delay: calc(var(--r, 0) * 120ms + 200ms);
+  }
+}
+@keyframes hero-rise-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
 @keyframes hero-word-in {
   from {
     opacity: 0;
@@ -339,6 +359,9 @@ html.preload .hero-wave {
 }
 html.preload .hero-wave {
   animation-delay: calc(var(--w, 0) * 120ms + 1.3s), 2.3s;
+}
+html.preload .hero-rise {
+  animation-delay: calc(var(--r, 0) * 120ms + 1.4s);
 }
 @keyframes preloader-out {
   to {

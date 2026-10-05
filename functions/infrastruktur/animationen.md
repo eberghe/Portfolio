@@ -47,3 +47,24 @@ Erik: „auch bitte die lade animation bauen mit meinem style. bitte auch das sc
 - AK-7: Beim ersten Aufruf mit erlaubter Bewegung ist die Ladefläche sichtbar und nach spätestens 2 s weg (nicht sichtbar, keine Klicks abgefangen); beim zweiten Aufruf in derselben Sitzung erscheint sie nicht.
 - AK-8: Bei reduzierter Bewegung und ohne JavaScript erscheint keine Ladefläche.
 - AK-9: Mit erlaubter Bewegung ist weiches Scrollen aktiv (`html.lenis`), bei reduzierter Bewegung nicht; der Skip-Link führt weiter zum Hauptinhalt.
+
+## Alles blendet ein (Erik, 2026-10-05)
+
+Erik: „bitte nicht nur das heading animieren sondern alles! auch die paragraphen etc. sonst sieht es lieblos aus.“
+
+- Neben den von Hand markierten `[data-reveal]`-Elementen bekommt der `RevealObserver` automatisch alle Inhaltsbausteine im Hauptbereich: Überschriften, Absätze, Listeneinträge, Bilder und Abbildungen, Zitate, Definitionslisten, aufklappbare Fragen und Formulare. Pro Verschachtelung wird nur das äußerste Element animiert (eine Karte gleitet als Ganzes ein, nicht ihre Teile einzeln). Geschwister werden gestaffelt (je 80 ms, höchstens fünf Stufen).
+- Ausgenommen: Kopf- und Fußzeile, dekorative Laufbänder (`aria-hidden`), die Wort-für-Wort-Begrüßung, die Tafeln der Zeitleiste (sie bewegen sich schon beim Scrollen) und Elemente mit `data-no-reveal`.
+- Was beim Markieren schon im Bild ist, wird sofort als sichtbar markiert (kein Flackern nach dem Laden). Nur bei erlaubter Bewegung (`html.smooth`); ohne JavaScript und bei reduzierter Bewegung ändert sich nichts.
+
+- AK-10: Mit erlaubter Bewegung ist ein Absatz unterhalb des ersten Bildschirms zunächst unsichtbar und nach dem Hinscrollen sichtbar; ein Absatz im ersten Bildschirm ist nach dem Laden sichtbar.
+- AK-11: Kein animiertes Element liegt in einem anderen animierten Element; Kopf- und Fußzeile enthalten keine automatisch animierten Elemente.
+
+Prüfung 2026-10-05: Alle Seiten (DE/EN, 360 und 1280 px) bis zum Ende durchgescrollt; danach ist kein animiertes Element mehr unsichtbar.
+
+## Hero-Einstieg (Erik, 2026-10-05)
+
+Erik: „auch auf home bitte die paragraphen unter der h1 etc auch animieren das wirkt grad noch so statisch“.
+
+- Im Hero der Startseite und von „Über mich“ steigen alle Bausteine (Hinweis, Rolle, Text, Knöpfe, Foto, Chips) beim Laden nacheinander ein: aus 24 px unten, unscharf zu scharf, Deckkraft 0 zu 1, je 120 ms versetzt, nach den Wörtern der Begrüßung. Rein per CSS (Klasse `hero-rise`, Stufe `--r`), damit nichts flackert und es ohne Hydration endet; mit Ladeanimation entsprechend später. Bei reduzierter Bewegung steht alles sofort da.
+
+- AK-12: Mit erlaubter Bewegung laufen die Hero-Bausteine unter der h1 auf Start- und Über-mich-Seite mit der Animation `hero-rise` gestaffelt ein und sind danach voll sichtbar; bei reduzierter Bewegung haben sie keine Animation.

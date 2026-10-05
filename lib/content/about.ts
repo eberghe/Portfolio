@@ -48,6 +48,8 @@ export const aboutContent = {
     journeyIntro:
       'Von der Kiwi-Farm in Neuseeland über Bali bis zum Master in Innsbruck: die Stationen, die mich geprägt haben.',
     journeyHint: 'Scroll weiter',
+    journeyPrev: 'Vorherige Station',
+    journeyNext: 'Nächste Station',
     eyebrow: 'Über mich',
     role: 'UX/UI-Designer, Webflow-Entwickler und Business Development Manager bei HERO Software',
     outroTitle: 'Genug über mich. Jetzt bist du dran',
@@ -74,6 +76,8 @@ export const aboutContent = {
     journeyIntro:
       "From a kiwi farm in New Zealand to Bali to a Master's degree in Innsbruck: the places that shaped me.",
     journeyHint: 'Keep scrolling',
+    journeyPrev: 'Previous stop',
+    journeyNext: 'Next stop',
     eyebrow: 'About me',
     role: 'UX/UI designer, Webflow developer and Business Development Manager at HERO Software',
     outroTitle: 'Enough about me. Your turn',

@@ -47,7 +47,7 @@ describe('AK-5: Zeitleiste', () => {
     const ol = heading.parentElement!.querySelector('ol')!;
     const items = within(ol).getAllByRole('listitem');
     expect(items).toHaveLength(timeline.length);
-    expect(timeline.length).toBe(14);
+    expect(timeline.length).toBe(15);
     for (const li of items) {
       expect(li.querySelector('time[datetime]')).not.toBeNull();
       expect(within(li).getByRole('heading', { level: 3 })).toBeTruthy();
@@ -87,11 +87,15 @@ describe('AK-10: Werkzeuge einheitlich', () => {
 });
 
 describe('AK-11: Master abgeschlossen', () => {
-  it('Zeitleiste endet mit dem Abschluss', () => {
+  it('Abschluss im September 2026, danach nur noch die neue Rolle (AK-13)', () => {
+    const master = timeline.at(-2)!;
+    expect(master.date).toBe('2026-09');
+    expect(master.de.title).toBe('Masterabschluss am MCI');
+    expect(master.en.title).toBe("Master's degree from MCI");
     const last = timeline.at(-1)!;
     expect(last.date).toBe('2026-09');
-    expect(last.de.title).toBe('Masterabschluss am MCI');
-    expect(last.en.title).toBe("Master's degree from MCI");
+    expect(last.de.title).toBe('Business Development Manager bei HERO Software');
+    expect(last.en.title).toBe('Business Development Manager at HERO Software');
   });
 
   it.each(['de', 'en'] as const)('kein laufendes Studium mehr (%s)', (locale) => {

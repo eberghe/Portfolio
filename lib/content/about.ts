@@ -290,4 +290,15 @@ export const timeline: TimelineItem[] = [
       text: "In September 2026, I completed my Master's degree in Management, Communication & IT (M.A.) at the Management Center Innsbruck.",
     },
   },
+  {
+    date: '2026-09',
+    de: {
+      title: 'Business Development Manager bei HERO Software',
+      text: 'Nach dem Master blieb ich bei HERO Software und wechselte im September 2026 vom Werkstudenten zum Business Development Manager.',
+    },
+    en: {
+      title: 'Business Development Manager at HERO Software',
+      text: "After my Master's I stayed at HERO Software and moved from working student to Business Development Manager in September 2026.",
+    },
+  },
 ];

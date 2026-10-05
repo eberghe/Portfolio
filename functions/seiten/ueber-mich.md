@@ -28,7 +28,7 @@ Wer ist Erik, was kann er, wie kam er dahin. Für Interessenten Vertrauen, für 
 - AK-2: JSON-LD `ProfilePage` mit Person (`@id` `/#person`).
 - AK-3: Werkzeuge stehen genau einmal als Liste im Accessibility-Tree; das bewegte Laufband ist `aria-hidden` und enthält keine fokussierbaren Elemente.
 - AK-4: Laufband hat einen Pause-Knopf mit `aria-pressed`; bei reduzierter Bewegung läuft es nicht.
-- AK-5: Zeitleiste ist ein `ol` mit 14 Einträgen, jedes mit `<time dateTime>` und Überschrift (h3).
+- AK-5: Zeitleiste ist ein `ol` mit 15 Einträgen, jedes mit `<time dateTime>` und Überschrift (h3).
 - AK-6: Keine englischen Begriffe auf der deutschen Seite, die eine deutsche Entsprechung haben („Working Student" → „Werkstudent", „Bachelor Thesis" → „Bachelorarbeit").
 - AK-8: Der Vorstellungstext sagt, dass Erik freiberuflich Projekte annimmt (Leistungen, Orte).
 - AK-9: Zeitleiste durchgehend in der Vergangenheit; kein Bild doppelt.
@@ -59,3 +59,9 @@ Bewusst so gelassen: Schriftgrößen 11 px gehören zum bestehenden Design (Änd
 
 Behoben (mit Test, AK-12): HERO-Eintrag in Vergangenheit, Vorstellung DE/EN angeglichen, doppeltes „working“, Arbeitsort-Staat im EN-JSON-LD. Ohne Test mitbehoben: „Sie zeigte mir“ (Workation), „Bis zur Abreise“ statt „Davor“ (IKEA).
 Als Issue angelegt: Ort im Kopfbereich doppelt, „Sept“ vs. „Sep“ im EN-Datum, einheitliche Hochschulnamen mit `sameAs`, About-Seite fehlt in `llms.txt`, „?.“ in `llms.txt`.
+
+## Business Development Manager (Erik, 2026-10-05)
+
+Erik: „bin aktuell business development manager nicht werkstudent“ und „seit september bin ich business development manager“.
+
+- AK-13: Die Zeitleiste endet mit „Business Development Manager bei HERO Software“ (2026-09, nach dem Masterabschluss im selben Monat). Die Vorstellung nennt die aktuelle Rolle; der Werkstudent-Eintrag (2025-09) bleibt als Station.

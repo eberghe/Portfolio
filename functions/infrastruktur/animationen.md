@@ -60,3 +60,11 @@ Erik: „bitte nicht nur das heading animieren sondern alles! auch die paragraph
 - AK-11: Kein animiertes Element liegt in einem anderen animierten Element; Kopf- und Fußzeile enthalten keine automatisch animierten Elemente.
 
 Prüfung 2026-10-05: Alle Seiten (DE/EN, 360 und 1280 px) bis zum Ende durchgescrollt; danach ist kein animiertes Element mehr unsichtbar.
+
+## Hero-Einstieg (Erik, 2026-10-05)
+
+Erik: „auch auf home bitte die paragraphen unter der h1 etc auch animieren das wirkt grad noch so statisch“.
+
+- Im Hero der Startseite und von „Über mich“ steigen alle Bausteine (Hinweis, Rolle, Text, Knöpfe, Foto, Chips) beim Laden nacheinander ein: aus 24 px unten, unscharf zu scharf, Deckkraft 0 zu 1, je 120 ms versetzt, nach den Wörtern der Begrüßung. Rein per CSS (Klasse `hero-rise`, Stufe `--r`), damit nichts flackert und es ohne Hydration endet; mit Ladeanimation entsprechend später. Bei reduzierter Bewegung steht alles sofort da.
+
+- AK-12: Mit erlaubter Bewegung laufen die Hero-Bausteine unter der h1 auf Start- und Über-mich-Seite mit der Animation `hero-rise` gestaffelt ein und sind danach voll sichtbar; bei reduzierter Bewegung haben sie keine Animation.

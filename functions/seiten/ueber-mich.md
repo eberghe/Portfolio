@@ -83,13 +83,14 @@ Ersetzt den bisherigen Seitenaufbau (Hero halb/halb, senkrechte Zeitleiste mit L
 
 - AK-14: Hero mit genau einer h1 „Erik Bergheimer“, Vorstellungstext (AK-8) und Foto mit beschreibendem Alt-Text.
 - AK-15: Die Zeitleiste bleibt ein `ol` (AK-5) im Abschnitt mit h2 „Mein Weg“; jede Tafel hat `<time dateTime>`, h3 und Text. Tafeln ohne Foto zeigen einen dekorativen Platzhalter (kein `img`).
-- AK-16: Ab 768 px, mit JavaScript und ohne reduzierte Bewegung bleibt die Tafel-Reihe beim Scrollen kleben und verschiebt sich waagerecht: am Anfang des Abschnitts ist die erste Tafel zu sehen, am Ende die letzte. Die Seite selbst scrollt nie waagerecht.
+- AK-16: Ab 768 px, mit JavaScript und ohne reduzierte Bewegung bleiben die Stationen bildschirmfüllend kleben und wechseln beim Scrollen nacheinander: am Anfang des Abschnitts ist die erste Station aktiv, am Ende die letzte. Die Seite selbst scrollt nie waagerecht. (Bis 2026-10-05 lief eine waagerechte Reihe durch; Erik wünschte stattdessen animierte Bildwechsel, AK-23.)
 - AK-17: Ohne JavaScript, unter 768 px und bei reduzierter Bewegung stehen die Tafeln untereinander (normaler Fluss), alle Inhalte erreichbar.
 - AK-18: Text auf den Tafeln erreicht mindestens 4,5:1: über Fotos liegt eine Abdunklung mit mindestens 55 % Schwarz, der grüne Platzhalter ist dunkel genug für weiße Schrift.
 - AK-19: Abschluss-Abschnitt mit h2 „Genug über mich. Jetzt bist du dran“ (EN „Enough about me. Your turn“), Link zum Kontakt und E-Mail-Adresse.
 - AK-20: Jede Tafel füllt den Bildschirm (Wunsch Erik, 2026-10-05): in der waagerechten Reihe ist jede Tafel so breit und so hoch wie das Fenster, Foto bzw. Platzhalter randlos. Untereinander (AK-17) reichen alle Tafeln randlos über die volle Breite, Tafeln mit Foto sind mindestens fensterhoch; Platzhalter-Tafeln bleiben kürzer, damit die Seite mobil nicht unnötig lang wird.
 - AK-21: Wechselt die Darstellung durch Ändern der Fenstergröße zwischen untereinander und waagerecht, bleibt die Station im Blick, die vorher zu sehen war (Kritiker 2026-10-05: Sprung bis in den Footer).
-- AK-22: In der waagerechten Reihe (AK-16) gleiten nur die Hintergründe (Foto bzw. Platzhalter) durch (Wunsch Erik, 2026-10-05: „nur den hintergrund … sonst wirkt das nicht so smooth“). Jahreszahl, Zähler und Text stehen fest an derselben Stelle im Bildschirm. Die große Jahreszahl und der Zähler rollen Ziffer für Ziffer zur aktiven Station; der Text der aktiven Station blendet ein, die anderen sind ausgeblendet (Deckkraft 0, bleiben im Accessibility-Tree). Aktiv ist die Station, deren Hintergrund den größeren Teil des Bildschirms füllt. Untereinander (AK-17) ändert sich nichts.
+- AK-22: Solange die Stationen kleben (AK-16), wechseln nur die Hintergründe (Foto bzw. Platzhalter, AK-23) (Wunsch Erik, 2026-10-05: „nur den hintergrund … sonst wirkt das nicht so smooth“). Jahreszahl, Zähler und Text stehen fest an derselben Stelle im Bildschirm. Die große Jahreszahl und der Zähler rollen Ziffer für Ziffer zur aktiven Station; der Text der aktiven Station blendet ein, die anderen sind ausgeblendet (Deckkraft 0, bleiben im Accessibility-Tree). Aktiv ist die Station, deren Hintergrund den größeren Teil des Bildschirms füllt. Untereinander (AK-17) ändert sich nichts.
+- AK-23: Die Hintergründe gleiten nicht seitlich, sondern wechseln animiert (Erik, 2026-10-05: „kann das bild sich auch animieren statt zu scrollen?“): Alle Stationen liegen deckungsgleich übereinander; die nächste deckt die aktive von unten nach oben auf (Wisch-Maske, 0,9 s) und zoomt dabei von 115 % auf 100 %. Rückwärts schließt sich die Maske wieder nach unten. Je Station etwa 0,9 Fensterhöhen Scrollweg.
 
 Offen: Bilder für die Stationen ohne Foto liefert Erik; ein Interessen-Laufband wie in der Vorlage nur mit Eriks echten Interessen (Frage an Erik).
 
@@ -107,3 +108,8 @@ Offen: Die beim Hochscrollen wieder einfahrende Kopfzeile liegt über den oberen
 
 Geprüft bei 768, 1280, 1440 px und 1280×600: Jahreszahl und Zähler stimmen an jeder Station, Text überlappt nie, nichts abgeschnitten oder unter der Kopfzeile, schnelles Scrollen landet richtig, Accessibility-Tree vollständig, keine fokussierbaren Elemente in ausgeblendeten Stationen. Behoben: kurze Lücke ohne Text beim Wechsel (neuer Text startet jetzt nach 100 ms).
 Offen: 13-px-Datum und Zähler sind auf hellen Fotos die schwächsten Stellen (Abdunklung nach AK-18 hält sie lesbar; mit Eriks echten Fotos erneut prüfen).
+
+### Blinder Kritiker (animierter Bildwechsel, 2026-10-05)
+
+Behoben: Wisch-Maske und Zoom liefen in 150 ms statt 0,9 s (Tailwind erzeugte `duration-[…]`/`ease-[…]` neben tailwindcss-animate nicht; jetzt Inline-Stil, Test prüft die Dauer). Foto im Hero kommt zuletzt. Hero-Bausteine behalten nach dem Einstieg keinen Filter.
+Geprüft: richtige Station am Anfang, Ende und nach schnellem Scrollen in beide Richtungen, kein waagerechter Überlauf, Zähler frei von der Kopfzeile, Fortschrittsbalken läuft, unter 768 px und bei reduzierter Bewegung untereinander.

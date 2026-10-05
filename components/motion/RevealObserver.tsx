@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 /** Inhaltsbausteine, die automatisch einblenden (AK-10) */
 const BLOCKS = 'h1, h2, h3, h4, p, li, img, figure, blockquote, dl, details, form, table, article, a, button';
 /** Bereiche ohne automatisches Einblenden (AK-11) */
-const SKIP = '[aria-hidden="true"], [data-no-reveal], [data-journey] ol, header, footer, nav, dialog';
+const SKIP = '[aria-hidden="true"], [data-no-reveal], [data-journey] ol, header, footer, nav, dialog, .hero-rise';
 
 /** Markiert alle noch nicht animierten Bausteine im Hauptbereich, je Verschachtelung nur das äußerste */
 function tagBlocks() {

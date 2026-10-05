@@ -35,7 +35,10 @@ export default function Home({ locale }: { locale: Locale }) {
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.22),transparent_70%)]"
         />
         <div className="relative max-w-[900px] mx-auto px-6 sm:px-8 pt-16 pb-12 md:pt-20 md:pb-12 flex flex-col items-center text-center">
-          <p className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-3 py-1 rounded-full text-[12px] font-medium tracking-wide mb-8 motion-safe:animate-fade-in">
+          <p
+            className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-3 py-1 rounded-full text-[12px] font-medium tracking-wide mb-8 hero-rise"
+            style={{ '--r': 0 } as CSSProperties}
+          >
             <span
               aria-hidden="true"
               className="w-[6px] h-[6px] bg-primary rounded-full motion-safe:animate-pulse-dot"
@@ -59,13 +62,19 @@ export default function Home({ locale }: { locale: Locale }) {
               👋
             </span>
           </h1>
-          <p className="text-[19px] md:text-[24px] font-medium text-foreground mb-4 text-balance motion-safe:animate-fade-in">
+          <p
+            className="text-[19px] md:text-[24px] font-medium text-foreground mb-4 text-balance hero-rise"
+            style={{ '--r': 3 } as CSSProperties}
+          >
             {t.role}
           </p>
-          <p className="text-[16px] md:text-[18px] text-text2 leading-relaxed max-w-[620px] mb-8 text-balance motion-safe:animate-fade-in">
+          <p
+            className="text-[16px] md:text-[18px] text-text2 leading-relaxed max-w-[620px] mb-8 text-balance hero-rise"
+            style={{ '--r': 4 } as CSSProperties}
+          >
             {t.intro}
           </p>
-          <div className="flex flex-wrap justify-center gap-3 motion-safe:animate-fade-in">
+          <div className="flex flex-wrap justify-center gap-3 hero-rise" style={{ '--r': 5 } as CSSProperties}>
             <Link
               href={href('/contact')}
               className="bg-primary text-primary-foreground px-7 py-3.5 rounded-lg text-[14px] font-medium hover:bg-primary-hover transition-colors"

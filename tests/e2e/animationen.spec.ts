@@ -164,7 +164,9 @@ test.describe('Alles blendet ein', () => {
       await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
       const missing = await page.$$eval('main :is(p, h2, h3, li, img)', (els) =>
         els
-          .filter((el) => !el.closest('[aria-hidden="true"], [data-no-reveal], .hero-word, [data-journey] ol'))
+          .filter(
+            (el) => !el.closest('[aria-hidden="true"], [data-no-reveal], .hero-word, .hero-rise, [data-journey] ol'),
+          )
           .filter((el) => !el.closest('[data-reveal]'))
           .map((el) => el.outerHTML.slice(0, 80)),
       );
@@ -175,4 +177,32 @@ test.describe('Alles blendet ein', () => {
     const chrome = await page.$$eval('header [data-reveal], footer [data-reveal]', (els) => els.length);
     expect(chrome).toBe(0);
   });
+});
+
+test.describe('Hero-Einstieg', () => {
+  for (const motion of ['no-preference', 'reduce'] as const) {
+    test.describe(motion, () => {
+      test.use({ reducedMotion: motion });
+      for (const path of ['/', '/about']) {
+        test(`AK-12: ${path} Bausteine unter der h1 steigen gestaffelt ein`, async ({ page }) => {
+          await page.goto(`${path}?animationstest`);
+          const rise = page.locator('main .hero-rise');
+          expect(await rise.count()).toBeGreaterThanOrEqual(4);
+          const names = await rise.evaluateAll((els) => els.map((el) => getComputedStyle(el).animationName));
+          if (motion === 'reduce') {
+            expect(names.every((n) => n === 'none')).toBe(true);
+            return;
+          }
+          expect(names.every((n) => n === 'hero-rise-in')).toBe(true);
+          const delays = await rise.evaluateAll((els) => els.map((el) => getComputedStyle(el).animationDelay));
+          expect(new Set(delays).size).toBeGreaterThan(2);
+          await expect
+            .poll(() => rise.evaluateAll((els) => els.every((el) => getComputedStyle(el).opacity === '1')), {
+              timeout: 5000,
+            })
+            .toBe(true);
+        });
+      }
+    });
+  }
 });

@@ -13,25 +13,18 @@ async function scrollToJourney(page: Page, where: 'start' | 'end') {
   await page.waitForTimeout(400);
 }
 
-test('AK-16: ab 768 px läuft die Reihe beim Scrollen waagerecht durch', async ({ page }, info) => {
+test('AK-16: ab 768 px kleben die Stationen und wechseln beim Scrollen', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile-360');
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
-  await expect(page.locator('[data-journey]')).toHaveAttribute('data-horizontal', 'true');
-  const vw = page.viewportSize()!.width;
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
   const last = (await panels(page).count()) - 1;
 
   await scrollToJourney(page, 'start');
-  const first = await box(page, 0);
-  expect(first.x).toBeGreaterThanOrEqual(-1);
-  expect(first.x).toBeLessThan(vw / 2);
-  expect((await box(page, last)).x).toBeGreaterThan(vw);
-
+  await expect(panels(page).first()).toHaveAttribute('data-active', 'true');
   await scrollToJourney(page, 'end');
-  const end = await box(page, last);
-  expect(end.x + end.width).toBeLessThanOrEqual(vw + 1);
-  expect(end.x).toBeGreaterThanOrEqual(0);
-  expect((await box(page, 0)).x + (await box(page, 0)).width).toBeLessThan(0);
+  await expect(panels(page).nth(last)).toHaveAttribute('data-active', 'true');
+  await expect(panels(page).first()).not.toHaveAttribute('data-active', 'true');
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
@@ -51,7 +44,7 @@ test.describe('AK-17: reduzierte Bewegung', () => {
   test('Tafeln untereinander', async ({ page }) => {
     await page.goto('/about');
     await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
-    await expect(page.locator('[data-journey]')).not.toHaveAttribute('data-horizontal', 'true');
+    await expect(page.locator('[data-journey]')).not.toHaveAttribute('data-pinned', 'true');
     const [a, b] = [await box(page, 0), await box(page, 1)];
     expect(b.y).toBeGreaterThanOrEqual(a.y + a.height - 1);
   });
@@ -83,7 +76,7 @@ test('AK-20: in der waagerechten Reihe füllt jede Tafel den Bildschirm', async 
   test.skip(info.project.name === 'mobile-360');
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
-  await expect(page.locator('[data-journey]')).toHaveAttribute('data-horizontal', 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
   await scrollToJourney(page, 'start');
   const { width, height } = page.viewportSize()!;
   for (const i of [0, 1]) {
@@ -114,30 +107,30 @@ test('AK-21: beim Wechsel der Darstellung bleibt die Station im Blick', async ({
     scrollTo({ top: li.getBoundingClientRect().top + scrollY, behavior: 'instant' });
   });
   await page.setViewportSize({ width: 1280, height: 800 });
-  await expect(page.locator('[data-journey]')).toHaveAttribute('data-horizontal', 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
   await page.waitForTimeout(400);
   const b = await box(page, 7);
   expect(Math.abs(b.x)).toBeLessThan(40);
   expect(Math.abs(b.y)).toBeLessThan(2);
 
   await page.setViewportSize({ width: 360, height: 780 });
-  await expect(page.locator('[data-journey]')).not.toHaveAttribute('data-horizontal', 'true');
+  await expect(page.locator('[data-journey]')).not.toHaveAttribute('data-pinned', 'true');
   await page.waitForTimeout(400);
   const c = await box(page, 7);
   expect(c.y).toBeGreaterThan(-c.height / 2);
   expect(c.y).toBeLessThan(780 / 2);
 });
 
-test('AK-22: Text und Jahreszahl stehen fest, nur der Hintergrund gleitet', async ({ page }, info) => {
+test('AK-22: Text und Jahreszahl stehen fest, nur der Hintergrund wechselt', async ({ page }, info) => {
   test.skip(info.project.name === 'mobile-360');
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
-  await expect(page.locator('[data-journey]')).toHaveAttribute('data-horizontal', 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
   const h3 = (i: number) => panels(page).nth(i).locator('h3');
   const at = async (i: number) => {
     await page.evaluate((i) => {
       const s = document.querySelector('[data-journey]') as HTMLElement;
-      const area = s.querySelector('ol')!.closest('[class*="relative"]') as HTMLElement;
+      const area = s.querySelector('ol')!.parentElement!.parentElement as HTMLElement;
       const n = s.querySelectorAll('ol > li').length;
       const top = area.getBoundingClientRect().top + scrollY;
       scrollTo({ top: top + (i / (n - 1)) * (area.offsetHeight - innerHeight), behavior: 'instant' });
@@ -168,4 +161,39 @@ test('AK-22: Text und Jahreszahl stehen fest, nur der Hintergrund gleitet', asyn
     'data-year',
     (await panels(page).nth(3).locator('time').getAttribute('datetime'))!.slice(0, 4),
   );
+});
+
+test('AK-23: Bilder wechseln animiert statt zu gleiten', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile-360');
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  // Abschnitt klebt: Anfang des Scrollbereichs der Stationen
+  await page.evaluate(() => {
+    const area = document.querySelector('[data-journey] ol')!.parentElement!.parentElement!;
+    scrollTo({ top: area.getBoundingClientRect().top + scrollY, behavior: 'instant' });
+  });
+  await page.waitForTimeout(1000);
+  // Alle Stationen liegen deckungsgleich, keine steht seitlich daneben
+  for (const i of [0, 1, 5]) {
+    const b = await box(page, i);
+    expect(Math.abs(b.x)).toBeLessThanOrEqual(1);
+    expect(Math.abs(b.y)).toBeLessThanOrEqual(1);
+  }
+  const clip = (i: number) =>
+    panels(page)
+      .nth(i)
+      .evaluate((el) => getComputedStyle(el).clipPath);
+  expect(await clip(0)).toMatch(/inset\(0(px|%)?\)|inset\(0% 0% 0% 0%\)|none/);
+  expect(await clip(1)).toMatch(/inset\(100%/);
+  // Die nächste Station deckt per Maske auf und zoomt dabei heraus
+  const transition = await panels(page)
+    .nth(1)
+    .evaluate((el) => getComputedStyle(el).transitionProperty);
+  expect(transition).toContain('clip-path');
+  // Kritiker: Tailwind erzeugte die Dauer nicht, die Maske lief in 150 ms als harter Schnitt
+  const seconds = await panels(page)
+    .nth(1)
+    .evaluate((el) => parseFloat(getComputedStyle(el).transitionDuration));
+  expect(seconds).toBeGreaterThanOrEqual(0.8);
 });

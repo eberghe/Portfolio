@@ -172,3 +172,21 @@ describe.each(['de', 'en'] as const)('Umbau Über mich (%s)', (locale) => {
     ).toEqual(expect.arrayContaining([t.contact, expect.stringMatching(/^mailto:/)]));
   });
 });
+
+describe('AK-27: echte Stationsfotos', () => {
+  it('Bachelorabschluss und Werkstudent bei TEAM23 haben Fotos mit Bildausschnitt', () => {
+    for (const title of ['Bachelorabschluss', 'Werkstudent bei TEAM23']) {
+      const entry = timeline.find((t) => t.de.title === title)!;
+      expect(entry, title).toBeDefined();
+      expect(entry.image?.position, title).toMatch(/%/);
+    }
+    expect(timeline.find((t) => t.de.title === 'Bachelorabschluss')!.en.title).toBe("Bachelor's degree");
+  });
+
+  it('Bildausschnitt landet als object-position am Bild', () => {
+    render(<About locale="de" />);
+    const entry = timeline.find((t) => t.de.title === 'Werkstudent bei TEAM23')!;
+    const img = screen.getByRole('img', { name: entry.image!.alt.de });
+    expect(img.style.objectPosition).toBe(entry.image!.position);
+  });
+});

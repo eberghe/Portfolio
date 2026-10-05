@@ -7,6 +7,8 @@ export interface TimelineImage {
   width: number;
   height: number;
   alt: Record<Locale, string>;
+  /** Bildausschnitt als CSS object-position, damit Erik im Querformat sichtbar bleibt (AK-27) */
+  position?: string;
 }
 
 export interface TimelineItem extends Record<Locale, { title: string; text: string }> {
@@ -15,11 +17,19 @@ export interface TimelineItem extends Record<Locale, { title: string; text: stri
   image?: TimelineImage;
 }
 
-const img = (name: string, width: number, height: number, de: string, en: string): TimelineImage => ({
+const img = (
+  name: string,
+  width: number,
+  height: number,
+  de: string,
+  en: string,
+  position?: string,
+): TimelineImage => ({
   src: `/images/about/timeline-${name}.jpg`,
   width,
   height,
   alt: { de, en },
+  ...(position ? { position } : {}),
 });
 
 const team23 = img(
@@ -198,6 +208,14 @@ export const timeline: TimelineItem[] = [
   },
   {
     date: '2022-02',
+    image: img(
+      'team23-workshop',
+      724,
+      1086,
+      'Erik lächelnd auf einer Bank bei einem Workshop im Freien, hinter ihm Plakate zu Kommunikation und Empathie',
+      'Erik smiling on a bench at an outdoor workshop, with posters on communication and empathy behind him',
+      '55% 30%',
+    ),
     de: {
       title: 'Werkstudent bei TEAM23',
       text: 'Nach dem erfolgreichen Abschluss meines Praktikums begann ich im Februar 2022 als Werkstudent bei TEAM23.',
@@ -210,19 +228,20 @@ export const timeline: TimelineItem[] = [
   {
     date: '2023-08',
     image: img(
-      'thesis',
-      600,
-      600,
-      'Porträt von Erik in schwarzem Pullover in einem Flur',
-      'Portrait of Erik in a black jumper in a hallway',
+      'bachelor',
+      1500,
+      2000,
+      'Erik bekommt seine Bachelorurkunde in User Experience Design überreicht und schüttelt dabei die Hand',
+      'Erik receiving his Bachelor of Science certificate in User Experience Design with a handshake',
+      '60% 15%',
     ),
     de: {
-      title: 'Bachelorarbeit',
-      text: 'Ich schloss meine Bachelorarbeit mit dem Titel „Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce“ ab.',
+      title: 'Bachelorabschluss',
+      text: 'Mit meiner Bachelorarbeit „Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce“ schloss ich mein Studium in User Experience Design an der TH Ingolstadt ab.',
     },
     en: {
-      title: 'Bachelor thesis',
-      text: 'I completed my Bachelor\'s thesis titled "Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce."',
+      title: "Bachelor's degree",
+      text: 'With my thesis "Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce", I completed my degree in User Experience Design at TH Ingolstadt.',
     },
   },
   {

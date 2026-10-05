@@ -239,7 +239,7 @@ export default function Journey({
                       fill
                       sizes="100vw"
                       className="object-cover"
-                      style={zoom}
+                      style={{ ...zoom, objectPosition: item.image.position }}
                     />
                   ) : (
                     // Platzhalter, bis Erik Bilder schickt (AK-15)

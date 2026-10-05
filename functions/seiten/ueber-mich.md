@@ -129,3 +129,7 @@ Wunsch Erik mit Screenshot von matteofabbiani.webflow.io/about: „ganz einfach 
 ### Blinder Kritiker (schlichter Hero, 2026-10-05)
 
 Geprüft bei 360, 768, 1280 und 1440 px, hell und dunkel, DE und EN: keine axe-Verstöße, kein waagerechter Überlauf, eine h1, Icon-Links 44 × 44 px mit Namen und sichtbarem Fokus, Alt-Text passt zum Foto. Behoben: bei 768 × 1024 wirkte der Hero halb leer (volle Bildschirmhöhe jetzt erst ab 1024 px), Foto bei 2x-Bildschirmen leicht unscharf (`sizes` berücksichtigt den Hochkant-Zuschnitt), Werkzeug-Überschrift stand 34 px neben der gemeinsamen linken Kante. Mitbehoben: Alt-Text beschrieb ein anderes Foto (Sonnenbrille, schwarzes Hemd). Offen: Das Foto zeigt Erik von hinten; ein echtes Porträt wäre stärker, wenn Erik eins hat.
+
+## Echte Stationsfotos (Erik, 2026-10-05)
+
+- AK-27: Fotos von Erik: „Bachelorabschluss“ (2023-08, EN „Bachelor's degree“; Urkundenübergabe an der TH Ingolstadt, ersetzt das alte Flur-Porträt) und „Werkstudent bei TEAM23“ (2022-02, Workshop auf einer Terrasse). Jedes Stationsfoto kann einen Bildausschnitt (`position`, CSS `object-position`) mitbringen, damit Erik im Querformat-Zuschnitt sichtbar bleibt. Fotos werden als JPEG höchstens 2000 px lang abgelegt.

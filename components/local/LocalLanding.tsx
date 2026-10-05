@@ -109,7 +109,9 @@ export default function LocalLanding({ page, locale }: { page: LocalPage; locale
                     {s[locale].title}
                   </Link>
                 </h3>
-                <p className="text-[14px] text-text2 leading-relaxed mb-5">{d.serviceTexts?.[s.slug] ?? s[locale].short}</p>
+                <p className="text-[14px] text-text2 leading-relaxed mb-5">
+                  {d.serviceTexts?.[s.slug] ?? s[locale].short}
+                </p>
                 <span aria-hidden="true" className="inline-flex items-center gap-2 text-[13px] font-medium">
                   {t.more}
                   <ArrowRight

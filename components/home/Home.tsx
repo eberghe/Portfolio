@@ -34,7 +34,7 @@ export default function Home({ locale }: { locale: Locale }) {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.14),transparent_70%)]"
         />
-        <div className="relative max-w-[900px] mx-auto px-6 sm:px-8 pt-20 pb-16 md:pt-32 md:pb-24 flex flex-col items-center text-center">
+        <div className="relative max-w-[900px] mx-auto px-6 sm:px-8 pt-16 pb-12 md:pt-20 md:pb-12 flex flex-col items-center text-center">
           <p className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-3 py-1 rounded-full text-[12px] font-medium tracking-wide mb-8 motion-safe:animate-fade-in">
             <span
               aria-hidden="true"
@@ -62,7 +62,7 @@ export default function Home({ locale }: { locale: Locale }) {
           <p className="text-[19px] md:text-[24px] font-medium text-foreground mb-4 text-balance motion-safe:animate-fade-in">
             {t.role}
           </p>
-          <p className="text-[16px] md:text-[18px] text-text2 leading-relaxed max-w-[620px] mb-10 text-balance motion-safe:animate-fade-in">
+          <p className="text-[16px] md:text-[18px] text-text2 leading-relaxed max-w-[620px] mb-8 text-balance motion-safe:animate-fade-in">
             {t.intro}
           </p>
           <div className="flex flex-wrap justify-center gap-3 motion-safe:animate-fade-in">
@@ -83,8 +83,8 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="unternehmen" className="border-b border-border">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-12 md:pt-16">
-          <h2 id="unternehmen" className={`${eyebrow} text-center mb-8`} data-reveal>
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
+          <h2 id="unternehmen" className={`${eyebrow} text-center mb-6`} data-reveal>
             {t.companiesTitle}
           </h2>
           <ul className="grid grid-cols-2 md:grid-cols-4 border-t border-l border-dashed border-border">
@@ -94,7 +94,12 @@ export default function Home({ locale }: { locale: Locale }) {
                   href={c.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group relative flex flex-col items-center justify-center gap-2 h-full min-h-[120px] md:min-h-[150px] px-4 py-6 text-foreground motion-safe:transition-colors hover:bg-bg2 ${'current' in c && c.current ? 'bg-primary-light/60' : ''}`}
+                  // Sichtbarer Text in derselben Reihenfolge, mit Pausen und Hinweis auf den neuen Tab (AK-32)
+                  aria-label={[c.name, 'current' in c && c.current ? t.current : null, c.role]
+                    .filter(Boolean)
+                    .join(', ')
+                    .concat(` ${t.newTab}`)}
+                  className={`group relative flex flex-col items-center justify-center text-center gap-2 h-full min-h-[120px] md:min-h-[150px] px-4 py-6 text-foreground motion-safe:transition-colors hover:bg-bg2 ${'current' in c && c.current ? 'bg-primary-light/60' : ''}`}
                 >
                   <Wordmark name={c.name} />
                   {'current' in c && c.current && (
@@ -103,8 +108,7 @@ export default function Home({ locale }: { locale: Locale }) {
                       {t.current}
                     </span>
                   )}
-                  {'role' in c && <span className="text-[12px] text-text2">{c.role}</span>}
-                  <span className="sr-only">{t.newTab}</span>
+                  <span className="text-[12px] text-text2">{c.role}</span>
                   <ArrowUpRight
                     size={14}
                     aria-hidden="true"
@@ -116,14 +120,7 @@ export default function Home({ locale }: { locale: Locale }) {
           </ul>
         </div>
         <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
-          <p className="flex items-center gap-3 py-4 text-[12px] font-medium tracking-wider uppercase text-text2">
-            <span className="sr-only">{t.clockLabel}:</span>
-            <span aria-hidden="true">Königsbrunn</span>
-            <span aria-hidden="true" className="h-3 w-px bg-border" />
-            <span className="normal-case tracking-normal tabular-nums">
-              <LocalClock locale={locale} />
-            </span>
-          </p>
+          <LocalClock locale={locale} label={t.clockLabel} />
         </div>
       </section>
 
@@ -421,7 +418,7 @@ export default function Home({ locale }: { locale: Locale }) {
 function Wordmark({ name }: { name: string }) {
   if (name === 'HERO Software')
     return (
-      <span className="text-[22px] md:text-[26px] leading-none">
+      <span className="text-[20px] lg:text-[26px] leading-none whitespace-nowrap">
         <span className="font-black tracking-tight">HERO</span> <span className="font-medium">Software</span>
       </span>
     );
@@ -430,5 +427,9 @@ function Wordmark({ name }: { name: string }) {
     Amazon: 'font-bold lowercase tracking-tight',
     IKEA: 'font-black tracking-[0.18em]',
   };
-  return <span className={`text-[22px] md:text-[26px] leading-none ${style[name] ?? 'font-bold'}`}>{name}</span>;
+  return (
+    <span className={`text-[20px] lg:text-[26px] leading-none whitespace-nowrap ${style[name] ?? 'font-bold'}`}>
+      {name}
+    </span>
+  );
 }

@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import type { Locale } from '@/lib/i18n';
 
 // Ortszeit in Königsbrunn, siehe functions/seiten/startseite.md AK-30.
-// Die Zeit erscheint erst nach dem Laden im Browser, damit Server und Client nicht abweichen.
-export default function LocalClock({ locale }: { locale: Locale }) {
+// Die Zeile erscheint erst nach dem Laden im Browser, damit Server und Client nicht abweichen
+// und ohne JavaScript keine halbe Zeile stehen bleibt (AK-33).
+export default function LocalClock({ locale, label }: { locale: Locale; label: string }) {
   const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -25,5 +26,14 @@ export default function LocalClock({ locale }: { locale: Locale }) {
     minute: '2-digit',
     timeZoneName: 'short',
   }).format(now);
-  return <time dateTime={now.toISOString()}>{text}</time>;
+  return (
+    <p className="flex items-center gap-3 py-4 text-[12px] font-medium tracking-wider uppercase text-text2">
+      <span className="sr-only">{label}:</span>
+      <span aria-hidden="true">Königsbrunn</span>
+      <span aria-hidden="true" className="h-3 w-px bg-border" />
+      <time dateTime={now.toISOString()} className="normal-case tracking-normal tabular-nums">
+        {text}
+      </time>
+    </p>
+  );
 }

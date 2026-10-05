@@ -104,13 +104,19 @@ describe.each([
       expect(l).toHaveAttribute('rel', expect.stringContaining('noopener'));
     }
     const hero = within(section).getByRole('link', { name: /HERO Software/ });
-    expect(hero).toHaveAccessibleName(locale === 'de' ? /Aktuell/ : /Current/);
+    // AK-32: Teile des Linknamens mit Pausen, jeder Eintrag mit ehrlicher Rolle
+    expect(hero).toHaveAccessibleName(
+      locale === 'de'
+        ? 'HERO Software, Aktuell, Werkstudent Business Development (öffnet in neuem Tab)'
+        : 'HERO Software, Current, Working student, business development (opens in a new tab)',
+    );
+    for (const c of homeContent[locale].companies) expect(c.role).toBeTruthy();
     expect(homeContent[locale].companies.map((c) => c.name)).toEqual(['HERO Software', 'TEAM23', 'Amazon', 'IKEA']);
   });
 
   it('AK-30: Uhrzeit in Königsbrunn', async () => {
     render(<Home locale={locale} />);
-    expect(screen.getByText('Königsbrunn')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText('Königsbrunn')).toBeInTheDocument());
     await waitFor(() => expect(document.querySelector('time')).toHaveTextContent(/^\d{2}:\d{2}/));
   });
 

@@ -5,8 +5,9 @@ import { axe } from './helpers';
 
 test.describe('ohne JavaScript', () => {
   test.use({ javaScriptEnabled: false });
-  test('AK-26: Hero-Überschrift sichtbar ohne JavaScript', async ({ page }) => {
+  test('AK-26: Hero-Überschrift sichtbar ohne JavaScript, keine halbe Uhrzeile', async ({ page }) => {
     await page.goto('/');
+    await expect(page.getByText('Königsbrunn', { exact: true })).toHaveCount(0);
     await expect(page.getByRole('heading', { level: 1, name: 'Hey, ich bin Erik' })).toBeVisible();
     await page.goto('/en');
     await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik" })).toBeVisible();
@@ -59,4 +60,22 @@ test('AK-26: h1-Name je Sprache', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Hey, ich bin Erik');
   await page.goto('/en');
   await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName("Hey, I'm Erik");
+});
+
+test('AK-33: Firmenleiste beginnt im ersten Bildschirm (1280 × 800)', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop-1280');
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  const list = page.getByRole('heading', { level: 2, name: 'Unternehmen, für die ich gearbeitet habe' });
+  const box = await list.locator('xpath=..').locator('ul').boundingBox();
+  expect(box!.y + 60).toBeLessThan(800);
+});
+
+test('AK-32: Kacheln zentriert, HERO Software einzeilig', async ({ page }) => {
+  await page.goto('/');
+  const mark = page.getByText('HERO', { exact: true });
+  const lines = await mark.evaluate((el) => el.parentElement!.getClientRects().length);
+  expect(lines).toBe(1);
+  const aligns = await page.$$eval('#unternehmen ~ ul a', (els) => els.map((el) => getComputedStyle(el).textAlign));
+  expect(aligns.every((a) => a === 'center')).toBe(true);
 });

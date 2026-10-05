@@ -15,10 +15,15 @@ export const homeContent = {
     clockLabel: 'Ortszeit in Königsbrunn',
     // TODO(Erik): offizielle Logos (SVG) liefern; Amazon und IKEA behalten? (Issue #14)
     companies: [
-      { name: 'HERO Software', url: 'https://hero-software.de/', role: 'Business Development', current: true },
+      {
+        name: 'HERO Software',
+        url: 'https://hero-software.de/',
+        role: 'Werkstudent Business Development',
+        current: true,
+      },
       { name: 'TEAM23', url: 'https://www.team23.de/', role: 'UX/UI-Designer' },
-      { name: 'Amazon', url: 'https://www.amazon.de/' },
-      { name: 'IKEA', url: 'https://www.ikea.com/de/de/' },
+      { name: 'Amazon', url: 'https://www.amazon.de/', role: 'Job vor dem Studium' },
+      { name: 'IKEA', url: 'https://www.ikea.com/de/de/', role: 'Job vor dem Studium' },
     ],
     role: 'UX/UI Designer & Webflow Expert',
     intro:
@@ -76,10 +81,15 @@ export const homeContent = {
     newTab: '(opens in a new tab)',
     clockLabel: 'Local time in Königsbrunn',
     companies: [
-      { name: 'HERO Software', url: 'https://hero-software.de/', role: 'Business development', current: true },
+      {
+        name: 'HERO Software',
+        url: 'https://hero-software.de/',
+        role: 'Working student, business development',
+        current: true,
+      },
       { name: 'TEAM23', url: 'https://www.team23.de/', role: 'UX/UI designer' },
-      { name: 'Amazon', url: 'https://www.amazon.de/' },
-      { name: 'IKEA', url: 'https://www.ikea.com/de/de/' },
+      { name: 'Amazon', url: 'https://www.amazon.de/', role: 'Job before university' },
+      { name: 'IKEA', url: 'https://www.ikea.com/de/de/', role: 'Job before university' },
     ],
     role: 'UX/UI Designer & Webflow Expert',
     intro:

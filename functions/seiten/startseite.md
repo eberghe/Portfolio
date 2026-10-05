@@ -105,6 +105,13 @@ Ersetzt AK-1, AK-7, AK-14 und AK-18 (Hero-Foto und h1 mit vollem Namen entfallen
 - AK-28: Abschnitt „Unternehmen, für die ich gearbeitet habe“ (h2, EN „Companies I've worked for“) als Liste: HERO Software, TEAM23, Amazon, IKEA (aus dem Lebenslauf). Jeder Eintrag ist ein Link auf die Website des Unternehmens (neuer Tab, für Screenreader angekündigt), Logos einfarbig in Schwarz (im Dunkelmodus Weiß).
 - AK-29: HERO Software ist als aktuelles Unternehmen hervorgehoben: Kennzeichen „Aktuell“ (EN „Current“) und Rolle, im Linknamen enthalten.
 - AK-30: Uhrzeit in Königsbrunn (Zeitzone Europe/Berlin) als `time`-Element mit Zeitzonenkürzel; sie aktualisiert sich jede Minute und erzeugt keinen Hydration-Fehler (ohne JavaScript steht nur der Ort).
+- AK-32: Jede Kachel nennt eine ehrliche Rolle (Werkstudent, Job vor dem Studium); Inhalt zentriert, „HERO Software“ einzeilig; der Linkname hat Pausen („HERO Software, Aktuell, Werkstudent Business Development (öffnet in neuem Tab)“).
+- AK-33: Die Firmenleiste beginnt bei 1280 × 800 im ersten Bildschirm; ohne JavaScript erscheint die Uhrzeile gar nicht.
 - AK-31: Keine axe-Verstöße, kein horizontales Scrollen (AK-9 gilt weiter).
 
 Offen: Offizielle Logo-Dateien (SVG) der Unternehmen fehlen; bis dahin Wortmarken in Schrift. Frage an Erik (Issue #14), ob Amazon und IKEA (Nebenjobs vor dem Studium) dort stehen sollen.
+
+### Blinder Kritiker (Hero, 2026-10-05)
+
+Behoben: Amazon und IKEA ohne Rolle wirkten wie Designarbeit (jetzt „Job vor dem Studium“, AK-32), HERO-Kachel uneinheitlich ausgerichtet (AK-32), Firmenleiste unter dem ersten Bildschirm (AK-33), Linkname ohne Pausen (AK-32), halbe Uhrzeile ohne JavaScript (AK-33), aktuelle Rolle als Werkstudent benannt.
+Offen: Wortmarken statt offizieller Logos; ob Amazon und IKEA bleiben, entscheidet Erik.

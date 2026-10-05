@@ -184,7 +184,10 @@ export function localJsonLd(page: LocalPage, locale: Locale) {
     inLanguage: locale,
     email: EMAIL,
     provider: person(locale),
-    areaServed: [{ '@type': 'City', name: page.city }, areaServed[locale][1]],
+    areaServed: [
+      { '@type': 'City', name: page.city },
+      page.country ? { '@type': 'Country', name: page.country[locale] } : areaServed[locale][1],
+    ],
   };
 }
 

@@ -30,8 +30,10 @@ export interface LocalPage extends Record<Locale, LocalPageText> {
   /** Sprachneutraler Pfad, EN-Adresse über `enSlugs` in lib/i18n.ts */
   path: string;
   city: string;
-  /** Leistungen, die vor Ort angeboten werden (Slugs aus lib/content/services.ts) */
+  /** Leistungen, die für diese Stadt hervorgehoben werden (Slugs aus lib/content/services.ts) */
   services: string[];
+  /** Land für `areaServed`, Standard Deutschland */
+  country?: Record<Locale, string>;
 }
 
 export const localPages: LocalPage[] = [
@@ -164,5 +166,6 @@ export const localPages: LocalPage[] = [
   },
 ];
 
-/** Landingpage, die eine Leistung im Ortssatz verlinkt (AK-7) */
-export const localPageForService = (slug: string) => localPages.find((p) => p.services.includes(slug));
+/** Heimatseite (Augsburg), die Leistungsseiten im Ortssatz verlinken (AK-7) */
+export const localPageForService = (slug: string) =>
+  localPages[0]!.services.includes(slug) ? localPages[0] : undefined;

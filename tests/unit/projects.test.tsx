@@ -19,7 +19,7 @@ describe('AK-10: Inhalte vollständig', () => {
   });
 
   it('AK-30: Projekte nach Datum, neuestes zuerst', () => {
-    expect(projects.map((p) => p.slug)).toEqual(['prematch', 'sightkick', 'indonesia', 'webflow', 'morocco', 'cpr']);
+    expect(projects.map((p) => p.slug)).toEqual(['prematch', 'morocco', 'sightkick', 'indonesia', 'webflow', 'cpr']);
   });
 });
 
@@ -290,6 +290,13 @@ describe('Umbau Übersicht (Issue #18)', () => {
 
 describe('PreMatch (Masterarbeit)', () => {
   const p = find('prematch');
+
+  it('AK-31: Masterarbeit als PDF zum Download', async () => {
+    expect(p.download?.url).toBe('/Masterarbeit_PreMatch_Bergheimer.pdf');
+    const { statSync } = await import('node:fs');
+    expect(statSync(`public${p.download!.url}`).size).toBeGreaterThan(1_000_000);
+    expect(find('morocco').year).toBe('2025');
+  });
 
   it('AK-25: Projekt aus 2026, UX/UI, nicht mehr in Arbeit', () => {
     expect(p.year).toBe('2026');

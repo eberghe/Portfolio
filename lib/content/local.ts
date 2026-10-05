@@ -176,7 +176,7 @@ export const localPages: LocalPage[] = [
         'Webdesign und Webentwicklung für München: Webflow-Websites, UX/UI-Design und Barrierefreiheit, remote aus Königsbrunn, Termine nach Absprache.',
       footerLink: 'Webdesign München',
       serviceLink: 'Mehr zu Webdesign in München',
-      eyebrow: 'Freelancer für München',
+      eyebrow: 'Webdesign für München',
       title: 'Webdesign & Webentwicklung in München',
       lead: 'Du willst eine Website auf Agenturniveau, aber ohne Agentur-Overhead? Ich gestalte und entwickle sie für dich, mit einer festen Ansprechperson von der ersten Idee bis zum Launch. Beispiele findest du bei den Projekten.',
       localTitle: 'Projekte in München, betreut aus Königsbrunn',
@@ -198,7 +198,7 @@ export const localPages: LocalPage[] = [
       },
       servicesTitle: 'Leistungen für dein Projekt',
       servicesText: 'Gestaltung, Entwicklung, Barrierefreiheit und schlankere Abläufe rund um deine Website.',
-      reasonsTitle: 'Warum ein Freelancer statt einer Agentur?',
+      reasonsTitle: 'Warum direkt mit mir statt mit einer Agentur?',
       reasons: [
         {
           title: 'Agenturqualität ohne Overhead',
@@ -224,7 +224,7 @@ export const localPages: LocalPage[] = [
           a: 'Nach dem Erstgespräch bekommst du ein Angebot mit Ablauf und Zeitplan. Dann arbeiten wir in klaren Schritten: Konzept, Design in Figma, Umsetzung in Webflow, Abnahme. Feedback gibst du per Video-Call oder direkt in der Vorschau.',
         },
         {
-          q: 'Lohnt sich ein Freelancer statt einer Agentur in München?',
+          q: 'Lohnt sich die direkte Zusammenarbeit statt einer Agentur in München?',
           a: 'Für viele Websites ja: Du sprichst direkt mit der Person, die gestaltet und entwickelt, und zahlst keinen Agentur-Overhead. Braucht dein Projekt ein großes Team mit vielen Disziplinen, sage ich dir das offen.',
         },
         {
@@ -246,7 +246,7 @@ export const localPages: LocalPage[] = [
         'Web design and development for Munich (München): Webflow websites, UX/UI design and accessibility, remote from Königsbrunn, meetings by arrangement.',
       footerLink: 'Web design Munich',
       serviceLink: 'More on web design in Munich',
-      eyebrow: 'Freelance for Munich',
+      eyebrow: 'Web design for Munich',
       title: 'Web design & development in Munich',
       lead: 'Want an agency-quality website without the agency overhead? I design and build it for you, with one fixed point of contact from the first idea to launch. You can see examples in the projects.',
       localTitle: 'Munich projects, run from Königsbrunn',
@@ -268,7 +268,7 @@ export const localPages: LocalPage[] = [
       },
       servicesTitle: 'Services for your project',
       servicesText: 'Design, development, accessibility and leaner processes around your website.',
-      reasonsTitle: 'Why a freelancer instead of an agency?',
+      reasonsTitle: 'Why work with me directly instead of an agency?',
       reasons: [
         {
           title: 'Agency quality, no overhead',
@@ -294,7 +294,7 @@ export const localPages: LocalPage[] = [
           a: 'After the intro call you get an offer with process and timeline. Then we work in clear steps: concept, design in Figma, build in Webflow, sign-off. You give feedback over video calls or directly in the preview.',
         },
         {
-          q: 'Is a freelancer worth it compared to a Munich agency?',
+          q: 'Is working with me directly worth it compared to a Munich agency?',
           a: 'For many websites, yes: you talk directly to the person who designs and builds, and you pay no agency overhead. If your project needs a large team across many disciplines, I will tell you openly.',
         },
         {

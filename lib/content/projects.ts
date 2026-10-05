@@ -74,6 +74,13 @@ export const projects: Project[] = [
         en: 'PreMatch design system: logo, buttons, colours with a strong primary blue, icons in three states, badges and the Inter typeface',
       },
     },
+    download: {
+      url: '/Masterarbeit_PreMatch_Bergheimer.pdf',
+      label: {
+        de: 'Masterarbeit (PDF, englisch, 7,7 MB)',
+        en: "Master's thesis (PDF, 7.7 MB)",
+      },
+    },
     service: 'ux-ui-design',
     gallery: [],
     inlineImages: {
@@ -307,6 +314,99 @@ export const projects: Project[] = [
             'With ten participants, the results are indications, not proof. There was no comparison version without friction, and the study only captures first use. Whether holding to save keeps its effect over a whole season remains open. Club crests would need licences for a public release.\n\nThe biggest practical question: will a whole friend group move to a new app along with its league history? Next steps could be a field study across a full season and friction that adapts to how someone tips. The pattern of holding and a short reason also transfers to other areas where impulsive behaviour has real costs.',
         },
       ],
+    },
+  },
+  {
+    slug: 'morocco',
+    year: '2025',
+    timeline: '02/2025',
+    tools: 'Sony Alpha · Lightroom · Capture One',
+    thumbnail: {
+      src: '/images/project-morocco.jpg',
+      width: 768,
+      height: 1024,
+      alt: {
+        de: 'Marokkanische Flagge an einem Mast vor sonnigem Himmel',
+        en: 'Moroccan flag on a pole against a sunny sky',
+      },
+    },
+    service: 'photography',
+    gallery: [
+      {
+        src: '/images/projects/morocco-1.jpg',
+        width: 1200,
+        height: 1600,
+        alt: {
+          de: 'Serpentinenstraße durch kahles Atlasgebirge unter blauem Himmel',
+          en: 'Winding road through the bare Atlas mountains under a blue sky',
+        },
+      },
+      {
+        src: '/images/projects/morocco-2.jpg',
+        width: 1200,
+        height: 1600,
+        alt: {
+          de: 'Sonnenaufgang über Sanddünen mit Fußspuren in der Wüste',
+          en: 'Sunrise over sand dunes with footprints in the desert',
+        },
+      },
+      {
+        src: '/images/projects/morocco-3.jpg',
+        width: 1199,
+        height: 1600,
+        alt: {
+          de: 'Reihe beiger Zelte eines Wüstencamps im Sand',
+          en: 'Row of beige tents at a desert camp in the sand',
+        },
+      },
+      {
+        src: '/images/projects/morocco-4.jpg',
+        width: 1200,
+        height: 1600,
+        alt: {
+          de: 'Zwei schlafende Welpen aneinandergekuschelt im Gras',
+          en: 'Two sleeping puppies curled up together on the grass',
+        },
+      },
+      {
+        src: '/images/projects/morocco-5.jpg',
+        width: 1600,
+        height: 1200,
+        alt: {
+          de: 'Menschen auf einem Gipfel schauen auf den Sonnenaufgang über den Wolken',
+          en: 'People on a summit watching the sunrise above the clouds',
+        },
+      },
+      {
+        src: '/images/projects/morocco-6.jpg',
+        width: 1200,
+        height: 1600,
+        alt: {
+          de: 'Weißes Gebäude mit Balkonen vor tiefblauem Himmel',
+          en: 'White building with balconies against a deep blue sky',
+        },
+      },
+    ],
+    inlineImages: {},
+    de: {
+      title: 'Marokko',
+      tagline: 'Alltag und Schönheit in Marokko',
+      body: 'In Texturen und Traditionen Marokkos eingetaucht: Alltag und atemberaubende Szenerie in einer Serie eindrucksvoller Bilder.\n\nVon belebten Souks in Marrakesch bis zu stillen Wüstenlandschaften, eine Geschichte voller Kontraste, Farben und Geschichte.',
+      type: 'Fotografie · Dokumentarisch',
+      role: 'Fotograf',
+      metaTitle: 'Marokko: Dokumentarfotografie | Erik Bergheimer',
+      metaDescription: 'Atlasgebirge, Wüste und Alltag: eine dokumentarische Fotoserie aus Marokko.',
+      sections: [],
+    },
+    en: {
+      title: 'Morocco',
+      tagline: 'Everyday life and beauty in Morocco',
+      body: 'Immersed in the textures and traditions of Morocco: everyday life and breathtaking scenery captured in a series of evocative images.\n\nFrom the busy souks of Marrakech to quiet desert landscapes, a story full of contrasts, colors and history.',
+      type: 'Photography · Documentary',
+      role: 'Photographer',
+      metaTitle: 'Morocco: documentary photography | Erik Bergheimer',
+      metaDescription: 'Atlas mountains, desert and everyday life: a documentary photo series from Morocco.',
+      sections: [],
     },
   },
   {
@@ -801,98 +901,6 @@ export const projects: Project[] = [
             "This was one of the most hands-on, insightful projects I've worked on. Designing for a real use case allowed me to uncover challenges that theory could never predict. I also realized that limitations in Low-/No-Code tools aren't just technical. They directly shape design outcomes and require workarounds or compromises.\n\nWorking across platforms made me a more adaptable product thinker, and collaborating with an expert reviewer helped me refine my design process in meaningful ways. It reinforced the value of user-centered design, even when the user is hypothetical, and reminded me that great UX comes from iteration, feedback, and real-world constraints.",
         },
       ],
-    },
-  },
-  {
-    slug: 'morocco',
-    year: '2023',
-    tools: 'Sony Alpha · Lightroom · Capture One',
-    thumbnail: {
-      src: '/images/project-morocco.jpg',
-      width: 768,
-      height: 1024,
-      alt: {
-        de: 'Marokkanische Flagge an einem Mast vor sonnigem Himmel',
-        en: 'Moroccan flag on a pole against a sunny sky',
-      },
-    },
-    service: 'photography',
-    gallery: [
-      {
-        src: '/images/projects/morocco-1.jpg',
-        width: 1200,
-        height: 1600,
-        alt: {
-          de: 'Serpentinenstraße durch kahles Atlasgebirge unter blauem Himmel',
-          en: 'Winding road through the bare Atlas mountains under a blue sky',
-        },
-      },
-      {
-        src: '/images/projects/morocco-2.jpg',
-        width: 1200,
-        height: 1600,
-        alt: {
-          de: 'Sonnenaufgang über Sanddünen mit Fußspuren in der Wüste',
-          en: 'Sunrise over sand dunes with footprints in the desert',
-        },
-      },
-      {
-        src: '/images/projects/morocco-3.jpg',
-        width: 1199,
-        height: 1600,
-        alt: {
-          de: 'Reihe beiger Zelte eines Wüstencamps im Sand',
-          en: 'Row of beige tents at a desert camp in the sand',
-        },
-      },
-      {
-        src: '/images/projects/morocco-4.jpg',
-        width: 1200,
-        height: 1600,
-        alt: {
-          de: 'Zwei schlafende Welpen aneinandergekuschelt im Gras',
-          en: 'Two sleeping puppies curled up together on the grass',
-        },
-      },
-      {
-        src: '/images/projects/morocco-5.jpg',
-        width: 1600,
-        height: 1200,
-        alt: {
-          de: 'Menschen auf einem Gipfel schauen auf den Sonnenaufgang über den Wolken',
-          en: 'People on a summit watching the sunrise above the clouds',
-        },
-      },
-      {
-        src: '/images/projects/morocco-6.jpg',
-        width: 1200,
-        height: 1600,
-        alt: {
-          de: 'Weißes Gebäude mit Balkonen vor tiefblauem Himmel',
-          en: 'White building with balconies against a deep blue sky',
-        },
-      },
-    ],
-    inlineImages: {},
-    de: {
-      title: 'Marokko',
-      tagline: 'Alltag und Schönheit in Marokko',
-      body: 'In Texturen und Traditionen Marokkos eingetaucht: Alltag und atemberaubende Szenerie in einer Serie eindrucksvoller Bilder.\n\nVon belebten Souks in Marrakesch bis zu stillen Wüstenlandschaften, eine Geschichte voller Kontraste, Farben und Geschichte.',
-      type: 'Fotografie · Dokumentarisch',
-      role: 'Fotograf',
-      metaTitle: 'Marokko: Dokumentarfotografie | Erik Bergheimer',
-      metaDescription: 'Atlasgebirge, Wüste und Alltag: eine dokumentarische Fotoserie aus Marokko.',
-      sections: [],
-    },
-    en: {
-      title: 'Morocco',
-      tagline: 'Everyday life and beauty in Morocco',
-      body: 'Immersed in the textures and traditions of Morocco: everyday life and breathtaking scenery captured in a series of evocative images.\n\nFrom the busy souks of Marrakech to quiet desert landscapes, a story full of contrasts, colors and history.',
-      type: 'Photography · Documentary',
-      role: 'Photographer',
-      metaTitle: 'Morocco: documentary photography | Erik Bergheimer',
-      metaDescription: 'Atlas mountains, desert and everyday life: a documentary photo series from Morocco.',
-      sections: [],
     },
   },
   {

@@ -172,9 +172,9 @@ describe('AK-13: Fakten stimmen mit dem Inhalt überein', () => {
 });
 
 describe('AK-17: Entscheidungen von Erik (2026-10-04)', () => {
-  it('Hero nennt freiberuflich und Einsatzgebiet', () => {
+  it('Hero nennt Einsatzgebiet, aber nicht freiberuflich (AK-41)', () => {
     render(<Home locale="de" />);
-    expect(screen.getAllByText(/freiberuflich/i).length).toBeGreaterThan(0);
+    expect(screen.queryAllByText(/freiberuflich|freelance/i)).toHaveLength(0);
     expect(screen.getAllByText(/Remote/i).length).toBeGreaterThan(0);
   });
 
@@ -323,5 +323,18 @@ describe('AK-40: PreMatch auf der Startseite', () => {
       '/projects/webflow',
     ]);
     expect(screen.getByRole('link', { name: 'PreMatch' })).toHaveAccessibleDescription(/Masterarbeit/);
+  });
+});
+
+describe('AK-41: nicht als freiberuflich bezeichnen', () => {
+  it('keine Selbstbeschreibung als Freelancer in den Inhalten', async () => {
+    const mods = await Promise.all([
+      import('@/lib/content/home'),
+      import('@/lib/content/about'),
+      import('@/lib/content/local'),
+      import('@/lib/llms'),
+    ]);
+    const text = JSON.stringify(mods.slice(0, 3)) + mods[3].llmsTxt();
+    expect(text).not.toMatch(/freiberuflich|freelancer\b|freelance (ux|for)|a freelance/i);
   });
 });

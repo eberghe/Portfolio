@@ -6,7 +6,7 @@ export const homeContent = {
   de: {
     metaTitle: 'Erik Bergheimer: UX/UI-Design & Webflow aus Augsburg',
     metaDescription:
-      'Freelancer in Augsburg: UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung, vor Ort oder remote. Kostenloses Erstgespräch.',
+      'UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung aus Augsburg, vor Ort oder remote. Kostenloses Erstgespräch.',
     available: 'Verfügbar für Projekte',
     greeting: ['Hey,', 'ich', 'bin', 'Erik'],
     companiesTitle: 'Unternehmen, für die ich gearbeitet habe',
@@ -26,7 +26,7 @@ export const homeContent = {
     ],
     role: 'UX/UI Designer & Webflow Expert',
     intro:
-      'Freiberuflicher UX/UI-Designer und Webflow-Entwickler aus Augsburg, für Kunden in Deutschland und remote. Ich gestalte digitale Erlebnisse, die sinnvoll sind, gut aussehen und sich menschlich anfühlen.',
+      'UX/UI-Designer und Webflow-Entwickler aus Augsburg, für Kunden in Deutschland und remote. Ich gestalte digitale Erlebnisse, die sinnvoll sind, gut aussehen und sich menschlich anfühlen.',
     contact: 'Kostenloses Erstgespräch',
     viewProjects: 'Projekte ansehen',
     heroAlt: 'Erik Bergheimer, UX/UI Designer und Webflow-Experte, im Porträt',
@@ -57,7 +57,7 @@ export const homeContent = {
     aboutTitle: 'Über mich',
     // TODO(Erik): persönliche Notiz prüfen oder ersetzen (Issue #14)
     aboutText: [
-      'Ich bin Erik, freiberuflicher UX/UI-Designer und Webflow-Entwickler aus Augsburg. Ich arbeite direkt mit dir, ohne Agentur-Umwege: Du sprichst mit der Person, die auch gestaltet und baut.',
+      'Ich bin Erik, UX/UI-Designer und Webflow-Entwickler aus Augsburg. Ich arbeite direkt mit dir, ohne Agentur-Umwege: Du sprichst mit der Person, die auch gestaltet und baut.',
       'Mir ist wichtig, dass Websites für alle funktionieren. Deshalb denke ich Barrierefreiheit, Ladezeit und Auffindbarkeit von Anfang an mit, und setze KI dort ein, wo sie dir wirklich Arbeit abnimmt.',
     ],
     aboutMore: 'Mehr über mich',
@@ -72,7 +72,7 @@ export const homeContent = {
   en: {
     metaTitle: 'Erik Bergheimer: UX/UI design & Webflow, Augsburg',
     metaDescription:
-      'Freelancer in Augsburg: UX/UI design, Webflow websites, accessibility and AI consulting, on site or remote. Book a free intro call.',
+      'UX/UI design, Webflow websites, accessibility and AI consulting from Augsburg, on site or remote. Book a free intro call.',
     available: 'Available for projects',
     greeting: ['Hey,', "I'm", 'Erik'],
     companiesTitle: "Companies I've worked for",
@@ -92,7 +92,7 @@ export const homeContent = {
     ],
     role: 'UX/UI Designer & Webflow Expert',
     intro:
-      'Freelance UX/UI designer and Webflow developer based in Augsburg, working with clients in Germany and remotely. I create digital experiences that are meaningful, look great, and feel human.',
+      'UX/UI designer and Webflow developer based in Augsburg, working with clients in Germany and remotely. I create digital experiences that are meaningful, look great, and feel human.',
     contact: 'Free intro call',
     viewProjects: 'View projects',
     heroAlt: 'Portrait of Erik Bergheimer, UX/UI designer and Webflow expert',
@@ -120,7 +120,7 @@ export const homeContent = {
     aboutTitle: 'About me',
     // TODO(Erik): review or replace the personal note (issue #14)
     aboutText: [
-      "I'm Erik, a freelance UX/UI designer and Webflow developer based in Augsburg. You work with me directly, no agency layers: the person you talk to is the person who designs and builds.",
+      "I'm Erik, a UX/UI designer and Webflow developer based in Augsburg. You work with me directly, no agency layers: the person you talk to is the person who designs and builds.",
       'I care about websites that work for everyone. That is why accessibility, speed and findability are part of every project from day one, and why I use AI where it genuinely saves you work.',
     ],
     aboutMore: 'More about me',

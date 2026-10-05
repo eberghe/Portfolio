@@ -86,3 +86,10 @@ Verschoben: englische Slugs für Impressum und Datenschutz (`/en/datenschutz`).
 - Terminbuchung direkt nach der Anfrage (z. B. Cal.com)? Bis dahin schlägt Erik Termine per Mail vor.
 - Bestätigungsmail an Kunden: bewusst weggelassen, weil ein Formular, das an beliebige Adressen Mails verschickt, für Spam missbraucht werden kann. Die Bestätigung steht auf der Seite.
 - Budget-Spannen sind ein Vorschlag; Erik prüft, ob sie zu seinen Preisen passen.
+
+## Benachrichtigung kommt nicht an (Erik 2026-10-05)
+
+Anfragen werden gespeichert (Supabase), aber die Mail an Erik fehlt. Ursache (gefolgert): Ohne eigene, bei Resend bestätigte Domain sendet Resend von `onboarding@resend.dev` nur an die E-Mail-Adresse des Resend-Kontos, nicht an `erb1209@outlook.de`.
+
+- AK-16: Empfänger der Benachrichtigung ist `ANFRAGE_EMPFAENGER`, sonst die E-Mail der Seite. Damit kann Erik ohne Code-Änderung auf die Adresse seines Resend-Kontos umstellen, bis die Domain bei Resend bestätigt ist (dann `ANFRAGE_ABSENDER`, z. B. `anfrage@erik-bergheimer.de`).
+- AK-17: Schlägt die Benachrichtigung fehl, steht der Statuscode und die Antwort von Resend im Server-Log, damit die Ursache sichtbar ist.

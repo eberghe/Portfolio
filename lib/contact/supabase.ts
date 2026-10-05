@@ -59,12 +59,13 @@ export function resendNotifier(env: Env): ((i: Inquiry) => Promise<void>) | null
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         from: env.ANFRAGE_ABSENDER ?? 'onboarding@resend.dev',
-        to: [EMAIL],
+        to: [env.ANFRAGE_EMPFAENGER ?? EMAIL],
         reply_to: i.email,
         subject: `Neue Anfrage: ${i.name}`,
         text: inquiryText(i),
       }),
     });
-    if (!res.ok) throw new Error(`Resend ${res.status}`);
+    // Status und Antwort ins Log, damit die Ursache sichtbar ist (anfrage-assistent.md AK-17)
+    if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 300)}`);
   };
 }

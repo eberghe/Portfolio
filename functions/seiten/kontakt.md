@@ -56,3 +56,9 @@ Keine eigenen; Anfragen siehe Anfrage-Assistent.
 ## Offene Fragen
 
 - Telefonnummer anzeigen? Derzeit nicht.
+
+## Umbau Kopf (Erik 2026-10-05)
+
+Layout-Vorlage (nur Aufteilung, nicht Gestaltung): links Überschrift und Absatz, rechts das Formular.
+
+- AK-9: Ab 768 px steht links nur die h1 und ein Absatz (keine Überline), rechts der Assistent wie bisher. Der Direktkontakt (E-Mail, LinkedIn, Instagram) und der Standort entfallen auf der Kontaktseite; E-Mail und Profile bleiben im Footer. Ersetzt den Direktkontakt aus AK-2 und AK-6. Auf dem Handy: h1, Assistent, darunter sichtbar der Absatz (AK-8 gilt weiter: vor dem Assistenten vorgelesen).

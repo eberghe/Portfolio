@@ -15,16 +15,11 @@ const de = {
   metaTitle: 'Kontakt & Projektanfrage | Erik Bergheimer',
   metaDescription:
     'Projekt in vier kurzen Schritten anfragen oder direkt schreiben. Antwort per E-Mail, meist mit Termin fürs kostenlose Erstgespräch. Aus Augsburg.',
-  eyebrow: 'Lass uns reden',
   title: 'Projekt? Idee? Oder einfach Hallo sagen?',
   intro:
     'Erzähl mir in vier kurzen Schritten, worum es geht. Ich antworte per E-Mail, meist mit einem Terminvorschlag für ein kostenloses Erstgespräch.',
-  direct: 'Direktkontakt',
   email: 'E-Mail',
-  location: 'Standort',
-  locationValue: 'Augsburg',
   newTab: '(öffnet in neuem Tab)',
-  directNote: 'Lieber direkt? Schreib mir eine E-Mail oder eine Nachricht auf LinkedIn.',
 
   formTitle: 'Projekt anfragen',
   progress: 'Fortschritt',
@@ -118,16 +113,11 @@ const en: ContactText = {
   metaTitle: 'Contact & project enquiry | Erik Bergheimer',
   metaDescription:
     'Send a project enquiry in four short steps or write directly. Reply by email, usually with a date for a free intro call. Based in Augsburg.',
-  eyebrow: "Let's talk",
   title: 'Project? Idea? Just say hi.',
   intro:
     'Tell me what it is about in four short steps. I will reply by email, usually suggesting a date for a free intro call.',
-  direct: 'Direct contact',
   email: 'Email',
-  location: 'Location',
-  locationValue: 'Augsburg',
   newTab: '(opens in a new tab)',
-  directNote: 'Prefer to write directly? Send me an email or a message on LinkedIn.',
 
   formTitle: 'Project enquiry',
   progress: 'Progress',

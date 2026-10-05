@@ -135,14 +135,15 @@ test('AK-22: Text und Jahreszahl stehen fest, nur der Hintergrund wechselt', asy
 
   await at(0);
   const first = (await h3(0).boundingBox())!;
-  expect(await opacityOf(0)).toBe(1);
-  expect(await opacityOf(3)).toBe(0);
+  // Übergang abwarten, statt nach fester Zeit zu messen (langsame CI-Runner)
+  await expect.poll(() => opacityOf(0)).toBe(1);
+  await expect.poll(() => opacityOf(3)).toBe(0);
 
   await at(3);
   const fourth = (await h3(3).boundingBox())!;
   expect(Math.abs(fourth.x - first.x)).toBeLessThanOrEqual(2);
-  expect(await opacityOf(3)).toBe(1);
-  expect(await opacityOf(0)).toBe(0);
+  await expect.poll(() => opacityOf(3)).toBe(1);
+  await expect.poll(() => opacityOf(0)).toBe(0);
   // Hintergrund der vierten Station füllt den Bildschirm
   expect(Math.abs((await box(page, 3)).x)).toBeLessThan(5);
   const year = page.locator('[data-journey] [data-year]');

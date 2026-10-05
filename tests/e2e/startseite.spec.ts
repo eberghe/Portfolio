@@ -3,14 +3,26 @@ import { axe } from './helpers';
 
 // functions/seiten/startseite.md
 
-test('AK-1: Hero-Überschrift steht ohne JavaScript im HTML', async ({ request }) => {
-  expect(await (await request.get('/')).text()).toMatch(/<h1[^>]*>Hi, ich bin <span[^>]*>Erik Bergheimer/);
-  expect(await (await request.get('/en')).text()).toMatch(/<h1[^>]*>Hi, I(&#x27;|')m <span[^>]*>Erik Bergheimer/);
+test.describe('ohne JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('AK-26: Hero-Überschrift sichtbar ohne JavaScript', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('heading', { level: 1, name: 'Hey, ich bin Erik' })).toBeVisible();
+    await page.goto('/en');
+    await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik" })).toBeVisible();
+  });
 });
 
-test('AK-7: Hero-Foto wird mit Priorität geladen (Preload im <head>)', async ({ request }) => {
-  const html = await (await request.get('/')).text();
-  expect(html).toMatch(/<link rel="preload" as="image" imageSrcSet="[^"]*hero-erik/);
+test('AK-27/AK-30: Animation endet sichtbar, Uhrzeit ohne Hydration-Fehler', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  await page.goto('/');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect
+    .poll(() => page.$$eval('h1 [data-word]', (els) => els.every((el) => getComputedStyle(el).opacity === '1')))
+    .toBe(true);
+  await expect(page.locator('time')).toHaveText(/^\d{2}:\d{2}/);
+  expect(errors.filter((e) => /hydrat/i.test(e))).toEqual([]);
 });
 
 test('AK-10: Seitentitel je Sprache', async ({ page }) => {
@@ -36,33 +48,15 @@ for (const scheme of ['light', 'dark'] as const) {
   });
 }
 
-test('AK-14: Hero-Foto wird scharf geladen (Quelle mindestens so groß wie die Fläche)', async ({ page }) => {
-  await page.goto('/');
-  // Hero-Foto (das Foto im Über-mich-Abschnitt hat einen anderen Alt-Text)
-  const img = page.getByRole('img', { name: /im Porträt/ });
-  await expect(img).toBeVisible();
-  await expect
-    .poll(() =>
-      img.evaluate(
-        (el: HTMLImageElement) => el.complete && el.naturalWidth >= Math.max(el.clientWidth, el.clientHeight) * 0.95,
-      ),
-    )
-    .toBe(true);
-});
-
 test('AK-15: fokussierte Elemente verschwinden nicht unter dem Header', async ({ page }) => {
   await page.goto('/');
   const padding = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop));
   expect(padding).toBeGreaterThanOrEqual(64);
 });
 
-test('AK-18: h1-Name ohne Leerzeichen vor dem Komma (Issue #6)', async ({ page }) => {
+test('AK-26: h1-Name je Sprache', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
-    'Hi, ich bin Erik Bergheimer, UX/UI Designer & Webflow Expert',
-  );
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Hey, ich bin Erik');
   await page.goto('/en');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
-    "Hi, I'm Erik Bergheimer, UX/UI Designer & Webflow Expert",
-  );
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName("Hey, I'm Erik");
 });

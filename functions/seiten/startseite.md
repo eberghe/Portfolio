@@ -93,3 +93,18 @@ Reihenfolge: Hero → Werkzeug-Laufband → Faktenleiste → Leistungen als numm
 
 Behoben: Faktenleiste überlappte bei 768 px („Deutschland“ in einer Zeile), einheitliche Größe; CTA-Button im Dunkelmodus 3,5:1 (jetzt Hintergrund/Vordergrund-Tokens); Schlagwort-Chips im Dunkelmodus 4,1:1 (dunkles `--primary-text` auf 50 % Helligkeit angehoben, siehe `design-tokens.md`); Abschnittsüberschriften einheitlich groß; Leistungs-Sticky-Spalte erst ab 1024 px; nach Sprüngen (Anker, Ende-Taste) blendet alles Übersprungene ein; Ablauf-Nummern im gleichen Gewicht wie die Leistungs-Nummern. Die axe-Tests blenden jetzt alle `data-reveal`-Elemente ein, damit auch spätere Abschnitte geprüft werden.
 Offen: „Barrierefreiheit-Beratung“ vs. „Barrierefreiheits-Beratung“ und „Webflow Expert“ auf Deutsch (Erik entscheidet, Issue #14); Hero nutzt eine andere Seitenbreite als die Abschnitte.
+
+## Umbau Hero und Firmen (Erik, 2026-10-05)
+
+Vorlage: Screenshot designme.agency (zentrierter Hero mit Pill, großer Überschrift, Untertitel, zwei Buttons; darunter „Trusted by“-Logoleiste und Uhrzeiten). Erik: „ohne hintergrund bild und nicht meinen ganzen namen sondern nur Hey ich bin Erik und das schön animiert“, darunter Firmen, für die er gearbeitet hat, HERO Software als aktuelles Unternehmen hervorgehoben, Uhrzeit in Königsbrunn, Logos in Schwarz und verlinkt.
+
+Ersetzt AK-1, AK-7, AK-14 und AK-18 (Hero-Foto und h1 mit vollem Namen entfallen).
+
+- AK-26: Hero zentriert, ohne Hintergrundbild und ohne Foto: Pill „Verfügbar für Projekte“, h1 „Hey, ich bin Erik“ (EN „Hey, I'm Erik“), darunter Rolle und Einleitung als Absätze, Buttons „Kostenloses Erstgespräch“ (Kontakt) und „Projekte ansehen“. Die h1 steht ohne JavaScript im HTML.
+- AK-27: Die Überschrift baut sich Wort für Wort weich auf (Deckkraft, Unschärfe, leichtes Aufsteigen), gestaffelt; ein winkendes 👋 ist dekorativ (`aria-hidden`). Bei reduzierter Bewegung steht alles sofort da. Der Name der h1 bleibt „Hey, ich bin Erik“.
+- AK-28: Abschnitt „Unternehmen, für die ich gearbeitet habe“ (h2, EN „Companies I've worked for“) als Liste: HERO Software, TEAM23, Amazon, IKEA (aus dem Lebenslauf). Jeder Eintrag ist ein Link auf die Website des Unternehmens (neuer Tab, für Screenreader angekündigt), Logos einfarbig in Schwarz (im Dunkelmodus Weiß).
+- AK-29: HERO Software ist als aktuelles Unternehmen hervorgehoben: Kennzeichen „Aktuell“ (EN „Current“) und Rolle, im Linknamen enthalten.
+- AK-30: Uhrzeit in Königsbrunn (Zeitzone Europe/Berlin) als `time`-Element mit Zeitzonenkürzel; sie aktualisiert sich jede Minute und erzeugt keinen Hydration-Fehler (ohne JavaScript steht nur der Ort).
+- AK-31: Keine axe-Verstöße, kein horizontales Scrollen (AK-9 gilt weiter).
+
+Offen: Offizielle Logo-Dateien (SVG) der Unternehmen fehlen; bis dahin Wortmarken in Schrift. Frage an Erik (Issue #14), ob Amazon und IKEA (Nebenjobs vor dem Studium) dort stehen sollen.

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-// functions/seiten/ueber-mich.md AK-16 bis AK-18 (Zeitleiste als waagerechte Tafel-Reihe)
+// functions/seiten/ueber-mich.md AK-16 bis AK-25 (Zeitleiste „Mein Weg“)
 const panels = (page: Page) => page.locator('[data-journey] ol > li');
 const box = async (page: Page, i: number) => (await panels(page).nth(i).boundingBox())!;
 
@@ -13,8 +13,7 @@ async function scrollToJourney(page: Page, where: 'start' | 'end') {
   await page.waitForTimeout(400);
 }
 
-test('AK-16: ab 768 px kleben die Stationen und wechseln beim Scrollen', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile-360');
+test('AK-16: auf allen Größen kleben die Stationen und wechseln beim Scrollen', async ({ page }) => {
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
@@ -28,15 +27,6 @@ test('AK-16: ab 768 px kleben die Stationen und wechseln beim Scrollen', async (
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
-});
-
-test('AK-17: unter 768 px stehen die Tafeln untereinander', async ({ page }, info) => {
-  test.skip(info.project.name !== 'mobile-360');
-  await page.goto('/about');
-  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
-  const [a, b] = [await box(page, 0), await box(page, 1)];
-  expect(b.y).toBeGreaterThanOrEqual(a.y + a.height - 1);
-  expect(Math.abs(a.x - b.x)).toBeLessThan(2);
 });
 
 test.describe('AK-17: reduzierte Bewegung', () => {
@@ -72,8 +62,7 @@ test('AK-18: Abdunklung mindestens 55 % Schwarz', async ({ page }) => {
   expect(alphas.every((a) => a >= 0.55)).toBe(true);
 });
 
-test('AK-20: in der waagerechten Reihe füllt jede Tafel den Bildschirm', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile-360');
+test('AK-20: beim Kleben füllt jede Tafel den Bildschirm', async ({ page }) => {
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
@@ -87,42 +76,42 @@ test('AK-20: in der waagerechten Reihe füllt jede Tafel den Bildschirm', async 
   expect(Math.abs((await box(page, 0)).x)).toBeLessThanOrEqual(1);
 });
 
-test('AK-20: untereinander reicht die Tafel randlos über die volle Breite', async ({ page }, info) => {
-  test.skip(info.project.name !== 'mobile-360');
-  await page.goto('/about');
-  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
-  const width = page.viewportSize()!.width;
-  const b = await box(page, 0);
-  expect(b.x).toBeLessThanOrEqual(0.5);
-  expect(Math.abs(b.width - width)).toBeLessThanOrEqual(1);
+test.describe('AK-20: untereinander', () => {
+  test.use({ reducedMotion: 'reduce' });
+  test('Tafel randlos über die volle Breite', async ({ page }) => {
+    await page.goto('/about');
+    await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+    const width = page.viewportSize()!.width;
+    const b = await box(page, 0);
+    expect(b.x).toBeLessThanOrEqual(0.5);
+    expect(Math.abs(b.width - width)).toBeLessThanOrEqual(1);
+  });
 });
 
 test('AK-21: beim Wechsel der Darstellung bleibt die Station im Blick', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop-1280');
-  await page.setViewportSize({ width: 360, height: 780 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   await page.evaluate(() => {
     const li = document.querySelectorAll('[data-journey] ol > li')[7] as HTMLElement;
     scrollTo({ top: li.getBoundingClientRect().top + scrollY, behavior: 'instant' });
   });
-  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
   await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
   await page.waitForTimeout(400);
-  const b = await box(page, 7);
-  expect(Math.abs(b.x)).toBeLessThan(40);
-  expect(Math.abs(b.y)).toBeLessThan(2);
+  await expect(panels(page).nth(7)).toHaveAttribute('data-active', 'true');
+  expect(Math.abs((await box(page, 7)).y)).toBeLessThan(2);
 
-  await page.setViewportSize({ width: 360, height: 780 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.locator('[data-journey]')).not.toHaveAttribute('data-pinned', 'true');
   await page.waitForTimeout(400);
   const c = await box(page, 7);
   expect(c.y).toBeGreaterThan(-c.height / 2);
-  expect(c.y).toBeLessThan(780 / 2);
+  expect(c.y).toBeLessThan(800 / 2);
 });
 
-test('AK-22: Text und Jahreszahl stehen fest, nur der Hintergrund wechselt', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile-360');
+test('AK-22: Text und Jahreszahl stehen fest, nur der Hintergrund wechselt', async ({ page }) => {
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
@@ -163,8 +152,7 @@ test('AK-22: Text und Jahreszahl stehen fest, nur der Hintergrund wechselt', asy
   );
 });
 
-test('AK-23: Bilder wechseln animiert statt zu gleiten', async ({ page }, info) => {
-  test.skip(info.project.name === 'mobile-360');
+test('AK-23: Bilder wechseln animiert statt zu gleiten', async ({ page }) => {
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
@@ -196,4 +184,72 @@ test('AK-23: Bilder wechseln animiert statt zu gleiten', async ({ page }, info) 
     .nth(1)
     .evaluate((el) => parseFloat(getComputedStyle(el).transitionDuration));
   expect(seconds).toBeGreaterThanOrEqual(0.8);
+});
+
+test('AK-24: Pfeile blättern zwischen den Stationen', async ({ page }) => {
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  await page.evaluate(() => {
+    const area = document.querySelector('[data-journey] ol')!.parentElement!.parentElement!;
+    scrollTo({ top: area.getBoundingClientRect().top + scrollY, behavior: 'instant' });
+  });
+  const prev = page.getByRole('button', { name: 'Vorherige Station' });
+  const next = page.getByRole('button', { name: 'Nächste Station' });
+  await expect(prev).toBeDisabled();
+  await expect(next).toBeEnabled();
+  for (const b of [await prev.boundingBox(), await next.boundingBox()]) {
+    expect(b!.width).toBeGreaterThanOrEqual(44);
+    expect(b!.height).toBeGreaterThanOrEqual(44);
+  }
+  await next.click();
+  await expect(panels(page).nth(1)).toHaveAttribute('data-active', 'true');
+  await next.click();
+  await expect(panels(page).nth(2)).toHaveAttribute('data-active', 'true');
+  await prev.click();
+  await expect(panels(page).nth(1)).toHaveAttribute('data-active', 'true');
+  await expect(prev).toBeEnabled();
+  // Tastatur
+  await next.focus();
+  await page.keyboard.press('Enter');
+  await expect(panels(page).nth(2)).toHaveAttribute('data-active', 'true');
+  // Ende
+  const last = (await panels(page).count()) - 1;
+  await scrollToJourney(page, 'end');
+  await expect(panels(page).nth(last)).toHaveAttribute('data-active', 'true');
+  await expect(next).toBeDisabled();
+  // Fokus bleibt am Ende auf dem Knopf (Kritiker)
+  await next.focus();
+  await next.press('Enter');
+  await expect(next).toBeFocused();
+  // Wechsel per Pfeil wird angesagt
+  await prev.click();
+  await expect(page.locator('[data-journey] [aria-live="polite"]')).toContainText(`${last} / ${last + 1}`);
+});
+
+test('AK-25: jede Station passt ohne Abschneiden in den Bildschirm', async ({ page }) => {
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  const n = await panels(page).count();
+  const { width, height } = page.viewportSize()!;
+  const next = await page.getByRole('button', { name: 'Nächste Station' }).boundingBox();
+  for (let i = 0; i < n; i++) {
+    await page.evaluate((i) => {
+      const area = document.querySelector('[data-journey] ol')!.parentElement!.parentElement!;
+      const n = document.querySelectorAll('[data-journey] ol > li').length;
+      const top = area.getBoundingClientRect().top + scrollY;
+      scrollTo({ top: top + (i / (n - 1)) * (area.offsetHeight - innerHeight), behavior: 'instant' });
+    }, i);
+    await expect(panels(page).nth(i)).toHaveAttribute('data-active', 'true');
+    for (const sel of ['h3', 'time', 'p']) {
+      const b = (await panels(page).nth(i).locator(sel).first().boundingBox())!;
+      expect(b.x, `${i} ${sel}`).toBeGreaterThanOrEqual(0);
+      expect(b.x + b.width, `${i} ${sel}`).toBeLessThanOrEqual(width + 1);
+      expect(b.y + b.height, `${i} ${sel}`).toBeLessThanOrEqual(height);
+      // Text überlappt die Pfeile nicht
+      const clear = b.y + b.height <= next!.y || b.x + b.width <= next!.x;
+      expect(clear, `${i} ${sel} unter den Pfeilen`).toBe(true);
+    }
+  }
 });

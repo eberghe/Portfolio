@@ -1,5 +1,6 @@
 'use client';
 
+import { ArrowDown, ArrowUp } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { TimelineItem } from '@/lib/content/about';
@@ -51,12 +52,16 @@ export default function Journey({
   title,
   intro,
   hint,
+  prev,
+  next,
 }: {
   items: TimelineItem[];
   locale: Locale;
   title: string;
   intro: string;
   hint: string;
+  prev: string;
+  next: string;
 }) {
   const [pinned, setPinned] = useState(false);
   // Aktive Station, solange die Tafeln kleben (AK-22)
@@ -68,9 +73,19 @@ export default function Journey({
   const pending = useRef<number | null>(null);
   // Station, die beim Kleben gerade aktiv und im Bild ist
   const shown = useRef<number | null>(null);
+  // Springt zu einer Station (Pfeile, AK-24)
+  const goTo = useRef<(index: number) => void>(() => {});
+  // Ansage für Screenreader nach einem Pfeil-Klick (Kritiker: Wechsel wurde nicht angesagt)
+  const [announce, setAnnounce] = useState('');
+  const viaArrow = useRef(false);
+  useEffect(() => {
+    if (!viaArrow.current) return;
+    viaArrow.current = false;
+    setAnnounce(`${active + 1} / ${items.length}: ${items[active]![locale].title}`);
+  }, [active, items, locale]);
 
   useEffect(() => {
-    const query = window.matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)');
+    const query = window.matchMedia('(prefers-reduced-motion: no-preference)');
     const update = (first?: boolean) => {
       const el = area.current;
       const list = track.current;
@@ -146,6 +161,10 @@ export default function Journey({
       e.preventDefault();
       window.scrollBy({ top: e.deltaX, behavior: 'instant' });
     };
+    goTo.current = (index) => {
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top + (Math.min(last, Math.max(0, index)) / last) * range(), behavior: 'instant' });
+    };
     const observer = new ResizeObserver(resize);
     observer.observe(sticky);
     window.addEventListener('scroll', move, { passive: true });
@@ -192,7 +211,7 @@ export default function Journey({
         )}
       </div>
       <div ref={area} className="relative">
-        <div className={pinned ? 'sticky top-0 h-screen overflow-hidden' : ''}>
+        <div className={pinned ? 'sticky top-0 h-[100svh] overflow-hidden' : ''}>
           <ol ref={track} className={pinned ? 'relative h-full' : 'flex flex-col gap-1'}>
             {items.map((item, i) => {
               // Kleben: alle Stationen liegen übereinander; die nächste deckt die aktive von unten auf (AK-23)
@@ -297,6 +316,37 @@ export default function Journey({
               <span className="absolute left-0 right-0 bottom-0 h-1 bg-white/20">
                 <span ref={bar} className="block h-full bg-primary origin-left scale-x-0" />
               </span>
+            </div>
+          )}
+          {pinned && (
+            <p aria-live="polite" className="sr-only">
+              {announce}
+            </p>
+          )}
+          {pinned && (
+            // Pfeile zum Blättern (AK-24); Fotos wechseln nacheinander von unten, daher Pfeile hoch/runter
+            <div className="absolute right-6 sm:right-10 bottom-6 sm:bottom-10 z-[101] flex gap-2">
+              {[
+                { label: prev, Icon: ArrowUp, to: active - 1, off: active === 0 },
+                { label: next, Icon: ArrowDown, to: active + 1, off: active === items.length - 1 },
+              ].map(({ label, Icon, to, off }) => (
+                <button
+                  key={label}
+                  type="button"
+                  aria-label={label}
+                  title={label}
+                  // aria-disabled statt disabled: der Fokus bleibt am Ende auf dem Knopf (Kritiker)
+                  aria-disabled={off || undefined}
+                  onClick={() => {
+                    if (off) return;
+                    viaArrow.current = true;
+                    goTo.current(to);
+                  }}
+                  className="grid place-items-center w-12 h-12 rounded-full border border-white/50 bg-black/30 text-white backdrop-blur-sm transition [@media(hover:hover)]:hover:bg-white [@media(hover:hover)]:hover:text-[hsl(var(--primary))] aria-disabled:opacity-40 aria-disabled:cursor-default aria-disabled:[@media(hover:hover)]:hover:bg-black/30 aria-disabled:[@media(hover:hover)]:hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
+                >
+                  <Icon size={20} aria-hidden="true" />
+                </button>
+              ))}
             </div>
           )}
         </div>

@@ -90,7 +90,15 @@ export default function About({ locale }: { locale: Locale }) {
         <ToolsMarquee pauseLabel={t.pause} />
       </section>
 
-      <Journey items={timeline} locale={locale} title={t.journey} intro={t.journeyIntro} hint={t.journeyHint} />
+      <Journey
+        items={timeline}
+        locale={locale}
+        title={t.journey}
+        intro={t.journeyIntro}
+        hint={t.journeyHint}
+        prev={t.journeyPrev}
+        next={t.journeyNext}
+      />
 
       {/* Abschluss nach Vorlage: „Jetzt bist du dran“ (AK-19) */}
       <section

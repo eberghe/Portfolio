@@ -133,3 +133,4 @@ Geprüft bei 360, 768, 1280 und 1440 px, hell und dunkel, DE und EN: keine axe-V
 ## Echte Stationsfotos (Erik, 2026-10-05)
 
 - AK-27: Fotos von Erik: „Bachelorabschluss“ (2023-08, EN „Bachelor's degree“; Urkundenübergabe an der TH Ingolstadt, ersetzt das alte Flur-Porträt) „Werkstudent bei TEAM23“ (2022-02, Workshop auf einer Terrasse) und „UX/UI-Designer bei TEAM23 (Vollzeit)“ (2023-09, im Crew-Shirt mit Peace-Zeichen). Jedes Stationsfoto kann einen Bildausschnitt (`position`, CSS `object-position`) mitbringen, damit Erik im Querformat-Zuschnitt sichtbar bleibt. Fotos werden als JPEG höchstens 2000 px lang abgelegt.
+- AK-28: Unter 768 px stehen Titel, Datum und Text einer klebenden Station unten im Bild über den Pfeilen (Jahreszahl und Zähler bleiben oben), damit Gesichter im oberen Bilddrittel frei bleiben (Erik-Fotos 2026-10-05). Ab 768 px bleibt der Text oben.

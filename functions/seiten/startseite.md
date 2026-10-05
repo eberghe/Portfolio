@@ -131,3 +131,9 @@ Ersetzt AK-20 (Werkzeug-Laufband auf der Startseite entfällt; auf „Über mich
 
 Behoben: Navigationslinks oben auf dem Verlauf nur 3,96:1 (oben jetzt in Vordergrundfarbe, AK-36); offenes Mobilmenü ließ die Seite dahinter weiterscrollen, Header und Schließen-Knopf verschwanden (jetzt ist auch `<html>` gesperrt); HERO im Dunkelmodus ohne Hervorhebung; Logos und Rollen standen wegen „Aktuell“ auf unterschiedlichen Höhen (Kennzeichen jetzt oben links, feste Logo-Höhe); IKEA-Oval zu schwer, TEAM23 zu leicht.
 Offen: Uhrzeit „Königsbrunn“ direkt über der Kennzahl „Augsburg – Aktueller Standort“ und drei Bänder mit Linien hintereinander (Faktenleiste bei Gelegenheit überarbeiten); Pfeil für externe Links nur bei Hover/Fokus sichtbar (Hinweis steht im Linknamen).
+
+## Zahlenleiste weiter unten (Erik, 2026-10-05)
+
+Erik: „den numbers bereich bitte weiter unten einbauen der passt da dann irgendwie nicht mehr finde ich“.
+
+- AK-37: Die Faktenleiste (AK-8, Beschreibungsliste) steht nicht mehr unter der Firmenleiste, sondern im Abschnitt „Über mich“ unter Foto und Text. Damit liegt sie in einem benannten Abschnitt, und unter dem Hero folgen nicht mehr drei Bänder hintereinander.

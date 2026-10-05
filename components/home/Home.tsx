@@ -129,22 +129,6 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <dl className="grid grid-cols-2 md:grid-cols-4 border-b border-border">
-        {t.stats.map((s, i) => (
-          <div
-            key={s.label}
-            data-reveal
-            style={stagger(i)}
-            className="flex flex-col-reverse justify-end min-w-0 px-6 sm:px-8 lg:px-10 py-10 border-r border-b md:border-b-0 border-border last:border-r-0"
-          >
-            <dt className="text-xs text-text3 mt-2">{s.label}</dt>
-            <dd className="font-light text-primary-text leading-none tracking-tight text-[26px] md:text-[28px] lg:text-[34px] min-w-0 [overflow-wrap:anywhere]">
-              {s.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
-
       <section
         aria-labelledby="angebot"
         className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 pb-12 md:pb-16 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-12"
@@ -369,6 +353,22 @@ export default function Home({ locale }: { locale: Locale }) {
             </Link>
           </div>
         </div>
+        {/* Faktenleiste unter Foto und Text (AK-37) */}
+        <dl className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 border-t border-border">
+          {t.stats.map((s, i) => (
+            <div
+              key={s.label}
+              data-reveal
+              style={stagger(i)}
+              className="flex flex-col-reverse justify-end min-w-0 px-6 sm:px-8 lg:px-10 py-10 border-r border-b md:border-b-0 border-border last:border-r-0"
+            >
+              <dt className="text-xs text-text3 mt-2">{s.label}</dt>
+              <dd className="font-light text-primary-text leading-none tracking-tight text-[26px] md:text-[28px] lg:text-[34px] min-w-0 [overflow-wrap:anywhere]">
+                {s.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       <section aria-labelledby="abschluss" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24">

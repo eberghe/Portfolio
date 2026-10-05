@@ -64,7 +64,7 @@ describe('AK-6: Deutsch auf der deutschen Seite', () => {
 
 describe('AK-8: Freelance', () => {
   it.each(['de', 'en'] as const)('%s', (locale) => {
-    expect(aboutContent[locale].intro).toMatch(locale === 'de' ? /Freelancer|freiberuflich/ : /freelance/i);
+    expect(aboutContent[locale].intro).toMatch(locale === 'de' ? /Freelancer|freiberuflich/i : /freelance/i);
     expect(aboutContent[locale].intro).toMatch(/Augsburg/);
   });
 });
@@ -116,7 +116,6 @@ describe('AK-12: Vergangenheit und Parität', () => {
   it.each(['de', 'en'] as const)('%s', (locale) => {
     const all = [aboutContent[locale].intro, ...timeline.map((t) => t[locale].text)].join(' ');
     expect(all).not.toMatch(/arbeite (ich )?jetzt|I'm now working|I am currently/);
-    expect(aboutContent[locale].intro).toMatch(/Bali/);
     expect(JSON.stringify(person(locale).workLocation)).toContain(locale === 'de' ? 'Deutschland' : 'Germany');
   });
 });
@@ -128,9 +127,21 @@ describe.each(['de', 'en'] as const)('Umbau Über mich (%s)', (locale) => {
     en: { journey: 'My journey', cta: 'Enough about me. Your turn', contact: '/en/contact' },
   }[locale];
 
-  it('AK-14: h1 „Erik Bergheimer“, Vorstellung und Foto', () => {
+  it('AK-14/AK-26: schlichter Hero mit Begrüßung, kurzer Vorstellung, Links und Foto', () => {
     render(<About locale={locale} />);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName('Erik Bergheimer');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(
+      locale === 'de' ? 'Servus, ich bin Erik' : "Hi, I'm Erik",
+    );
+    expect(aboutContent[locale].intro.length).toBeLessThanOrEqual(160);
+    const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
+    const links = within(hero).getAllByRole('link');
+    expect(links.map((l) => l.getAttribute('aria-label'))).toEqual([
+      'Instagram',
+      'LinkedIn',
+      locale === 'de' ? 'E-Mail' : 'Email',
+    ]);
+    expect(hero.querySelectorAll('li.rounded-full')).toHaveLength(0);
+    expect(hero.querySelectorAll('p')).toHaveLength(1);
     expect(screen.getByText(aboutContent[locale].intro)).toBeInTheDocument();
     expect(screen.getByRole('img', { name: aboutContent[locale].photoAlt })).toBeInTheDocument();
   });

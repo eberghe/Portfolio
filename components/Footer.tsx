@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { localPages } from '@/lib/content/local';
 import { services } from '@/lib/content/services';
 import { localizedPath, messages, type Locale } from '@/lib/i18n';
+import { EMAIL, INSTAGRAM, LINKEDIN } from '@/lib/site';
 import Instagram from './icons/Instagram';
 import Linkedin from './icons/Linkedin';
 import Logo from './Logo';
@@ -21,10 +22,6 @@ const NAV_ITEMS = [
 // Leistungs- und Stadtlinks: mobil 44 px Tippfläche, aktuelle Seite sichtbar markiert (AK-19, AK-20)
 const groupLink =
   'inline-flex items-center min-h-11 md:min-h-6 text-[13px] text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4';
-
-const EMAIL = 'erb1209@outlook.de';
-const INSTAGRAM = 'https://www.instagram.com/erik.bergheimer/';
-const LINKEDIN = 'https://www.linkedin.com/in/erik-bergheimer/';
 
 // Footer-Texte mindestens white/60 (7,2:1 auf #0b1219), siehe functions/seiten/navigation-und-footer.md
 /** „made with 🤍 in augsburg“: Herz für Screenreader als „love“ */

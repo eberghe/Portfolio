@@ -1,11 +1,13 @@
-import { ArrowRight, MapPin } from 'lucide-react';
+import { ArrowRight, Mail } from 'lucide-react';
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
-import { aboutContent, aboutPhoto, chips, timeline, tools } from '@/lib/content/about';
-import { localizedPath, type Locale } from '@/lib/i18n';
-import { EMAIL } from '@/lib/site';
+import Instagram from '@/components/icons/Instagram';
+import Linkedin from '@/components/icons/Linkedin';
+import { aboutContent, aboutPhoto, timeline, tools } from '@/lib/content/about';
+import { localizedPath, messages, type Locale } from '@/lib/i18n';
+import { EMAIL, INSTAGRAM, LINKEDIN } from '@/lib/site';
 import { profilePageJsonLd } from '@/lib/structured-data';
 import Journey from './Journey';
 import ToolsMarquee from './ToolsMarquee';
@@ -13,71 +15,61 @@ import ToolsMarquee from './ToolsMarquee';
 // Über mich, umgebaut nach Vorlage matteofabbiani.webflow.io/about. Siehe functions/seiten/ueber-mich.md
 export default function About({ locale }: { locale: Locale }) {
   const t = aboutContent[locale];
+  const socials = [
+    { icon: Instagram, label: 'Instagram', href: INSTAGRAM },
+    { icon: Linkedin, label: 'LinkedIn', href: LINKEDIN },
+    { icon: Mail, label: messages[locale].footer.email, href: `mailto:${EMAIL}` },
+  ];
   return (
     <>
       <JsonLd data={profilePageJsonLd(locale)} />
-      {/* Hero nach Vorlage matteofabbiani.webflow.io/about: große Begrüßung links, Hochkant-Foto rechts (AK-14) */}
-      <section className="max-w-[1200px] mx-auto px-6 sm:px-8 md:px-12 pt-14 md:pt-20 pb-16 md:pb-24 grid md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-10 md:gap-16 items-center">
+      {/* Schlichter Hero nach Vorlage matteofabbiani.webflow.io/about: Begrüßung, ein Satz, Links, Foto (AK-14, AK-26) */}
+      <section className="max-w-[1200px] mx-auto px-6 sm:px-8 md:px-12 pt-14 md:pt-16 pb-16 md:pb-24 lg:min-h-[calc(100svh-5rem)] grid md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-12 md:gap-16 items-center">
         <div>
-          <p
-            className="text-[11px] font-medium tracking-widest uppercase text-primary-text mb-4 hero-rise"
+          <h1
+            className="text-[44px] sm:text-[60px] md:text-[56px] lg:text-[80px] font-bold leading-[1.02] tracking-[-0.04em] mb-6 text-balance hero-rise"
             style={{ '--r': 0 } as CSSProperties}
           >
-            {t.eyebrow}
-          </p>
-          <h1
-            className="text-[44px] sm:text-[64px] md:text-[60px] lg:text-[84px] font-bold leading-[0.98] tracking-[-0.04em] mb-6 hero-rise"
-            style={{ '--r': 1 } as CSSProperties}
-          >
-            Erik Bergheimer
+            {t.greeting}
           </h1>
           <p
-            className="text-[18px] md:text-[21px] font-medium text-foreground mb-4 text-balance hero-rise"
-            style={{ '--r': 2 } as CSSProperties}
-          >
-            {t.role}
-          </p>
-          <p
-            className="flex items-center gap-1.5 text-[13px] text-text2 mb-6 hero-rise"
-            style={{ '--r': 3 } as CSSProperties}
-          >
-            <MapPin size={13} aria-hidden="true" />
-            {t.badge} · {t.facts}
-          </p>
-          <p
-            className="text-[16px] md:text-[17px] text-text2 leading-relaxed max-w-[560px] mb-8 hero-rise"
-            style={{ '--r': 4 } as CSSProperties}
+            className="text-[16px] md:text-[18px] text-text2 leading-relaxed max-w-[480px] mb-8 hero-rise"
+            style={{ '--r': 1 } as CSSProperties}
           >
             {t.intro}
           </p>
-          <ul className="flex flex-wrap gap-2 hero-rise" style={{ '--r': 5 } as CSSProperties}>
-            {chips[locale].map((c) => (
-              <li
-                key={c}
-                className="bg-primary-light text-primary-text border border-primary-border px-3 py-1.5 rounded-full text-[12px] font-medium"
-              >
-                {c}
+          <ul className="flex gap-2 -ml-3 hero-rise" style={{ '--r': 2 } as CSSProperties}>
+            {socials.map(({ icon: Icon, label, href }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  aria-label={label}
+                  className="flex items-center justify-center w-11 h-11 rounded-full text-foreground hover:text-primary-text hover:bg-bg2 transition-colors"
+                  {...(href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  <Icon size={22} aria-hidden="true" />
+                </a>
               </li>
             ))}
           </ul>
         </div>
         <div
-          className="relative aspect-[4/5] w-full max-w-[460px] md:ml-auto rounded-3xl overflow-hidden bg-bg2 hero-rise"
-          style={{ '--r': 6 } as CSSProperties}
+          className="relative aspect-[2/3] w-full max-w-[420px] md:ml-auto overflow-hidden bg-bg2 hero-rise"
+          style={{ '--r': 3 } as CSSProperties}
         >
           <Image
             src={aboutPhoto.src}
             alt={t.photoAlt}
             fill
             priority
-            sizes="(min-width: 768px) 460px, 100vw"
+            sizes="(min-width: 768px) 624px, 150vw"
             className="object-cover"
           />
         </div>
       </section>
 
       <section aria-labelledby="werkzeuge" className="border-y border-border py-8 overflow-hidden">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8">
+        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 md:px-12">
           <h2 id="werkzeuge" className="text-[11px] font-bold tracking-widest uppercase text-text3 mb-6">
             {t.tools}
           </h2>

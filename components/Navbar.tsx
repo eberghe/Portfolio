@@ -23,6 +23,7 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
   const [dark, setDark] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [atTop, setAtTop] = useState(true);
   const lastScrollY = useRef(0);
   const burgerRef = useRef<HTMLButtonElement>(null);
 
@@ -41,6 +42,8 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
 
   useEffect(() => {
     if (!mobileOpen) return;
+    // Auch <html> sperren, sonst scrollt die Seite hinter dem Menü weiter und der Header verschwindet
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
     // Alles außer Header und Menü unerreichbar machen, solange das Menü offen ist
     const background = Array.from(document.body.children).filter(
@@ -76,6 +79,7 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
     };
     document.addEventListener('keydown', onKey);
     return () => {
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
       background.forEach((el) => (el.inert = false));
       desktop.removeEventListener('change', onBreakpoint);
@@ -88,8 +92,11 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
     const onScroll = () => {
       const y = window.scrollY;
       if (!mobileOpen) setHidden(y > lastScrollY.current && y > 80);
+      setAtTop(y < 8);
       lastScrollY.current = y;
     };
+    // Seite kann beim Laden schon gescrollt sein (Zurück-Navigation, Anker)
+    onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [mobileOpen]);
@@ -109,6 +116,9 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
   // Unterseiten (z. B. /services/<slug>) markieren ihren Bereich: aria-current="true" statt "page"
   const inSection = (path: string) => path !== '/' && pathname.startsWith(`${localizedPath(path, locale)}/`);
   const current = (path: string) => (isActive(path) ? 'page' : inSection(path) ? 'true' : undefined);
+  // Startseite: oben transparent, damit der Hero-Verlauf bis an den Rand reicht (startseite.md AK-36).
+  // Nur mit JavaScript ([.js_&]), sonst bliebe sie beim Scrollen ohne Hintergrund.
+  const transparent = !notFound && realPath === localizedPath('/', locale) && atTop && !mobileOpen;
   const linkClass = (active: boolean) =>
     active
       ? 'bg-primary-light dark:bg-white/10 text-primary-text dark:text-white font-medium'
@@ -117,8 +127,14 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
   return (
     <>
       <header
-        className={`sticky top-0 z-[100] bg-background/95 backdrop-blur-md border-b border-border motion-safe:transition-transform motion-safe:duration-300 ${
+        data-transparent={transparent || undefined}
+        className={`sticky top-0 z-[100] bg-background/95 backdrop-blur-md border-b border-border motion-safe:transition-[transform,background-color,border-color] motion-safe:duration-300 ${
           hidden && !mobileOpen ? '-translate-y-full' : 'translate-y-0'
+        } ${
+          // Grauer Linktext erreicht auf dem Verlauf keine 4,5:1, deshalb oben in Vordergrundfarbe
+          transparent
+            ? '[.js_&]:bg-transparent [.js_&]:border-transparent [.js_&]:backdrop-blur-none [&_.text-text2]:text-foreground'
+            : ''
         }`}
       >
         <nav aria-label={t.label} className="flex items-center justify-between gap-2 px-4 sm:px-6 md:px-8 h-16">

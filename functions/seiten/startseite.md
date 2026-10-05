@@ -93,3 +93,47 @@ Reihenfolge: Hero → Werkzeug-Laufband → Faktenleiste → Leistungen als numm
 
 Behoben: Faktenleiste überlappte bei 768 px („Deutschland“ in einer Zeile), einheitliche Größe; CTA-Button im Dunkelmodus 3,5:1 (jetzt Hintergrund/Vordergrund-Tokens); Schlagwort-Chips im Dunkelmodus 4,1:1 (dunkles `--primary-text` auf 50 % Helligkeit angehoben, siehe `design-tokens.md`); Abschnittsüberschriften einheitlich groß; Leistungs-Sticky-Spalte erst ab 1024 px; nach Sprüngen (Anker, Ende-Taste) blendet alles Übersprungene ein; Ablauf-Nummern im gleichen Gewicht wie die Leistungs-Nummern. Die axe-Tests blenden jetzt alle `data-reveal`-Elemente ein, damit auch spätere Abschnitte geprüft werden.
 Offen: „Barrierefreiheit-Beratung“ vs. „Barrierefreiheits-Beratung“ und „Webflow Expert“ auf Deutsch (Erik entscheidet, Issue #14); Hero nutzt eine andere Seitenbreite als die Abschnitte.
+
+## Umbau Hero und Firmen (Erik, 2026-10-05)
+
+Vorlage: Screenshot designme.agency (zentrierter Hero mit Pill, großer Überschrift, Untertitel, zwei Buttons; darunter „Trusted by“-Logoleiste und Uhrzeiten). Erik: „ohne hintergrund bild und nicht meinen ganzen namen sondern nur Hey ich bin Erik und das schön animiert“, darunter Firmen, für die er gearbeitet hat, HERO Software als aktuelles Unternehmen hervorgehoben, Uhrzeit in Königsbrunn, Logos in Schwarz und verlinkt.
+
+Ersetzt AK-1, AK-7, AK-14 und AK-18 (Hero-Foto und h1 mit vollem Namen entfallen).
+
+- AK-26: Hero zentriert, ohne Hintergrundbild und ohne Foto: Pill „Verfügbar für Projekte“, h1 „Hey, ich bin Erik“ (EN „Hey, I'm Erik“), darunter Rolle und Einleitung als Absätze, Buttons „Kostenloses Erstgespräch“ (Kontakt) und „Projekte ansehen“. Die h1 steht ohne JavaScript im HTML.
+- AK-27: Die Überschrift baut sich Wort für Wort weich auf (Deckkraft, Unschärfe, leichtes Aufsteigen), gestaffelt; ein winkendes 👋 ist dekorativ (`aria-hidden`). Bei reduzierter Bewegung steht alles sofort da. Der Name der h1 bleibt „Hey, ich bin Erik“.
+- AK-28: Abschnitt „Unternehmen, für die ich gearbeitet habe“ (h2, EN „Companies I've worked for“) als Liste: HERO Software, TEAM23, Amazon, IKEA (aus dem Lebenslauf). Jeder Eintrag ist ein Link auf die Website des Unternehmens (neuer Tab, für Screenreader angekündigt), Logos einfarbig in Schwarz (im Dunkelmodus Weiß).
+- AK-29: HERO Software ist als aktuelles Unternehmen hervorgehoben: Kennzeichen „Aktuell“ (EN „Current“) und Rolle, im Linknamen enthalten.
+- AK-30: Uhrzeit in Königsbrunn (Zeitzone Europe/Berlin) als `time`-Element mit Zeitzonenkürzel; sie aktualisiert sich jede Minute und erzeugt keinen Hydration-Fehler (ohne JavaScript steht nur der Ort).
+- AK-32: Jede Kachel nennt eine ehrliche Rolle (Business Development Manager, UX/UI-Designer, Job vor dem Studium); Inhalt zentriert; der Linkname hat Pausen („HERO Software, Aktuell, Business Development Manager (öffnet in neuem Tab)“).
+- AK-33: Die Firmenleiste beginnt bei 1280 × 800 im ersten Bildschirm; ohne JavaScript erscheint die Uhrzeile gar nicht.
+- AK-31: Keine axe-Verstöße, kein horizontales Scrollen (AK-9 gilt weiter).
+
+Offen: Offizielle Logo-Dateien (SVG) der Unternehmen fehlen; bis dahin Wortmarken in Schrift. Frage an Erik (Issue #14), ob Amazon und IKEA (Nebenjobs vor dem Studium) dort stehen sollen.
+
+### Blinder Kritiker (Hero, 2026-10-05)
+
+Behoben: Amazon und IKEA ohne Rolle wirkten wie Designarbeit (jetzt „Job vor dem Studium“, AK-32), HERO-Kachel uneinheitlich ausgerichtet (AK-32), Firmenleiste unter dem ersten Bildschirm (AK-33), Linkname ohne Pausen (AK-32), halbe Uhrzeile ohne JavaScript (AK-33), aktuelle Rolle als Werkstudent benannt.
+Offen: Wortmarken statt offizieller Logos; ob Amazon und IKEA bleiben, entscheidet Erik.
+
+## Logos, Rolle und Navigation (Erik, 2026-10-05)
+
+Erik hat die Logos von HERO, TEAM23, Amazon und IKEA geschickt (PNG) und schreibt: „werkzeuge mit denen ich arbeite kann auf home raus. bin aktuell business development manager nicht werkstudent. außerdem oben die nav beim start nicht weiß erst on scroll damit der verlauf in grün bis ganz nach oben führt.“
+
+Ersetzt AK-20 (Werkzeug-Laufband auf der Startseite entfällt; auf „Über mich“ bleibt es).
+
+- AK-34: Die Kacheln zeigen die echten Logos als einfarbige SVG-Dateien (`public/logos/<firma>.svg`, aus Eriks Dateien nachgezeichnet): schwarz, im Dunkelmodus weiß. Das Bild ist dekorativ (`alt=""`), der Linkname kommt aus AK-32. Alle Logos haben dieselbe optische Höhe.
+- AK-35: Die Startseite hat keinen Abschnitt „Werkzeuge, mit denen ich arbeite“ mehr.
+- AK-36: Auf der Startseite ist die Navigation oben transparent (kein Hintergrund, keine Linie), der grüne Verlauf des Heros reicht bis an den oberen Rand. Ab dem ersten Scrollen bekommt sie wie auf allen anderen Seiten den weißen (im Dunkelmodus dunklen) Hintergrund und die Linie. Ohne JavaScript und bei offenem Mobilmenü bleibt sie deckend. Andere Seiten sind unverändert.
+- AK-32 nennt HERO jetzt mit der aktuellen Rolle „Business Development Manager“ (vorher Werkstudent).
+
+### Blinder Kritiker (Logos und Navigation, 2026-10-05)
+
+Behoben: Navigationslinks oben auf dem Verlauf nur 3,96:1 (oben jetzt in Vordergrundfarbe, AK-36); offenes Mobilmenü ließ die Seite dahinter weiterscrollen, Header und Schließen-Knopf verschwanden (jetzt ist auch `<html>` gesperrt); HERO im Dunkelmodus ohne Hervorhebung; Logos und Rollen standen wegen „Aktuell“ auf unterschiedlichen Höhen (Kennzeichen jetzt oben links, feste Logo-Höhe); IKEA-Oval zu schwer, TEAM23 zu leicht.
+Offen: Uhrzeit „Königsbrunn“ direkt über der Kennzahl „Augsburg – Aktueller Standort“ und drei Bänder mit Linien hintereinander (Faktenleiste bei Gelegenheit überarbeiten); Pfeil für externe Links nur bei Hover/Fokus sichtbar (Hinweis steht im Linknamen).
+
+## Zahlenleiste weiter unten (Erik, 2026-10-05)
+
+Erik: „den numbers bereich bitte weiter unten einbauen der passt da dann irgendwie nicht mehr finde ich“.
+
+- AK-37: Die Faktenleiste (AK-8, Beschreibungsliste) steht nicht mehr unter der Firmenleiste, sondern im Abschnitt „Über mich“ unter Foto und Text. Damit liegt sie in einem benannten Abschnitt, und unter dem Hero folgen nicht mehr drei Bänder hintereinander.

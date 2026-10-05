@@ -233,3 +233,56 @@ html {
     height: auto;
   }
 }
+
+/* Hero: Begrüßung baut sich Wort für Wort auf, functions/seiten/startseite.md AK-27 */
+.hero-word,
+.hero-wave {
+  display: inline-block;
+}
+.hero-wave {
+  transform-origin: 70% 70%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-word {
+    animation: hero-word-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--w, 0) * 120ms + 80ms);
+  }
+  .hero-wave {
+    animation:
+      hero-word-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both,
+      hero-wave 2s ease-in-out 1s 1;
+    animation-delay: calc(var(--w, 0) * 120ms + 80ms), 1s;
+  }
+}
+@keyframes hero-word-in {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(0.3em);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+@keyframes hero-wave {
+  0%,
+  60%,
+  100% {
+    rotate: 0deg;
+  }
+  10%,
+  30% {
+    rotate: 14deg;
+  }
+  20% {
+    rotate: -8deg;
+  }
+  40% {
+    rotate: -4deg;
+  }
+  50% {
+    rotate: 10deg;
+  }
+}

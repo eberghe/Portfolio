@@ -37,6 +37,8 @@ export default function RevealObserver() {
       );
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    // Was beim Laden schon im Bild ist (auch im unteren Rand), sofort zeigen (AK-4)
+    onScroll();
     // Inhalte, die nach dem Seitenwechsel nachgeladen werden (Streaming), ebenfalls beobachten
     const mutations = new MutationObserver(observe);
     mutations.observe(document.body, { childList: true, subtree: true });

@@ -1,10 +1,10 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { CSSProperties } from 'react';
-import ToolsMarquee from '@/components/about/ToolsMarquee';
+import { Fragment, type CSSProperties } from 'react';
 import JsonLd from '@/components/JsonLd';
-import { aboutPhoto, tools } from '@/lib/content/about';
+import LocalClock from './LocalClock';
+import { aboutPhoto } from '@/lib/content/about';
 import { featuredProjects, homeContent } from '@/lib/content/home';
 import { services } from '@/lib/content/services';
 import { EMAIL } from '@/lib/site';
@@ -27,81 +27,107 @@ export default function Home({ locale }: { locale: Locale }) {
   return (
     <>
       <JsonLd data={homeJsonLd(locale)} />
-      <section className="min-h-[calc(100vh-64px)] grid grid-cols-1 md:grid-cols-2 border-b border-border">
-        <div className="flex flex-col justify-center px-6 sm:px-8 md:px-16 py-16 md:py-20 motion-safe:animate-fade-in">
-          <p className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide mb-8 w-fit">
+      {/* Negativer Abstand = Navigationshöhe (64 px + 1 px Linie): der Hero liegt unter der (oben transparenten) Navigation, der Verlauf reicht bis an den Rand (AK-36) */}
+      <section className="relative overflow-hidden border-b border-border -mt-[65px] pt-[65px]">
+        {/* Weicher Farbverlauf statt Hintergrundbild (AK-26) */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.22),transparent_70%)]"
+        />
+        <div className="relative max-w-[900px] mx-auto px-6 sm:px-8 pt-16 pb-12 md:pt-20 md:pb-12 flex flex-col items-center text-center">
+          <p className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-3 py-1 rounded-full text-[12px] font-medium tracking-wide mb-8 motion-safe:animate-fade-in">
             <span
               aria-hidden="true"
-              className="w-[5px] h-[5px] bg-primary rounded-full motion-safe:animate-pulse-dot"
+              className="w-[6px] h-[6px] bg-primary rounded-full motion-safe:animate-pulse-dot"
             />
             {t.available}
           </p>
-          <h1 className="text-5xl md:text-[40px] lg:text-[56px] font-bold leading-[1.08] tracking-[-0.03em] text-foreground mb-6">
-            {t.greeting}
-            <span className="text-primary-text">Erik Bergheimer</span>
-            {/* Komma nur für Screenreader; sr-only erzeugt im Accessibility-Tree ein Leerzeichen davor (AK-18) */}
-            <span className="text-[0px]">, </span>
-            <span className="block text-[20px] md:text-[22px] text-text2 font-normal tracking-normal mt-3 [text-wrap:balance]">
-              {t.role}
+          <h1 className="text-[52px] sm:text-[72px] md:text-[96px] font-bold leading-[1.02] tracking-[-0.04em] text-foreground mb-6">
+            {t.greeting.map((word, i) => (
+              <Fragment key={word}>
+                {i > 0 && ' '}
+                <span
+                  data-word
+                  className={`hero-word ${i === t.greeting.length - 1 ? 'text-primary-text' : ''}`}
+                  style={{ '--w': i } as CSSProperties}
+                >
+                  {word}
+                </span>
+              </Fragment>
+            ))}{' '}
+            <span aria-hidden="true" className="hero-wave" style={{ '--w': t.greeting.length } as CSSProperties}>
+              👋
             </span>
           </h1>
-          <p className="text-[17px] text-text2 leading-relaxed max-w-[440px] mb-8">{t.intro}</p>
-          <div className="flex flex-wrap gap-3 items-center">
+          <p className="text-[19px] md:text-[24px] font-medium text-foreground mb-4 text-balance motion-safe:animate-fade-in">
+            {t.role}
+          </p>
+          <p className="text-[16px] md:text-[18px] text-text2 leading-relaxed max-w-[620px] mb-8 text-balance motion-safe:animate-fade-in">
+            {t.intro}
+          </p>
+          <div className="flex flex-wrap justify-center gap-3 motion-safe:animate-fade-in">
             <Link
               href={href('/contact')}
-              className="bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
+              className="bg-primary text-primary-foreground px-7 py-3.5 rounded-lg text-[14px] font-medium hover:bg-primary-hover transition-colors"
             >
               {t.contact}
             </Link>
             <Link
               href={href('/projects')}
-              className="border border-border text-text2 px-6 py-3 rounded-lg text-[13px] hover:text-foreground hover:border-muted-foreground transition"
+              className="bg-card border border-border text-foreground px-7 py-3.5 rounded-lg text-[14px] font-medium hover:border-muted-foreground transition"
             >
               {t.viewProjects}
             </Link>
           </div>
         </div>
-        <div className="relative border-t md:border-t-0 md:border-l border-border overflow-hidden min-h-[300px] md:min-h-0">
-          <Image
-            src="/images/hero-erik.jpg"
-            alt={t.heroAlt}
-            fill
-            priority
-            sizes="(min-width: 768px) 100vh, 100vw"
-            className="object-cover"
-          />
-        </div>
       </section>
 
-      <section aria-labelledby="werkzeuge" className="border-b border-border py-10 overflow-hidden">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
-          <h2 id="werkzeuge" className={`${eyebrow} mb-6`} data-reveal>
-            {t.tools}
+      <section aria-labelledby="unternehmen" className="border-b border-border">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
+          <h2 id="unternehmen" className={`${eyebrow} text-center mb-6`} data-reveal>
+            {t.companiesTitle}
           </h2>
-          <ul aria-labelledby="werkzeuge" className="sr-only">
-            {tools.map((tool) => (
-              <li key={tool.name}>{tool.name}</li>
+          <ul className="grid grid-cols-2 md:grid-cols-4 border-t border-l border-dashed border-border">
+            {t.companies.map((c, i) => (
+              <li key={c.name} data-reveal style={stagger(i)} className="border-r border-b border-dashed border-border">
+                <a
+                  href={c.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  // Sichtbarer Text in derselben Reihenfolge, mit Pausen und Hinweis auf den neuen Tab (AK-32)
+                  aria-label={[c.name, 'current' in c && c.current ? t.current : null, c.role]
+                    .filter(Boolean)
+                    .join(', ')
+                    .concat(` ${t.newTab}`)}
+                  className={`group relative flex flex-col items-center text-center gap-3 h-full min-h-[120px] md:min-h-[150px] px-4 pt-9 pb-6 md:pt-11 text-foreground motion-safe:transition-colors ${'current' in c && c.current ? 'bg-primary-light' : 'hover:bg-bg2'}`}
+                >
+                  {/* Feste Logo-Höhe: Logos und Rollen stehen in allen Kacheln auf einer Linie */}
+                  <span className="flex items-center justify-center h-10 lg:h-12">
+                    <CompanyLogo name={c.name} />
+                  </span>
+                  {'current' in c && c.current && (
+                    <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[11px] font-medium text-primary-text">
+                      <span aria-hidden="true" className="w-[6px] h-[6px] bg-primary rounded-full" />
+                      {t.current}
+                    </span>
+                  )}
+                  <span className={`text-[12px] ${'current' in c && c.current ? 'text-foreground' : 'text-text2'}`}>
+                    {c.role}
+                  </span>
+                  <ArrowUpRight
+                    size={14}
+                    aria-hidden="true"
+                    className="absolute top-3 right-3 text-text3 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 motion-safe:transition-opacity"
+                  />
+                </a>
+              </li>
             ))}
           </ul>
         </div>
-        <ToolsMarquee pauseLabel={t.pause} />
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
+          <LocalClock locale={locale} label={t.clockLabel} />
+        </div>
       </section>
-
-      <dl className="grid grid-cols-2 md:grid-cols-4 border-b border-border">
-        {t.stats.map((s, i) => (
-          <div
-            key={s.label}
-            data-reveal
-            style={stagger(i)}
-            className="flex flex-col-reverse justify-end min-w-0 px-6 sm:px-8 lg:px-10 py-10 border-r border-b md:border-b-0 border-border last:border-r-0"
-          >
-            <dt className="text-xs text-text3 mt-2">{s.label}</dt>
-            <dd className="font-light text-primary-text leading-none tracking-tight text-[26px] md:text-[28px] lg:text-[34px] min-w-0 [overflow-wrap:anywhere]">
-              {s.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
 
       <section
         aria-labelledby="angebot"
@@ -327,6 +353,22 @@ export default function Home({ locale }: { locale: Locale }) {
             </Link>
           </div>
         </div>
+        {/* Faktenleiste unter Foto und Text (AK-37) */}
+        <dl className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 border-t border-border">
+          {t.stats.map((s, i) => (
+            <div
+              key={s.label}
+              data-reveal
+              style={stagger(i)}
+              className="flex flex-col-reverse justify-end min-w-0 px-6 sm:px-8 lg:px-10 py-10 border-r border-b md:border-b-0 border-border last:border-r-0"
+            >
+              <dt className="text-xs text-text3 mt-2">{s.label}</dt>
+              <dd className="font-light text-primary-text leading-none tracking-tight text-[26px] md:text-[28px] lg:text-[34px] min-w-0 [overflow-wrap:anywhere]">
+                {s.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       <section aria-labelledby="abschluss" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24">
@@ -360,5 +402,29 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
       </section>
     </>
+  );
+}
+
+/** Echte Logos als einfarbige SVG-Dateien, nachgezeichnet aus Eriks Dateien (AK-34).
+ *  Höhen gleichen die unterschiedlichen Seitenverhältnisse optisch an. */
+const logos: Record<string, { src: string; width: number; height: number; className: string }> = {
+  'HERO Software': { src: '/logos/hero.svg', width: 900, height: 233, className: 'h-6 lg:h-7' },
+  TEAM23: { src: '/logos/team23.svg', width: 137, height: 32, className: 'h-6 lg:h-7' },
+  Amazon: { src: '/logos/amazon.svg', width: 960, height: 290, className: 'h-7 lg:h-8 translate-y-1' },
+  IKEA: { src: '/logos/ikea.svg', width: 960, height: 384, className: 'h-7 lg:h-9' },
+};
+
+function CompanyLogo({ name }: { name: string }) {
+  const logo = logos[name];
+  if (!logo) return <span className="text-[20px] lg:text-[26px] font-bold leading-none">{name}</span>;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- kleine SVG-Datei, keine Bildoptimierung nötig
+    <img
+      src={logo.src}
+      alt=""
+      width={logo.width}
+      height={logo.height}
+      className={`w-auto max-w-full dark:invert ${logo.className}`}
+    />
   );
 }

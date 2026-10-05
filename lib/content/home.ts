@@ -8,7 +8,22 @@ export const homeContent = {
     metaDescription:
       'Freelancer in Augsburg: UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung, vor Ort oder remote. Kostenloses Erstgespräch.',
     available: 'Verfügbar für Projekte',
-    greeting: 'Hi, ich bin ',
+    greeting: ['Hey,', 'ich', 'bin', 'Erik'],
+    companiesTitle: 'Unternehmen, für die ich gearbeitet habe',
+    current: 'Aktuell',
+    newTab: '(öffnet in neuem Tab)',
+    clockLabel: 'Ortszeit in Königsbrunn',
+    companies: [
+      {
+        name: 'HERO Software',
+        url: 'https://hero-software.de/',
+        role: 'Business Development Manager',
+        current: true,
+      },
+      { name: 'TEAM23', url: 'https://www.team23.de/', role: 'UX/UI-Designer' },
+      { name: 'Amazon', url: 'https://www.amazon.de/', role: 'Job vor dem Studium' },
+      { name: 'IKEA', url: 'https://www.ikea.com/de/de/', role: 'Job vor dem Studium' },
+    ],
     role: 'UX/UI Designer & Webflow Expert',
     intro:
       'Freiberuflicher UX/UI-Designer und Webflow-Entwickler aus Augsburg, für Kunden in Deutschland und remote. Ich gestalte digitale Erlebnisse, die sinnvoll sind, gut aussehen und sich menschlich anfühlen.',
@@ -34,8 +49,6 @@ export const homeContent = {
     ],
     projects: 'Ausgewählte Projekte',
     viewAll: 'Alle Projekte ansehen',
-    tools: 'Werkzeuge, mit denen ich arbeite',
-    pause: 'Animation anhalten',
     offerIntro:
       'Acht Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Webflow-Website.',
     learnMore: 'Mehr erfahren',
@@ -59,7 +72,22 @@ export const homeContent = {
     metaDescription:
       'Freelancer in Augsburg: UX/UI design, Webflow websites, accessibility and AI consulting, on site or remote. Book a free intro call.',
     available: 'Available for projects',
-    greeting: "Hi, I'm ",
+    greeting: ['Hey,', "I'm", 'Erik'],
+    companiesTitle: "Companies I've worked for",
+    current: 'Current',
+    newTab: '(opens in a new tab)',
+    clockLabel: 'Local time in Königsbrunn',
+    companies: [
+      {
+        name: 'HERO Software',
+        url: 'https://hero-software.de/',
+        role: 'Business Development Manager',
+        current: true,
+      },
+      { name: 'TEAM23', url: 'https://www.team23.de/', role: 'UX/UI designer' },
+      { name: 'Amazon', url: 'https://www.amazon.de/', role: 'Job before university' },
+      { name: 'IKEA', url: 'https://www.ikea.com/de/de/', role: 'Job before university' },
+    ],
     role: 'UX/UI Designer & Webflow Expert',
     intro:
       'Freelance UX/UI designer and Webflow developer based in Augsburg, working with clients in Germany and remotely. I create digital experiences that are meaningful, look great, and feel human.',
@@ -82,8 +110,6 @@ export const homeContent = {
     ],
     projects: 'Selected projects',
     viewAll: 'View all projects',
-    tools: 'Tools I work with',
-    pause: 'Pause animation',
     offerIntro:
       'Eight services, one point of contact: from first user research and design to an accessible Webflow website.',
     learnMore: 'Learn more',

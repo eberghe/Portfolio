@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Home from '@/components/home/Home';
 import { homeContent } from '@/lib/content/home';
@@ -12,7 +12,7 @@ describe.each([
     'de',
     '',
     {
-      h1: /^Hi, ich bin Erik Bergheimer, UX\/UI Designer & Webflow Expert$/,
+      h1: /^Hey, ich bin Erik$/,
       offer: 'Was ich anbiete',
       process: 'So arbeiten wir zusammen',
       projects: 'Ausgewählte Projekte',
@@ -23,7 +23,7 @@ describe.each([
     'en',
     '/en',
     {
-      h1: /^Hi, I'm Erik Bergheimer, UX\/UI Designer & Webflow Expert$/,
+      h1: /^Hey, I'm Erik$/,
       offer: 'What I offer',
       process: 'How we work together',
       projects: 'Selected projects',
@@ -34,8 +34,8 @@ describe.each([
   it('AK-2: genau eine h1 und je Abschnitt eine h2', () => {
     render(<Home locale={locale} />);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    // AK-11: Rolle wird mit Pause vorgelesen, "ich" kleingeschrieben
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(t.h1);
+    // AK-26: nur „Hey, ich bin Erik“, das Winken ist dekorativ
+    expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(t.h1);
     for (const name of [t.offer, t.process, t.projects]) {
       expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument();
     }
@@ -75,9 +75,67 @@ describe.each([
     for (const img of within(section).getAllByRole('presentation')) expect(img).toHaveAttribute('alt', '');
   });
 
-  it('AK-7: Hero-Foto mit beschreibendem Alt-Text', () => {
+  it('AK-26: Hero ohne Foto, Rolle und Einleitung als Absätze', () => {
     render(<Home locale={locale} />);
-    expect(screen.getByRole('img', { name: homeContent[locale].heroAlt })).toBeInTheDocument();
+    const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
+    expect(within(hero).queryByRole('img')).toBeNull();
+    expect(hero).toHaveTextContent(homeContent[locale].role);
+    expect(within(hero).getByRole('link', { name: t.contact })).toHaveAttribute('href', `${prefix}/contact`);
+  });
+
+  it('AK-27: Wörter einzeln animiert, Winken dekorativ', () => {
+    render(<Home locale={locale} />);
+    const h1 = screen.getByRole('heading', { level: 1 });
+    expect(h1.querySelectorAll('[data-word]').length).toBeGreaterThanOrEqual(3);
+    expect(h1.querySelector('[aria-hidden="true"]')).toHaveTextContent('👋');
+  });
+
+  it('AK-28/AK-29: Unternehmen als Links, HERO Software hervorgehoben', () => {
+    render(<Home locale={locale} />);
+    const h2 = screen.getByRole('heading', {
+      level: 2,
+      name: locale === 'de' ? 'Unternehmen, für die ich gearbeitet habe' : "Companies I've worked for",
+    });
+    const section = h2.closest('section')!;
+    const links = within(section).getAllByRole('link');
+    expect(links.map((l) => l.getAttribute('href'))).toEqual(homeContent[locale].companies.map((c) => c.url));
+    for (const l of links) {
+      expect(l).toHaveAttribute('target', '_blank');
+      expect(l).toHaveAttribute('rel', expect.stringContaining('noopener'));
+    }
+    const hero = within(section).getByRole('link', { name: /HERO Software/ });
+    // AK-32: Teile des Linknamens mit Pausen, jeder Eintrag mit ehrlicher Rolle
+    expect(hero).toHaveAccessibleName(
+      locale === 'de'
+        ? 'HERO Software, Aktuell, Business Development Manager (öffnet in neuem Tab)'
+        : 'HERO Software, Current, Business Development Manager (opens in a new tab)',
+    );
+    // AK-34: echte Logos als einfarbige SVG-Dateien, dekorativ
+    const logos = links.map((l) => l.querySelector('img')!);
+    expect(logos.map((img) => img.getAttribute('src'))).toEqual([
+      '/logos/hero.svg',
+      '/logos/team23.svg',
+      '/logos/amazon.svg',
+      '/logos/ikea.svg',
+    ]);
+    for (const img of logos) {
+      expect(img).toHaveAttribute('alt', '');
+      expect(img.className).toContain('dark:invert');
+    }
+    for (const c of homeContent[locale].companies) expect(c.role).toBeTruthy();
+    expect(homeContent[locale].companies.map((c) => c.name)).toEqual(['HERO Software', 'TEAM23', 'Amazon', 'IKEA']);
+  });
+
+  it('AK-30: Uhrzeit in Königsbrunn', async () => {
+    render(<Home locale={locale} />);
+    await waitFor(() => expect(screen.getByText('Königsbrunn')).toBeInTheDocument());
+    await waitFor(() => expect(document.querySelector('time')).toHaveTextContent(/^\d{2}:\d{2}/));
+  });
+
+  it('AK-37: Faktenleiste steht im Abschnitt „Über mich“', () => {
+    render(<Home locale={locale} />);
+    const about = screen.getByRole('heading', { level: 2, name: homeContent[locale].aboutTitle }).closest('section')!;
+    expect(about.querySelector('dl')).not.toBeNull();
   });
 
   it('AK-8: Faktenleiste als Beschreibungsliste', () => {
@@ -170,11 +228,10 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
   }[locale];
   const prefix = locale === 'en' ? '/en' : '';
 
-  it('AK-20: Werkzeuge mit h2, Liste für Screenreader und Pause-Knopf', () => {
+  it('AK-35: kein Werkzeug-Abschnitt mehr auf der Startseite (ersetzt AK-20)', () => {
     render(<Home locale={locale} />);
-    const section = screen.getByRole('heading', { level: 2, name: t.tools }).closest('section')!;
-    expect(within(section).getByRole('list')).toHaveTextContent('Figma');
-    expect(within(section).getByRole('button', { pressed: false })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 2, name: t.tools })).toBeNull();
+    expect(screen.queryByRole('button', { pressed: false })).toBeNull();
   });
 
   it('AK-21: Leistungen nummeriert, mit Merkmalen, als Sticky-Stapel', () => {

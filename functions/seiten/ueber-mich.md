@@ -89,6 +89,7 @@ Ersetzt den bisherigen Seitenaufbau (Hero halb/halb, senkrechte Zeitleiste mit L
 - AK-19: Abschluss-Abschnitt mit h2 „Genug über mich. Jetzt bist du dran“ (EN „Enough about me. Your turn“), Link zum Kontakt und E-Mail-Adresse.
 - AK-20: Jede Tafel füllt den Bildschirm (Wunsch Erik, 2026-10-05): in der waagerechten Reihe ist jede Tafel so breit und so hoch wie das Fenster, Foto bzw. Platzhalter randlos. Untereinander (AK-17) reichen alle Tafeln randlos über die volle Breite, Tafeln mit Foto sind mindestens fensterhoch; Platzhalter-Tafeln bleiben kürzer, damit die Seite mobil nicht unnötig lang wird.
 - AK-21: Wechselt die Darstellung durch Ändern der Fenstergröße zwischen untereinander und waagerecht, bleibt die Station im Blick, die vorher zu sehen war (Kritiker 2026-10-05: Sprung bis in den Footer).
+- AK-22: In der waagerechten Reihe (AK-16) gleiten nur die Hintergründe (Foto bzw. Platzhalter) durch (Wunsch Erik, 2026-10-05: „nur den hintergrund … sonst wirkt das nicht so smooth“). Jahreszahl, Zähler und Text stehen fest an derselben Stelle im Bildschirm. Die große Jahreszahl und der Zähler rollen Ziffer für Ziffer zur aktiven Station; der Text der aktiven Station blendet ein, die anderen sind ausgeblendet (Deckkraft 0, bleiben im Accessibility-Tree). Aktiv ist die Station, deren Hintergrund den größeren Teil des Bildschirms füllt. Untereinander (AK-17) ändert sich nichts.
 
 Offen: Bilder für die Stationen ohne Foto liefert Erik; ein Interessen-Laufband wie in der Vorlage nur mit Eriks echten Interessen (Frage an Erik).
 
@@ -101,3 +102,8 @@ Offen: Fast die Hälfte der Stationen hat noch Platzhalter (Erik liefert Bilder)
 
 Geprüft: alle 15 Tafeln genau fenstergroß bei 768, 1280 und 1440 px, randlos; erste und letzte Station erreichbar; kein waagerechter Überlauf; untereinander randlos. Behoben: Wechsel zwischen untereinander und waagerecht verlor die Station (AK-21).
 Offen: Die beim Hochscrollen wieder einfahrende Kopfzeile liegt über den oberen 65 px der Tafel (wie bei jedem Inhalt unter der Kopfzeile, Text ist nie verdeckt solange sie ausgeblendet ist); Kontrast über Fotos prüft axe nicht automatisch (Abdunklung nach AK-18).
+
+### Blinder Kritiker (feste Jahreszahl und Text, 2026-10-05)
+
+Geprüft bei 768, 1280, 1440 px und 1280×600: Jahreszahl und Zähler stimmen an jeder Station, Text überlappt nie, nichts abgeschnitten oder unter der Kopfzeile, schnelles Scrollen landet richtig, Accessibility-Tree vollständig, keine fokussierbaren Elemente in ausgeblendeten Stationen. Behoben: kurze Lücke ohne Text beim Wechsel (neuer Text startet jetzt nach 100 ms).
+Offen: 13-px-Datum und Zähler sind auf hellen Fotos die schwächsten Stellen (Abdunklung nach AK-18 hält sie lesbar; mit Eriks echten Fotos erneut prüfen).

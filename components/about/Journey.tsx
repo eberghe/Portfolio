@@ -9,6 +9,35 @@ import type { Locale } from '@/lib/i18n';
 // AK-15 bis AK-18, AK-20: jede Tafel bildschirmfüllend). Ohne JavaScript, unter 768 px und bei reduzierter Bewegung stehen die Tafeln untereinander.
 /** Senkrechter Scrollweg je Pixel waagerechter Bewegung */
 const SPEED = 0.6;
+/** Große Jahreszahl; feste Kopie und Platzhalter in der Tafel teilen sich Größe und Lage */
+const YEAR = 'font-light leading-none tracking-[-0.04em] text-[72px] sm:text-[96px] md:text-[160px]';
+const PINNED_TOP = 'top-28 md:top-32';
+const PINNED = 'pt-28 md:pt-32';
+
+/** Ziffern, die beim Wechsel senkrecht zur neuen Ziffer rollen */
+function Rolling({ value }: { value: string }) {
+  return (
+    <span className="inline-flex">
+      {value.split('').map((digit, i) => (
+        // Unsichtbare Ziffer gibt die Breite vor, damit „1“ nicht so breit wie „0“ wird
+        <span key={i} className="relative inline-block h-[1em] overflow-hidden">
+          <span className="invisible">{digit}</span>
+          <span
+            className="absolute left-1/2 top-0 flex flex-col items-center transition-transform duration-700 ease-[cubic-bezier(0.76,0,0.24,1)]"
+            style={{ transform: `translate(-50%, ${-Number(digit)}em)` }}
+          >
+            {DIGITS.map((d) => (
+              <span key={d} className="h-[1em]">
+                {d}
+              </span>
+            ))}
+          </span>
+        </span>
+      ))}
+    </span>
+  );
+}
+const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 export default function Journey({
   items,
@@ -24,6 +53,8 @@ export default function Journey({
   hint: string;
 }) {
   const [horizontal, setHorizontal] = useState(false);
+  // Aktive Station in der waagerechten Reihe (AK-22)
+  const [active, setActive] = useState(0);
   const area = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLOListElement>(null);
   const bar = useRef<HTMLSpanElement>(null);
@@ -82,7 +113,11 @@ export default function Journey({
     const distance = () => Math.max(0, list.scrollWidth - sticky.clientWidth);
     const range = () => el.offsetHeight - window.innerHeight;
     const apply = () => {
-      list.style.transform = `translate3d(${-progress * distance()}px, 0, 0)`;
+      const shift = progress * distance();
+      list.style.transform = `translate3d(${-shift}px, 0, 0)`;
+      // Text und Jahreszahl gleichen die Verschiebung aus und stehen fest (AK-22)
+      list.style.setProperty('--shift', `${shift}px`);
+      setActive(Math.round(shift / sticky.clientWidth));
       if (bar.current) bar.current.style.transform = `scaleX(${progress})`;
       const inside = el.getBoundingClientRect().top < window.innerHeight && el.getBoundingClientRect().bottom > 0;
       shown.current = inside ? Math.round((progress * distance()) / sticky.clientWidth) : null;
@@ -134,6 +169,7 @@ export default function Journey({
       sticky.removeEventListener('wheel', wheel);
       el.style.height = '';
       list.style.transform = '';
+      list.style.removeProperty('--shift');
     };
   }, [horizontal]);
 
@@ -166,12 +202,11 @@ export default function Journey({
             {items.map((item, i) => (
               <li
                 key={`${item.date}-${item[locale].title}`}
-                className={`relative overflow-hidden bg-[hsl(var(--primary))] text-white ${
+                data-active={horizontal ? i === active || undefined : undefined}
+                className={`relative bg-[hsl(var(--primary))] text-white ${
                   horizontal
                     ? 'h-full w-[100cqw] shrink-0'
-                    : item.image
-                      ? 'min-h-[100svh]'
-                      : 'min-h-[340px] md:min-h-[560px]'
+                    : `overflow-hidden ${item.image ? 'min-h-[100svh]' : 'min-h-[340px] md:min-h-[560px]'}`
                 }`}
               >
                 {item.image ? (
@@ -198,37 +233,69 @@ export default function Journey({
                     className="absolute inset-0 bg-[rgba(0,0,0,0.6)] bg-gradient-to-t from-black/30 to-transparent"
                   />
                 )}
+                {/* Waagerecht: Inhalt steht fest über dem Bildschirm, nur der Hintergrund gleitet (AK-22) */}
                 <div
-                  className={`relative h-full flex flex-col gap-4 p-6 sm:p-10 md:p-14 ${horizontal ? 'justify-center md:pt-24' : 'justify-end'}`}
+                  className={
+                    horizontal
+                      ? 'absolute inset-y-0 left-0 z-10 w-[100cqw] pointer-events-none'
+                      : 'relative h-full flex flex-col'
+                  }
+                  style={horizontal ? { transform: `translateX(calc(var(--shift, 0px) - ${i} * 100cqw))` } : undefined}
                 >
-                  <span
-                    aria-hidden="true"
-                    className="font-light leading-none tracking-[-0.04em] text-[72px] sm:text-[96px] md:text-[160px]"
+                  <div
+                    className={`h-full flex flex-col gap-4 p-6 sm:p-10 md:p-14 ${
+                      horizontal
+                        ? `${PINNED} justify-start transition-[opacity,transform] ease-out ${
+                            // Alter Text geht schnell, neuer kommt kurz danach: kein Überlagern
+                            i === active
+                              ? 'opacity-100 translate-y-0 pointer-events-auto duration-500 delay-100'
+                              : 'opacity-0 -translate-y-2 duration-200'
+                          }`
+                        : 'justify-end'
+                    }`}
                   >
-                    {item.date.slice(0, 4)}
-                  </span>
-                  <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-3 lg:gap-12 items-start max-w-[1000px]">
-                    {/* Überschrift zuerst im DOM (Überschriften-Navigation hört das Datum), optisch darunter */}
-                    <div className="flex flex-col-reverse gap-1">
-                      <h3 className="text-[24px] lg:text-[34px] font-bold leading-tight text-balance">
-                        {item[locale].title}
-                      </h3>
-                      <time dateTime={item.date} className="block text-[13px] font-medium text-white/90">
-                        {format(item.date)}
-                      </time>
+                    <span aria-hidden="true" className={`${YEAR} ${horizontal ? 'invisible' : ''}`}>
+                      {item.date.slice(0, 4)}
+                    </span>
+                    <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-3 lg:gap-12 items-start max-w-[1000px]">
+                      {/* Überschrift zuerst im DOM (Überschriften-Navigation hört das Datum), optisch darunter */}
+                      <div className="flex flex-col-reverse gap-1">
+                        <h3 className="text-[24px] lg:text-[34px] font-bold leading-tight text-balance">
+                          {item[locale].title}
+                        </h3>
+                        <time dateTime={item.date} className="block text-[13px] font-medium text-white/90">
+                          {format(item.date)}
+                        </time>
+                      </div>
+                      <p className="text-[15px] md:text-[17px] leading-relaxed text-white/95">{item[locale].text}</p>
                     </div>
-                    <p className="text-[15px] md:text-[17px] leading-relaxed text-white/95">{item[locale].text}</p>
                   </div>
                 </div>
-                <span
-                  aria-hidden="true"
-                  className={`absolute right-6 sm:right-10 text-[13px] font-medium text-white/90 ${horizontal ? 'top-24' : 'top-6 sm:top-10'}`}
-                >
-                  {String(i + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
-                </span>
+                {!horizontal && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute right-6 sm:right-10 top-6 sm:top-10 text-[13px] font-medium text-white/90"
+                  >
+                    {String(i + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
+                  </span>
+                )}
               </li>
             ))}
           </ol>
+          {horizontal && (
+            // Feste Jahreszahl und Zähler, die Ziffer für Ziffer zur aktiven Station rollen (AK-22)
+            <div aria-hidden="true" className="absolute inset-0 z-20 pointer-events-none text-white">
+              <span
+                data-year={items[active]!.date.slice(0, 4)}
+                className={`absolute left-6 sm:left-10 md:left-14 ${PINNED_TOP} ${YEAR}`}
+              >
+                <Rolling value={items[active]!.date.slice(0, 4)} />
+              </span>
+              <span className="absolute right-6 sm:right-10 top-24 text-[13px] font-medium text-white/90 leading-none">
+                <Rolling value={String(active + 1).padStart(2, '0')} /> / {String(items.length).padStart(2, '0')}
+              </span>
+            </div>
+          )}
           {horizontal && (
             <span aria-hidden="true" className="absolute left-0 right-0 bottom-0 h-1 bg-white/20">
               <span ref={bar} className="block h-full bg-primary origin-left scale-x-0" />

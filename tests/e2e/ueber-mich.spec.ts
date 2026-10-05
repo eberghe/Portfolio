@@ -127,3 +127,45 @@ test('AK-21: beim Wechsel der Darstellung bleibt die Station im Blick', async ({
   expect(c.y).toBeGreaterThan(-c.height / 2);
   expect(c.y).toBeLessThan(780 / 2);
 });
+
+test('AK-22: Text und Jahreszahl stehen fest, nur der Hintergrund gleitet', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile-360');
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-horizontal', 'true');
+  const h3 = (i: number) => panels(page).nth(i).locator('h3');
+  const at = async (i: number) => {
+    await page.evaluate((i) => {
+      const s = document.querySelector('[data-journey]') as HTMLElement;
+      const area = s.querySelector('ol')!.closest('[class*="relative"]') as HTMLElement;
+      const n = s.querySelectorAll('ol > li').length;
+      const top = area.getBoundingClientRect().top + scrollY;
+      scrollTo({ top: top + (i / (n - 1)) * (area.offsetHeight - innerHeight), behavior: 'instant' });
+    }, i);
+    await page.waitForTimeout(900);
+  };
+  const opacityOf = (i: number) =>
+    h3(i).evaluate((el) => {
+      let o = 1;
+      for (let n: Element | null = el; n; n = n.parentElement) o *= Number(getComputedStyle(n).opacity);
+      return o;
+    });
+
+  await at(0);
+  const first = (await h3(0).boundingBox())!;
+  expect(await opacityOf(0)).toBe(1);
+  expect(await opacityOf(3)).toBe(0);
+
+  await at(3);
+  const fourth = (await h3(3).boundingBox())!;
+  expect(Math.abs(fourth.x - first.x)).toBeLessThanOrEqual(2);
+  expect(await opacityOf(3)).toBe(1);
+  expect(await opacityOf(0)).toBe(0);
+  // Hintergrund der vierten Station füllt den Bildschirm
+  expect(Math.abs((await box(page, 3)).x)).toBeLessThan(5);
+  const year = page.locator('[data-journey] [data-year]');
+  await expect(year).toHaveAttribute(
+    'data-year',
+    (await panels(page).nth(3).locator('time').getAttribute('datetime'))!.slice(0, 4),
+  );
+});

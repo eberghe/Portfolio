@@ -6,7 +6,7 @@ import type { TimelineItem } from '@/lib/content/about';
 import type { Locale } from '@/lib/i18n';
 
 // „Mein Weg“ als Tafel-Reihe, die beim senkrechten Scrollen waagerecht durchläuft (functions/seiten/ueber-mich.md
-// AK-15 bis AK-18). Ohne JavaScript, unter 768 px und bei reduzierter Bewegung stehen die Tafeln untereinander.
+// AK-15 bis AK-18, AK-20: jede Tafel bildschirmfüllend). Ohne JavaScript, unter 768 px und bei reduzierter Bewegung stehen die Tafeln untereinander.
 /** Senkrechter Scrollweg je Pixel waagerechter Bewegung */
 const SPEED = 0.6;
 
@@ -27,28 +27,65 @@ export default function Journey({
   const area = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLOListElement>(null);
   const bar = useRef<HTMLSpanElement>(null);
+  // Station, die beim Wechsel der Darstellung im Blick bleiben soll (AK-21)
+  const pending = useRef<number | null>(null);
+  // Station, die in der waagerechten Reihe gerade vorne steht
+  const shown = useRef<number | null>(null);
 
   useEffect(() => {
     const query = window.matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)');
-    const update = () => setHorizontal(query.matches);
-    update();
-    query.addEventListener('change', update);
-    return () => query.removeEventListener('change', update);
+    const update = (first?: boolean) => {
+      const el = area.current;
+      const list = track.current;
+      if (!first && el && list) {
+        const r = el.getBoundingClientRect();
+        if (shown.current !== null) pending.current = shown.current;
+        else if (r.top < window.innerHeight && r.bottom > 0) {
+          // Station, deren Mitte der Fenstermitte am nächsten liegt
+          let best = 0;
+          let gap = Infinity;
+          Array.from(list.children).forEach((li, i) => {
+            const b = li.getBoundingClientRect();
+            const d = Math.hypot(
+              b.left + b.width / 2 - window.innerWidth / 2,
+              b.top + b.height / 2 - window.innerHeight / 2,
+            );
+            if (d < gap) [best, gap] = [i, d];
+          });
+          pending.current = best;
+        }
+      }
+      setHorizontal(query.matches);
+    };
+    update(true);
+    const change = () => update();
+    query.addEventListener('change', change);
+    return () => query.removeEventListener('change', change);
   }, []);
 
   useEffect(() => {
     const el = area.current;
     const list = track.current;
-    if (!horizontal || !el || !list) return;
+    if (!el || !list) return;
+    const keep = pending.current;
+    pending.current = null;
+    if (!horizontal) {
+      const li = keep === null ? null : (list.children[keep] as HTMLElement | undefined);
+      if (li) window.scrollTo({ top: li.getBoundingClientRect().top + window.scrollY, behavior: 'instant' });
+      return;
+    }
     let frame = 0;
     let progress = 0;
     // Waagerechter Weg = Breite der Reihe minus Bildschirmbreite. Senkrecht braucht es davon nur SPEED,
     // damit der Abschnitt nicht zu lang wird (Kritiker: 20 Bildschirmhöhen)
-    const distance = () => Math.max(0, list.scrollWidth - window.innerWidth);
+    const sticky = list.parentElement!;
+    const distance = () => Math.max(0, list.scrollWidth - sticky.clientWidth);
     const range = () => el.offsetHeight - window.innerHeight;
     const apply = () => {
       list.style.transform = `translate3d(${-progress * distance()}px, 0, 0)`;
       if (bar.current) bar.current.style.transform = `scaleX(${progress})`;
+      const inside = el.getBoundingClientRect().top < window.innerHeight && el.getBoundingClientRect().bottom > 0;
+      shown.current = inside ? Math.round((progress * distance()) / sticky.clientWidth) : null;
     };
     const move = () => {
       cancelAnimationFrame(frame);
@@ -76,14 +113,22 @@ export default function Journey({
       e.preventDefault();
       window.scrollBy({ top: e.deltaX * SPEED, behavior: 'instant' });
     };
-    const sticky = list.parentElement!;
     const observer = new ResizeObserver(resize);
     observer.observe(sticky);
     window.addEventListener('scroll', move, { passive: true });
     sticky.addEventListener('wheel', wheel, { passive: false });
     resize();
+    if (keep !== null && distance() > 0) {
+      progress = Math.min(1, (keep * sticky.clientWidth) / distance());
+      window.scrollTo({
+        top: el.getBoundingClientRect().top + window.scrollY + progress * range(),
+        behavior: 'instant',
+      });
+      move();
+    }
     return () => {
       cancelAnimationFrame(frame);
+      shown.current = null;
       observer.disconnect();
       window.removeEventListener('scroll', move);
       sticky.removeEventListener('wheel', wheel);
@@ -115,20 +160,18 @@ export default function Journey({
         )}
       </div>
       <div ref={area} className="relative">
-        <div className={horizontal ? 'sticky top-0 h-screen overflow-hidden' : ''}>
-          <ol
-            ref={track}
-            className={
-              horizontal ? 'flex h-full w-max will-change-transform' : 'flex flex-col gap-3 px-3 sm:px-4 pb-3 sm:pb-4'
-            }
-          >
+        {/* Container-Einheit statt vw, damit eine Bildlaufleiste die Tafel nicht breiter als das Fenster macht */}
+        <div className={horizontal ? 'sticky top-0 h-screen overflow-hidden [container-type:inline-size]' : ''}>
+          <ol ref={track} className={horizontal ? 'flex h-full w-max will-change-transform' : 'flex flex-col gap-1'}>
             {items.map((item, i) => (
               <li
                 key={`${item.date}-${item[locale].title}`}
                 className={`relative overflow-hidden bg-[hsl(var(--primary))] text-white ${
                   horizontal
-                    ? 'h-full w-[75vw] max-w-[1100px] shrink-0'
-                    : `${item.image ? 'min-h-[480px]' : 'min-h-[340px]'} md:min-h-[560px] rounded-2xl`
+                    ? 'h-full w-[100cqw] shrink-0'
+                    : item.image
+                      ? 'min-h-[100svh]'
+                      : 'min-h-[340px] md:min-h-[560px]'
                 }`}
               >
                 {item.image ? (
@@ -136,7 +179,7 @@ export default function Journey({
                     src={item.image.src}
                     alt={item.image.alt[locale]}
                     fill
-                    sizes="(min-width: 768px) 85vw, 100vw"
+                    sizes="100vw"
                     className="object-cover"
                   />
                 ) : (

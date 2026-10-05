@@ -78,3 +78,52 @@ test('AK-18: Abdunklung mindestens 55 % Schwarz', async ({ page }) => {
   expect(alphas.length).toBeGreaterThan(0);
   expect(alphas.every((a) => a >= 0.55)).toBe(true);
 });
+
+test('AK-20: in der waagerechten Reihe füllt jede Tafel den Bildschirm', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile-360');
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-horizontal', 'true');
+  await scrollToJourney(page, 'start');
+  const { width, height } = page.viewportSize()!;
+  for (const i of [0, 1]) {
+    const b = await box(page, i);
+    expect(Math.abs(b.width - width)).toBeLessThanOrEqual(1);
+    expect(Math.abs(b.height - height)).toBeLessThanOrEqual(1);
+  }
+  expect(Math.abs((await box(page, 0)).x)).toBeLessThanOrEqual(1);
+});
+
+test('AK-20: untereinander reicht die Tafel randlos über die volle Breite', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile-360');
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  const width = page.viewportSize()!.width;
+  const b = await box(page, 0);
+  expect(b.x).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(b.width - width)).toBeLessThanOrEqual(1);
+});
+
+test('AK-21: beim Wechsel der Darstellung bleibt die Station im Blick', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop-1280');
+  await page.setViewportSize({ width: 360, height: 780 });
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await page.evaluate(() => {
+    const li = document.querySelectorAll('[data-journey] ol > li')[7] as HTMLElement;
+    scrollTo({ top: li.getBoundingClientRect().top + scrollY, behavior: 'instant' });
+  });
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-horizontal', 'true');
+  await page.waitForTimeout(400);
+  const b = await box(page, 7);
+  expect(Math.abs(b.x)).toBeLessThan(40);
+  expect(Math.abs(b.y)).toBeLessThan(2);
+
+  await page.setViewportSize({ width: 360, height: 780 });
+  await expect(page.locator('[data-journey]')).not.toHaveAttribute('data-horizontal', 'true');
+  await page.waitForTimeout(400);
+  const c = await box(page, 7);
+  expect(c.y).toBeGreaterThan(-c.height / 2);
+  expect(c.y).toBeLessThan(780 / 2);
+});

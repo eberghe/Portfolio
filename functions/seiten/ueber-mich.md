@@ -87,6 +87,8 @@ Ersetzt den bisherigen Seitenaufbau (Hero halb/halb, senkrechte Zeitleiste mit L
 - AK-17: Ohne JavaScript, unter 768 px und bei reduzierter Bewegung stehen die Tafeln untereinander (normaler Fluss), alle Inhalte erreichbar.
 - AK-18: Text auf den Tafeln erreicht mindestens 4,5:1: über Fotos liegt eine Abdunklung mit mindestens 55 % Schwarz, der grüne Platzhalter ist dunkel genug für weiße Schrift.
 - AK-19: Abschluss-Abschnitt mit h2 „Genug über mich. Jetzt bist du dran“ (EN „Enough about me. Your turn“), Link zum Kontakt und E-Mail-Adresse.
+- AK-20: Jede Tafel füllt den Bildschirm (Wunsch Erik, 2026-10-05): in der waagerechten Reihe ist jede Tafel so breit und so hoch wie das Fenster, Foto bzw. Platzhalter randlos. Untereinander (AK-17) reichen alle Tafeln randlos über die volle Breite, Tafeln mit Foto sind mindestens fensterhoch; Platzhalter-Tafeln bleiben kürzer, damit die Seite mobil nicht unnötig lang wird.
+- AK-21: Wechselt die Darstellung durch Ändern der Fenstergröße zwischen untereinander und waagerecht, bleibt die Station im Blick, die vorher zu sehen war (Kritiker 2026-10-05: Sprung bis in den Footer).
 
 Offen: Bilder für die Stationen ohne Foto liefert Erik; ein Interessen-Laufband wie in der Vorlage nur mit Eriks echten Interessen (Frage an Erik).
 
@@ -94,3 +96,8 @@ Offen: Bilder für die Stationen ohne Foto liefert Erik; ein Interessen-Laufband
 
 Behoben: Scrollweg zu lang (20 Bildschirmhöhen; jetzt schmalere Tafeln und 0,6 px senkrecht je Pixel waagerecht), Position ging beim Ändern der Fenstergröße verloren, seitliches Wischen bewegte die Reihe nicht, Hinweispfeil zeigte in die falsche Richtung, Text der ersten Tafel lag unter dem Bildschirm (jetzt mittig), Zähler unter der Kopfzeile, Datum vor der Überschrift im DOM, Platzhalter-Karten mobil zu hoch, Ränder ungleich. Mobilmenü auf gescrollter Seite: Kopfzeile verschwand, Position ging verloren (navigation-und-footer.md AK-18). Ladeanimation: Seite scrollte darunter mit.
 Offen: Fast die Hälfte der Stationen hat noch Platzhalter (Erik liefert Bilder); Fokussprung über die ganze Tafel-Reihe scrollt ohne Lenis per CSS weich und lang; Werkzeug-Logos blass (Bestand).
+
+### Blinder Kritiker (bildschirmfüllende Tafeln, 2026-10-05)
+
+Geprüft: alle 15 Tafeln genau fenstergroß bei 768, 1280 und 1440 px, randlos; erste und letzte Station erreichbar; kein waagerechter Überlauf; untereinander randlos. Behoben: Wechsel zwischen untereinander und waagerecht verlor die Station (AK-21).
+Offen: Die beim Hochscrollen wieder einfahrende Kopfzeile liegt über den oberen 65 px der Tafel (wie bei jedem Inhalt unter der Kopfzeile, Text ist nie verdeckt solange sie ausgeblendet ist); Kontrast über Fotos prüft axe nicht automatisch (Abdunklung nach AK-18).

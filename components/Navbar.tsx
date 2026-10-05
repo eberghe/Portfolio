@@ -42,9 +42,10 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
 
   useEffect(() => {
     if (!mobileOpen) return;
-    // Auch <html> sperren, sonst scrollt die Seite hinter dem Menü weiter und der Header verschwindet
+    // Nur <html> sperren: sperrt man zusätzlich <body>, wird <body> selbst zum Scroll-Container und der
+    // klebende Header rutscht bei gescrollter Seite aus dem Bild. Die Leseposition bleibt erhalten.
+    const scrollY = window.scrollY;
     document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
     // Alles außer Header und Menü unerreichbar machen, solange das Menü offen ist
     const background = Array.from(document.body.children).filter(
       (el) => el.tagName !== 'HEADER' && el.id !== 'mobile-menu' && el.tagName !== 'SCRIPT',
@@ -80,7 +81,7 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
     document.addEventListener('keydown', onKey);
     return () => {
       document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
+      if (window.scrollY !== scrollY) window.scrollTo({ top: scrollY, behavior: 'instant' });
       background.forEach((el) => (el.inert = false));
       desktop.removeEventListener('change', onBreakpoint);
       document.removeEventListener('keydown', onKey);

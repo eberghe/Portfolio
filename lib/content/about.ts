@@ -45,6 +45,15 @@ export const aboutContent = {
     tools: 'Tools, mit denen ich arbeite',
     pause: 'Animation anhalten',
     journey: 'Mein Weg',
+    journeyIntro:
+      'Von der Kiwi-Farm in Neuseeland über Bali bis zum Master in Innsbruck: die Stationen, die mich geprägt haben.',
+    journeyHint: 'Scroll weiter',
+    eyebrow: 'Über mich',
+    role: 'UX/UI-Designer, Webflow-Entwickler und Business Development Manager bei HERO Software',
+    outroTitle: 'Genug über mich. Jetzt bist du dran',
+    outroText:
+      'Erzähl mir, wo du gerade stehst und was du vorhast. Im kostenlosen Erstgespräch schauen wir gemeinsam, wie ich helfen kann.',
+    outroMail: 'Oder schreib direkt an',
     cta: 'Lass uns sprechen',
     ctaText: 'Du willst wissen, ob ich zu deinem Projekt passe? Im kostenlosen Erstgespräch finden wir es heraus.',
   },
@@ -62,6 +71,15 @@ export const aboutContent = {
     tools: 'Tools I work with',
     pause: 'Pause animation',
     journey: 'My journey',
+    journeyIntro:
+      "From a kiwi farm in New Zealand to Bali to a Master's degree in Innsbruck: the places that shaped me.",
+    journeyHint: 'Keep scrolling',
+    eyebrow: 'About me',
+    role: 'UX/UI designer, Webflow developer and Business Development Manager at HERO Software',
+    outroTitle: 'Enough about me. Your turn',
+    outroText:
+      "Tell me where you are right now and what you're planning. In a free intro call we'll work out together how I can help.",
+    outroMail: 'Or email me at',
     cta: "Let's talk",
     ctaText: 'Want to find out whether I am the right fit for your project? A free intro call will tell us.',
   },

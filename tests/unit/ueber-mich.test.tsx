@@ -44,7 +44,7 @@ describe('AK-5: Zeitleiste', () => {
   it('ol mit time und h3', () => {
     render(<About locale="de" />);
     const heading = screen.getByRole('heading', { level: 2, name: 'Mein Weg' });
-    const ol = heading.parentElement!.querySelector('ol')!;
+    const ol = heading.closest('section')!.querySelector('ol')!;
     const items = within(ol).getAllByRole('listitem');
     expect(items).toHaveLength(timeline.length);
     expect(timeline.length).toBe(15);
@@ -118,5 +118,46 @@ describe('AK-12: Vergangenheit und Parität', () => {
     expect(all).not.toMatch(/arbeite (ich )?jetzt|I'm now working|I am currently/);
     expect(aboutContent[locale].intro).toMatch(/Bali/);
     expect(JSON.stringify(person(locale).workLocation)).toContain(locale === 'de' ? 'Deutschland' : 'Germany');
+  });
+});
+
+// Umbau nach Vorlage matteofabbiani.webflow.io/about (AK-14 bis AK-19)
+describe.each(['de', 'en'] as const)('Umbau Über mich (%s)', (locale) => {
+  const t = {
+    de: { journey: 'Mein Weg', cta: 'Genug über mich. Jetzt bist du dran', contact: '/contact' },
+    en: { journey: 'My journey', cta: 'Enough about me. Your turn', contact: '/en/contact' },
+  }[locale];
+
+  it('AK-14: h1 „Erik Bergheimer“, Vorstellung und Foto', () => {
+    render(<About locale={locale} />);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName('Erik Bergheimer');
+    expect(screen.getByText(aboutContent[locale].intro)).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: aboutContent[locale].photoAlt })).toBeInTheDocument();
+  });
+
+  it('AK-15: Tafeln mit time, h3 und Text; Platzhalter ohne img', () => {
+    render(<About locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.journey }).closest('section')!;
+    expect(section).toHaveAttribute('data-journey');
+    const items = section.querySelectorAll('ol > li');
+    expect(items).toHaveLength(timeline.length);
+    timeline.forEach((entry, i) => {
+      const li = items[i] as HTMLElement;
+      expect(li.querySelector(`time[datetime="${entry.date}"]`)).not.toBeNull();
+      expect(within(li).getByRole('heading', { level: 3 })).toHaveTextContent(entry[locale].title);
+      expect(li).toHaveTextContent(entry[locale].text);
+      expect(li.querySelectorAll('img')).toHaveLength(entry.image ? 1 : 0);
+      if (!entry.image) expect(li.querySelector('[data-placeholder][aria-hidden="true"]')).not.toBeNull();
+    });
+  });
+
+  it('AK-19: Abschluss mit Kontakt und E-Mail', () => {
+    render(<About locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.cta }).closest('section')!;
+    expect(
+      within(section)
+        .getAllByRole('link')
+        .map((l) => l.getAttribute('href')),
+    ).toEqual(expect.arrayContaining([t.contact, expect.stringMatching(/^mailto:/)]));
   });
 });

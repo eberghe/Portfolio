@@ -60,6 +60,7 @@ Behoben, jeweils mit Test:
 - AK-12: Kein horizontales Scrollen bei 320 und 360 px in beiden Sprachen (Logo mobil kleiner, Sprachlink zeigt mobil „EN"/„DE", Screenreader hören den vollen Namen).
 - AK-13: Icon-Links im Footer mobil mindestens 44×44 px, Textlinks mit mehr Klickfläche.
 - AK-14: „Nach oben" führt ganz nach oben, Navigation wird sichtbar.
+- AK-18: Öffnet man das Mobilmenü auf einer gescrollten Seite, bleibt die Kopfzeile mit Schließen-Knopf oben sichtbar; die Seite dahinter scrollt nicht, und nach dem Schließen steht sie an derselben Stelle (Kritiker 2026-10-05).
 - `aria-current` auch im Footer, Footer-Links mobil ebenfalls in einer `nav`, „made with …" mit `lang="en"`, `color-scheme` folgt dem Dunkelmodus.
 
 Offen, bewusst später:

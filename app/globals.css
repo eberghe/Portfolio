@@ -286,3 +286,79 @@ html {
     rotate: 10deg;
   }
 }
+
+/* Ladeanimation (functions/infrastruktur/animationen.md AK-7, AK-8): nur mit html.preload, das Kopf-Skript setzt die
+   Klasse beim ersten Aufruf der Sitzung und nur bei erlaubter Bewegung. Endet rein per CSS. */
+.preloader {
+  display: none;
+}
+/* Seite darunter scrollt während der Ladeanimation nicht (diskrete Animation, endet von selbst) */
+html.preload {
+  animation: preload-lock 1.6s;
+}
+@keyframes preload-lock {
+  from,
+  to {
+    overflow: hidden;
+  }
+}
+html.preload .preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  animation: preloader-out 0.7s cubic-bezier(0.76, 0, 0.24, 1) 0.9s forwards;
+}
+.preloader-mark {
+  display: block;
+  overflow: hidden;
+}
+.preloader-mark svg {
+  display: block;
+  animation: preloader-mark-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both;
+}
+.preloader-bar {
+  display: block;
+  width: 120px;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.8;
+  transform-origin: left;
+  animation: preloader-bar 0.8s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
+}
+/* Begrüßung auf der Startseite startet erst, wenn die Fläche weggleitet */
+html.preload .hero-word,
+html.preload .hero-wave {
+  animation-delay: calc(var(--w, 0) * 120ms + 1.3s);
+}
+html.preload .hero-wave {
+  animation-delay: calc(var(--w, 0) * 120ms + 1.3s), 2.3s;
+}
+@keyframes preloader-out {
+  to {
+    transform: translateY(-100%);
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+@keyframes preloader-mark-in {
+  from {
+    transform: translateY(110%);
+  }
+}
+@keyframes preloader-bar {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Weiches Scrollen übernimmt Lenis, dann kein CSS-Smooth-Scroll (AK-9) */
+html.lenis {
+  scroll-behavior: auto;
+}

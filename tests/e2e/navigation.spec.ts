@@ -107,9 +107,25 @@ test.describe('mobil', () => {
     await ready(page);
     await page.getByRole('button', { name: 'Menü' }).click();
     await page.setViewportSize({ width: 1280, height: 800 });
-    await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe('');
+    await expect.poll(() => page.evaluate(() => document.documentElement.style.overflow)).toBe('');
     await page.setViewportSize({ width: 360, height: 780 });
     await expect(page.getByRole('button', { name: 'Menü' })).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('AK-18: Menü auf gescrollter Seite: Kopfzeile sichtbar, Position bleibt', async ({ page }) => {
+    await page.goto('/about');
+    await ready(page);
+    await page.evaluate(() => scrollTo({ top: 2000, behavior: 'instant' }));
+    const burger = page.getByRole('button', { name: 'Menü' });
+    const before = await page.evaluate(() => scrollY);
+    // dispatchEvent statt click: Playwright würde sonst selbst zum Knopf scrollen
+    await burger.dispatchEvent('click');
+    await expect.poll(async () => (await page.locator('header').boundingBox())!.y).toBeGreaterThanOrEqual(-1);
+    await expect(burger).toBeInViewport();
+    await page.mouse.wheel(0, 600);
+    await page.keyboard.press('Escape');
+    await expect(burger).toHaveAttribute('aria-expanded', 'false');
+    expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThan(10);
   });
 
   for (const [path, width] of [

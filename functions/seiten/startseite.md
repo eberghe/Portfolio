@@ -137,3 +137,10 @@ Offen: Uhrzeit „Königsbrunn“ direkt über der Kennzahl „Augsburg – Aktu
 Erik: „den numbers bereich bitte weiter unten einbauen der passt da dann irgendwie nicht mehr finde ich“.
 
 - AK-37: Die Faktenleiste (AK-8, Beschreibungsliste) steht nicht mehr unter der Firmenleiste, sondern im Abschnitt „Über mich“ unter Foto und Text. Damit liegt sie in einem benannten Abschnitt, und unter dem Hero folgen nicht mehr drei Bänder hintereinander.
+
+## Restpunkte Umbau (Issues #15 und #17, 2026-10-05)
+
+Erik: „danach bitte die prio hoch issues angehen!“. Aus #15 fehlten die Zähler, aus #17 die FAQ-Auswahl (Footer-Links siehe navigation-und-footer.md AK-19).
+
+- AK-38: In der Faktenleiste (AK-37) zählen Zahlen-Werte („6+“, Zahl der Projekte) beim Hinscrollen von 0 auf ihren Wert hoch (rund 1,2 s), Text-Werte („Deutschland“, „Augsburg“) bleiben stehen. Nur bei erlaubter Bewegung; ohne JavaScript und bei reduzierter Bewegung steht sofort der Endwert da. Screenreader hören nur den Endwert (hochzählende Ziffern `aria-hidden`, Endwert als versteckter Text). Werte, die keine Zahl sind (z. B. „Deutschland“), stehen kleiner, damit sie in ihrer Spalte ohne Trennung mitten im Wort passen (Kritiker 2026-10-05).
+- AK-39: Vor dem Abschluss-Abschnitt steht „Häufige Fragen“ (EN „Frequently asked questions“, h2) mit vier Fragen aus der FAQ im selben Akkordeon wie auf der FAQ-Seite (Fragen als h3) und einem Link „Alle FAQs“ zur FAQ-Seite (mindestens 44 px hoch). Kein zusätzliches FAQ-JSON-LD auf der Startseite (das steht auf der FAQ-Seite).

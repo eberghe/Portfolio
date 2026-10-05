@@ -23,6 +23,7 @@ Erik wünscht sich (2026-10-04) eine „smoothe Website mit nicen Animationen“
 - AK-3: Mit JavaScript und erlaubter Bewegung ist ein `[data-reveal]`-Element unterhalb des ersten Bildschirms zunächst unsichtbar und nach dem Hinscrollen sichtbar, auch nach einem Seitenwechsel per Client-Navigation.
 - AK-4: Ein `[data-reveal]`-Element im ersten Bildschirm ist kurz nach dem Laden sichtbar.
 - AK-5: `.sticky-stack`-Kinder sind ab 768 px `position: sticky`, darunter und bei reduzierter Bewegung nicht sticky (normaler Fluss).
+- AK-13: Am Ende des Sticky-Stapels bleiben die 16-px-Kanten sichtbar: Wenn die Liste nach oben wegscrollt, behalten die Karten ihren Versatz (jede Karte mindestens 12 px unter der vorigen), statt auf einer Linie zusammenzufallen. Dafür sind die Karten einer Liste gleich hoch und die Liste setzt `--stack-n` (Anzahl Karten); ohne `--stack-n` verhält sich der Stapel wie bisher. (Kritiker 2026-10-05)
 - AK-6: Keine axe-Verstöße und kein horizontales Scrollen auf Seiten mit Animationen.
 
 ## Barrierefreiheit

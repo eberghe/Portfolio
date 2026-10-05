@@ -45,6 +45,21 @@ const text = {
     packagesIntro: 'Zwei typische Wege. Umfang und Preis klären wir im Erstgespräch, passend zu deinem Projekt.',
     enquire: (name: string) => `Paket „${name}“ anfragen`,
     tools: 'Werkzeuge',
+    why: 'Warum mit mir',
+    whyCards: [
+      {
+        title: 'Ein Ansprechpartner',
+        text: 'Du sprichst von der ersten Idee bis zum Livegang mit mir, ohne Weiterreichen und ohne Stille Post.',
+      },
+      {
+        title: 'Ehrliche Einschätzung',
+        text: 'Ich sage dir offen, was sich lohnt und was nicht, auch wenn das kleinere Aufträge bedeutet.',
+      },
+      {
+        title: 'Vor Ort und remote',
+        text: 'In und um Augsburg treffen wir uns gern persönlich, sonst arbeiten wir unkompliziert per Video in ganz Deutschland.',
+      },
+    ],
     faq: 'Häufige Fragen',
     allFaqs: 'Alle FAQs',
   },
@@ -65,6 +80,21 @@ const text = {
     packagesIntro: 'Two typical routes. We agree scope and price in the intro call, tailored to your project.',
     enquire: (name: string) => `Enquire about the “${name}” package`,
     tools: 'Tools',
+    why: 'Why work with me',
+    whyCards: [
+      {
+        title: 'One point of contact',
+        text: 'You talk to me from the first idea to launch, with no hand-offs and nothing lost in translation.',
+      },
+      {
+        title: 'Honest advice',
+        text: 'I tell you openly what is worth doing and what is not, even if that means a smaller job for me.',
+      },
+      {
+        title: 'On site and remote',
+        text: 'In and around Augsburg we can meet in person; elsewhere in Germany we work easily over video.',
+      },
+    ],
     faq: 'Frequently asked questions',
     allFaqs: 'All FAQs',
   },
@@ -336,6 +366,46 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
             );
           })}
         </ul>
+      </section>
+
+      {/* Warum mit mir: Wertekarten im Sticky-Stapel (AK-27) */}
+      <section aria-labelledby="warum" className={sectionClass}>
+        <h2
+          id="warum"
+          data-reveal
+          className="text-[26px] md:text-[34px] font-bold leading-tight tracking-tight mb-10 max-w-[720px] text-balance"
+        >
+          {t.why}
+        </h2>
+        <ol className="sticky-stack grid gap-4" style={{ '--stack-n': t.whyCards.length + 1 } as CSSProperties}>
+          {[d.whyFocus, ...t.whyCards].map((card, i) => (
+            <li
+              key={card.title}
+              data-reveal
+              style={{ '--stack-i': i } as CSSProperties}
+              className={`rounded-2xl border p-6 md:p-8 shadow-[0_-8px_30px_-20px_hsl(var(--foreground)/0.25)] grid md:grid-cols-[4.5rem_minmax(0,1fr)] gap-x-8 gap-y-3 items-baseline ${
+                i % 2 ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border'
+              }`}
+            >
+              <span
+                aria-hidden="true"
+                className={`text-[40px] md:text-[48px] font-bold leading-none tracking-tight ${
+                  i % 2 ? 'text-primary-foreground' : 'text-primary-text'
+                }`}
+              >
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h3 className="text-[18px] md:text-[20px] font-bold mb-2">{card.title}</h3>
+                <p
+                  className={`text-[14px] md:text-[15px] leading-relaxed ${i % 2 ? 'text-primary-foreground' : 'text-text2'}`}
+                >
+                  {card.text}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <section aria-labelledby="werkzeuge" className="py-12 border-b border-border">

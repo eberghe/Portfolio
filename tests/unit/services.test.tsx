@@ -288,3 +288,36 @@ describe.each(['de', 'en'] as const)('Umbau Detailseite (%s)', (locale) => {
     expect(container.querySelectorAll('[data-reveal]').length).toBeGreaterThan(5);
   });
 });
+
+describe('AK-27: Warum mit mir', () => {
+  it.each(services.flatMap((s) => (['de', 'en'] as const).map((l) => [s.slug, l, s] as const)))(
+    '%s (%s)',
+    (_slug, locale, service) => {
+      render(<ServiceDetail service={service} locale={locale} />);
+      const heading = screen.getByRole('heading', {
+        level: 2,
+        name: locale === 'de' ? 'Warum mit mir' : 'Why work with me',
+      });
+      const list = heading.closest('section')!.querySelector('ol')!;
+      expect(list).toHaveClass('sticky-stack');
+      expect(within(list).getAllByRole('heading', { level: 3 })).toHaveLength(4);
+    },
+  );
+
+  it('erste Karte ist je Leistung verschieden', () => {
+    for (const locale of ['de', 'en'] as const) {
+      const firsts = services.map((service) => {
+        const { unmount } = render(<ServiceDetail service={service} locale={locale} />);
+        const heading = screen.getByRole('heading', {
+          level: 2,
+          name: locale === 'de' ? 'Warum mit mir' : 'Why work with me',
+        });
+        const title = within(heading.closest('section')!.querySelector('ol')!).getAllByRole('heading', { level: 3 })[0]!
+          .textContent;
+        unmount();
+        return title;
+      });
+      expect(new Set(firsts).size).toBe(services.length);
+    }
+  });
+});

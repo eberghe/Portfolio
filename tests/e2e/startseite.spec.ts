@@ -109,3 +109,39 @@ test('AK-36: Navigation oben transparent, nach dem Scrollen deckend', async ({ p
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   expect(await bg()).not.toBe('rgba(0, 0, 0, 0)');
 });
+
+test.describe('AK-38: Zahlen zählen hoch', () => {
+  test.use({ reducedMotion: 'no-preference' });
+  test('von 0 auf den Endwert, sobald sichtbar', async ({ page }) => {
+    await page.goto('/?animationstest');
+    await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+    const counter = page.locator('dd [data-count]').first();
+    const target = (await counter.getAttribute('data-count'))!;
+    await expect(counter).toHaveText(/^0/);
+    await counter.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await expect(counter).toHaveText(target, { timeout: 4000 });
+  });
+});
+
+test.describe('AK-38: reduzierte Bewegung', () => {
+  test.use({ reducedMotion: 'reduce' });
+  test('Endwert sofort', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+    const counter = page.locator('dd [data-count]').first();
+    await expect(counter).toHaveText((await counter.getAttribute('data-count'))!);
+  });
+});
+
+test('AK-38: Faktenwerte bleiben einzeilig', async ({ page }) => {
+  await page.goto('/');
+  const dds = page.locator('section dl dd');
+  const lines = await dds.evaluateAll((els) =>
+    els.map((el) => ({
+      text: el.textContent,
+      ratio: el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).fontSize),
+    })),
+  );
+  expect(lines.length).toBeGreaterThan(0);
+  for (const l of lines) expect(l.ratio, String(l.text)).toBeLessThan(1.5);
+});

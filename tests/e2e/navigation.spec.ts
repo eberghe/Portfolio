@@ -217,3 +217,18 @@ for (const from of ['/about', '/services', '/en/about']) {
     await expect(page.getByRole('heading', { level: 1 })).toBeInViewport();
   });
 }
+
+test('AK-19/AK-20: Footer-Leistungen antippbar, aktuelle Seite markiert', async ({ page }, info) => {
+  await page.goto('/services/accessibility');
+  const nav = page.getByRole('navigation', { name: 'Leistungen' });
+  const heights = await nav.getByRole('link').evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height));
+  for (const h of heights) expect(h).toBeGreaterThanOrEqual(info.project.name === 'mobile-360' ? 44 : 24);
+  const current = nav.locator('a[aria-current="page"]');
+  await expect(current).toHaveCount(1);
+  const style = await current.evaluate((el) => {
+    const cs = getComputedStyle(el);
+    return { color: cs.color, line: cs.textDecorationLine };
+  });
+  expect(style.color).toBe('rgb(255, 255, 255)');
+  expect(style.line).toContain('underline');
+});

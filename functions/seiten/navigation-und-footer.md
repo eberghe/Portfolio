@@ -73,3 +73,8 @@ Offen, bewusst später:
 ## Nachtrag
 
 - Das Herz im Footer-Satz „made with 🤍 in augsburg" ist für Screenreader ausgeblendet und wird als „love" vorgelesen (der Satz ist als Englisch ausgezeichnet).
+
+## Leistungen im Footer (Issue #17, 2026-10-05)
+
+- AK-19: Der Footer listet unter „Leistungen“ (EN „Services“) alle acht Leistungsseiten als Links in der jeweiligen Sprache, neben „Webdesign nach Stadt“. Unter 768 px sind die Leistungs- und Stadtlinks mindestens 44 px hoch (Touch), darüber mindestens 24 px.
+- AK-20: Ein Footer-Link mit `aria-current="page"` ist auch sichtbar markiert: volle Weiß-Deckkraft und unterstrichen (Kritiker 2026-10-05). Gilt für alle Footer-Navigationen.

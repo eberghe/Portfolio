@@ -186,3 +186,16 @@ describe('Footer-Nachtrag', () => {
     expect(line).toHaveTextContent(/love/);
   });
 });
+
+describe('AK-19: Leistungen im Footer', () => {
+  it.each(['de', 'en'] as const)('%s', async (locale) => {
+    const { services } = await import('@/lib/content/services');
+    render(<Footer locale={locale} />);
+    const nav = screen.getByRole('navigation', { name: locale === 'de' ? 'Leistungen' : 'Services' });
+    const links = within(nav).getAllByRole('link');
+    expect(links.map((l) => l.getAttribute('href'))).toEqual(
+      services.map((s) => `${locale === 'de' ? '' : '/en'}/services/${s.slug}`),
+    );
+    expect(links.map((l) => l.textContent)).toEqual(services.map((s) => s[locale].title));
+  });
+});

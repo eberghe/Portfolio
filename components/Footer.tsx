@@ -4,6 +4,7 @@ import { ArrowUp, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { localPages } from '@/lib/content/local';
+import { services } from '@/lib/content/services';
 import { localizedPath, messages, type Locale } from '@/lib/i18n';
 import Instagram from './icons/Instagram';
 import Linkedin from './icons/Linkedin';
@@ -16,6 +17,10 @@ const NAV_ITEMS = [
   { path: '/contact', key: 'contact' },
   { path: '/faqs', key: 'faqs' },
 ] as const;
+
+// Leistungs- und Stadtlinks: mobil 44 px Tippfläche, aktuelle Seite sichtbar markiert (AK-19, AK-20)
+const groupLink =
+  'inline-flex items-center min-h-11 md:min-h-6 text-[13px] text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4';
 
 const EMAIL = 'erb1209@outlook.de';
 const INSTAGRAM = 'https://www.instagram.com/erik.bergheimer/';
@@ -67,7 +72,7 @@ export default function Footer({ locale }: { locale: Locale }) {
                   <Link
                     href={href(item.path)}
                     aria-current={current(item.path)}
-                    className="inline-block py-1 text-[13px] text-white/60 hover:text-white transition-colors"
+                    className="inline-block py-1 text-[13px] text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4"
                   >
                     {nav[item.key]}
                   </Link>
@@ -98,7 +103,7 @@ export default function Footer({ locale }: { locale: Locale }) {
                 <Link
                   href={href(item.path)}
                   aria-current={current(item.path)}
-                  className="inline-block py-1 text-base text-white/60 hover:text-white transition-colors"
+                  className="inline-block py-1 text-base text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4"
                 >
                   {nav[item.key]}
                 </Link>
@@ -107,24 +112,41 @@ export default function Footer({ locale }: { locale: Locale }) {
           </ul>
         </nav>
 
-        <nav aria-labelledby="footer-regionen">
-          <p id="footer-regionen" className="text-[12px] font-bold tracking-widest uppercase text-white/60 mb-3">
-            {t.regions}
-          </p>
-          <ul className="flex flex-wrap gap-x-6 gap-y-1">
-            {localPages.map((p) => (
-              <li key={p.path}>
-                <Link
-                  href={href(p.path)}
-                  aria-current={current(p.path)}
-                  className="inline-block py-1 text-[13px] text-white/60 hover:text-white transition-colors"
-                >
-                  {p[locale].footerLink}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {/* Leistungen und Städte nebeneinander (AK-19) */}
+        <div className="grid md:grid-cols-2 gap-10">
+          <nav aria-labelledby="footer-leistungen">
+            <p id="footer-leistungen" className="text-[12px] font-bold tracking-widest uppercase text-white/60 mb-3">
+              {t.services}
+            </p>
+            <ul className="flex flex-wrap gap-x-6 md:gap-y-1">
+              {services.map((s) => (
+                <li key={s.slug}>
+                  <Link
+                    href={href(`/services/${s.slug}`)}
+                    aria-current={current(`/services/${s.slug}`)}
+                    className={groupLink}
+                  >
+                    {s[locale].title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <nav aria-labelledby="footer-regionen">
+            <p id="footer-regionen" className="text-[12px] font-bold tracking-widest uppercase text-white/60 mb-3">
+              {t.regions}
+            </p>
+            <ul className="flex flex-wrap gap-x-6 md:gap-y-1">
+              {localPages.map((p) => (
+                <li key={p.path}>
+                  <Link href={href(p.path)} aria-current={current(p.path)} className={groupLink}>
+                    {p[locale].footerLink}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col gap-3">
           <div className="hidden md:flex items-center w-full">

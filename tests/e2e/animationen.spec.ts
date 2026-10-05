@@ -139,3 +139,40 @@ test('AK-9: weiches Scrollen aktiv, Skip-Link funktioniert', async ({ page }) =>
   await page.keyboard.press('Enter');
   await expect(page.locator('#inhalt')).toBeFocused();
 });
+
+test.describe('Alles blendet ein', () => {
+  test.use({ reducedMotion: 'no-preference' });
+
+  test('AK-10/AK-11: Absätze und Bausteine blenden ein, nicht verschachtelt', async ({ page }) => {
+    await page.goto('/about?animationstest');
+    await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+    await page.waitForTimeout(1800);
+    const below = page.locator('main p').filter({ hasNotText: /^$/ }).last();
+    const reveal = (await below.evaluate((el) => el.closest('[data-reveal]') !== null)) as boolean;
+    expect(reveal).toBe(true);
+    const host = below.locator('xpath=ancestor-or-self::*[@data-reveal][1]');
+    await expect.poll(() => host.evaluate((el) => getComputedStyle(el).opacity)).toBe('0');
+    await below.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await expect.poll(() => host.evaluate((el) => getComputedStyle(el).opacity)).toBe('1');
+
+    const intro = page.locator('main p').first();
+    await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+    await expect.poll(() => intro.evaluate((el) => getComputedStyle(el).opacity)).toBe('1');
+
+    for (const path of ['/about?animationstest', '/leistungen?animationstest', '/?animationstest']) {
+      await page.goto(path);
+      await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+      const missing = await page.$$eval('main :is(p, h2, h3, li, img)', (els) =>
+        els
+          .filter((el) => !el.closest('[aria-hidden="true"], [data-no-reveal], .hero-word, [data-journey] ol'))
+          .filter((el) => !el.closest('[data-reveal]'))
+          .map((el) => el.outerHTML.slice(0, 80)),
+      );
+      expect(missing, path).toEqual([]);
+    }
+    const nested = await page.$$eval('[data-reveal] [data-reveal]', (els) => els.length);
+    expect(nested).toBe(0);
+    const chrome = await page.$$eval('header [data-reveal], footer [data-reveal]', (els) => els.length);
+    expect(chrome).toBe(0);
+  });
+});

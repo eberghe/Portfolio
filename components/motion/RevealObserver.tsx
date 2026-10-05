@@ -4,6 +4,29 @@ import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 // Blendet [data-reveal]-Elemente beim Hinscrollen ein. Siehe functions/infrastruktur/animationen.md
+/** Inhaltsbausteine, die automatisch einblenden (AK-10) */
+const BLOCKS = 'h1, h2, h3, h4, p, li, img, figure, blockquote, dl, details, form, table, article, a, button';
+/** Bereiche ohne automatisches Einblenden (AK-11) */
+const SKIP = '[aria-hidden="true"], [data-no-reveal], [data-journey] ol, header, footer, nav, dialog';
+
+/** Markiert alle noch nicht animierten Bausteine im Hauptbereich, je Verschachtelung nur das äußerste */
+function tagBlocks() {
+  const main = document.getElementById('inhalt');
+  if (!main || !document.documentElement.classList.contains('smooth')) return;
+  const steps = new Map<Element, number>();
+  main.querySelectorAll<HTMLElement>(BLOCKS).forEach((el) => {
+    if (el.closest('[data-reveal]') || el.closest(SKIP)) return;
+    if (el.querySelector('[data-reveal], .hero-word')) return;
+    const parent = el.parentElement!;
+    const i = steps.get(parent) ?? 0;
+    steps.set(parent, i + 1);
+    if (!el.style.getPropertyValue('--reveal-i')) el.style.setProperty('--reveal-i', String(Math.min(i, 4)));
+    // Schon im Bild: sofort sichtbar, damit nach dem Laden nichts flackert
+    if (el.getBoundingClientRect().top < window.innerHeight) el.setAttribute('data-revealed', '');
+    el.setAttribute('data-reveal', '');
+  });
+}
+
 export default function RevealObserver() {
   const pathname = usePathname();
 
@@ -24,7 +47,10 @@ export default function RevealObserver() {
       },
       { rootMargin: '0px 0px -8% 0px' },
     );
-    const observe = () => pending().forEach((el) => observer.observe(el));
+    const observe = () => {
+      tagBlocks();
+      pending().forEach((el) => observer.observe(el));
+    };
     observe();
     // Nach Sprüngen (Anker, Suche, Ende-Taste) auch übersprungene Elemente oberhalb zeigen
     let frame = 0;

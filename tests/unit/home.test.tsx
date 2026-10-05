@@ -134,9 +134,7 @@ describe.each([
 
   it('AK-37: Faktenleiste steht im Abschnitt „Über mich“', () => {
     render(<Home locale={locale} />);
-    const about = screen
-      .getByRole('heading', { level: 2, name: homeContent[locale].aboutTitle })
-      .closest('section')!;
+    const about = screen.getByRole('heading', { level: 2, name: homeContent[locale].aboutTitle }).closest('section')!;
     expect(about.querySelector('dl')).not.toBeNull();
   });
 

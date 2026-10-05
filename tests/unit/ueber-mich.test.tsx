@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import About from '@/components/about/About';
 import { aboutContent, timeline, tools } from '@/lib/content/about';
@@ -175,7 +176,12 @@ describe.each(['de', 'en'] as const)('Umbau Über mich (%s)', (locale) => {
 
 describe('AK-27: echte Stationsfotos', () => {
   it('Bachelorabschluss, Werkstudent und Vollzeit bei TEAM23 haben Fotos mit Bildausschnitt', () => {
-    for (const title of ['Bachelorabschluss', 'Werkstudent bei TEAM23', 'UX/UI-Designer bei TEAM23 (Vollzeit)']) {
+    for (const title of [
+      'Bachelorabschluss',
+      'Werkstudent bei TEAM23',
+      'UX/UI-Designer bei TEAM23 (Vollzeit)',
+      'Business Development Manager bei HERO Software',
+    ]) {
       const entry = timeline.find((t) => t.de.title === title)!;
       expect(entry, title).toBeDefined();
       expect(entry.image?.position, title).toMatch(/%/);
@@ -188,5 +194,13 @@ describe('AK-27: echte Stationsfotos', () => {
     const entry = timeline.find((t) => t.de.title === 'Werkstudent bei TEAM23')!;
     const img = screen.getByRole('img', { name: entry.image!.alt.de });
     expect(img.style.objectPosition).toBe(entry.image!.position);
+  });
+});
+
+describe('AK-29: scharfe Stationsfotos', () => {
+  it.each(timeline.filter((t) => t.image).map((t) => [t.de.title, t.image!] as const))('%s', async (_title, image) => {
+    const meta = await sharp(`public${image.src}`).metadata();
+    expect([meta.width, meta.height]).toEqual([image.width, image.height]);
+    expect(Math.max(image.width, image.height)).toBeGreaterThanOrEqual(1600);
   });
 });

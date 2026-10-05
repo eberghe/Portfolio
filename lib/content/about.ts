@@ -34,8 +34,8 @@ const img = (
 
 const team23 = img(
   'team23',
-  533,
-  800,
+  1599,
+  2400,
   'Erik im weißen TEAM23-Crew-Shirt mit Schlüsselband',
   'Erik in a white TEAM23 crew shirt with a lanyard',
 );
@@ -122,8 +122,8 @@ export const timeline: TimelineItem[] = [
     date: '2018-10',
     image: img(
       'nz',
-      800,
-      800,
+      2400,
+      2400,
       'Erik sitzt auf einem Felsen an einem Gletschersee vor schneebedeckten Bergen in Neuseeland',
       'Erik sitting on a rock by a glacier lake in front of snow-capped mountains in New Zealand',
     ),
@@ -140,8 +140,8 @@ export const timeline: TimelineItem[] = [
     date: '2018-12',
     image: img(
       'kiwi',
-      600,
-      800,
+      1800,
+      2400,
       'Reihen einer Kiwi-Plantage mit Rankgerüsten',
       'Rows of a kiwi orchard with trellises',
     ),
@@ -180,8 +180,8 @@ export const timeline: TimelineItem[] = [
     date: '2019-10',
     image: img(
       'ingolstadt',
-      600,
-      800,
+      1800,
+      2400,
       'Das Neue Schloss in Ingolstadt im Abendlicht',
       'The New Castle in Ingolstadt in the evening light',
     ),
@@ -210,8 +210,8 @@ export const timeline: TimelineItem[] = [
     date: '2022-02',
     image: img(
       'team23-workshop',
-      724,
-      1086,
+      1600,
+      2400,
       'Erik lächelnd auf einer Bank bei einem Workshop im Freien, hinter ihm Plakate zu Kommunikation und Empathie',
       'Erik smiling on a bench at an outdoor workshop, with posters on communication and empathy behind him',
       '55% 30%',
@@ -248,8 +248,8 @@ export const timeline: TimelineItem[] = [
     date: '2023-09',
     image: img(
       'team23-festival',
-      737,
-      1066,
+      1659,
+      2400,
       'Erik im weißen TEAM23-Crew-Shirt mit Rucksack und Badge, er zeigt lachend ein Peace-Zeichen',
       'Erik in a white TEAM23 crew shirt with a backpack and badge, smiling and making a peace sign',
       '50% 28%',
@@ -267,8 +267,8 @@ export const timeline: TimelineItem[] = [
     date: '2024-02',
     image: img(
       'bali',
-      600,
-      800,
+      1800,
+      2400,
       'Arbeitsplatz im Zimmer auf Bali: Schreibtisch mit Laptop, Spiegel und Fernseher',
       'Workspace in a room in Bali: desk with laptop, mirror and TV',
     ),
@@ -285,8 +285,8 @@ export const timeline: TimelineItem[] = [
     date: '2024-10',
     image: img(
       'innsbruck',
-      600,
-      800,
+      1800,
+      2400,
       'Erik mit Rucksack auf einem Gipfel, Blick über das Inntal bei Innsbruck',
       'Erik with a backpack on a summit, looking over the Inn valley near Innsbruck',
     ),
@@ -303,8 +303,8 @@ export const timeline: TimelineItem[] = [
     date: '2025-09',
     image: img(
       'hero-software',
-      800,
-      800,
+      2400,
+      2400,
       'Porträt von Erik im schwarzen HERO-Shirt vor weißem Hintergrund',
       'Portrait of Erik in a black HERO shirt against a white background',
     ),
@@ -330,13 +330,21 @@ export const timeline: TimelineItem[] = [
   },
   {
     date: '2026-09',
+    image: img(
+      'herocon',
+      1800,
+      2400,
+      'Die Bühne der Herocon im Signal Iduna Park in Dortmund, auf der Leinwand „Herocon 2027“',
+      'The Herocon stage at Signal Iduna Park in Dortmund, with "Herocon 2027" on the screen',
+      '50% 55%',
+    ),
     de: {
       title: 'Business Development Manager bei HERO Software',
-      text: 'Nach dem Master blieb ich bei HERO Software und wechselte im September 2026 vom Werkstudenten zum Business Development Manager.',
+      text: 'Nach dem Master blieb ich bei HERO Software und wechselte im September 2026 vom Werkstudenten zum Business Development Manager für die Herocon, die Konferenz von HERO Software.',
     },
     en: {
       title: 'Business Development Manager at HERO Software',
-      text: "After my Master's I stayed at HERO Software and moved from working student to Business Development Manager in September 2026.",
+      text: "After my Master's I stayed at HERO Software and moved from working student to Business Development Manager for Herocon, the conference started by HERO Software, in September 2026.",
     },
   },
 ];

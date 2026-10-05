@@ -238,6 +238,7 @@ export default function Journey({
                       alt={item.image.alt[locale]}
                       fill
                       sizes="100vw"
+                      quality={85}
                       className="object-cover"
                       style={{ ...zoom, objectPosition: item.image.position }}
                     />

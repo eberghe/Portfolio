@@ -9,6 +9,8 @@ const mergedServices = [
 const nextConfig: NextConfig = {
   // Eine 404-Seite für Adressen außerhalb beider Sprach-Layouts (functions/seiten/nicht-gefunden.md)
   experimental: { globalNotFound: true },
+  // Stationsfotos der Zeitleiste in höherer Qualität (functions/seiten/ueber-mich.md AK-29)
+  images: { qualities: [75, 85] },
   async redirects() {
     return [
       ...['', '/en'].flatMap((prefix) =>

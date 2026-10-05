@@ -174,8 +174,8 @@ describe.each(['de', 'en'] as const)('Umbau Über mich (%s)', (locale) => {
 });
 
 describe('AK-27: echte Stationsfotos', () => {
-  it('Bachelorabschluss und Werkstudent bei TEAM23 haben Fotos mit Bildausschnitt', () => {
-    for (const title of ['Bachelorabschluss', 'Werkstudent bei TEAM23']) {
+  it('Bachelorabschluss, Werkstudent und Vollzeit bei TEAM23 haben Fotos mit Bildausschnitt', () => {
+    for (const title of ['Bachelorabschluss', 'Werkstudent bei TEAM23', 'UX/UI-Designer bei TEAM23 (Vollzeit)']) {
       const entry = timeline.find((t) => t.de.title === title)!;
       expect(entry, title).toBeDefined();
       expect(entry.image?.position, title).toMatch(/%/);

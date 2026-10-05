@@ -246,6 +246,14 @@ export const timeline: TimelineItem[] = [
   },
   {
     date: '2023-09',
+    image: img(
+      'team23-festival',
+      737,
+      1066,
+      'Erik im weißen TEAM23-Crew-Shirt mit Rucksack und Badge, er zeigt lachend ein Peace-Zeichen',
+      'Erik in a white TEAM23 crew shirt with a backpack and badge, smiling and making a peace sign',
+      '50% 28%',
+    ),
     de: {
       title: 'UX/UI-Designer bei TEAM23 (Vollzeit)',
       text: 'Im September 2023 startete ich als UX/UI-Designer in Vollzeit bei TEAM23!',

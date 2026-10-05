@@ -25,7 +25,7 @@ export function llmsTxt() {
     '',
     link('Home', '/', 'Introduction, services and featured projects.'),
     link('Services', '/services', 'Overview of all services.'),
-    link('Projects', '/projects', 'Selected UX/UI, Webflow and photography case studies.'),
+    link('Projects', '/projects', 'Selected UX/UI and Webflow case studies, plus photo series.'),
     link(
       'Contact',
       '/contact',

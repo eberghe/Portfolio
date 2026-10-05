@@ -50,7 +50,7 @@ export const homeContent = {
     projects: 'Ausgewählte Projekte',
     viewAll: 'Alle Projekte ansehen',
     offerIntro:
-      'Acht Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Webflow-Website.',
+      'Sieben Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Webflow-Website.',
     learnMore: 'Mehr erfahren',
     readCase: 'Fallstudie lesen',
     tags: 'Schlagworte',
@@ -113,7 +113,7 @@ export const homeContent = {
     projects: 'Selected projects',
     viewAll: 'View all projects',
     offerIntro:
-      'Eight services, one point of contact: from first user research and design to an accessible Webflow website.',
+      'Seven services, one point of contact: from first user research and design to an accessible Webflow website.',
     learnMore: 'Learn more',
     readCase: 'Read case study',
     tags: 'Tags',

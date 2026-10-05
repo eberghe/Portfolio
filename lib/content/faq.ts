@@ -11,11 +11,11 @@ export const faqs: Faq[] = [
     id: 'leistungen',
     de: {
       q: 'Welche Leistungen bietest du an?',
-      a: 'UX/UI-Design, Webflow-Entwicklung, Barrierefreiheit-Beratung (WCAG, BFSG und European Accessibility Act), KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design, Design Systems und Fotografie. Alle Details findest du unter Leistungen.',
+      a: 'UX/UI-Design, Webflow-Entwicklung, Barrierefreiheit-Beratung (WCAG, BFSG und European Accessibility Act), KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design und Design Systems. Alle Details findest du unter Leistungen.',
     },
     en: {
       q: 'What services do you offer?',
-      a: 'UX/UI design, Webflow development, accessibility consulting (WCAG, the German BFSG and the European Accessibility Act), AI consulting, website & process optimisation, brand & logo design, design systems and photography. You will find all details under Services.',
+      a: 'UX/UI design, Webflow development, accessibility consulting (WCAG, the German BFSG and the European Accessibility Act), AI consulting, website & process optimisation, brand & logo design and design systems. You will find all details under Services.',
     },
   },
   {

@@ -18,8 +18,8 @@ describe('AK-10: Inhalte vollständig', () => {
       expect(v.trim()).not.toBe('');
   });
 
-  it('bestehende Projekte in der Reihenfolge des Bestands', () => {
-    expect(projects.map((p) => p.slug)).toEqual(['prematch', 'cpr', 'sightkick', 'indonesia', 'webflow', 'morocco']);
+  it('AK-30: Projekte nach Datum, neuestes zuerst', () => {
+    expect(projects.map((p) => p.slug)).toEqual(['prematch', 'sightkick', 'indonesia', 'webflow', 'morocco', 'cpr']);
   });
 });
 
@@ -208,8 +208,8 @@ describe('AK-17: passende Leistung', () => {
     );
   });
 
-  it('jede Leistung existiert', () => {
-    for (const p of projects)
+  it('jede Leistung existiert (Fotoserien haben keine mehr, leistungen.md AK-28)', () => {
+    for (const p of projects.filter((p) => p.service !== 'photography'))
       expect(
         services.some((s) => s.slug === p.service),
         p.slug,
@@ -308,14 +308,14 @@ describe('PreMatch (Masterarbeit)', () => {
       expect(within(friction).getByRole('img', { name: img.alt.de })).toBeInTheDocument();
   });
 
-  it('AK-29: Diagramme direkt unter dem Abschnitt, einspaltig', () => {
+  it('AK-29: Diagramme direkt unter dem Abschnitt, zu zweit nebeneinander', () => {
     expect(p.inlineImages.benchmarking).toHaveLength(1);
     expect(p.inlineImages.study).toHaveLength(4);
     render(<ProjectDetail project={p} locale="de" />);
     const study = screen.getByRole('region', { name: 'Phase III: Nutzerstudie' });
     for (const img of p.inlineImages.study!)
       expect(within(study).getByRole('img', { name: img.alt.de })).toBeInTheDocument();
-    expect(within(study).getAllByRole('list')[0]).toHaveClass('grid-cols-1');
+    expect(within(study).getAllByRole('list')[0]).toHaveClass('sm:grid-cols-2');
     for (const img of p.inlineImages.study!) expect(img.alt.de).toMatch(/\d/);
   });
 
@@ -336,4 +336,12 @@ describe('PreMatch (Masterarbeit)', () => {
       if (src.includes('screen')) expect(meta.hasAlpha).toBe(true);
     },
   );
+});
+
+describe('Leistungen AK-28: Fotoserien ohne passende Leistung', () => {
+  it('kein Link auf eine Fotografie-Leistung', () => {
+    render(<ProjectDetail project={find('morocco')} locale="de" />);
+    expect(screen.queryByText(/Passende Leistung/)).toBeNull();
+    expect(document.querySelector('a[href*="/services/photography"]')).toBeNull();
+  });
 });

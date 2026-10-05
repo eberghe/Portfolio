@@ -96,7 +96,7 @@ export default function ImageGallery({
           variant === 'grid'
             ? 'grid grid-cols-2 sm:grid-cols-3 gap-3'
             : variant === 'wide'
-              ? 'grid grid-cols-1 gap-4 mt-5'
+              ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 items-start'
               : 'grid grid-cols-2 gap-3 mt-5'
         }
       >
@@ -119,7 +119,11 @@ export default function ImageGallery({
                 width={img.width}
                 height={img.height}
                 alt={img.alt}
-                sizes={variant === 'wide' ? '(min-width: 1100px) 720px, 100vw' : '(min-width: 640px) 33vw, 50vw'}
+                sizes={
+                  variant === 'wide'
+                    ? '(min-width: 1100px) 360px, (min-width: 640px) 50vw, 100vw'
+                    : '(min-width: 640px) 33vw, 50vw'
+                }
                 className={`w-full motion-safe:group-hover:scale-105 motion-safe:transition-transform motion-safe:duration-300 ${
                   variant === 'grid' ? 'h-full object-cover' : 'h-auto'
                 }`}

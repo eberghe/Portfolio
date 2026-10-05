@@ -49,7 +49,7 @@ export interface Project extends Record<Locale, ProjectText> {
   tools: string;
   team?: string;
   thumbnail: { src: string; width: number; height: number; alt: Record<Locale, string> };
-  /** Slug der passenden Leistung (AK-17) */
+  /** Slug der passenden Leistung (AK-17); 'photography' steht nur noch für den Filter, Fotografie ist keine Leistung mehr */
   service: string;
   gallery: ProjectImage[];
   /** Bilder unter einem Unterabschnitt oder (einspaltig, AK-29) direkt unter einem Abschnitt, Schlüssel = id */
@@ -305,288 +305,6 @@ export const projects: Project[] = [
           title: 'Limits and outlook',
           content:
             'With ten participants, the results are indications, not proof. There was no comparison version without friction, and the study only captures first use. Whether holding to save keeps its effect over a whole season remains open. Club crests would need licences for a public release.\n\nThe biggest practical question: will a whole friend group move to a new app along with its league history? Next steps could be a field study across a full season and friction that adapts to how someone tips. The pattern of holding and a short reason also transfers to other areas where impulsive behaviour has real costs.',
-        },
-      ],
-    },
-  },
-  {
-    slug: 'cpr',
-    year: '2020–2021',
-    timeline: '10/2020 – 01/2021',
-    tools: 'Photoshop, Illustrator, AfterEffects, PremierePro, XD',
-    team: 'Dominik Dumberger, Martin Ferstl',
-    thumbnail: {
-      src: '/images/project-cpr.jpg',
-      width: 1920,
-      height: 977,
-      alt: {
-        de: 'Smartphones mit Screens der CPR-Trainings-App: Login, Training und Statistik',
-        en: 'Smartphones showing screens of the CPR training app: login, training and statistics',
-      },
-    },
-    service: 'ux-ui-design',
-    gallery: [],
-    inlineImages: {
-      personae: [
-        {
-          src: '/images/projects/cpr-amy.jpg',
-          width: 1222,
-          height: 816,
-          alt: {
-            de: 'Persona Amy Average: 13-jährige Schülerin, kontaktfreudig, wenig motiviert',
-            en: 'Persona Amy Average: 13-year-old pupil, outgoing, not very motivated',
-          },
-        },
-        {
-          src: '/images/projects/cpr-arthur.jpg',
-          width: 1278,
-          height: 856,
-          alt: {
-            de: 'Persona Arthur Ambitious: junger, technikbegeisterter Lehrer mit wenig CPR-Erfahrung',
-            en: 'Persona Arthur Ambitious: young, tech-savvy teacher with little CPR experience',
-          },
-        },
-        {
-          src: '/images/projects/cpr-cooper.jpg',
-          width: 1280,
-          height: 858,
-          alt: {
-            de: 'Persona Cooper Curious: sehr motivierter, introvertierter Schüler',
-            en: 'Persona Cooper Curious: highly motivated, introverted pupil',
-          },
-        },
-        {
-          src: '/images/projects/cpr-holly.jpg',
-          width: 1278,
-          height: 856,
-          alt: {
-            de: 'Persona Holly Helpful: Ärztin mit viel CPR-Erfahrung, wenig technikaffin',
-            en: 'Persona Holly Helpful: doctor with strong CPR skills, not very tech-savvy',
-          },
-        },
-      ],
-    },
-    de: {
-      title: 'CPR Training AR App',
-      tagline: 'Mit Augmented Reality Kinder zu Lebensrettern ausbilden',
-      body: 'CPR steht für Cardiopulmonary Resuscitation (kardiopulmonale Reanimation), eine lebensrettende Notfallmaßnahme. Wir wollten Kindern beibringen, diese Technik zu erlernen und zu potentiellen Lebensrettern zu werden.',
-      type: 'UX/UI · App-Design',
-      role: 'UX-Designer, Interface-Designer',
-      metaTitle: 'CPR Training AR App: Erste Hilfe für Kinder mit AR | Erik Bergheimer',
-      metaDescription:
-        'UX/UI-Uniprojekt: eine AR-App, mit der Kinder Wiederbelebung lernen. Meine Rolle: Konzept, Wireframes und UI für die Lehrer-App und die AR-Oberfläche.',
-      sections: [
-        {
-          id: 'overview',
-          title: 'Übersicht',
-          content: '',
-          subsections: [
-            {
-              id: 'problem',
-              title: 'Problem',
-              content:
-                'Zahllose Beispiele belegen, dass Kinder durch CPR Leben retten können. 2009 berichtete ABC News, dass Kinder ab 9 Jahren die Grundlagen der CPR erlernen können. Das bedeutet, dass junge Kinder CPR erlernen und durchführen können, aber aufgrund fehlender Lehrmethoden mussten wir eine digitale Lösung entwickeln.',
-            },
-            {
-              id: 'solution',
-              title: 'Lösung',
-              content:
-                'Wir haben uns entschieden, zwei verschiedene Apps zu designen: eine Oberfläche für den CPR-Lehrer, der ein Smartphone nutzt, und eine Oberfläche für die Kinder. In unserem Fall kamen wir auf die Idee, AR-Brillen für die Kinder zu verwenden. Die Oberfläche für die Kinder sollte also eine AR-Oberfläche sein.',
-            },
-            {
-              id: 'process',
-              title: 'Unser Prozess',
-              content:
-                'Vorbereitungsphase: Brainstorming, Personae, Paperprototyping, Moodboard\nDesignphase: Wireframes, Digitale Prototypen\nFinalisierung: Storyboard, Film, Fazit',
-            },
-          ],
-        },
-        {
-          id: 'preparing',
-          title: 'Vorbereitungsphase',
-          content: '',
-          subsections: [
-            {
-              id: 'brainstorming',
-              title: 'Brainstorming',
-              content:
-                'Der allererste Schritt, als wir uns im Oktober 2020 trafen, war ein Brainstorming über das Thema und intensive Recherche zur CPR. Zu Beginn hatten wir viele Ideen, z.B. mehrere iPads für die Kinder, aber dann kam die Idee einer AR-Erfahrung auf. Mit solchen AR-Brillen wäre es möglich, das Training für die CPR-Technik durchzuführen, während die AR-Oberfläche dem Kind nützliche Informationen über sein Training geben könnte. Es war uns sehr wichtig, nur die wichtigsten Informationen auf dieser Oberfläche anzuzeigen. Für die Lehrer-Oberfläche mussten wir recherchieren, wie viele Drücke man in einem Zyklus machen sollte (30 Drücke), wie oft man eine Mund-zu-Mund-Beatmung durchführen sollte (2 Mal) und weitere Fakten zur CPR-Technik.',
-            },
-            {
-              id: 'personae',
-              title: 'Personae',
-              content:
-                'Der nächste Schritt war die Definition unserer Zielgruppe durch die Erstellung von Personae. Eine Persona symbolisiert einen Prototyp für eine Gruppe von Nutzern und hat persönliche Gewohnheiten, Eigenschaften und Nutzungsverhalten.\n\nAuf der einen Seite gibt es Amy Average, ein typisches 13-jähriges Mädchen, extrovertiert, liebt die Schule wegen ihrer Freunde, aber nicht besonders motiviert. Sie repräsentiert eine unmotivierte Zielgruppe der Kinder. Dann gibt es Cooper Curious, einen supermotivierten Jungen, der lernen und besser werden möchte, aber introvertiert ist.\n\nAuf der anderen Seite gibt es Holly Helpful, eine Ärztin mittleren Alters, sehr gut in CPR-Techniken, aber nicht besonders technikaffin. Und Arthur Ambitious, einen sehr jungen Lehrer, der ein Tech-Nerd ist, aber nicht so gut in CPR-Techniken.',
-            },
-            {
-              id: 'paperprototyping',
-              title: 'Paperprototyping',
-              content:
-                'Der nächste Schritt in unserem UX-Prozess war die Erstellung erster Interface-Ideen und ein Gefühl dafür zu bekommen, wie Konzept und Layout unserer App aussehen könnten. Das Zeichnen dieser rohen Skizzen auf Papier ist eine sehr effektive und schnelle Methode, um Ideen zu entwickeln, bevor man zu früh in einem Prototyping-Tool mit dem Design beginnt.\n\nWir begannen mit dem Skizzieren und der Entwicklung einiger Ideen. Im ersten Bild sehen Sie unsere ersten Ideen, also rohe Skizzen und einige Layout-Ideen. Das zweite Bild zeigt unsere finalen Paperprototypes für die AR-App und das dritte unsere finale Idee für die Lehrer-App.',
-            },
-            {
-              id: 'moodboard',
-              title: 'Moodboard',
-              content:
-                'Der letzte Schritt in der Vorbereitungsphase war die Erstellung eines Moodboards. Ein Moodboard ist ein sehr wichtiges Werkzeug in Designprozessen. Es hilft, einen Eindruck davon zu bekommen, wie das finale Projekt aussehen wird.\n\nIn unserem Fall mussten wir drei verschiedene Moodboards erstellen: eines nur mit Adjektiven, eines mit allgemeinen Bildern wie Natur, Architektur etc. und eines nur mit User Interfaces. Mit Tools wie Dribbble und designinspiration.com fanden wir einige großartige Beispielbilder.',
-            },
-          ],
-        },
-        {
-          id: 'designing',
-          title: 'Designphase',
-          content: '',
-          subsections: [
-            {
-              id: 'wireframes',
-              title: 'Wireframes',
-              content:
-                'Der erste Schritt in der Designphase war die Erstellung von Wireframes! Wireframes sind ebenfalls Skizzen, aber viel präziser als rohe Paperprototypes. Nach dem Erstellen unserer Paperprototypes erhielten wir Feedback und änderten einige Details.\n\nEin wichtiger Teil war das Nachdenken über Interaktionen zwischen den verschiedenen Skizzen: "Welcher Button muss gedrückt werden, um zu diesem Screen zu kommen?". Wir verbanden die Screens miteinander und verwendeten orangefarbene Sticker für Links zu anderen Screens und grüne Sticker für Animationen auf demselben Screen.',
-            },
-            {
-              id: 'digital-prototypes',
-              title: 'Digitale Prototypen',
-              content:
-                'Nachdem Inhalt und Interaktionen zwischen den Screens fertig waren, konnten wir digital werden! Digitale Prototypen sind eine sehr wichtige Form des Prototypings und realistisch genug, um die meisten Interface-Elemente zu testen.\n\nUnter all den verschiedenen Prototyping-Tools wie Figma, Framer oder InVision wählten wir Adobe XD, weil die Zusammenarbeit mit Adobe Illustrator und Adobe Photoshop viel besser ist als mit anderen Tools.',
-            },
-          ],
-        },
-        {
-          id: 'finalization',
-          title: 'Finalisierung',
-          content: '',
-          subsections: [
-            {
-              id: 'storyboard',
-              title: 'Storyboard',
-              content:
-                'Nachdem unsere digitalen und klickbaren Prototypen fertig waren, konnten wir mit den letzten Schritten weitermachen. Um die verschiedenen Anwendungsfälle unserer App zu erklären, mussten wir einen Film erstellen. Es ist immer sinnvoll, die Geschichte zu planen, bevor man filmt, also begannen wir mit einem Storyboard.\n\nEin Storyboard bietet einen schematischen Überblick über die Grundstruktur des Projekts. Die wichtigsten Fragen: Wann und wo spielt die Geschichte? In welcher Reihenfolge passieren die Ereignisse? Welche Screens wollen wir zeigen?',
-            },
-            {
-              id: 'movie',
-              title: 'Finaler Film',
-              content:
-                'Der allerletzte Schritt war das Filmen und Schneiden des finalen Films über unser Projekt. Der Film dauert nur zwei Minuten, also mussten wir sicherstellen, dass die Informationen schnell präsentiert werden. Wir erstellten unseren Film in Adobe Premiere Pro und die Animationen in Adobe After Effects.\n\nBesonderer Dank an Jonas Fischer fürs Schauspielern, an Anja Happernagl fürs Ausleihen der Puppe und an die Evangelische Gemeinschaft Königsbrunn für die Räumlichkeiten!',
-            },
-            {
-              id: 'conclusion',
-              title: 'Fazit',
-              content:
-                'Wir haben während dieses Projekts viel gelernt! Wir begannen mit Brainstorming und danach waren wir wirklich begeistert. Das Zeichnen von Skizzen war ein wichtiger Teil des UX-Prozesses, bei dem wir anfangs etwas kämpften.\n\nAufgrund der Covid-19-Pandemie war dieses Projekt besonders. Zunächst begannen wir mit Präsenzunterricht, aber sobald der Shutdown Realität war, wechselten wir zu Online-Vorlesungen. Trotzdem war das Ergebnis sehr gut und interessant!',
-            },
-          ],
-        },
-      ],
-    },
-    en: {
-      title: 'CPR Training AR App',
-      tagline: 'Teaching kids lifesaving skills through Augmented Reality',
-      body: 'CPR stands for Cardiopulmonary Resuscitation, a life-saving emergency procedure. We wanted to help kids learn this technique to become potential lifesavers.',
-      type: 'UX/UI · App design',
-      role: 'UX designer, interface designer',
-      metaTitle: 'CPR Training AR App: teaching kids CPR with AR | Erik Bergheimer',
-      metaDescription:
-        "University UX/UI project: an AR app that teaches children CPR. My role: concept, wireframes and UI for the teacher app and the kids' AR interface.",
-      sections: [
-        {
-          id: 'overview',
-          title: 'Overview',
-          content: '',
-          subsections: [
-            {
-              id: 'problem',
-              title: 'Problem',
-              content:
-                'Countless examples demonstrate that children can save lives by performing CPR. In 2009, ABC News reported that children as young as 9 years old can learn the basics of CPR. That means that young kids can learn and perform CPR but due to the lack of ways to teach them this technique, we had to come up with a digital solution.',
-            },
-            {
-              id: 'solution',
-              title: 'Solution',
-              content:
-                "We decided to design two different apps, one interface for the CPR teacher, who's gonna use a smartphone and one interface for the kids. In our case we came up with the idea of using AR goggles for the kids, so the interface for the kids should be an AR interface.",
-            },
-            {
-              id: 'process',
-              title: 'Our Process',
-              content:
-                'Preparing Phase: Brainstorming, Personae, Paperprototyping, Moodboard\nDesigning Phase: Wireframes, Digital prototypes\nFinalizations: Storyboard, Movie, Conclusion',
-            },
-          ],
-        },
-        {
-          id: 'preparing',
-          title: 'Preparing Phase',
-          content: '',
-          subsections: [
-            {
-              id: 'brainstorming',
-              title: 'Brainstorming',
-              content:
-                'The very first step, when we first met in October 2020 was to brainstorm about this topic and doing a lot of research on CPR. At the very beginning we came up with a lot of ideas e.g. using multiple iPads for the kids but then the idea of an AR experience for the kids came up. With these type of AR goggles on, it would be possible to perform the training for the CPR technique, while the AR interface could give the kid useful informations about his or her training. It was very important for us, that we only display the most important informations on this interface.',
-            },
-            {
-              id: 'personae',
-              title: 'Personae',
-              content:
-                "The next step in our project was to define our target group with creating Personae. A persona symbolizes a prototype for a group of users and has personal habits, characteristics and usage behaviours.\n\nOn the one hand there's Amy Average, a typical 13-year-old girl, very extrovert, loves school because she can talk to her friends. She represents an unmotivated target group. Then there's Cooper Curious, a super motivated boy who wants to learn and help people, but introverted.\n\nOn the other hand there's Holly Helpful, a middle-aged medic, very good at CPR but not tech-savvy. And Arthur Ambitious, a very young teacher, a tech nerd but not great at CPR techniques.",
-            },
-            {
-              id: 'paperprototyping',
-              title: 'Paperprototyping',
-              content:
-                "The next step in our UX process was to create first ideas of an interface. Drawing raw sketches on paper is a very effective and fast method to create ideas before starting to design too early in a prototyping tool.\n\nWe started sketching and creating some ideas of how our app could look like. The first picture shows our first raw ideas and layout concepts. The second picture shows our final paper prototypes for the AR app and the third our final idea for the teacher's app.",
-            },
-            {
-              id: 'moodboard',
-              title: 'Moodboard',
-              content:
-                'The last step in the preparing phase was to create a moodboard. A moodboard is a very important tool in design processes. It helps to get a hint of how the final project will look like.\n\nIn our case, we had to design three different moodboards: one with only adjectives, one with general images like nature, architecture etc. and one with user interfaces only. With awesome tools like Dribbble and designinspiration.com we found some great example pictures.',
-            },
-          ],
-        },
-        {
-          id: 'designing',
-          title: 'Designing Phase',
-          content: '',
-          subsections: [
-            {
-              id: 'wireframes',
-              title: 'Wireframes',
-              content:
-                'The first step in the designing phase is creating wireframes! Wireframes are sketches that are a lot more precise and exact than raw paper prototypes. After creating our paper prototypes, we got feedback and changed some details.\n\nAn important part was thinking about interactions between the different screens: "Which button has to be pressed to get to this screen?". We connected the screens and used orange stickers for links to other screens and green stickers for animations on the same screen.',
-            },
-            {
-              id: 'digital-prototypes',
-              title: 'Digital Prototypes',
-              content:
-                'Now that the content and the interactions between the screens were done, we could proceed with going digital! Digital prototypes are realistic enough to test most of the interface elements.\n\nUnder all the different prototyping tools like Figma, Framer or InVision we picked Adobe XD, because the collaboration with Adobe Illustrator and Adobe Photoshop is a lot better than with other common tools.',
-            },
-          ],
-        },
-        {
-          id: 'finalization',
-          title: 'Finalizations',
-          content: '',
-          subsections: [
-            {
-              id: 'storyboard',
-              title: 'Storyboard',
-              content:
-                "Now that our digital and clickable prototypes were done, we could proceed with the last steps. To explain the different use cases of our app, we had to create a movie. It's always useful to plan your story before you film it, so we started creating a storyboard.\n\nA storyboard provides a schematic overview of the basic structure of the project. The most important questions: When and where does the story take place? In which order do events happen? What are the screens we want to show?",
-            },
-            {
-              id: 'movie',
-              title: 'Final Movie',
-              content:
-                'The very last step was to film and cut the final movie about our project. The duration was only two minutes so we had to make sure the information was presented quickly. We created our movie in Adobe Premiere Pro and the animations in Adobe After Effects.\n\nSpecial thanks to Jonas Fischer for acting, to Anja Happernagl for lending us the mannequin and to the Evangelische Gemeinschaft Königsbrunn for the rooms!',
-            },
-            {
-              id: 'conclusion',
-              title: 'Conclusion',
-              content:
-                'We think we learned a lot during this project! We started with brainstorming and were really excited. Drawing sketches, a very important part of UX processes, was something we struggled with at first.\n\nDue to the Covid-19 pandemic, this project was very special. At first we started with presence classes, but as soon as the shutdown was reality, we moved to online lessons. Despite this, the outcome was very good and interesting!',
-            },
-          ],
         },
       ],
     },
@@ -1175,6 +893,288 @@ export const projects: Project[] = [
       metaTitle: 'Morocco: documentary photography | Erik Bergheimer',
       metaDescription: 'Atlas mountains, desert and everyday life: a documentary photo series from Morocco.',
       sections: [],
+    },
+  },
+  {
+    slug: 'cpr',
+    year: '2020–2021',
+    timeline: '10/2020 – 01/2021',
+    tools: 'Photoshop, Illustrator, AfterEffects, PremierePro, XD',
+    team: 'Dominik Dumberger, Martin Ferstl',
+    thumbnail: {
+      src: '/images/project-cpr.jpg',
+      width: 1920,
+      height: 977,
+      alt: {
+        de: 'Smartphones mit Screens der CPR-Trainings-App: Login, Training und Statistik',
+        en: 'Smartphones showing screens of the CPR training app: login, training and statistics',
+      },
+    },
+    service: 'ux-ui-design',
+    gallery: [],
+    inlineImages: {
+      personae: [
+        {
+          src: '/images/projects/cpr-amy.jpg',
+          width: 1222,
+          height: 816,
+          alt: {
+            de: 'Persona Amy Average: 13-jährige Schülerin, kontaktfreudig, wenig motiviert',
+            en: 'Persona Amy Average: 13-year-old pupil, outgoing, not very motivated',
+          },
+        },
+        {
+          src: '/images/projects/cpr-arthur.jpg',
+          width: 1278,
+          height: 856,
+          alt: {
+            de: 'Persona Arthur Ambitious: junger, technikbegeisterter Lehrer mit wenig CPR-Erfahrung',
+            en: 'Persona Arthur Ambitious: young, tech-savvy teacher with little CPR experience',
+          },
+        },
+        {
+          src: '/images/projects/cpr-cooper.jpg',
+          width: 1280,
+          height: 858,
+          alt: {
+            de: 'Persona Cooper Curious: sehr motivierter, introvertierter Schüler',
+            en: 'Persona Cooper Curious: highly motivated, introverted pupil',
+          },
+        },
+        {
+          src: '/images/projects/cpr-holly.jpg',
+          width: 1278,
+          height: 856,
+          alt: {
+            de: 'Persona Holly Helpful: Ärztin mit viel CPR-Erfahrung, wenig technikaffin',
+            en: 'Persona Holly Helpful: doctor with strong CPR skills, not very tech-savvy',
+          },
+        },
+      ],
+    },
+    de: {
+      title: 'CPR Training AR App',
+      tagline: 'Mit Augmented Reality Kinder zu Lebensrettern ausbilden',
+      body: 'CPR steht für Cardiopulmonary Resuscitation (kardiopulmonale Reanimation), eine lebensrettende Notfallmaßnahme. Wir wollten Kindern beibringen, diese Technik zu erlernen und zu potentiellen Lebensrettern zu werden.',
+      type: 'UX/UI · App-Design',
+      role: 'UX-Designer, Interface-Designer',
+      metaTitle: 'CPR Training AR App: Erste Hilfe für Kinder mit AR | Erik Bergheimer',
+      metaDescription:
+        'UX/UI-Uniprojekt: eine AR-App, mit der Kinder Wiederbelebung lernen. Meine Rolle: Konzept, Wireframes und UI für die Lehrer-App und die AR-Oberfläche.',
+      sections: [
+        {
+          id: 'overview',
+          title: 'Übersicht',
+          content: '',
+          subsections: [
+            {
+              id: 'problem',
+              title: 'Problem',
+              content:
+                'Zahllose Beispiele belegen, dass Kinder durch CPR Leben retten können. 2009 berichtete ABC News, dass Kinder ab 9 Jahren die Grundlagen der CPR erlernen können. Das bedeutet, dass junge Kinder CPR erlernen und durchführen können, aber aufgrund fehlender Lehrmethoden mussten wir eine digitale Lösung entwickeln.',
+            },
+            {
+              id: 'solution',
+              title: 'Lösung',
+              content:
+                'Wir haben uns entschieden, zwei verschiedene Apps zu designen: eine Oberfläche für den CPR-Lehrer, der ein Smartphone nutzt, und eine Oberfläche für die Kinder. In unserem Fall kamen wir auf die Idee, AR-Brillen für die Kinder zu verwenden. Die Oberfläche für die Kinder sollte also eine AR-Oberfläche sein.',
+            },
+            {
+              id: 'process',
+              title: 'Unser Prozess',
+              content:
+                'Vorbereitungsphase: Brainstorming, Personae, Paperprototyping, Moodboard\nDesignphase: Wireframes, Digitale Prototypen\nFinalisierung: Storyboard, Film, Fazit',
+            },
+          ],
+        },
+        {
+          id: 'preparing',
+          title: 'Vorbereitungsphase',
+          content: '',
+          subsections: [
+            {
+              id: 'brainstorming',
+              title: 'Brainstorming',
+              content:
+                'Der allererste Schritt, als wir uns im Oktober 2020 trafen, war ein Brainstorming über das Thema und intensive Recherche zur CPR. Zu Beginn hatten wir viele Ideen, z.B. mehrere iPads für die Kinder, aber dann kam die Idee einer AR-Erfahrung auf. Mit solchen AR-Brillen wäre es möglich, das Training für die CPR-Technik durchzuführen, während die AR-Oberfläche dem Kind nützliche Informationen über sein Training geben könnte. Es war uns sehr wichtig, nur die wichtigsten Informationen auf dieser Oberfläche anzuzeigen. Für die Lehrer-Oberfläche mussten wir recherchieren, wie viele Drücke man in einem Zyklus machen sollte (30 Drücke), wie oft man eine Mund-zu-Mund-Beatmung durchführen sollte (2 Mal) und weitere Fakten zur CPR-Technik.',
+            },
+            {
+              id: 'personae',
+              title: 'Personae',
+              content:
+                'Der nächste Schritt war die Definition unserer Zielgruppe durch die Erstellung von Personae. Eine Persona symbolisiert einen Prototyp für eine Gruppe von Nutzern und hat persönliche Gewohnheiten, Eigenschaften und Nutzungsverhalten.\n\nAuf der einen Seite gibt es Amy Average, ein typisches 13-jähriges Mädchen, extrovertiert, liebt die Schule wegen ihrer Freunde, aber nicht besonders motiviert. Sie repräsentiert eine unmotivierte Zielgruppe der Kinder. Dann gibt es Cooper Curious, einen supermotivierten Jungen, der lernen und besser werden möchte, aber introvertiert ist.\n\nAuf der anderen Seite gibt es Holly Helpful, eine Ärztin mittleren Alters, sehr gut in CPR-Techniken, aber nicht besonders technikaffin. Und Arthur Ambitious, einen sehr jungen Lehrer, der ein Tech-Nerd ist, aber nicht so gut in CPR-Techniken.',
+            },
+            {
+              id: 'paperprototyping',
+              title: 'Paperprototyping',
+              content:
+                'Der nächste Schritt in unserem UX-Prozess war die Erstellung erster Interface-Ideen und ein Gefühl dafür zu bekommen, wie Konzept und Layout unserer App aussehen könnten. Das Zeichnen dieser rohen Skizzen auf Papier ist eine sehr effektive und schnelle Methode, um Ideen zu entwickeln, bevor man zu früh in einem Prototyping-Tool mit dem Design beginnt.\n\nWir begannen mit dem Skizzieren und der Entwicklung einiger Ideen. Im ersten Bild sehen Sie unsere ersten Ideen, also rohe Skizzen und einige Layout-Ideen. Das zweite Bild zeigt unsere finalen Paperprototypes für die AR-App und das dritte unsere finale Idee für die Lehrer-App.',
+            },
+            {
+              id: 'moodboard',
+              title: 'Moodboard',
+              content:
+                'Der letzte Schritt in der Vorbereitungsphase war die Erstellung eines Moodboards. Ein Moodboard ist ein sehr wichtiges Werkzeug in Designprozessen. Es hilft, einen Eindruck davon zu bekommen, wie das finale Projekt aussehen wird.\n\nIn unserem Fall mussten wir drei verschiedene Moodboards erstellen: eines nur mit Adjektiven, eines mit allgemeinen Bildern wie Natur, Architektur etc. und eines nur mit User Interfaces. Mit Tools wie Dribbble und designinspiration.com fanden wir einige großartige Beispielbilder.',
+            },
+          ],
+        },
+        {
+          id: 'designing',
+          title: 'Designphase',
+          content: '',
+          subsections: [
+            {
+              id: 'wireframes',
+              title: 'Wireframes',
+              content:
+                'Der erste Schritt in der Designphase war die Erstellung von Wireframes! Wireframes sind ebenfalls Skizzen, aber viel präziser als rohe Paperprototypes. Nach dem Erstellen unserer Paperprototypes erhielten wir Feedback und änderten einige Details.\n\nEin wichtiger Teil war das Nachdenken über Interaktionen zwischen den verschiedenen Skizzen: "Welcher Button muss gedrückt werden, um zu diesem Screen zu kommen?". Wir verbanden die Screens miteinander und verwendeten orangefarbene Sticker für Links zu anderen Screens und grüne Sticker für Animationen auf demselben Screen.',
+            },
+            {
+              id: 'digital-prototypes',
+              title: 'Digitale Prototypen',
+              content:
+                'Nachdem Inhalt und Interaktionen zwischen den Screens fertig waren, konnten wir digital werden! Digitale Prototypen sind eine sehr wichtige Form des Prototypings und realistisch genug, um die meisten Interface-Elemente zu testen.\n\nUnter all den verschiedenen Prototyping-Tools wie Figma, Framer oder InVision wählten wir Adobe XD, weil die Zusammenarbeit mit Adobe Illustrator und Adobe Photoshop viel besser ist als mit anderen Tools.',
+            },
+          ],
+        },
+        {
+          id: 'finalization',
+          title: 'Finalisierung',
+          content: '',
+          subsections: [
+            {
+              id: 'storyboard',
+              title: 'Storyboard',
+              content:
+                'Nachdem unsere digitalen und klickbaren Prototypen fertig waren, konnten wir mit den letzten Schritten weitermachen. Um die verschiedenen Anwendungsfälle unserer App zu erklären, mussten wir einen Film erstellen. Es ist immer sinnvoll, die Geschichte zu planen, bevor man filmt, also begannen wir mit einem Storyboard.\n\nEin Storyboard bietet einen schematischen Überblick über die Grundstruktur des Projekts. Die wichtigsten Fragen: Wann und wo spielt die Geschichte? In welcher Reihenfolge passieren die Ereignisse? Welche Screens wollen wir zeigen?',
+            },
+            {
+              id: 'movie',
+              title: 'Finaler Film',
+              content:
+                'Der allerletzte Schritt war das Filmen und Schneiden des finalen Films über unser Projekt. Der Film dauert nur zwei Minuten, also mussten wir sicherstellen, dass die Informationen schnell präsentiert werden. Wir erstellten unseren Film in Adobe Premiere Pro und die Animationen in Adobe After Effects.\n\nBesonderer Dank an Jonas Fischer fürs Schauspielern, an Anja Happernagl fürs Ausleihen der Puppe und an die Evangelische Gemeinschaft Königsbrunn für die Räumlichkeiten!',
+            },
+            {
+              id: 'conclusion',
+              title: 'Fazit',
+              content:
+                'Wir haben während dieses Projekts viel gelernt! Wir begannen mit Brainstorming und danach waren wir wirklich begeistert. Das Zeichnen von Skizzen war ein wichtiger Teil des UX-Prozesses, bei dem wir anfangs etwas kämpften.\n\nAufgrund der Covid-19-Pandemie war dieses Projekt besonders. Zunächst begannen wir mit Präsenzunterricht, aber sobald der Shutdown Realität war, wechselten wir zu Online-Vorlesungen. Trotzdem war das Ergebnis sehr gut und interessant!',
+            },
+          ],
+        },
+      ],
+    },
+    en: {
+      title: 'CPR Training AR App',
+      tagline: 'Teaching kids lifesaving skills through Augmented Reality',
+      body: 'CPR stands for Cardiopulmonary Resuscitation, a life-saving emergency procedure. We wanted to help kids learn this technique to become potential lifesavers.',
+      type: 'UX/UI · App design',
+      role: 'UX designer, interface designer',
+      metaTitle: 'CPR Training AR App: teaching kids CPR with AR | Erik Bergheimer',
+      metaDescription:
+        "University UX/UI project: an AR app that teaches children CPR. My role: concept, wireframes and UI for the teacher app and the kids' AR interface.",
+      sections: [
+        {
+          id: 'overview',
+          title: 'Overview',
+          content: '',
+          subsections: [
+            {
+              id: 'problem',
+              title: 'Problem',
+              content:
+                'Countless examples demonstrate that children can save lives by performing CPR. In 2009, ABC News reported that children as young as 9 years old can learn the basics of CPR. That means that young kids can learn and perform CPR but due to the lack of ways to teach them this technique, we had to come up with a digital solution.',
+            },
+            {
+              id: 'solution',
+              title: 'Solution',
+              content:
+                "We decided to design two different apps, one interface for the CPR teacher, who's gonna use a smartphone and one interface for the kids. In our case we came up with the idea of using AR goggles for the kids, so the interface for the kids should be an AR interface.",
+            },
+            {
+              id: 'process',
+              title: 'Our Process',
+              content:
+                'Preparing Phase: Brainstorming, Personae, Paperprototyping, Moodboard\nDesigning Phase: Wireframes, Digital prototypes\nFinalizations: Storyboard, Movie, Conclusion',
+            },
+          ],
+        },
+        {
+          id: 'preparing',
+          title: 'Preparing Phase',
+          content: '',
+          subsections: [
+            {
+              id: 'brainstorming',
+              title: 'Brainstorming',
+              content:
+                'The very first step, when we first met in October 2020 was to brainstorm about this topic and doing a lot of research on CPR. At the very beginning we came up with a lot of ideas e.g. using multiple iPads for the kids but then the idea of an AR experience for the kids came up. With these type of AR goggles on, it would be possible to perform the training for the CPR technique, while the AR interface could give the kid useful informations about his or her training. It was very important for us, that we only display the most important informations on this interface.',
+            },
+            {
+              id: 'personae',
+              title: 'Personae',
+              content:
+                "The next step in our project was to define our target group with creating Personae. A persona symbolizes a prototype for a group of users and has personal habits, characteristics and usage behaviours.\n\nOn the one hand there's Amy Average, a typical 13-year-old girl, very extrovert, loves school because she can talk to her friends. She represents an unmotivated target group. Then there's Cooper Curious, a super motivated boy who wants to learn and help people, but introverted.\n\nOn the other hand there's Holly Helpful, a middle-aged medic, very good at CPR but not tech-savvy. And Arthur Ambitious, a very young teacher, a tech nerd but not great at CPR techniques.",
+            },
+            {
+              id: 'paperprototyping',
+              title: 'Paperprototyping',
+              content:
+                "The next step in our UX process was to create first ideas of an interface. Drawing raw sketches on paper is a very effective and fast method to create ideas before starting to design too early in a prototyping tool.\n\nWe started sketching and creating some ideas of how our app could look like. The first picture shows our first raw ideas and layout concepts. The second picture shows our final paper prototypes for the AR app and the third our final idea for the teacher's app.",
+            },
+            {
+              id: 'moodboard',
+              title: 'Moodboard',
+              content:
+                'The last step in the preparing phase was to create a moodboard. A moodboard is a very important tool in design processes. It helps to get a hint of how the final project will look like.\n\nIn our case, we had to design three different moodboards: one with only adjectives, one with general images like nature, architecture etc. and one with user interfaces only. With awesome tools like Dribbble and designinspiration.com we found some great example pictures.',
+            },
+          ],
+        },
+        {
+          id: 'designing',
+          title: 'Designing Phase',
+          content: '',
+          subsections: [
+            {
+              id: 'wireframes',
+              title: 'Wireframes',
+              content:
+                'The first step in the designing phase is creating wireframes! Wireframes are sketches that are a lot more precise and exact than raw paper prototypes. After creating our paper prototypes, we got feedback and changed some details.\n\nAn important part was thinking about interactions between the different screens: "Which button has to be pressed to get to this screen?". We connected the screens and used orange stickers for links to other screens and green stickers for animations on the same screen.',
+            },
+            {
+              id: 'digital-prototypes',
+              title: 'Digital Prototypes',
+              content:
+                'Now that the content and the interactions between the screens were done, we could proceed with going digital! Digital prototypes are realistic enough to test most of the interface elements.\n\nUnder all the different prototyping tools like Figma, Framer or InVision we picked Adobe XD, because the collaboration with Adobe Illustrator and Adobe Photoshop is a lot better than with other common tools.',
+            },
+          ],
+        },
+        {
+          id: 'finalization',
+          title: 'Finalizations',
+          content: '',
+          subsections: [
+            {
+              id: 'storyboard',
+              title: 'Storyboard',
+              content:
+                "Now that our digital and clickable prototypes were done, we could proceed with the last steps. To explain the different use cases of our app, we had to create a movie. It's always useful to plan your story before you film it, so we started creating a storyboard.\n\nA storyboard provides a schematic overview of the basic structure of the project. The most important questions: When and where does the story take place? In which order do events happen? What are the screens we want to show?",
+            },
+            {
+              id: 'movie',
+              title: 'Final Movie',
+              content:
+                'The very last step was to film and cut the final movie about our project. The duration was only two minutes so we had to make sure the information was presented quickly. We created our movie in Adobe Premiere Pro and the animations in Adobe After Effects.\n\nSpecial thanks to Jonas Fischer for acting, to Anja Happernagl for lending us the mannequin and to the Evangelische Gemeinschaft Königsbrunn for the rooms!',
+            },
+            {
+              id: 'conclusion',
+              title: 'Conclusion',
+              content:
+                'We think we learned a lot during this project! We started with brainstorming and were really excited. Drawing sketches, a very important part of UX processes, was something we struggled with at first.\n\nDue to the Covid-19 pandemic, this project was very special. At first we started with presence classes, but as soon as the shutdown was reality, we moved to online lessons. Despite this, the outcome was very good and interesting!',
+            },
+          ],
+        },
+      ],
     },
   },
 ];

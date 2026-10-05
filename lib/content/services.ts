@@ -1,14 +1,4 @@
-import {
-  Accessibility,
-  Camera,
-  Grid3x3,
-  Layout,
-  Monitor,
-  PenTool,
-  Sparkles,
-  Workflow,
-  type LucideIcon,
-} from 'lucide-react';
+import { Accessibility, Grid3x3, Layout, Monitor, PenTool, Sparkles, Workflow, type LucideIcon } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 
 // Leistungen, siehe functions/seiten/leistungen.md.
@@ -283,41 +273,6 @@ export const services: Service[] = [
       label: 'Design Systems',
       title: 'Design systems',
       short: 'Consistency that scales: design tokens, components and docs that help your team design faster.',
-    },
-  },
-  {
-    slug: 'photography',
-    related: ['brand-logo-design', 'ux-ui-design'],
-    icon: Camera,
-    de: {
-      tags: ['Reise', 'Editorial', 'Lightroom', 'Capture One'],
-      description:
-        'Reisen, Menschen, Kultur: Bilder, die Geschichten erzählen. Entstanden in Neuseeland, Indonesien, Marokko und quer durch Europa.',
-      features: [
-        'Reise- & Dokumentarfotografie',
-        'Editorial-Fotografie',
-        'Bildbearbeitung & Color Grading',
-        'Bildauswahl & Storytelling',
-        'Druck & digitale Auslieferung',
-      ],
-      label: 'Fotografie',
-      title: 'Reise- & Editorial-Fotografie',
-      short: 'Echte Momente, ehrliche Bilder: Reise- und Editorial-Fotografie mit Bildbearbeitung und Bildauswahl.',
-    },
-    en: {
-      tags: ['Travel', 'Editorial', 'Lightroom', 'Capture One'],
-      description:
-        'Travel, people, culture: images that tell stories. Created on journeys through New Zealand, Indonesia, Morocco and Europe.',
-      features: [
-        'Travel & documentary photography',
-        'Editorial photography',
-        'Post-processing & colour grading',
-        'Image selection & storytelling',
-        'Print & digital delivery',
-      ],
-      label: 'Photography',
-      title: 'Travel & editorial photography',
-      short: 'Real moments, honest images: travel and editorial photography with editing and image selection.',
     },
   },
 ];

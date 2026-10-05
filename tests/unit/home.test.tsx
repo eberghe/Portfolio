@@ -56,9 +56,9 @@ describe.each([
       expect(link).toHaveAttribute('href', `${prefix}/contact`);
   });
 
-  it('AK-5: alle acht Leistungen verlinkt', () => {
+  it('AK-5: alle sieben Leistungen verlinkt', () => {
     render(<Home locale={locale} />);
-    expect(services).toHaveLength(8);
+    expect(services).toHaveLength(7);
     for (const s of services) {
       const link = screen.getByRole('link', {
         name: new RegExp(s[locale].title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
@@ -239,9 +239,9 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
     const stack = container.querySelector('.sticky-stack')!;
     expect(stack).not.toBeNull();
     const cards = stack.querySelectorAll(':scope > li');
-    expect(cards).toHaveLength(8);
+    expect(cards).toHaveLength(7);
     expect(cards[0]).toHaveTextContent('01');
-    expect(cards[7]).toHaveTextContent('08');
+    expect(cards[6]).toHaveTextContent('07');
     for (const card of cards) {
       expect(card.querySelector('h3')).not.toBeNull();
       const features = card.querySelectorAll('ul li');

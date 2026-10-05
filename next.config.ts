@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
           permanent: true,
         })),
       ),
+      // Fotografie ist keine Leistung mehr, die Fotoserien stehen bei den Projekten (functions/seiten/leistungen.md AK-28)
+      { source: '/services/photography', destination: '/projects', permanent: true },
+      { source: '/en/services/photography', destination: '/en/projects', permanent: true },
       // Englische Slugs der rechtlichen Seiten (functions/seiten/rechtliches.md AK-8)
       { source: '/en/impressum', destination: '/en/imprint', permanent: true },
       { source: '/en/datenschutz', destination: '/en/privacy', permanent: true },

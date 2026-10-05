@@ -1,0 +1,12 @@
+import LocalLanding from '@/components/local/LocalLanding';
+import { localPages } from '@/lib/content/local';
+import { localMetadata } from '@/lib/pages/static';
+
+// functions/seo/staedte-landingpages.md
+const page = localPages.find((p) => p.path === '/webdesign-stuttgart')!;
+
+export const metadata = localMetadata(page, 'de');
+
+export default function Page() {
+  return <LocalLanding page={page} locale="de" />;
+}

@@ -107,6 +107,25 @@ export default function Footer({ locale }: { locale: Locale }) {
           </ul>
         </nav>
 
+        <nav aria-labelledby="footer-regionen">
+          <p id="footer-regionen" className="text-[12px] font-bold tracking-widest uppercase text-white/60 mb-3">
+            {t.regions}
+          </p>
+          <ul className="flex flex-wrap gap-x-6 gap-y-1">
+            {localPages.map((p) => (
+              <li key={p.path}>
+                <Link
+                  href={href(p.path)}
+                  aria-current={current(p.path)}
+                  className="inline-block py-1 text-[13px] text-white/60 hover:text-white transition-colors"
+                >
+                  {p[locale].footerLink}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
         <div className="border-t border-white/10 pt-8 flex flex-col gap-3">
           <div className="hidden md:flex items-center w-full">
             <div className="flex items-center gap-4">
@@ -122,16 +141,6 @@ export default function Footer({ locale }: { locale: Locale }) {
               >
                 {t.privacy}
               </Link>
-              {localPages.map((p) => (
-                <Link
-                  key={p.path}
-                  href={href(p.path)}
-                  aria-current={current(p.path)}
-                  className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
-                >
-                  {p[locale].footerLink}
-                </Link>
-              ))}
             </div>
             <p lang="en" className="text-[12px] text-white/60 flex-1 text-center">
               <MadeWith text={t.madeWith} />
@@ -153,16 +162,6 @@ export default function Footer({ locale }: { locale: Locale }) {
               >
                 {t.privacy}
               </Link>
-              {localPages.map((p) => (
-                <Link
-                  key={p.path}
-                  href={href(p.path)}
-                  aria-current={current(p.path)}
-                  className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
-                >
-                  {p[locale].footerLink}
-                </Link>
-              ))}
               <p className="text-[12px] text-white/60">© {year}, Erik Bergheimer</p>
             </div>
             <div className="flex items-center justify-between w-full mt-6">

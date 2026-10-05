@@ -177,14 +177,17 @@ export function localJsonLd(page: LocalPage, locale: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
-    name: `Erik Bergheimer – ${t.title.replace(` in ${page.city}`, '')}`,
+    name: `Erik Bergheimer – ${t.title.replace(/ in [^ ]+$/, '')}`,
     description: t.metaDescription,
     url: absolute(page.path, locale),
     address: { ...person(locale).address, streetAddress: undefined },
     inLanguage: locale,
     email: EMAIL,
     provider: person(locale),
-    areaServed: [{ '@type': 'City', name: page.city }, areaServed[locale][1]],
+    areaServed: [
+      { '@type': 'City', name: page.city },
+      page.country ? { '@type': 'Country', name: page.country[locale] } : areaServed[locale][1],
+    ],
   };
 }
 

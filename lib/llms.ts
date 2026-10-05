@@ -1,3 +1,4 @@
+import { localPages } from '@/lib/content/local';
 import { projects } from '@/lib/content/projects';
 import { services } from '@/lib/content/services';
 import { EMAIL, absoluteUrl } from '@/lib/site';
@@ -34,6 +35,10 @@ export function llmsTxt() {
     '## Services',
     '',
     ...services.map((s) => link(s.en.title, `/services/${s.slug}`, s.en.short)),
+    '',
+    '## Regions',
+    '',
+    ...localPages.map((p) => link(p.en.title, p.path, p.en.metaDescription)),
     '',
     '## Projects',
     '',

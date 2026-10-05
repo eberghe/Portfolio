@@ -7,6 +7,10 @@ const enSlugs: Record<string, string> = {
   '/impressum': '/imprint',
   '/datenschutz': '/privacy',
   '/webdesign-augsburg': '/web-design-augsburg',
+  '/webdesign-muenchen': '/web-design-munich',
+  '/webdesign-stuttgart': '/web-design-stuttgart',
+  '/webdesign-innsbruck': '/web-design-innsbruck',
+  '/webdesign-kempten': '/web-design-kempten',
 };
 const deSlugs = Object.fromEntries(Object.entries(enSlugs).map(([de, en]) => [en, de]));
 
@@ -52,6 +56,7 @@ const de = {
     label: 'Fußzeile',
     imprint: 'Impressum',
     privacy: 'Datenschutz',
+    regions: 'Webdesign nach Stadt',
     madeWith: 'made with 🤍 in augsburg',
     backToTop: 'Nach oben',
     email: 'E-Mail',
@@ -78,6 +83,7 @@ const en: Messages = {
     label: 'Footer',
     imprint: 'Imprint',
     privacy: 'Privacy',
+    regions: 'Web design by city',
     madeWith: 'made with 🤍 in augsburg',
     backToTop: 'Back to top',
     email: 'Email',

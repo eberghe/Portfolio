@@ -13,6 +13,7 @@ Interessenten sehen sofort, wo Erik vor Ort arbeitet. Suchmaschinen und KI-Antwo
 ## Verhalten
 
 - Standortangaben in Texten, Meta-Descriptions, JSON-LD und `llms.txt`: Augsburg, Deutschland, vor Ort oder remote. Innsbruck und Österreich werden nicht mehr als Standort oder Einsatzgebiet genannt.
+- Ausnahme (Erik, 2026-10-05): die Landingpage `/webdesign-innsbruck` nennt Innsbruck und Österreich als Einsatzgebiet (remote), siehe functions/seo/staedte-landingpages.md. Standort bleibt Deutschland.
 - Lebenslauf und Projekte bleiben wahr: Studium am MCI Innsbruck, Umzug nach Innsbruck 2024 und das Innsbruck-Projekt SIGHT'KICK bleiben stehen.
 - Footer-Satz: „made with 🤍 in augsburg".
 - Impressum: Überschrift „Angaben gemäß § 5 DDG", Anschrift Erik Bergheimer, Weißdornstraße 5, 86343 Königsbrunn, Deutschland; „Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV".

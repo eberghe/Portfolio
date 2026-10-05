@@ -192,6 +192,33 @@ describe('AK-4: Speicherung nur serverseitig', () => {
     vi.unstubAllGlobals();
   });
 
+  it('AK-16: Empfänger aus ANFRAGE_EMPFAENGER, sonst die E-Mail der Seite', async () => {
+    const fetchMock = vi.fn(async () => new Response('{}', { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+    const data = validateInquiry(formData()).data!;
+    await resendNotifier({ RESEND_API_KEY: 'k' })!(data);
+    await resendNotifier({ RESEND_API_KEY: 'k', ANFRAGE_EMPFAENGER: 'konto@beispiel.de' })!(data);
+    const to = fetchMock.mock.calls.map(
+      (c) => JSON.parse((c as unknown as [string, RequestInit])[1].body as string).to,
+    );
+    expect(to).toEqual([['erb1209@outlook.de'], ['konto@beispiel.de']]);
+    vi.unstubAllGlobals();
+  });
+
+  it('AK-17: Fehler von Resend nennt Status und Antwort', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response('{"message":"You can only send testing emails to your own email address"}', { status: 403 }),
+      ),
+    );
+    await expect(resendNotifier({ RESEND_API_KEY: 'k' })!(validateInquiry(formData()).data!)).rejects.toThrow(
+      /403.*own email address/,
+    );
+    vi.unstubAllGlobals();
+  });
+
   it('Migration: RLS aktiv, keine Policies, kein Zugriff für anon', () => {
     const dir = 'supabase/migrations';
     const sql = readdirSync(dir)
@@ -361,18 +388,17 @@ describe('Anfrage-Assistent im Browser', () => {
 });
 
 describe('Kontaktseite', () => {
-  it.each(['de', 'en'] as const)('AK-2: eine h1, Direktkontakt als Links (%s)', (locale) => {
-    render(<ContactPage locale={locale} />);
+  it.each(['de', 'en'] as const)('AK-9: links nur h1 und Absatz, kein Direktkontakt, kein Standort (%s)', (locale) => {
+    const { container } = render(<ContactPage locale={locale} />);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    const list = screen.getByRole('list', { name: locale === 'de' ? 'Direktkontakt' : 'Direct contact' });
-    const links = within(list).getAllByRole('link');
-    expect(links.map((l) => l.getAttribute('href'))).toEqual([
-      'mailto:erb1209@outlook.de',
-      expect.stringContaining('linkedin.com/in/erik-bergheimer'),
-      expect.stringContaining('instagram.com/erik.bergheimer'),
-    ]);
-    expect(links[0]).toHaveAccessibleName(/erb1209@outlook\.de/);
-    expect(links[1]).toHaveAccessibleName(/LinkedIn/);
+    expect(screen.queryByRole('heading', { name: /Direktkontakt|Direct contact/ })).toBeNull();
+    expect(container.querySelector('a[href^="mailto:"], a[href*="linkedin"], a[href*="instagram"]')).toBeNull();
+    const visible = [...container.children]
+      .filter((el) => el.tagName !== 'SCRIPT')
+      .map((el) => el.textContent)
+      .join(' ');
+    expect(visible).not.toMatch(/Standort|Location|Lass uns reden|Let's talk/);
+    expect(container).toHaveTextContent(locale === 'de' ? 'vier kurzen Schritten' : 'four short steps');
   });
 
   it('AK-3: ContactPage-JSON-LD verweist auf die Person', () => {
@@ -470,11 +496,8 @@ describe('Befunde Blinder Kritiker (Runde 1)', () => {
     expect(state.status === 'fallback' && state.text).toContain(long.trim());
   });
 
-  it('seite AK-6: Assistent steht vor dem Direktkontakt, kein Sprunglink mehr', () => {
+  it('seite AK-6: kein Sprunglink mehr', () => {
     render(<ContactPage locale="de" />);
     expect(screen.queryByRole('link', { name: 'Zum Anfrageformular' })).toBeNull();
-    const form = screen.getByRole('heading', { name: 'Projekt anfragen' });
-    const direct = screen.getByRole('heading', { name: 'Direktkontakt' });
-    expect(form.compareDocumentPosition(direct) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

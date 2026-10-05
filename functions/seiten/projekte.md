@@ -94,3 +94,17 @@ Aufbau `/projects`: Kopf (Überline, h1, Untertitel) → Filter → große Proje
 
 Behoben: Typ doppelt vorgelesen (Chips jetzt `aria-hidden`, AK-20), grelle Pastellflächen im Dunkelmodus (AK-21), „Fallstudie lesen“ bei Fotoserien (AK-20), „No-Code-Tools“ und CPR-Untertitel, „Bald hier“ doppelt zum Status („In Arbeit“, AK-21), E-Mail bricht mitten im Wort, Filter-Umbruch bei 360 px, Pfeil ↗ bei internem Link, Augsburg in der Meta-Description (AK-24).
 Offen mit Begründung: Reihenfolge der Projekte ist bewusst „stärkstes zuerst“, nicht chronologisch. Ein Ergebnis-Satz je Projekt und eine Domain-E-Mail sind Inhaltsfragen (Issue #14). Filter in der URL wäre schön, ist aber nicht nötig.
+
+## PreMatch: Masterarbeit als Projekt (Erik 2026-10-05)
+
+Erik hat Designsystem, zwei Skizzen, zwei Screens und die Arbeit selbst (.tex) geschickt. PreMatch wechselt von „In Arbeit“ zu einem echten Projekt.
+
+- AK-25: PreMatch (`/projects/prematch`) ist ein Projekt aus 2026 mit Leistung UX/UI-Design und steht als neuestes Projekt an erster Stelle; es steht nicht mehr unter „In Arbeit“.
+- AK-26: Die Fallstudie folgt den drei Phasen der Arbeit (Benchmarking, Design, Nutzerstudie) plus Ausgangslage und Grenzen. Skizzen und Screens stehen an der passenden Stelle (Skizzen bei „Skizzen“, Screens bei „Positive Friction“), jeweils mit Alt-Text, der den Inhalt beschreibt.
+- AK-27: Kennzahlen aus der Nutzerstudie (SUS 90,0, NPS 70, AttrakDiff HQ-I 2,03) stehen im Kennzahlen-Block (AK-2) mit Quelle in der Sprache der Seite (Quelle darf je Sprache verschieden sein).
+- AK-28: Die Screens sind PNG mit transparentem Rand (Handy-Rahmen), damit sie im Dunkelmodus keinen hellen Kasten zeigen; alle PreMatch-Bilder sind mindestens 1000 px breit.
+
+### Blinder Kritiker (PreMatch, 2026-10-05)
+
+Behoben: Aussagen über Kicktipp und Tipico vorsichtiger formuliert, Studienergebnisse nicht überdehnt („deutet darauf hin“), Skala bei INTUI genannt, „Positive Friction“ einheitlich, Hexcode aus dem Alt-Text, englisch „tipping“ ersetzt. Mobil rückte der Fließtext aller Fallstudien um 48 px ein, weil der Abstand zum ausgeblendeten Inhaltsverzeichnis blieb (jetzt erst ab `lg`).
+Offen mit Begründung: Quelle steht je Kennzahl (wie in AK-2 festgelegt), die beiden Skizzen haben unterschiedliche Seitenverhältnisse (Originale), Handy-Screens sind bei 360 px klein, lassen sich aber per Klick vergrößern.

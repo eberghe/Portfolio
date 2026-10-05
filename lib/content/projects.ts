@@ -35,9 +35,11 @@ export interface ProjectImage {
 
 /** Kennzahl, nur mit Quelle (AK-2) */
 export interface ProjectMetric {
-  value: string;
+  /** Wert, bei Bedarf je Sprache (Dezimalkomma) */
+  value: string | Record<Locale, string>;
   label: Record<Locale, string>;
-  source: string;
+  /** Quelle, bei Bedarf je Sprache */
+  source: string | Record<Locale, string>;
 }
 
 export interface Project extends Record<Locale, ProjectText> {
@@ -57,6 +59,207 @@ export interface Project extends Record<Locale, ProjectText> {
 }
 
 export const projects: Project[] = [
+  {
+    // Inhalte aus Eriks Masterarbeit (MCI Innsbruck, 2026), siehe functions/seiten/projekte.md AK-25 bis AK-28
+    slug: 'prematch',
+    year: '2026',
+    timeline: '2026',
+    tools: 'Figma · Flutter · Firebase · API-Sports',
+    thumbnail: {
+      src: '/images/project-prematch.jpg',
+      width: 1920,
+      height: 1080,
+      alt: {
+        de: 'Designsystem von PreMatch: Logo, Buttons, Farben mit kräftigem Primärblau, Icons in drei Zuständen, Abzeichen und die Schrift Inter',
+        en: 'PreMatch design system: logo, buttons, colours with a strong primary blue, icons in three states, badges and the Inter typeface',
+      },
+    },
+    service: 'ux-ui-design',
+    gallery: [],
+    inlineImages: {
+      sketches: [
+        {
+          src: '/images/projects/prematch-sketch-home.jpg',
+          width: 1232,
+          height: 2000,
+          alt: {
+            de: 'Handskizze des Home-Screens: Karten oben, ein Spiel mit Ergebnis 1:0 und Tipp, darunter eine Tabelle und die Navigation',
+            en: 'Hand sketch of the Home screen: cards at the top, a match with a 1:0 score and prediction, a table below and the navigation',
+          },
+        },
+        {
+          src: '/images/projects/prematch-sketch-tips.jpg',
+          width: 1083,
+          height: 2000,
+          alt: {
+            de: 'Handskizze des Screens „My Tips“: Reiter für Spieltage und eine Liste von Spielen mit Feldern für den Tipp',
+            en: 'Hand sketch of the My Tips screen: matchday tabs and a list of matches with fields for the prediction',
+          },
+        },
+      ],
+      friction: [
+        {
+          src: '/images/projects/prematch-screen-details.png',
+          width: 1143,
+          height: 2343,
+          alt: {
+            de: 'Screen „Match Details“: Tipp 2:1 für Paris Saint-Germain gegen Arsenal, Siegwahrscheinlichkeit, Form und der Button „Hold to Save your Prediction“',
+            en: 'Match Details screen: a 2:1 prediction for Paris Saint-Germain against Arsenal, victory probability, form and the “Hold to Save your Prediction” button',
+          },
+        },
+        {
+          src: '/images/projects/prematch-screen-why.png',
+          width: 1143,
+          height: 2343,
+          alt: {
+            de: 'Abfrage „Why this pick?“ nach dem Halten: Gründe wie Heimvorteil, starke Form oder Bauchgefühl zum Antippen, dazu „Save & Next Game“',
+            en: '“Why this pick?” prompt after holding: tappable reasons such as home advantage, strong form or gut feeling, plus “Save & Next Game”',
+          },
+        },
+      ],
+    },
+    metrics: [
+      {
+        value: { de: '90,0', en: '90.0' },
+        label: { de: 'Usability (SUS, von 100)', en: 'Usability (SUS, out of 100)' },
+        source: { de: 'Nutzerstudie der Masterarbeit, N = 10, 2026', en: 'User study of the thesis, N = 10, 2026' },
+      },
+      {
+        value: '70',
+        label: { de: 'Weiterempfehlung (NPS), keine Kritiker', en: 'Recommendation (NPS), no detractors' },
+        source: { de: 'Nutzerstudie der Masterarbeit, N = 10, 2026', en: 'User study of the thesis, N = 10, 2026' },
+      },
+      {
+        value: { de: '2,03', en: '2.03' },
+        label: { de: 'Identität (AttrakDiff HQ-I, −3 bis 3)', en: 'Identity (AttrakDiff HQ-I, −3 to 3)' },
+        source: { de: 'Nutzerstudie der Masterarbeit, N = 10, 2026', en: 'User study of the thesis, N = 10, 2026' },
+      },
+    ],
+    de: {
+      title: 'PreMatch',
+      tagline: 'Eine Tipp-App für Fußball, die zum Nachdenken einlädt',
+      body: 'Für meine Masterarbeit am MCI Innsbruck habe ich PreMatch entworfen und gebaut: eine App, in der Freunde in privaten Ligen Fußballergebnisse tippen. Der Markt hat zwei Extreme. Kicktipp hält seine Nutzer vor allem, weil die Freunde schon dort sind. Wett-Apps wie Tipico nutzen oft Muster, die schnelles Tippen fördern.\n\nPreMatch liegt dazwischen. Die App nimmt Motivation ernst, ohne sie auszunutzen. Kern ist „Positive Friction“: Ein Tipp wird gespeichert, indem man den Button gedrückt hält, danach fragt die App kurz nach dem Grund.',
+      type: 'UX/UI · App-Design · Masterarbeit',
+      role: 'Forschung, UX/UI-Design und Entwicklung',
+      metaTitle: 'PreMatch: Fußball-Tipp-App, Masterarbeit UX | Erik Bergheimer',
+      metaDescription:
+        'Masterarbeit: eine Tipp-App für Fußball mit Positive Friction. Benchmarking von vier Apps, Design in Figma, App in Flutter und Nutzerstudie mit SUS 90.',
+      sections: [
+        {
+          id: 'problem',
+          title: 'Ausgangslage',
+          content:
+            'Tipp-Apps für Fußball sind eine vernachlässigte Nische der Sporttechnologie. Kicktipp führt im deutschsprachigen Raum vor allem dank Netzwerkeffekten. Kommerzielle Wett-Apps investieren viel in Gestaltung, aber oft mit „Dark Nudges“, die Nachdenken unterdrücken und impulsives Verhalten ausnutzen.\n\nDie Frage der Arbeit: Wie lassen sich Prinzipien der Self-Determination Theory (Autonomie, Kompetenz, Verbundenheit) und Positive Friction in eine Tipp-App einbauen, damit das Erlebnis besser wird als der heutige Marktstandard? Methode war Design Science Research in drei Phasen.',
+        },
+        {
+          id: 'benchmarking',
+          title: 'Phase I: Benchmarking',
+          content:
+            'Ich habe vier Apps verglichen: Kicktipp, Tackle, Teamtip und Tipico. Grundlage waren die Gameful Design Heuristics mit 28 Motivationsdimensionen, bewertet auf einer Skala von 1 bis 5 und von einer zweiten Person gegengeprüft.\n\nAm schwächsten schnitt der ganze Markt bei „Social & Community“ (Mittelwert 2,10) und „Immersion & Narrative“ (2,25) ab. Das ist keine Kritik an einer App, sondern eine Beschreibung dessen, was der Markt noch nicht gebaut hat. Genau diese Lücken wurden zur Prioritätenliste für das Design.',
+        },
+        {
+          id: 'design',
+          title: 'Phase II: Design und Umsetzung',
+          content:
+            'Die zentralen Designentscheidungen lassen sich auf eine Lücke aus dem Benchmarking zurückführen. Der Weg führte von Skizzen auf Papier über einen Prototyp in Figma zu einer funktionierenden App in Flutter.',
+          subsections: [
+            {
+              id: 'sketches',
+              title: 'Skizzen',
+              content:
+                'Die ersten Entwürfe entstanden bewusst auf Papier, damit es nur um Struktur und Reihenfolge der Inhalte ging, nicht um Farben. Der Home-Screen zeigt den eigenen Stand, das laufende Spiel mit dem eigenen Tipp und die Tabelle der Liga. „My Tips“ ist die Liste der Spiele eines Spieltags, in der man tippt.',
+            },
+            {
+              id: 'design-system',
+              title: 'Designsystem',
+              content:
+                'Das Designsystem baut auf einem kräftigen Blau (#304FFF), der Schrift Inter und Farben mit klarer Bedeutung auf: Grün für richtig, Rot für falsch. Icons gibt es in drei Zuständen. Abzeichen wie „Tactician“ für eine perfekte Aufstellung oder „The Oracle“ für zehn exakte Ergebnisse belohnen Können statt bloßes Einloggen. Vereinswappen und Tabellen sollen das Gefühl eines echten Spieltags tragen.',
+            },
+            {
+              id: 'friction',
+              title: 'Positive Friction',
+              content:
+                'Die wichtigste Entscheidung: Ein Tipp wird nicht mit einem Tippen gespeichert, sondern durch Gedrückthalten. Danach erscheint „Why this pick?“ mit Gründen wie Heimvorteil, Form oder Bauchgefühl. Die Angabe ist freiwillig und zeigt der Liga, wie man denkt. So entsteht ein kurzer Moment zum Nachdenken, statt dass man impulsiv tippt.\n\nTechnisch ist die App in Flutter gebaut. Spieldaten kommen von API-Sports, Anmeldung, Ligen, Tipps, Chat und Abzeichen laufen über Firebase. Rangliste und Chat aktualisieren sich live.',
+            },
+          ],
+        },
+        {
+          id: 'study',
+          title: 'Phase III: Nutzerstudie',
+          content:
+            'Zehn Personen haben die App zwischen dem 16. Mai und dem 7. Juni 2026 getestet, mit Fragebögen (SUS, AttrakDiff, INTUI, NPS) und einem Gespräch danach.\n\nDie Usability lag mit einem SUS von 90,0 im Bereich „exzellent“. AttrakDiff zeigte ein Profil, das vor allem über Freude und Identität wirkt (HQ-I 2,03). Das deutet darauf hin, dass sich die Teilnehmenden mit der App identifizieren konnten. Alle vier Skalen von INTUI lagen über der Mitte, das Bauchgefühl am höchsten (5,30 auf einer Skala von 1 bis 7). Der NPS lag bei 70 ohne Kritiker. Zusammen stützen die Ergebnisse vorsichtig die Annahme, dass Positive Friction das Erlebnis aufwerten kann, ohne Usability und Intuition zu schaden.',
+        },
+        {
+          id: 'limits',
+          title: 'Grenzen und Ausblick',
+          content:
+            'Mit zehn Personen sind die Ergebnisse Hinweise, keine Beweise. Es gab keine Vergleichsversion ohne Friction, und die Studie zeigt nur den ersten Eindruck. Ob das Gedrückthalten über eine ganze Saison seinen Effekt behält, bleibt offen. Vereinswappen bräuchten für eine echte Veröffentlichung Lizenzen.\n\nDie größte praktische Frage: Wechselt eine ganze Freundesgruppe mit ihrer Liga-Geschichte zu einer neuen App? Als Nächstes wären eine Feldstudie über eine Saison und eine Friction, die sich dem Tipp-Verhalten anpasst, spannend. Das Muster aus Gedrückthalten und kurzer Begründung lässt sich auch auf andere Bereiche übertragen, in denen impulsives Verhalten echte Kosten hat.',
+        },
+      ],
+    },
+    en: {
+      title: 'PreMatch',
+      tagline: 'A football prediction app that invites reflection',
+      body: "For my master's thesis at MCI Innsbruck, I designed and built PreMatch: an app where friends predict football results in private leagues. The market has two extremes. Kicktipp keeps its users mainly because their friends are already there. Betting apps like Tipico often use patterns that encourage fast betting.\n\nPreMatch sits in between. It takes motivation seriously without exploiting it. At its core is “Positive Friction”: you save a prediction by holding the button, then the app briefly asks for your reason.",
+      type: "UX/UI · App design · Master's thesis",
+      role: 'Research, UX/UI design and development',
+      metaTitle: "PreMatch: football prediction app, master's thesis | Erik Bergheimer",
+      metaDescription:
+        "Master's thesis: a football prediction app with Positive Friction. Benchmark of four apps, Figma design, Flutter app and a user study with SUS 90.",
+      sections: [
+        {
+          id: 'problem',
+          title: 'Starting point',
+          content:
+            'Social football prediction apps are a neglected corner of sports technology. Kicktipp leads the German-speaking market mainly thanks to network effects. Commercial betting apps invest heavily in design, but often with dark nudges that suppress reflection and exploit impulsive behaviour.\n\nThe research question: how can principles of Self-Determination Theory (autonomy, competence, relatedness) and Positive Friction be built into a prediction app so that the experience exceeds the current market standard? The method was Design Science Research in three phases.',
+        },
+        {
+          id: 'benchmarking',
+          title: 'Phase I: Benchmarking',
+          content:
+            'I compared four apps: Kicktipp, Tackle, Teamtip and Tipico. The basis was the Gameful Design Heuristics with 28 motivational dimensions, rated on a scale from 1 to 5 and cross-checked by a second coder.\n\nThe whole market scored lowest on Social & Community (mean 2.10) and Immersion & Narrative (2.25). That is not a critique of one app but a description of what the market has not built yet. Exactly these gaps became the priority list for the design.',
+        },
+        {
+          id: 'design',
+          title: 'Phase II: Design and build',
+          content:
+            'The key design decisions trace back to a gap from the benchmark. The path led from paper sketches to a Figma prototype to a working Flutter app.',
+          subsections: [
+            {
+              id: 'sketches',
+              title: 'Sketches',
+              content:
+                'The first drafts were deliberately made on paper, so the focus stayed on structure and order of content, not colour. The Home screen shows your standing, the live match with your prediction and the league table. My Tips is the list of a matchday’s fixtures where you enter your predictions.',
+            },
+            {
+              id: 'design-system',
+              title: 'Design system',
+              content:
+                'The design system is built on a strong blue (#304FFF), the Inter typeface and colours with clear meaning: green for right, red for wrong. Icons come in three states. Badges such as Tactician for a perfect line-up or The Oracle for ten exact scores reward skill rather than just logging in. Club crests and tables aim to carry the feel of a real matchday.',
+            },
+            {
+              id: 'friction',
+              title: 'Positive Friction',
+              content:
+                'The key decision: a prediction is not saved with a tap but by holding the button. Then “Why this pick?” appears with reasons such as home advantage, form or gut feeling. It is optional and shows your league how you think. This creates a short moment of reflection instead of an impulsive prediction.\n\nTechnically, the app is built in Flutter. Match data comes from API-Sports; sign-in, leagues, predictions, chat and badges run on Firebase. Leaderboard and chat update live.',
+            },
+          ],
+        },
+        {
+          id: 'study',
+          title: 'Phase III: User study',
+          content:
+            'Ten people tested the app between 16 May and 7 June 2026, with questionnaires (SUS, AttrakDiff, INTUI, NPS) and a debrief interview.\n\nUsability reached a SUS of 90.0, in the excellent range. AttrakDiff showed a profile driven mainly by joy and identity (HQ-I 2.03), which suggests participants identified with the app. All four INTUI scales were above the midpoint, with gut feeling highest (5.30 on a scale of 1 to 7). The NPS was 70 with no detractors. Together, the results tentatively support the idea that Positive Friction can lift the experience without hurting usability or intuitiveness.',
+        },
+        {
+          id: 'limits',
+          title: 'Limits and outlook',
+          content:
+            'With ten participants, the results are indications, not proof. There was no comparison version without friction, and the study only captures first use. Whether holding to save keeps its effect over a whole season remains open. Club crests would need licences for a public release.\n\nThe biggest practical question: will a whole friend group move to a new app along with its league history? Next steps could be a field study across a full season and friction that adapts to how someone tips. The pattern of holding and a short reason also transfers to other areas where impulsive behaviour has real costs.',
+        },
+      ],
+    },
+  },
   {
     slug: 'cpr',
     year: '2020–2021',
@@ -929,13 +1132,6 @@ export const projects: Project[] = [
 
 /** „Kommt bald"-Kacheln ohne Detailseite */
 export const comingSoon = [
-  {
-    slug: 'prematch',
-    type: { de: 'UX/UI · Masterarbeit', en: "UX/UI · Master's thesis" },
-    de: { title: 'PreMatch', tagline: 'App für Fußball-Tipps' },
-    en: { title: 'PreMatch', tagline: 'Football prediction app' },
-    color: '#d0d8e8',
-  },
   {
     slug: 'rose',
     type: { de: 'UX/UI · Digital-Business-Projekt', en: 'UX/UI · Digital business project' },

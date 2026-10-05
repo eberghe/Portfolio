@@ -136,29 +136,33 @@ export const homeContent = {
 
 export const featuredProjects = [
   {
+    id: 'prematch',
+    image: { src: '/images/project-prematch.jpg', width: 1920, height: 1080 },
+    color: '#d0d8e8',
+    de: {
+      title: 'PreMatch',
+      type: 'UX/UI · App-Design · Masterarbeit',
+      desc: 'Eine Tipp-App für Fußball, die vor dem Speichern kurz zum Nachdenken einlädt.',
+    },
+    en: {
+      title: 'PreMatch',
+      type: "UX/UI · App design · Master's thesis",
+      desc: 'A football prediction app that asks for a moment of reflection before saving.',
+    },
+  },
+  {
     id: 'sightkick',
     image: { src: '/images/project-sightkick.jpg', width: 1920, height: 977 },
     color: '#c8ddf0',
     de: {
       title: "SIGHT'KICK",
-      type: 'UX/UI · Gamification · Masterarbeit',
+      type: 'UX/UI · Gamification · Masterprojekt',
       desc: 'Eine spielerische App, die Sightseeing in Innsbruck komplett neu denkt.',
     },
     en: {
       title: "SIGHT'KICK",
-      type: "UX/UI · Gamification · Master's thesis",
+      type: "UX/UI · Gamification · Master's project",
       desc: 'Gamified city exploration app for Innsbruck, classic sightseeing reimagined.',
-    },
-  },
-  {
-    id: 'cpr',
-    image: { src: '/images/project-cpr.jpg', width: 1920, height: 977 },
-    color: '#cde8e0',
-    de: { title: 'CPR App', type: 'UX/UI · App-Design', desc: 'Wie Kinder spielerisch lernen, Leben zu retten.' },
-    en: {
-      title: 'CPR App',
-      type: 'UX/UI · App Design',
-      desc: 'Children learn life-saving CPR techniques through play.',
     },
   },
   {

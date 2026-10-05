@@ -153,7 +153,7 @@ describe('AK-12: kurze Linknamen mit Beschreibung', () => {
     const ux = screen.getByRole('link', { name: 'UX/UI Design' });
     expect(ux).toHaveAccessibleDescription(/Von der ersten Idee/);
     const project = screen.getByRole('link', { name: "SIGHT'KICK" });
-    expect(project).toHaveAccessibleDescription(/Masterarbeit/);
+    expect(project).toHaveAccessibleDescription(/Masterprojekt/);
   });
 });
 
@@ -309,5 +309,19 @@ describe.each(['de', 'en'] as const)('Restpunkte Startseite (%s)', (locale) => {
       'href',
       locale === 'de' ? '/faqs' : '/en/faqs',
     );
+  });
+});
+
+describe('AK-40: PreMatch auf der Startseite', () => {
+  it('PreMatch zuerst, vier Karten, CPR nicht mehr dabei', () => {
+    render(<Home locale="de" />);
+    const links = screen.getAllByRole('link').filter((a) => /^\/projects\/[a-z]/.test(a.getAttribute('href') ?? ''));
+    expect(links.map((a) => a.getAttribute('href'))).toEqual([
+      '/projects/prematch',
+      '/projects/sightkick',
+      '/projects/indonesia',
+      '/projects/webflow',
+    ]);
+    expect(screen.getByRole('link', { name: 'PreMatch' })).toHaveAccessibleDescription(/Masterarbeit/);
   });
 });

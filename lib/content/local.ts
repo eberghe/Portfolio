@@ -16,6 +16,8 @@ export interface LocalPageText {
   localTitle: string;
   localText: string;
   facts: { term: string; detail: string }[];
+  /** Eigener Kartentext je Leistung (Slug), sonst der allgemeine Kurztext */
+  serviceTexts?: Record<string, string>;
   servicesTitle: string;
   servicesText: string;
   reasonsTitle: string;

@@ -89,7 +89,7 @@ describe('AK-7: Querverlinkung', () => {
   it.each(locales)('Footer-Navigation verlinkt alle Landingpages (%s)', (locale) => {
     render(<Footer locale={locale} />);
     const nav = screen.getByRole('navigation', {
-      name: locale === 'de' ? 'Webdesign in der Region' : 'Web design by region',
+      name: locale === 'de' ? 'Webdesign nach Stadt' : 'Web design by city',
     });
     for (const p of localPages)
       expect(within(nav).getByRole('link', { name: p[locale].footerLink })).toHaveAttribute(
@@ -162,5 +162,28 @@ describe('AK-11: llms.txt', () => {
     const txt = llmsTxt();
     expect(txt).toContain('## Regions');
     for (const p of localPages) expect(txt).toContain(`https://erik-bergheimer.de${localizedPath(p.path, 'en')}`);
+  });
+});
+
+describe('AK-12: eigene Kartentexte je Stadt', () => {
+  it.each(locales)('Städte außer Augsburg beschreiben ihre Leistungen selbst (%s)', (locale) => {
+    for (const p of localPages.slice(1)) {
+      for (const slug of p.services) {
+        const text = p[locale].serviceTexts?.[slug];
+        expect(text, `${p.city} ${slug}`).toBeTruthy();
+        expect(text).not.toBe(services.find((s) => s.slug === slug)![locale].short);
+      }
+    }
+  });
+
+  it('Innsbruck nennt kein deutsches BFSG', () => {
+    const innsbruck = localPages.find((p) => p.city === 'Innsbruck')!;
+    for (const l of locales) expect(JSON.stringify(innsbruck[l])).not.toContain('BFSG');
+  });
+
+  it('Karten zeigen den Stadttext', () => {
+    const p = localPages[1]!;
+    render(<LocalLanding page={p} locale="de" />);
+    expect(screen.getByText(p.de.serviceTexts![p.services[0]!]!)).toBeInTheDocument();
   });
 });

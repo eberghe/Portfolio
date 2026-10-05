@@ -253,3 +253,18 @@ test('AK-25: jede Station passt ohne Abschneiden in den Bildschirm', async ({ pa
     }
   }
 });
+
+test('AK-28: mobil steht der Stationstext unten, Gesichter oben bleiben frei', async ({ page }, info) => {
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  await page.evaluate(() => {
+    const area = document.querySelector('[data-journey] ol')!.parentElement!.parentElement!;
+    scrollTo({ top: area.getBoundingClientRect().top + scrollY, behavior: 'instant' });
+  });
+  await page.waitForTimeout(400);
+  const { height } = page.viewportSize()!;
+  const h3 = (await panels(page).first().locator('h3').boundingBox())!;
+  if (info.project.name === 'mobile-360') expect(h3.y).toBeGreaterThan(height / 2);
+  else expect(h3.y).toBeLessThan(height / 2);
+});

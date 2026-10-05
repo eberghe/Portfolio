@@ -2,6 +2,8 @@ import { localizedPath, type Locale } from '@/lib/i18n';
 
 export const SITE_URL = 'https://erik-bergheimer.de';
 export const EMAIL = 'erb1209@outlook.de';
+export const INSTAGRAM = 'https://www.instagram.com/erik.bergheimer/';
+export const LINKEDIN = 'https://www.linkedin.com/in/erik-bergheimer/';
 
 /** Absolute URL; die Startseite ohne Schrägstrich am Ende (functions/seo/meta-und-schema.md AK-6) */
 export const absoluteUrl = (path: string, locale: Locale) => {

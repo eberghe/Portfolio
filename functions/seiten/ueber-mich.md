@@ -81,7 +81,7 @@ Vorlage: Hero mit großer Begrüßung links und Hochkant-Foto rechts; Abschnitt 
 
 Ersetzt den bisherigen Seitenaufbau (Hero halb/halb, senkrechte Zeitleiste mit Linie). AK-3 bis AK-13 gelten weiter.
 
-- AK-14: Hero mit genau einer h1 „Erik Bergheimer“, Vorstellungstext (AK-8) und Foto mit beschreibendem Alt-Text.
+- AK-14: Hero mit genau einer h1, Vorstellungstext (AK-8) und Foto mit beschreibendem Alt-Text. (h1 seit AK-26: „Servus, ich bin Erik“.)
 - AK-15: Die Zeitleiste bleibt ein `ol` (AK-5) im Abschnitt mit h2 „Mein Weg“; jede Tafel hat `<time dateTime>`, h3 und Text. Tafeln ohne Foto zeigen einen dekorativen Platzhalter (kein `img`).
 - AK-16: Mit JavaScript und ohne reduzierte Bewegung bleiben die Stationen auf allen Bildschirmgrößen (auch mobil, Erik 2026-10-05: „mobile muss natürlich auch alles passen“) bildschirmfüllend kleben und wechseln beim Scrollen nacheinander: am Anfang des Abschnitts ist die erste Station aktiv, am Ende die letzte. Die Seite selbst scrollt nie waagerecht. (Bis 2026-10-05 lief ab 768 px eine waagerechte Reihe durch, mobil standen die Tafeln untereinander.)
 - AK-17: Ohne JavaScript und bei reduzierter Bewegung stehen die Tafeln untereinander (normaler Fluss), alle Inhalte erreichbar.
@@ -119,3 +119,19 @@ Geprüft: richtige Station am Anfang, Ende und nach schnellem Scrollen in beide 
 ### Blinder Kritiker (Pfeile und Mobil, 2026-10-05)
 
 Geprüft bei 360×780, 390×844, 360×640, 768, 1280 und mit Touch: alle 15 Stationen passen ohne Abschneiden, nichts überlappt Pfeile oder Kopfzeile, Klick, Tippen, Enter, Leertaste und schnelles Klicken funktionieren, DE/EN-Namen stimmen, reduzierte Bewegung und ohne JS untereinander ohne Pfeile. Behoben: Fokus ging an den Enden verloren (jetzt `aria-disabled`), Wechsel per Pfeil wird für Screenreader angesagt, Hover blieb auf Touch-Geräten hängen, Fokusring jetzt rund, Tooltip mit Namen.
+
+## Schlichter Hero (Erik, 2026-10-05)
+
+Wunsch Erik mit Screenshot von matteofabbiani.webflow.io/about: „ganz einfach und dezent. nicht so viel text das liest sich eh keiner durch.“ Ersetzt in AK-12 die Pflicht, dass die Vorstellung Bali nennt, und in AK-13, dass sie die aktuelle Rolle nennt; beides erzählt jetzt die Zeitleiste.
+
+- AK-26: Der Hero zeigt nur vier Dinge: h1 „Servus, ich bin Erik“ (EN „Hi, I'm Erik“), einen kurzen Vorstellungstext (höchstens 160 Zeichen, freiberuflich und Augsburg nach AK-8), eine Reihe Links zu Instagram, LinkedIn und E-Mail (je mit zugänglichem Namen, mindestens 44 × 44 px) und das Hochkant-Foto. Keine Überzeile, keine Rollenzeile, keine Schlagwort-Chips. Ab 768 px Text links, Foto rechts; darunter Text über dem Foto.
+
+### Blinder Kritiker (schlichter Hero, 2026-10-05)
+
+Geprüft bei 360, 768, 1280 und 1440 px, hell und dunkel, DE und EN: keine axe-Verstöße, kein waagerechter Überlauf, eine h1, Icon-Links 44 × 44 px mit Namen und sichtbarem Fokus, Alt-Text passt zum Foto. Behoben: bei 768 × 1024 wirkte der Hero halb leer (volle Bildschirmhöhe jetzt erst ab 1024 px), Foto bei 2x-Bildschirmen leicht unscharf (`sizes` berücksichtigt den Hochkant-Zuschnitt), Werkzeug-Überschrift stand 34 px neben der gemeinsamen linken Kante. Mitbehoben: Alt-Text beschrieb ein anderes Foto (Sonnenbrille, schwarzes Hemd). Offen: Das Foto zeigt Erik von hinten; ein echtes Porträt wäre stärker, wenn Erik eins hat.
+
+## Echte Stationsfotos (Erik, 2026-10-05)
+
+- AK-27: Fotos von Erik: „Bachelorabschluss“ (2023-08, EN „Bachelor's degree“; Urkundenübergabe an der TH Ingolstadt, ersetzt das alte Flur-Porträt) „Werkstudent bei TEAM23“ (2022-02, Workshop auf einer Terrasse) „UX/UI-Designer bei TEAM23 (Vollzeit)“ (2023-09, im Crew-Shirt mit Peace-Zeichen) und „Business Development Manager bei HERO Software“ (2026-09, Herocon im Signal Iduna Park; Erik ist BDM für die Herocon, die von HERO Software initiierte Konferenz). Jedes Stationsfoto kann einen Bildausschnitt (`position`, CSS `object-position`) mitbringen, damit Erik im Querformat-Zuschnitt sichtbar bleibt. Fotos werden als JPEG höchstens 2000 px lang abgelegt.
+- AK-28: Unter 768 px stehen Titel, Datum und Text einer klebenden Station unten im Bild über den Pfeilen (Jahreszahl und Zähler bleiben oben), damit Gesichter im oberen Bilddrittel frei bleiben (Erik-Fotos 2026-10-05). Ab 768 px bleibt der Text oben.
+- AK-29: Schärfe (Erik, 2026-10-05: „das sieht schon recht unscharf aus“): Jedes Stationsfoto ist auf der langen Seite mindestens 1600 px groß; kleinere Vorlagen werden mit Real-ESRGAN x4 hochgerechnet und auf höchstens 2400 px verkleinert. Die Zeitleiste fordert die Bilder mit Qualität 85 an (`images.qualities` in `next.config.ts`). Breite und Höhe in `lib/content/about.ts` stimmen mit der Datei überein. Echte Originale (volle Auflösung) von Erik ersetzen die hochgerechneten Bilder, sobald sie da sind.

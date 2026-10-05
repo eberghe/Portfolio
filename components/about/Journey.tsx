@@ -238,8 +238,9 @@ export default function Journey({
                       alt={item.image.alt[locale]}
                       fill
                       sizes="100vw"
+                      quality={85}
                       className="object-cover"
-                      style={zoom}
+                      style={{ ...zoom, objectPosition: item.image.position }}
                     />
                   ) : (
                     // Platzhalter, bis Erik Bilder schickt (AK-15)
@@ -263,7 +264,8 @@ export default function Journey({
                     <div
                       className={`h-full flex flex-col gap-4 p-6 sm:p-10 md:p-14 ${
                         pinned
-                          ? `${PINNED} justify-start transition-[opacity,transform] ease-out ${
+                          ? // Mobil Text unten über den Pfeilen, damit Gesichter oben frei bleiben (AK-28)
+                            `${PINNED} max-md:justify-end max-md:pb-24 md:justify-start transition-[opacity,transform] ease-out ${
                               // Alter Text geht schnell, neuer kommt kurz danach: kein Überlagern
                               i === active
                                 ? 'opacity-100 translate-y-0 pointer-events-auto duration-500 delay-300'
@@ -272,7 +274,7 @@ export default function Journey({
                           : 'justify-end'
                       }`}
                     >
-                      <span aria-hidden="true" className={`${YEAR} ${pinned ? 'invisible' : ''}`}>
+                      <span aria-hidden="true" className={`${YEAR} ${pinned ? 'invisible max-md:hidden' : ''}`}>
                         {item.date.slice(0, 4)}
                       </span>
                       <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-3 lg:gap-12 items-start max-w-[1000px]">

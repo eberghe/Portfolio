@@ -7,6 +7,8 @@ export interface TimelineImage {
   width: number;
   height: number;
   alt: Record<Locale, string>;
+  /** Bildausschnitt als CSS object-position, damit Erik im Querformat sichtbar bleibt (AK-27) */
+  position?: string;
 }
 
 export interface TimelineItem extends Record<Locale, { title: string; text: string }> {
@@ -15,17 +17,25 @@ export interface TimelineItem extends Record<Locale, { title: string; text: stri
   image?: TimelineImage;
 }
 
-const img = (name: string, width: number, height: number, de: string, en: string): TimelineImage => ({
+const img = (
+  name: string,
+  width: number,
+  height: number,
+  de: string,
+  en: string,
+  position?: string,
+): TimelineImage => ({
   src: `/images/about/timeline-${name}.jpg`,
   width,
   height,
   alt: { de, en },
+  ...(position ? { position } : {}),
 });
 
 const team23 = img(
   'team23',
-  533,
-  800,
+  1599,
+  2400,
   'Erik im weißen TEAM23-Crew-Shirt mit Schlüsselband',
   'Erik in a white TEAM23 crew shirt with a lanyard',
 );
@@ -35,13 +45,12 @@ export const aboutContent = {
     metaTitle: 'Über mich: Erik Bergheimer, UX/UI-Designer | Erik Bergheimer',
     metaDescription:
       'Erik Bergheimer: UX/UI-Designer und Webflow-Entwickler aus Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. am MCI Innsbruck.',
-    badge: 'Augsburg',
     title: 'Erik Bergheimer: UX/UI-Designer & Webflow-Entwickler',
     subtitle: 'Portfolio · Augsburg',
-    facts: 'M.A. Management, Communication & IT, MCI Innsbruck',
+    greeting: 'Servus, ich bin Erik',
     intro:
-      'Ich bin Erik und arbeite als Freelancer für UX/UI-Design, Webflow, Barrierefreiheit und KI-Beratung, vor Ort in Augsburg oder remote. Meinen Bachelor in User Experience Design habe ich an der TH Ingolstadt gemacht. Seitdem habe ich in verschiedenen Unternehmen und Ländern gearbeitet, von Augsburg über Bali bis Innsbruck. 2026 habe ich meinen Master in Management, Communication & IT (M.A.) am MCI in Innsbruck abgeschlossen; daneben war ich Werkstudent im Business Development bei HERO Software. Heute arbeite ich dort als Business Development Manager.',
-    photoAlt: 'Erik Bergheimer mit Sonnenbrille und schwarzem Hemd, lächelnd',
+      'Freiberuflicher UX/UI-Designer und Webflow-Entwickler aus Augsburg. Schreib mir, um herauszufinden, ob ich gerade Zeit für dein Projekt habe.',
+    photoAlt: 'Erik von hinten am Strand im weißen T-Shirt und mit Kappe, neben ihm ein Surfbrett',
     tools: 'Tools, mit denen ich arbeite',
     pause: 'Animation anhalten',
     journey: 'Mein Weg',
@@ -50,8 +59,6 @@ export const aboutContent = {
     journeyHint: 'Scroll weiter',
     journeyPrev: 'Vorherige Station',
     journeyNext: 'Nächste Station',
-    eyebrow: 'Über mich',
-    role: 'UX/UI-Designer, Webflow-Entwickler und Business Development Manager bei HERO Software',
     outroTitle: 'Genug über mich. Jetzt bist du dran',
     outroText:
       'Erzähl mir, wo du gerade stehst und was du vorhast. Im kostenlosen Erstgespräch schauen wir gemeinsam, wie ich helfen kann.',
@@ -63,13 +70,12 @@ export const aboutContent = {
     metaTitle: 'About Erik Bergheimer, UX/UI designer | Erik Bergheimer',
     metaDescription:
       'Erik Bergheimer: UX/UI designer and Webflow developer from Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. at MCI Innsbruck.',
-    badge: 'Augsburg',
     title: 'Erik Bergheimer: UX/UI Designer & Webflow Developer',
     subtitle: 'Portfolio · Augsburg',
-    facts: 'M.A. in Management, Communication & IT, MCI Innsbruck',
+    greeting: "Hi, I'm Erik",
     intro:
-      "I'm Erik, a freelance UX/UI designer and Webflow developer who also advises on accessibility and AI, on site in Augsburg or remote. I completed my Bachelor's degree in User Experience Design at Technische Hochschule Ingolstadt (THI). Since then I have worked for different companies and in different countries, from Augsburg to Bali to Innsbruck. In 2026 I completed my Master's degree in Management, Communication and IT (M.A.) at MCI in Innsbruck, alongside a working-student role in Business Development at HERO Software, where I now work as Business Development Manager.",
-    photoAlt: 'Erik Bergheimer wearing sunglasses and a black shirt, smiling',
+      'Freelance UX/UI designer and Webflow developer from Augsburg. Get in touch to find out if I have time for your project.',
+    photoAlt: 'Erik seen from behind on a beach in a white T-shirt and cap, next to a surfboard',
     tools: 'Tools I work with',
     pause: 'Pause animation',
     journey: 'My journey',
@@ -78,8 +84,6 @@ export const aboutContent = {
     journeyHint: 'Keep scrolling',
     journeyPrev: 'Previous stop',
     journeyNext: 'Next stop',
-    eyebrow: 'About me',
-    role: 'UX/UI designer, Webflow developer and Business Development Manager at HERO Software',
     outroTitle: 'Enough about me. Your turn',
     outroText:
       "Tell me where you are right now and what you're planning. In a free intro call we'll work out together how I can help.",
@@ -90,11 +94,6 @@ export const aboutContent = {
 };
 
 export const aboutPhoto = { src: '/images/about/erik.jpg', width: 1200, height: 1200 };
-
-export const chips: Record<Locale, string[]> = {
-  de: ['UX/UI Design', 'Webflow', 'Barrierefreiheit', 'KI-Beratung', 'Design Systems', 'Fotografie'],
-  en: ['UX/UI design', 'Webflow', 'Accessibility', 'AI consulting', 'Design systems', 'Photography'],
-};
 
 export const tools = [
   { name: 'Figma', src: '/images/logos/figma.png', width: 53, height: 80 },
@@ -123,8 +122,8 @@ export const timeline: TimelineItem[] = [
     date: '2018-10',
     image: img(
       'nz',
-      800,
-      800,
+      2400,
+      2400,
       'Erik sitzt auf einem Felsen an einem Gletschersee vor schneebedeckten Bergen in Neuseeland',
       'Erik sitting on a rock by a glacier lake in front of snow-capped mountains in New Zealand',
     ),
@@ -141,8 +140,8 @@ export const timeline: TimelineItem[] = [
     date: '2018-12',
     image: img(
       'kiwi',
-      600,
-      800,
+      1800,
+      2400,
       'Reihen einer Kiwi-Plantage mit Rankgerüsten',
       'Rows of a kiwi orchard with trellises',
     ),
@@ -181,8 +180,8 @@ export const timeline: TimelineItem[] = [
     date: '2019-10',
     image: img(
       'ingolstadt',
-      600,
-      800,
+      1800,
+      2400,
       'Das Neue Schloss in Ingolstadt im Abendlicht',
       'The New Castle in Ingolstadt in the evening light',
     ),
@@ -209,6 +208,14 @@ export const timeline: TimelineItem[] = [
   },
   {
     date: '2022-02',
+    image: img(
+      'team23-workshop',
+      1600,
+      2400,
+      'Erik lächelnd auf einer Bank bei einem Workshop im Freien, hinter ihm Plakate zu Kommunikation und Empathie',
+      'Erik smiling on a bench at an outdoor workshop, with posters on communication and empathy behind him',
+      '55% 30%',
+    ),
     de: {
       title: 'Werkstudent bei TEAM23',
       text: 'Nach dem erfolgreichen Abschluss meines Praktikums begann ich im Februar 2022 als Werkstudent bei TEAM23.',
@@ -221,23 +228,32 @@ export const timeline: TimelineItem[] = [
   {
     date: '2023-08',
     image: img(
-      'thesis',
-      600,
-      600,
-      'Porträt von Erik in schwarzem Pullover in einem Flur',
-      'Portrait of Erik in a black jumper in a hallway',
+      'bachelor',
+      1500,
+      2000,
+      'Erik bekommt seine Bachelorurkunde in User Experience Design überreicht und schüttelt dabei die Hand',
+      'Erik receiving his Bachelor of Science certificate in User Experience Design with a handshake',
+      '60% 15%',
     ),
     de: {
-      title: 'Bachelorarbeit',
-      text: 'Ich schloss meine Bachelorarbeit mit dem Titel „Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce“ ab.',
+      title: 'Bachelorabschluss',
+      text: 'Mit meiner Bachelorarbeit „Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce“ schloss ich mein Studium in User Experience Design an der TH Ingolstadt ab.',
     },
     en: {
-      title: 'Bachelor thesis',
-      text: 'I completed my Bachelor\'s thesis titled "Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce."',
+      title: "Bachelor's degree",
+      text: 'With my thesis "Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce", I completed my degree in User Experience Design at TH Ingolstadt.',
     },
   },
   {
     date: '2023-09',
+    image: img(
+      'team23-festival',
+      1659,
+      2400,
+      'Erik im weißen TEAM23-Crew-Shirt mit Rucksack und Badge, er zeigt lachend ein Peace-Zeichen',
+      'Erik in a white TEAM23 crew shirt with a backpack and badge, smiling and making a peace sign',
+      '50% 28%',
+    ),
     de: {
       title: 'UX/UI-Designer bei TEAM23 (Vollzeit)',
       text: 'Im September 2023 startete ich als UX/UI-Designer in Vollzeit bei TEAM23!',
@@ -251,8 +267,8 @@ export const timeline: TimelineItem[] = [
     date: '2024-02',
     image: img(
       'bali',
-      600,
-      800,
+      1800,
+      2400,
       'Arbeitsplatz im Zimmer auf Bali: Schreibtisch mit Laptop, Spiegel und Fernseher',
       'Workspace in a room in Bali: desk with laptop, mirror and TV',
     ),
@@ -269,8 +285,8 @@ export const timeline: TimelineItem[] = [
     date: '2024-10',
     image: img(
       'innsbruck',
-      600,
-      800,
+      1800,
+      2400,
       'Erik mit Rucksack auf einem Gipfel, Blick über das Inntal bei Innsbruck',
       'Erik with a backpack on a summit, looking over the Inn valley near Innsbruck',
     ),
@@ -287,8 +303,8 @@ export const timeline: TimelineItem[] = [
     date: '2025-09',
     image: img(
       'hero-software',
-      800,
-      800,
+      2400,
+      2400,
       'Porträt von Erik im schwarzen HERO-Shirt vor weißem Hintergrund',
       'Portrait of Erik in a black HERO shirt against a white background',
     ),
@@ -314,13 +330,21 @@ export const timeline: TimelineItem[] = [
   },
   {
     date: '2026-09',
+    image: img(
+      'herocon',
+      1800,
+      2400,
+      'Die Bühne der Herocon im Signal Iduna Park in Dortmund, auf der Leinwand „Herocon 2027“',
+      'The Herocon stage at Signal Iduna Park in Dortmund, with "Herocon 2027" on the screen',
+      '50% 55%',
+    ),
     de: {
       title: 'Business Development Manager bei HERO Software',
-      text: 'Nach dem Master blieb ich bei HERO Software und wechselte im September 2026 vom Werkstudenten zum Business Development Manager.',
+      text: 'Nach dem Master blieb ich bei HERO Software und wechselte im September 2026 vom Werkstudenten zum Business Development Manager für die Herocon, die Konferenz von HERO Software.',
     },
     en: {
       title: 'Business Development Manager at HERO Software',
-      text: "After my Master's I stayed at HERO Software and moved from working student to Business Development Manager in September 2026.",
+      text: "After my Master's I stayed at HERO Software and moved from working student to Business Development Manager for Herocon, the conference started by HERO Software, in September 2026.",
     },
   },
 ];

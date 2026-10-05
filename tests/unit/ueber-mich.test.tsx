@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import About from '@/components/about/About';
 import { aboutContent, timeline, tools } from '@/lib/content/about';
@@ -64,7 +65,7 @@ describe('AK-6: Deutsch auf der deutschen Seite', () => {
 
 describe('AK-8: Freelance', () => {
   it.each(['de', 'en'] as const)('%s', (locale) => {
-    expect(aboutContent[locale].intro).toMatch(locale === 'de' ? /Freelancer|freiberuflich/ : /freelance/i);
+    expect(aboutContent[locale].intro).toMatch(locale === 'de' ? /Freelancer|freiberuflich/i : /freelance/i);
     expect(aboutContent[locale].intro).toMatch(/Augsburg/);
   });
 });
@@ -116,7 +117,6 @@ describe('AK-12: Vergangenheit und Parität', () => {
   it.each(['de', 'en'] as const)('%s', (locale) => {
     const all = [aboutContent[locale].intro, ...timeline.map((t) => t[locale].text)].join(' ');
     expect(all).not.toMatch(/arbeite (ich )?jetzt|I'm now working|I am currently/);
-    expect(aboutContent[locale].intro).toMatch(/Bali/);
     expect(JSON.stringify(person(locale).workLocation)).toContain(locale === 'de' ? 'Deutschland' : 'Germany');
   });
 });
@@ -128,9 +128,21 @@ describe.each(['de', 'en'] as const)('Umbau Über mich (%s)', (locale) => {
     en: { journey: 'My journey', cta: 'Enough about me. Your turn', contact: '/en/contact' },
   }[locale];
 
-  it('AK-14: h1 „Erik Bergheimer“, Vorstellung und Foto', () => {
+  it('AK-14/AK-26: schlichter Hero mit Begrüßung, kurzer Vorstellung, Links und Foto', () => {
     render(<About locale={locale} />);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName('Erik Bergheimer');
+    expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(
+      locale === 'de' ? 'Servus, ich bin Erik' : "Hi, I'm Erik",
+    );
+    expect(aboutContent[locale].intro.length).toBeLessThanOrEqual(160);
+    const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
+    const links = within(hero).getAllByRole('link');
+    expect(links.map((l) => l.getAttribute('aria-label'))).toEqual([
+      'Instagram',
+      'LinkedIn',
+      locale === 'de' ? 'E-Mail' : 'Email',
+    ]);
+    expect(hero.querySelectorAll('li.rounded-full')).toHaveLength(0);
+    expect(hero.querySelectorAll('p')).toHaveLength(1);
     expect(screen.getByText(aboutContent[locale].intro)).toBeInTheDocument();
     expect(screen.getByRole('img', { name: aboutContent[locale].photoAlt })).toBeInTheDocument();
   });
@@ -159,5 +171,36 @@ describe.each(['de', 'en'] as const)('Umbau Über mich (%s)', (locale) => {
         .getAllByRole('link')
         .map((l) => l.getAttribute('href')),
     ).toEqual(expect.arrayContaining([t.contact, expect.stringMatching(/^mailto:/)]));
+  });
+});
+
+describe('AK-27: echte Stationsfotos', () => {
+  it('Bachelorabschluss, Werkstudent und Vollzeit bei TEAM23 haben Fotos mit Bildausschnitt', () => {
+    for (const title of [
+      'Bachelorabschluss',
+      'Werkstudent bei TEAM23',
+      'UX/UI-Designer bei TEAM23 (Vollzeit)',
+      'Business Development Manager bei HERO Software',
+    ]) {
+      const entry = timeline.find((t) => t.de.title === title)!;
+      expect(entry, title).toBeDefined();
+      expect(entry.image?.position, title).toMatch(/%/);
+    }
+    expect(timeline.find((t) => t.de.title === 'Bachelorabschluss')!.en.title).toBe("Bachelor's degree");
+  });
+
+  it('Bildausschnitt landet als object-position am Bild', () => {
+    render(<About locale="de" />);
+    const entry = timeline.find((t) => t.de.title === 'Werkstudent bei TEAM23')!;
+    const img = screen.getByRole('img', { name: entry.image!.alt.de });
+    expect(img.style.objectPosition).toBe(entry.image!.position);
+  });
+});
+
+describe('AK-29: scharfe Stationsfotos', () => {
+  it.each(timeline.filter((t) => t.image).map((t) => [t.de.title, t.image!] as const))('%s', async (_title, image) => {
+    const meta = await sharp(`public${image.src}`).metadata();
+    expect([meta.width, meta.height]).toEqual([image.width, image.height]);
+    expect(Math.max(image.width, image.height)).toBeGreaterThanOrEqual(1600);
   });
 });

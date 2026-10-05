@@ -38,7 +38,13 @@ test('AK-5: Lightbox ist ein modaler Dialog mit Tastaturbedienung', async ({ pag
 for (const scheme of ['light', 'dark'] as const) {
   test.describe(`Farbschema ${scheme}`, () => {
     test.use({ colorScheme: scheme });
-    for (const path of ['/projects', '/projects/cpr', '/en/projects/indonesia', '/projects/webflow', '/en/projects/prematch']) {
+    for (const path of [
+      '/projects',
+      '/projects/cpr',
+      '/en/projects/indonesia',
+      '/projects/webflow',
+      '/en/projects/prematch',
+    ]) {
       test(`AK-9: ${path} ohne axe-Verstöße und ohne horizontales Scrollen`, async ({ page }) => {
         await openHydrated(page, path);
         expect(await axe(page)).toEqual([]);

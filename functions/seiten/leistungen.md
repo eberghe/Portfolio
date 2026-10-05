@@ -100,3 +100,7 @@ Offen: Hero-Containerbreiten der Seitentypen vereinheitlichen.
 Aus dem Aufbau in #16 fehlte Punkt 6 „Warum ich (Wertekarten, Sticky-Stapel)“.
 
 - AK-27: Jede Leistungsseite (DE und EN) hat nach den Paketen den Abschnitt „Warum mit mir“ (EN „Why work with me“, h2) mit vier nummerierten Wertekarten (h3 und ein Satz). Die erste Karte ist leistungsspezifisch (`whyFocus` in `lib/content/service-details.ts`, auf jeder Seite ein anderer Titel), danach drei gemeinsame: ein Ansprechpartner von der Idee bis zum Livegang, ehrliche Einschätzung statt Verkaufsgespräch, vor Ort in Augsburg und remote. Keine Karte widerspricht der Leistung (Kritiker 2026-10-05: „Barrierefrei“ doppelt auf der Barrierefreiheitsseite, „Design und Umsetzung“ unpassend bei Fotografie und KI). Keine erfundenen Zahlen. Die Nummernspalte hat eine feste Breite, damit alle Titel bündig stehen. Ab 768 px stapeln sich die Karten beim Scrollen (`.sticky-stack`, animationen.md AK-5).
+
+## Fotografie keine Leistung mehr (Erik 2026-10-05)
+
+- AK-28: Es gibt sieben Leistungen; Fotografie entfällt als Leistung. `/services/photography` (EN `/en/services/photography`) leitet dauerhaft auf die Projekte um, wo die Fotoserien bleiben. Übersicht, Meta-Description, Startseite, FAQ, Footer, Kontaktformular und llms.txt nennen Fotografie nicht mehr als Leistung. Fotoserien zeigen keine „Passende Leistung“.

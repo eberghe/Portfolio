@@ -104,8 +104,11 @@ describe('AK-7: Querverlinkung', () => {
       expect(screen.getByRole('link', { name: page.de.serviceLink })).toHaveAttribute('href', '/webdesign-augsburg');
       unmount();
     }
-    render(<ServiceDetail service={services.find((s) => s.slug === 'photography')!} locale="de" />);
-    expect(screen.queryByRole('link', { name: page.de.serviceLink })).toBeNull();
+    const other = services.find((s) => !page.services.includes(s.slug));
+    if (other) {
+      render(<ServiceDetail service={other} locale="de" />);
+      expect(screen.queryByRole('link', { name: page.de.serviceLink })).toBeNull();
+    }
   });
 });
 

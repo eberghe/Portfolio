@@ -10,7 +10,7 @@ export const overviewText = {
   de: {
     metaTitle: 'Leistungen: UX/UI, Webflow, Barrierefreiheit, KI | Erik Bergheimer',
     metaDescription:
-      'UX/UI, Webflow, Barrierefreiheit, KI-Beratung, Website-Optimierung, Brand-Design, Design Systems und Fotografie aus Augsburg.',
+      'UX/UI, Webflow, Barrierefreiheit, KI-Beratung, Website-Optimierung, Brand-Design und Design Systems aus Augsburg.',
     title: 'Leistungen',
     intro: 'Was ich für dich tun kann: Design, Entwicklung und alles dazwischen.',
     keywords: 'Schlagworte',
@@ -18,7 +18,7 @@ export const overviewText = {
   en: {
     metaTitle: 'Services: UX/UI, Webflow, accessibility, AI | Erik Bergheimer',
     metaDescription:
-      'UX/UI, Webflow, accessibility, AI consulting, website optimisation, brand design, design systems and photography from Augsburg.',
+      'UX/UI, Webflow, accessibility, AI consulting, website optimisation, brand design and design systems from Augsburg.',
     title: 'Services',
     intro: 'What I can do for you: design, development and everything in between.',
     keywords: 'Keywords',

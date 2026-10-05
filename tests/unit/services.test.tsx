@@ -78,12 +78,17 @@ describe('AK-6: Übersicht', () => {
 });
 
 describe('AK-8: Suchwort im Titel', () => {
-  it('Design Systems und Fotografie', () => {
+  it('Design Systems', () => {
     const find = (slug: string) => services.find((s) => s.slug === slug)!;
     expect(find('design-systems').de.title).toMatch(/Design System/);
     expect(find('design-systems').en.title).toMatch(/Design system/i);
-    expect(find('photography').de.title).toMatch(/Fotografie/);
-    expect(find('photography').en.title).toMatch(/photography/i);
+  });
+
+  it('AK-28: Fotografie ist keine Leistung mehr', () => {
+    expect(services.map((s) => s.slug)).not.toContain('photography');
+    expect(services).toHaveLength(7);
+    for (const l of ['de', 'en'] as const)
+      expect(overviewText[l].metaDescription).not.toMatch(/fotografie|photography/i);
   });
 });
 
@@ -136,8 +141,8 @@ describe('AK-12: Übersicht', () => {
   it.each(['de', 'en'] as const)('Description nennt alle Leistungen (%s)', (locale) => {
     const d = overviewText[locale].metaDescription.toLowerCase();
     const words = {
-      de: ['ux/ui', 'webflow', 'barrierefreiheit', 'ki', 'optimierung', 'brand', 'design systems', 'fotografie'],
-      en: ['ux/ui', 'webflow', 'accessibility', 'ai', 'optimisation', 'brand', 'design systems', 'photography'],
+      de: ['ux/ui', 'webflow', 'barrierefreiheit', 'ki', 'optimierung', 'brand', 'design systems'],
+      en: ['ux/ui', 'webflow', 'accessibility', 'ai', 'optimisation', 'brand', 'design systems'],
     }[locale];
     for (const w of words) expect(d).toContain(w);
     expect(d.length).toBeLessThanOrEqual(160);

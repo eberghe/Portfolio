@@ -31,6 +31,9 @@ for (const [from, to] of [
   ['/services/business-development', '/services/website-process-optimization'],
   ['/en/services/webflow-framer', '/en/services/webflow-development'],
   ['/en/services/business-development', '/en/services/website-process-optimization'],
+  // AK-28: Fotografie ist keine Leistung mehr, die Fotoserien stehen bei den Projekten
+  ['/services/photography', '/projects'],
+  ['/en/services/photography', '/en/projects'],
 ] as const) {
   test(`AK-4: ${from} leitet dauerhaft weiter`, async ({ request }) => {
     const res = await request.get(from, { maxRedirects: 0 });

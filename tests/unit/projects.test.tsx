@@ -1,3 +1,4 @@
+import sharp from 'sharp';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import ProjectDetail from '@/components/projects/ProjectDetail';
@@ -17,8 +18,8 @@ describe('AK-10: Inhalte vollständig', () => {
       expect(v.trim()).not.toBe('');
   });
 
-  it('bestehende Projekte in der Reihenfolge des Bestands', () => {
-    expect(projects.map((p) => p.slug)).toEqual(['cpr', 'sightkick', 'indonesia', 'webflow', 'morocco']);
+  it('AK-30: Projekte nach Datum, neuestes zuerst', () => {
+    expect(projects.map((p) => p.slug)).toEqual(['prematch', 'morocco', 'sightkick', 'indonesia', 'webflow', 'cpr']);
   });
 });
 
@@ -140,18 +141,19 @@ describe('AK-11: ItemList', () => {
   it('alle Projekte', () => {
     const data = projectsItemListJsonLd('de', projects);
     expect(data.itemListElement).toHaveLength(projects.length);
-    expect(data.itemListElement[0]).toMatchObject({ url: 'https://erik-bergheimer.de/projects/cpr' });
+    expect(data.itemListElement[0]).toMatchObject({ url: 'https://erik-bergheimer.de/projects/prematch' });
   });
 });
 
 describe('AK-12: Kommt bald', () => {
   it('Titel vor Status, Bildfläche dekorativ', () => {
     render(<ProjectsOverview locale="de" />);
-    const heading = screen.getByRole('heading', { name: 'PreMatch' });
+    const heading = screen.getByRole('heading', { name: 'ROSE Bikes App', level: 3 });
     const item = heading.closest('li')!;
     const text = item.textContent!;
-    expect(text.indexOf('PreMatch')).toBeLessThan(text.lastIndexOf('Kommt bald'));
-    for (const el of item.querySelectorAll('[aria-hidden="true"]')) expect(el.textContent).not.toContain('PreMatch');
+    expect(text.indexOf('ROSE Bikes App')).toBeLessThan(text.lastIndexOf('Kommt bald'));
+    for (const el of item.querySelectorAll('[aria-hidden="true"]'))
+      expect(el.textContent).not.toContain('ROSE Bikes App');
     expect(item.querySelector('[aria-hidden="true"]')).toHaveTextContent('Kommt bald');
   });
 });
@@ -206,8 +208,8 @@ describe('AK-17: passende Leistung', () => {
     );
   });
 
-  it('jede Leistung existiert', () => {
-    for (const p of projects)
+  it('jede Leistung existiert (Fotoserien haben keine mehr, leistungen.md AK-28)', () => {
+    for (const p of projects.filter((p) => p.service !== 'photography'))
       expect(
         services.some((s) => s.slug === p.service),
         p.slug,
@@ -283,5 +285,70 @@ describe('Umbau Übersicht (Issue #18)', () => {
     const h2s = screen.getAllByRole('heading', { level: 2 });
     const cta = h2s[h2s.length - 1]!.closest('section')!;
     expect(within(cta).getByRole('link', { name: 'Free intro call' })).toHaveAttribute('href', '/en/contact');
+  });
+});
+
+describe('PreMatch (Masterarbeit)', () => {
+  const p = find('prematch');
+
+  it('AK-31: Masterarbeit als PDF zum Download', async () => {
+    expect(p.download?.url).toBe('/Masterarbeit_PreMatch_Bergheimer.pdf');
+    const { statSync } = await import('node:fs');
+    expect(statSync(`public${p.download!.url}`).size).toBeGreaterThan(1_000_000);
+    expect(find('morocco').year).toBe('2025');
+  });
+
+  it('AK-25: Projekt aus 2026, UX/UI, nicht mehr in Arbeit', () => {
+    expect(p.year).toBe('2026');
+    expect(p.service).toBe('ux-ui-design');
+    expect(comingSoon.map((c) => c.slug)).not.toContain('prematch');
+  });
+
+  it('AK-26: drei Phasen, Bilder an der passenden Stelle', () => {
+    for (const l of locales)
+      expect(p[l].sections.map((s) => s.id)).toEqual(['problem', 'benchmarking', 'design', 'study', 'limits']);
+    expect(p.inlineImages.sketches).toHaveLength(2);
+    expect(p.inlineImages.friction).toHaveLength(2);
+    render(<ProjectDetail project={p} locale="de" />);
+    const friction = screen.getByRole('heading', { level: 3, name: 'Positive Friction' }).parentElement!;
+    for (const img of p.inlineImages.friction!)
+      expect(within(friction).getByRole('img', { name: img.alt.de })).toBeInTheDocument();
+  });
+
+  it('AK-29: Diagramme direkt unter dem Abschnitt, zu zweit nebeneinander', () => {
+    expect(p.inlineImages.benchmarking).toHaveLength(1);
+    expect(p.inlineImages.study).toHaveLength(4);
+    render(<ProjectDetail project={p} locale="de" />);
+    const study = screen.getByRole('region', { name: 'Phase III: Nutzerstudie' });
+    for (const img of p.inlineImages.study!)
+      expect(within(study).getByRole('img', { name: img.alt.de })).toBeInTheDocument();
+    expect(within(study).getAllByRole('list')[0]).toHaveClass('sm:grid-cols-2');
+    for (const img of p.inlineImages.study!) expect(img.alt.de).toMatch(/\d/);
+  });
+
+  it.each(locales)('AK-27: Kennzahlen mit Quelle in der Sprache (%s)', (locale) => {
+    render(<ProjectDetail project={p} locale={locale} />);
+    const region = screen.getByRole('region', { name: locale === 'de' ? 'Kennzahlen' : 'Key figures' });
+    expect(region).toHaveTextContent(locale === 'de' ? '90,0' : '90.0');
+    expect(region).toHaveTextContent('70');
+    expect(region).toHaveTextContent(locale === 'de' ? 'Nutzerstudie' : 'User study');
+  });
+
+  it.each([p.thumbnail, ...p.gallery, ...Object.values(p.inlineImages).flat()].map((i) => [i.src, i] as const))(
+    'AK-28: %s',
+    async (src, img) => {
+      const meta = await sharp(`public${src}`).metadata();
+      expect([meta.width, meta.height]).toEqual([img.width, img.height]);
+      expect(img.width).toBeGreaterThanOrEqual(1000);
+      if (src.includes('screen')) expect(meta.hasAlpha).toBe(true);
+    },
+  );
+});
+
+describe('Leistungen AK-28: Fotoserien ohne passende Leistung', () => {
+  it('kein Link auf eine Fotografie-Leistung', () => {
+    render(<ProjectDetail project={find('morocco')} locale="de" />);
+    expect(screen.queryByText(/Passende Leistung/)).toBeNull();
+    expect(document.querySelector('a[href*="/services/photography"]')).toBeNull();
   });
 });

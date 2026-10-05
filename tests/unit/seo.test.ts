@@ -110,6 +110,7 @@ describe('meta-und-schema AK-5: llms.txt', () => {
     }
     for (const p of projects) expect(txt).toContain(`(${base}/projects/${p.slug})`);
     expect(txt).not.toContain('webflow-framer');
+    expect(txt).not.toContain('/services/photography');
   });
 });
 

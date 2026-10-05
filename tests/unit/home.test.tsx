@@ -56,9 +56,9 @@ describe.each([
       expect(link).toHaveAttribute('href', `${prefix}/contact`);
   });
 
-  it('AK-5: alle acht Leistungen verlinkt', () => {
+  it('AK-5: alle sieben Leistungen verlinkt', () => {
     render(<Home locale={locale} />);
-    expect(services).toHaveLength(8);
+    expect(services).toHaveLength(7);
     for (const s of services) {
       const link = screen.getByRole('link', {
         name: new RegExp(s[locale].title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')),
@@ -153,7 +153,7 @@ describe('AK-12: kurze Linknamen mit Beschreibung', () => {
     const ux = screen.getByRole('link', { name: 'UX/UI Design' });
     expect(ux).toHaveAccessibleDescription(/Von der ersten Idee/);
     const project = screen.getByRole('link', { name: "SIGHT'KICK" });
-    expect(project).toHaveAccessibleDescription(/Masterarbeit/);
+    expect(project).toHaveAccessibleDescription(/Masterprojekt/);
   });
 });
 
@@ -172,9 +172,9 @@ describe('AK-13: Fakten stimmen mit dem Inhalt überein', () => {
 });
 
 describe('AK-17: Entscheidungen von Erik (2026-10-04)', () => {
-  it('Hero nennt freiberuflich und Einsatzgebiet', () => {
+  it('Hero nennt Einsatzgebiet, aber nicht freiberuflich (AK-41)', () => {
     render(<Home locale="de" />);
-    expect(screen.getAllByText(/freiberuflich/i).length).toBeGreaterThan(0);
+    expect(screen.queryAllByText(/freiberuflich|freelance/i)).toHaveLength(0);
     expect(screen.getAllByText(/Remote/i).length).toBeGreaterThan(0);
   });
 
@@ -239,9 +239,9 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
     const stack = container.querySelector('.sticky-stack')!;
     expect(stack).not.toBeNull();
     const cards = stack.querySelectorAll(':scope > li');
-    expect(cards).toHaveLength(8);
+    expect(cards).toHaveLength(7);
     expect(cards[0]).toHaveTextContent('01');
-    expect(cards[7]).toHaveTextContent('08');
+    expect(cards[6]).toHaveTextContent('07');
     for (const card of cards) {
       expect(card.querySelector('h3')).not.toBeNull();
       const features = card.querySelectorAll('ul li');
@@ -309,5 +309,32 @@ describe.each(['de', 'en'] as const)('Restpunkte Startseite (%s)', (locale) => {
       'href',
       locale === 'de' ? '/faqs' : '/en/faqs',
     );
+  });
+});
+
+describe('AK-40: PreMatch auf der Startseite', () => {
+  it('PreMatch zuerst, vier Karten, CPR nicht mehr dabei', () => {
+    render(<Home locale="de" />);
+    const links = screen.getAllByRole('link').filter((a) => /^\/projects\/[a-z]/.test(a.getAttribute('href') ?? ''));
+    expect(links.map((a) => a.getAttribute('href'))).toEqual([
+      '/projects/prematch',
+      '/projects/sightkick',
+      '/projects/indonesia',
+      '/projects/webflow',
+    ]);
+    expect(screen.getByRole('link', { name: 'PreMatch' })).toHaveAccessibleDescription(/Masterarbeit/);
+  });
+});
+
+describe('AK-41: nicht als freiberuflich bezeichnen', () => {
+  it('keine Selbstbeschreibung als Freelancer in den Inhalten', async () => {
+    const mods = await Promise.all([
+      import('@/lib/content/home'),
+      import('@/lib/content/about'),
+      import('@/lib/content/local'),
+      import('@/lib/llms'),
+    ]);
+    const text = JSON.stringify(mods.slice(0, 3)) + mods[3].llmsTxt();
+    expect(text).not.toMatch(/freiberuflich|freelancer\b|freelance (ux|for)|a freelance/i);
   });
 });

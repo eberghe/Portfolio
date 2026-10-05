@@ -35,9 +35,11 @@ export interface ProjectImage {
 
 /** Kennzahl, nur mit Quelle (AK-2) */
 export interface ProjectMetric {
-  value: string;
+  /** Wert, bei Bedarf je Sprache (Dezimalkomma) */
+  value: string | Record<Locale, string>;
   label: Record<Locale, string>;
-  source: string;
+  /** Quelle, bei Bedarf je Sprache */
+  source: string | Record<Locale, string>;
 }
 
 export interface Project extends Record<Locale, ProjectText> {
@@ -47,10 +49,10 @@ export interface Project extends Record<Locale, ProjectText> {
   tools: string;
   team?: string;
   thumbnail: { src: string; width: number; height: number; alt: Record<Locale, string> };
-  /** Slug der passenden Leistung (AK-17) */
+  /** Slug der passenden Leistung (AK-17); 'photography' steht nur noch für den Filter, Fotografie ist keine Leistung mehr */
   service: string;
   gallery: ProjectImage[];
-  /** Bilder unter einem Unterabschnitt, Schlüssel = id des Unterabschnitts */
+  /** Bilder unter einem Unterabschnitt oder (einspaltig, AK-29) direkt unter einem Abschnitt, Schlüssel = id */
   inlineImages: Record<string, ProjectImage[]>;
   download?: { url: string; label: Record<Locale, string> };
   metrics?: ProjectMetric[];
@@ -58,285 +60,353 @@ export interface Project extends Record<Locale, ProjectText> {
 
 export const projects: Project[] = [
   {
-    slug: 'cpr',
-    year: '2020–2021',
-    timeline: '10/2020 – 01/2021',
-    tools: 'Photoshop, Illustrator, AfterEffects, PremierePro, XD',
-    team: 'Dominik Dumberger, Martin Ferstl',
+    // Inhalte aus Eriks Masterarbeit (MCI Innsbruck, 2026), siehe functions/seiten/projekte.md AK-25 bis AK-28
+    slug: 'prematch',
+    year: '2026',
+    timeline: '2026',
+    tools: 'Figma · Flutter · Firebase · API-Sports',
     thumbnail: {
-      src: '/images/project-cpr.jpg',
+      src: '/images/project-prematch.jpg',
       width: 1920,
-      height: 977,
+      height: 1080,
       alt: {
-        de: 'Smartphones mit Screens der CPR-Trainings-App: Login, Training und Statistik',
-        en: 'Smartphones showing screens of the CPR training app: login, training and statistics',
+        de: 'Designsystem von PreMatch: Logo, Buttons, Farben mit kräftigem Primärblau, Icons in drei Zuständen, Abzeichen und die Schrift Inter',
+        en: 'PreMatch design system: logo, buttons, colours with a strong primary blue, icons in three states, badges and the Inter typeface',
+      },
+    },
+    download: {
+      url: '/Masterarbeit_PreMatch_Bergheimer.pdf',
+      label: {
+        de: 'Masterarbeit (PDF, englisch, 7,7 MB)',
+        en: "Master's thesis (PDF, 7.7 MB)",
       },
     },
     service: 'ux-ui-design',
     gallery: [],
     inlineImages: {
-      personae: [
+      benchmarking: [
         {
-          src: '/images/projects/cpr-amy.jpg',
-          width: 1222,
-          height: 816,
+          src: '/images/projects/prematch-chart-benchmark.jpg',
+          width: 2400,
+          height: 2043,
           alt: {
-            de: 'Persona Amy Average: 13-jährige Schülerin, kontaktfreudig, wenig motiviert',
-            en: 'Persona Amy Average: 13-year-old pupil, outgoing, not very motivated',
+            de: 'Radar-Diagramm des Benchmarkings: Kicktipp, Tackle, Teamtip und Tipico in sieben Kategorien auf einer Skala von 1 bis 5. Bei „Social & Community“ liegen alle vier um 2, Kicktipp ist bei „Immersion & Narrative“ am schwächsten',
+            en: 'Benchmark radar chart: Kicktipp, Tackle, Teamtip and Tipico across seven categories on a scale of 1 to 5. All four sit around 2 on Social & Community, and Kicktipp is weakest on Immersion & Narrative',
+          },
+        },
+      ],
+      study: [
+        {
+          src: '/images/projects/prematch-chart-sus.jpg',
+          width: 2400,
+          height: 1193,
+          alt: {
+            de: 'Balkendiagramm SUS: Werte der zehn Teilnehmenden zwischen 80 und 100, Mittelwert 90,0 (Standardabweichung 6,7), alle im Bereich „exzellent“ ab 80',
+            en: 'SUS bar chart: scores of the ten participants between 80 and 100, mean 90.0 (SD 6.7), all in the excellent range from 80',
           },
         },
         {
-          src: '/images/projects/cpr-arthur.jpg',
-          width: 1278,
-          height: 856,
+          src: '/images/projects/prematch-chart-attrakdiff.jpg',
+          width: 1667,
+          height: 1780,
           alt: {
-            de: 'Persona Arthur Ambitious: junger, technikbegeisterter Lehrer mit wenig CPR-Erfahrung',
-            en: 'Persona Arthur Ambitious: young, tech-savvy teacher with little CPR experience',
+            de: 'AttrakDiff-Portfolio: Mittelwert von PreMatch bei pragmatischer Qualität 0,44 und hedonischer Qualität 1,36, also deutlich mehr Freude als reine Zweckmäßigkeit',
+            en: 'AttrakDiff portfolio: PreMatch mean at pragmatic quality 0.44 and hedonic quality 1.36, so clearly more enjoyment than pure usefulness',
           },
         },
         {
-          src: '/images/projects/cpr-cooper.jpg',
-          width: 1280,
-          height: 858,
+          src: '/images/projects/prematch-chart-intui.jpg',
+          width: 2400,
+          height: 998,
           alt: {
-            de: 'Persona Cooper Curious: sehr motivierter, introvertierter Schüler',
-            en: 'Persona Cooper Curious: highly motivated, introverted pupil',
+            de: 'INTUI-Skalen von 1 bis 7: Bauchgefühl 5,30, magisches Erlebnis 4,82, Sicherheit 4,37 und Verbalisierbarkeit 4,12, alle über der Mitte von 4',
+            en: 'INTUI scales from 1 to 7: gut feeling 5.30, magical experience 4.82, confidence 4.37 and verbalisability 4.12, all above the midpoint of 4',
           },
         },
         {
-          src: '/images/projects/cpr-holly.jpg',
-          width: 1278,
-          height: 856,
+          src: '/images/projects/prematch-chart-nps.jpg',
+          width: 2400,
+          height: 1101,
           alt: {
-            de: 'Persona Holly Helpful: Ärztin mit viel CPR-Erfahrung, wenig technikaffin',
-            en: 'Persona Holly Helpful: doctor with strong CPR skills, not very tech-savvy',
+            de: 'Net Promoter Score 70: sieben Promotoren, drei Passive und keine Kritiker, durchschnittliche Bewertung 9 von 10',
+            en: 'Net Promoter Score 70: seven promoters, three passives and no detractors, average rating 9 out of 10',
+          },
+        },
+      ],
+      sketches: [
+        {
+          src: '/images/projects/prematch-sketch-home.jpg',
+          width: 1232,
+          height: 2000,
+          alt: {
+            de: 'Handskizze des Home-Screens: Karten oben, ein Spiel mit Ergebnis 1:0 und Tipp, darunter eine Tabelle und die Navigation',
+            en: 'Hand sketch of the Home screen: cards at the top, a match with a 1:0 score and prediction, a table below and the navigation',
+          },
+        },
+        {
+          src: '/images/projects/prematch-sketch-tips.jpg',
+          width: 1083,
+          height: 2000,
+          alt: {
+            de: 'Handskizze des Screens „My Tips“: Reiter für Spieltage und eine Liste von Spielen mit Feldern für den Tipp',
+            en: 'Hand sketch of the My Tips screen: matchday tabs and a list of matches with fields for the prediction',
+          },
+        },
+      ],
+      friction: [
+        {
+          src: '/images/projects/prematch-screen-details.png',
+          width: 1143,
+          height: 2343,
+          alt: {
+            de: 'Screen „Match Details“: Tipp 2:1 für Paris Saint-Germain gegen Arsenal, Siegwahrscheinlichkeit, Form und der Button „Hold to Save your Prediction“',
+            en: 'Match Details screen: a 2:1 prediction for Paris Saint-Germain against Arsenal, victory probability, form and the “Hold to Save your Prediction” button',
+          },
+        },
+        {
+          src: '/images/projects/prematch-screen-why.png',
+          width: 1143,
+          height: 2343,
+          alt: {
+            de: 'Abfrage „Why this pick?“ nach dem Halten: Gründe wie Heimvorteil, starke Form oder Bauchgefühl zum Antippen, dazu „Save & Next Game“',
+            en: '“Why this pick?” prompt after holding: tappable reasons such as home advantage, strong form or gut feeling, plus “Save & Next Game”',
           },
         },
       ],
     },
+    metrics: [
+      {
+        value: { de: '90,0', en: '90.0' },
+        label: { de: 'Usability (SUS, von 100)', en: 'Usability (SUS, out of 100)' },
+        source: { de: 'Nutzerstudie der Masterarbeit, N = 10, 2026', en: 'User study of the thesis, N = 10, 2026' },
+      },
+      {
+        value: '70',
+        label: { de: 'Weiterempfehlung (NPS), keine Kritiker', en: 'Recommendation (NPS), no detractors' },
+        source: { de: 'Nutzerstudie der Masterarbeit, N = 10, 2026', en: 'User study of the thesis, N = 10, 2026' },
+      },
+      {
+        value: { de: '2,03', en: '2.03' },
+        label: { de: 'Identität (AttrakDiff HQ-I, −3 bis 3)', en: 'Identity (AttrakDiff HQ-I, −3 to 3)' },
+        source: { de: 'Nutzerstudie der Masterarbeit, N = 10, 2026', en: 'User study of the thesis, N = 10, 2026' },
+      },
+    ],
     de: {
-      title: 'CPR Training AR App',
-      tagline: 'Mit Augmented Reality Kinder zu Lebensrettern ausbilden',
-      body: 'CPR steht für Cardiopulmonary Resuscitation (kardiopulmonale Reanimation), eine lebensrettende Notfallmaßnahme. Wir wollten Kindern beibringen, diese Technik zu erlernen und zu potentiellen Lebensrettern zu werden.',
-      type: 'UX/UI · App-Design',
-      role: 'UX-Designer, Interface-Designer',
-      metaTitle: 'CPR Training AR App: Erste Hilfe für Kinder mit AR | Erik Bergheimer',
+      title: 'PreMatch',
+      tagline: 'Eine Tipp-App für Fußball, die zum Nachdenken einlädt',
+      body: 'Für meine Masterarbeit am MCI Innsbruck habe ich PreMatch entworfen und gebaut: eine App, in der Freunde in privaten Ligen Fußballergebnisse tippen. Der Markt hat zwei Extreme. Kicktipp hält seine Nutzer vor allem, weil die Freunde schon dort sind. Wett-Apps wie Tipico nutzen oft Muster, die schnelles Tippen fördern.\n\nPreMatch liegt dazwischen. Die App nimmt Motivation ernst, ohne sie auszunutzen. Kern ist „Positive Friction“: Ein Tipp wird gespeichert, indem man den Button gedrückt hält, danach fragt die App kurz nach dem Grund.',
+      type: 'UX/UI · App-Design · Masterarbeit',
+      role: 'Forschung, UX/UI-Design und Entwicklung',
+      metaTitle: 'PreMatch: Fußball-Tipp-App, Masterarbeit UX | Erik Bergheimer',
       metaDescription:
-        'UX/UI-Uniprojekt: eine AR-App, mit der Kinder Wiederbelebung lernen. Meine Rolle: Konzept, Wireframes und UI für die Lehrer-App und die AR-Oberfläche.',
+        'Masterarbeit: eine Tipp-App für Fußball mit Positive Friction. Benchmarking von vier Apps, Design in Figma, App in Flutter und Nutzerstudie mit SUS 90.',
       sections: [
         {
-          id: 'overview',
-          title: 'Übersicht',
-          content: '',
+          id: 'problem',
+          title: 'Ausgangslage',
+          content:
+            'Tipp-Apps für Fußball sind eine vernachlässigte Nische der Sporttechnologie. Kicktipp führt im deutschsprachigen Raum vor allem dank Netzwerkeffekten. Kommerzielle Wett-Apps investieren viel in Gestaltung, aber oft mit „Dark Nudges“, die Nachdenken unterdrücken und impulsives Verhalten ausnutzen.\n\nDie Frage der Arbeit: Wie lassen sich Prinzipien der Self-Determination Theory (Autonomie, Kompetenz, Verbundenheit) und Positive Friction in eine Tipp-App einbauen, damit das Erlebnis besser wird als der heutige Marktstandard? Methode war Design Science Research in drei Phasen.',
+        },
+        {
+          id: 'benchmarking',
+          title: 'Phase I: Benchmarking',
+          content:
+            'Ich habe vier Apps verglichen: Kicktipp, Tackle, Teamtip und Tipico. Grundlage waren die Gameful Design Heuristics mit 28 Motivationsdimensionen, bewertet auf einer Skala von 1 bis 5 und von einer zweiten Person gegengeprüft.\n\nAm schwächsten schnitt der ganze Markt bei „Social & Community“ (Mittelwert 2,10) und „Immersion & Narrative“ (2,25) ab. Das ist keine Kritik an einer App, sondern eine Beschreibung dessen, was der Markt noch nicht gebaut hat. Genau diese Lücken wurden zur Prioritätenliste für das Design.',
+        },
+        {
+          id: 'design',
+          title: 'Phase II: Design und Umsetzung',
+          content:
+            'Die zentralen Designentscheidungen lassen sich auf eine Lücke aus dem Benchmarking zurückführen. Der Weg führte von Skizzen auf Papier über einen Prototyp in Figma zu einer funktionierenden App in Flutter.',
           subsections: [
             {
-              id: 'problem',
-              title: 'Problem',
+              id: 'sketches',
+              title: 'Skizzen',
               content:
-                'Zahllose Beispiele belegen, dass Kinder durch CPR Leben retten können. 2009 berichtete ABC News, dass Kinder ab 9 Jahren die Grundlagen der CPR erlernen können. Das bedeutet, dass junge Kinder CPR erlernen und durchführen können, aber aufgrund fehlender Lehrmethoden mussten wir eine digitale Lösung entwickeln.',
+                'Die ersten Entwürfe entstanden bewusst auf Papier, damit es nur um Struktur und Reihenfolge der Inhalte ging, nicht um Farben. Der Home-Screen zeigt den eigenen Stand, das laufende Spiel mit dem eigenen Tipp und die Tabelle der Liga. „My Tips“ ist die Liste der Spiele eines Spieltags, in der man tippt.',
             },
             {
-              id: 'solution',
-              title: 'Lösung',
+              id: 'design-system',
+              title: 'Designsystem',
               content:
-                'Wir haben uns entschieden, zwei verschiedene Apps zu designen: eine Oberfläche für den CPR-Lehrer, der ein Smartphone nutzt, und eine Oberfläche für die Kinder. In unserem Fall kamen wir auf die Idee, AR-Brillen für die Kinder zu verwenden. Die Oberfläche für die Kinder sollte also eine AR-Oberfläche sein.',
+                'Das Designsystem baut auf einem kräftigen Blau (#304FFF), der Schrift Inter und Farben mit klarer Bedeutung auf: Grün für richtig, Rot für falsch. Icons gibt es in drei Zuständen. Abzeichen wie „Tactician“ für eine perfekte Aufstellung oder „The Oracle“ für zehn exakte Ergebnisse belohnen Können statt bloßes Einloggen. Vereinswappen und Tabellen sollen das Gefühl eines echten Spieltags tragen.',
             },
             {
-              id: 'process',
-              title: 'Unser Prozess',
+              id: 'friction',
+              title: 'Positive Friction',
               content:
-                'Vorbereitungsphase: Brainstorming, Personae, Paperprototyping, Moodboard\nDesignphase: Wireframes, Digitale Prototypen\nFinalisierung: Storyboard, Film, Fazit',
+                'Die wichtigste Entscheidung: Ein Tipp wird nicht mit einem Tippen gespeichert, sondern durch Gedrückthalten. Danach erscheint „Why this pick?“ mit Gründen wie Heimvorteil, Form oder Bauchgefühl. Die Angabe ist freiwillig und zeigt der Liga, wie man denkt. So entsteht ein kurzer Moment zum Nachdenken, statt dass man impulsiv tippt.\n\nTechnisch ist die App in Flutter gebaut. Spieldaten kommen von API-Sports, Anmeldung, Ligen, Tipps, Chat und Abzeichen laufen über Firebase. Rangliste und Chat aktualisieren sich live.',
             },
           ],
         },
         {
-          id: 'preparing',
-          title: 'Vorbereitungsphase',
-          content: '',
-          subsections: [
-            {
-              id: 'brainstorming',
-              title: 'Brainstorming',
-              content:
-                'Der allererste Schritt, als wir uns im Oktober 2020 trafen, war ein Brainstorming über das Thema und intensive Recherche zur CPR. Zu Beginn hatten wir viele Ideen, z.B. mehrere iPads für die Kinder, aber dann kam die Idee einer AR-Erfahrung auf. Mit solchen AR-Brillen wäre es möglich, das Training für die CPR-Technik durchzuführen, während die AR-Oberfläche dem Kind nützliche Informationen über sein Training geben könnte. Es war uns sehr wichtig, nur die wichtigsten Informationen auf dieser Oberfläche anzuzeigen. Für die Lehrer-Oberfläche mussten wir recherchieren, wie viele Drücke man in einem Zyklus machen sollte (30 Drücke), wie oft man eine Mund-zu-Mund-Beatmung durchführen sollte (2 Mal) und weitere Fakten zur CPR-Technik.',
-            },
-            {
-              id: 'personae',
-              title: 'Personae',
-              content:
-                'Der nächste Schritt war die Definition unserer Zielgruppe durch die Erstellung von Personae. Eine Persona symbolisiert einen Prototyp für eine Gruppe von Nutzern und hat persönliche Gewohnheiten, Eigenschaften und Nutzungsverhalten.\n\nAuf der einen Seite gibt es Amy Average, ein typisches 13-jähriges Mädchen, extrovertiert, liebt die Schule wegen ihrer Freunde, aber nicht besonders motiviert. Sie repräsentiert eine unmotivierte Zielgruppe der Kinder. Dann gibt es Cooper Curious, einen supermotivierten Jungen, der lernen und besser werden möchte, aber introvertiert ist.\n\nAuf der anderen Seite gibt es Holly Helpful, eine Ärztin mittleren Alters, sehr gut in CPR-Techniken, aber nicht besonders technikaffin. Und Arthur Ambitious, einen sehr jungen Lehrer, der ein Tech-Nerd ist, aber nicht so gut in CPR-Techniken.',
-            },
-            {
-              id: 'paperprototyping',
-              title: 'Paperprototyping',
-              content:
-                'Der nächste Schritt in unserem UX-Prozess war die Erstellung erster Interface-Ideen und ein Gefühl dafür zu bekommen, wie Konzept und Layout unserer App aussehen könnten. Das Zeichnen dieser rohen Skizzen auf Papier ist eine sehr effektive und schnelle Methode, um Ideen zu entwickeln, bevor man zu früh in einem Prototyping-Tool mit dem Design beginnt.\n\nWir begannen mit dem Skizzieren und der Entwicklung einiger Ideen. Im ersten Bild sehen Sie unsere ersten Ideen, also rohe Skizzen und einige Layout-Ideen. Das zweite Bild zeigt unsere finalen Paperprototypes für die AR-App und das dritte unsere finale Idee für die Lehrer-App.',
-            },
-            {
-              id: 'moodboard',
-              title: 'Moodboard',
-              content:
-                'Der letzte Schritt in der Vorbereitungsphase war die Erstellung eines Moodboards. Ein Moodboard ist ein sehr wichtiges Werkzeug in Designprozessen. Es hilft, einen Eindruck davon zu bekommen, wie das finale Projekt aussehen wird.\n\nIn unserem Fall mussten wir drei verschiedene Moodboards erstellen: eines nur mit Adjektiven, eines mit allgemeinen Bildern wie Natur, Architektur etc. und eines nur mit User Interfaces. Mit Tools wie Dribbble und designinspiration.com fanden wir einige großartige Beispielbilder.',
-            },
-          ],
+          id: 'study',
+          title: 'Phase III: Nutzerstudie',
+          content:
+            'Zehn Personen haben die App zwischen dem 16. Mai und dem 7. Juni 2026 getestet, mit Fragebögen (SUS, AttrakDiff, INTUI, NPS) und einem Gespräch danach.\n\nDie Usability lag mit einem SUS von 90,0 im Bereich „exzellent“. AttrakDiff zeigte ein Profil, das vor allem über Freude und Identität wirkt (HQ-I 2,03). Das deutet darauf hin, dass sich die Teilnehmenden mit der App identifizieren konnten. Alle vier Skalen von INTUI lagen über der Mitte, das Bauchgefühl am höchsten (5,30 auf einer Skala von 1 bis 7). Der NPS lag bei 70 ohne Kritiker. Zusammen stützen die Ergebnisse vorsichtig die Annahme, dass Positive Friction das Erlebnis aufwerten kann, ohne Usability und Intuition zu schaden.',
         },
         {
-          id: 'designing',
-          title: 'Designphase',
-          content: '',
-          subsections: [
-            {
-              id: 'wireframes',
-              title: 'Wireframes',
-              content:
-                'Der erste Schritt in der Designphase war die Erstellung von Wireframes! Wireframes sind ebenfalls Skizzen, aber viel präziser als rohe Paperprototypes. Nach dem Erstellen unserer Paperprototypes erhielten wir Feedback und änderten einige Details.\n\nEin wichtiger Teil war das Nachdenken über Interaktionen zwischen den verschiedenen Skizzen: "Welcher Button muss gedrückt werden, um zu diesem Screen zu kommen?". Wir verbanden die Screens miteinander und verwendeten orangefarbene Sticker für Links zu anderen Screens und grüne Sticker für Animationen auf demselben Screen.',
-            },
-            {
-              id: 'digital-prototypes',
-              title: 'Digitale Prototypen',
-              content:
-                'Nachdem Inhalt und Interaktionen zwischen den Screens fertig waren, konnten wir digital werden! Digitale Prototypen sind eine sehr wichtige Form des Prototypings und realistisch genug, um die meisten Interface-Elemente zu testen.\n\nUnter all den verschiedenen Prototyping-Tools wie Figma, Framer oder InVision wählten wir Adobe XD, weil die Zusammenarbeit mit Adobe Illustrator und Adobe Photoshop viel besser ist als mit anderen Tools.',
-            },
-          ],
-        },
-        {
-          id: 'finalization',
-          title: 'Finalisierung',
-          content: '',
-          subsections: [
-            {
-              id: 'storyboard',
-              title: 'Storyboard',
-              content:
-                'Nachdem unsere digitalen und klickbaren Prototypen fertig waren, konnten wir mit den letzten Schritten weitermachen. Um die verschiedenen Anwendungsfälle unserer App zu erklären, mussten wir einen Film erstellen. Es ist immer sinnvoll, die Geschichte zu planen, bevor man filmt, also begannen wir mit einem Storyboard.\n\nEin Storyboard bietet einen schematischen Überblick über die Grundstruktur des Projekts. Die wichtigsten Fragen: Wann und wo spielt die Geschichte? In welcher Reihenfolge passieren die Ereignisse? Welche Screens wollen wir zeigen?',
-            },
-            {
-              id: 'movie',
-              title: 'Finaler Film',
-              content:
-                'Der allerletzte Schritt war das Filmen und Schneiden des finalen Films über unser Projekt. Der Film dauert nur zwei Minuten, also mussten wir sicherstellen, dass die Informationen schnell präsentiert werden. Wir erstellten unseren Film in Adobe Premiere Pro und die Animationen in Adobe After Effects.\n\nBesonderer Dank an Jonas Fischer fürs Schauspielern, an Anja Happernagl fürs Ausleihen der Puppe und an die Evangelische Gemeinschaft Königsbrunn für die Räumlichkeiten!',
-            },
-            {
-              id: 'conclusion',
-              title: 'Fazit',
-              content:
-                'Wir haben während dieses Projekts viel gelernt! Wir begannen mit Brainstorming und danach waren wir wirklich begeistert. Das Zeichnen von Skizzen war ein wichtiger Teil des UX-Prozesses, bei dem wir anfangs etwas kämpften.\n\nAufgrund der Covid-19-Pandemie war dieses Projekt besonders. Zunächst begannen wir mit Präsenzunterricht, aber sobald der Shutdown Realität war, wechselten wir zu Online-Vorlesungen. Trotzdem war das Ergebnis sehr gut und interessant!',
-            },
-          ],
+          id: 'limits',
+          title: 'Grenzen und Ausblick',
+          content:
+            'Mit zehn Personen sind die Ergebnisse Hinweise, keine Beweise. Es gab keine Vergleichsversion ohne Friction, und die Studie zeigt nur den ersten Eindruck. Ob das Gedrückthalten über eine ganze Saison seinen Effekt behält, bleibt offen. Vereinswappen bräuchten für eine echte Veröffentlichung Lizenzen.\n\nDie größte praktische Frage: Wechselt eine ganze Freundesgruppe mit ihrer Liga-Geschichte zu einer neuen App? Als Nächstes wären eine Feldstudie über eine Saison und eine Friction, die sich dem Tipp-Verhalten anpasst, spannend. Das Muster aus Gedrückthalten und kurzer Begründung lässt sich auch auf andere Bereiche übertragen, in denen impulsives Verhalten echte Kosten hat.',
         },
       ],
     },
     en: {
-      title: 'CPR Training AR App',
-      tagline: 'Teaching kids lifesaving skills through Augmented Reality',
-      body: 'CPR stands for Cardiopulmonary Resuscitation, a life-saving emergency procedure. We wanted to help kids learn this technique to become potential lifesavers.',
-      type: 'UX/UI · App design',
-      role: 'UX designer, interface designer',
-      metaTitle: 'CPR Training AR App: teaching kids CPR with AR | Erik Bergheimer',
+      title: 'PreMatch',
+      tagline: 'A football prediction app that invites reflection',
+      body: "For my master's thesis at MCI Innsbruck, I designed and built PreMatch: an app where friends predict football results in private leagues. The market has two extremes. Kicktipp keeps its users mainly because their friends are already there. Betting apps like Tipico often use patterns that encourage fast betting.\n\nPreMatch sits in between. It takes motivation seriously without exploiting it. At its core is “Positive Friction”: you save a prediction by holding the button, then the app briefly asks for your reason.",
+      type: "UX/UI · App design · Master's thesis",
+      role: 'Research, UX/UI design and development',
+      metaTitle: "PreMatch: football prediction app, master's thesis | Erik Bergheimer",
       metaDescription:
-        "University UX/UI project: an AR app that teaches children CPR. My role: concept, wireframes and UI for the teacher app and the kids' AR interface.",
+        "Master's thesis: a football prediction app with Positive Friction. Benchmark of four apps, Figma design, Flutter app and a user study with SUS 90.",
       sections: [
         {
-          id: 'overview',
-          title: 'Overview',
-          content: '',
+          id: 'problem',
+          title: 'Starting point',
+          content:
+            'Social football prediction apps are a neglected corner of sports technology. Kicktipp leads the German-speaking market mainly thanks to network effects. Commercial betting apps invest heavily in design, but often with dark nudges that suppress reflection and exploit impulsive behaviour.\n\nThe research question: how can principles of Self-Determination Theory (autonomy, competence, relatedness) and Positive Friction be built into a prediction app so that the experience exceeds the current market standard? The method was Design Science Research in three phases.',
+        },
+        {
+          id: 'benchmarking',
+          title: 'Phase I: Benchmarking',
+          content:
+            'I compared four apps: Kicktipp, Tackle, Teamtip and Tipico. The basis was the Gameful Design Heuristics with 28 motivational dimensions, rated on a scale from 1 to 5 and cross-checked by a second coder.\n\nThe whole market scored lowest on Social & Community (mean 2.10) and Immersion & Narrative (2.25). That is not a critique of one app but a description of what the market has not built yet. Exactly these gaps became the priority list for the design.',
+        },
+        {
+          id: 'design',
+          title: 'Phase II: Design and build',
+          content:
+            'The key design decisions trace back to a gap from the benchmark. The path led from paper sketches to a Figma prototype to a working Flutter app.',
           subsections: [
             {
-              id: 'problem',
-              title: 'Problem',
+              id: 'sketches',
+              title: 'Sketches',
               content:
-                'Countless examples demonstrate that children can save lives by performing CPR. In 2009, ABC News reported that children as young as 9 years old can learn the basics of CPR. That means that young kids can learn and perform CPR but due to the lack of ways to teach them this technique, we had to come up with a digital solution.',
+                'The first drafts were deliberately made on paper, so the focus stayed on structure and order of content, not colour. The Home screen shows your standing, the live match with your prediction and the league table. My Tips is the list of a matchday’s fixtures where you enter your predictions.',
             },
             {
-              id: 'solution',
-              title: 'Solution',
+              id: 'design-system',
+              title: 'Design system',
               content:
-                "We decided to design two different apps, one interface for the CPR teacher, who's gonna use a smartphone and one interface for the kids. In our case we came up with the idea of using AR goggles for the kids, so the interface for the kids should be an AR interface.",
+                'The design system is built on a strong blue (#304FFF), the Inter typeface and colours with clear meaning: green for right, red for wrong. Icons come in three states. Badges such as Tactician for a perfect line-up or The Oracle for ten exact scores reward skill rather than just logging in. Club crests and tables aim to carry the feel of a real matchday.',
             },
             {
-              id: 'process',
-              title: 'Our Process',
+              id: 'friction',
+              title: 'Positive Friction',
               content:
-                'Preparing Phase: Brainstorming, Personae, Paperprototyping, Moodboard\nDesigning Phase: Wireframes, Digital prototypes\nFinalizations: Storyboard, Movie, Conclusion',
+                'The key decision: a prediction is not saved with a tap but by holding the button. Then “Why this pick?” appears with reasons such as home advantage, form or gut feeling. It is optional and shows your league how you think. This creates a short moment of reflection instead of an impulsive prediction.\n\nTechnically, the app is built in Flutter. Match data comes from API-Sports; sign-in, leagues, predictions, chat and badges run on Firebase. Leaderboard and chat update live.',
             },
           ],
         },
         {
-          id: 'preparing',
-          title: 'Preparing Phase',
-          content: '',
-          subsections: [
-            {
-              id: 'brainstorming',
-              title: 'Brainstorming',
-              content:
-                'The very first step, when we first met in October 2020 was to brainstorm about this topic and doing a lot of research on CPR. At the very beginning we came up with a lot of ideas e.g. using multiple iPads for the kids but then the idea of an AR experience for the kids came up. With these type of AR goggles on, it would be possible to perform the training for the CPR technique, while the AR interface could give the kid useful informations about his or her training. It was very important for us, that we only display the most important informations on this interface.',
-            },
-            {
-              id: 'personae',
-              title: 'Personae',
-              content:
-                "The next step in our project was to define our target group with creating Personae. A persona symbolizes a prototype for a group of users and has personal habits, characteristics and usage behaviours.\n\nOn the one hand there's Amy Average, a typical 13-year-old girl, very extrovert, loves school because she can talk to her friends. She represents an unmotivated target group. Then there's Cooper Curious, a super motivated boy who wants to learn and help people, but introverted.\n\nOn the other hand there's Holly Helpful, a middle-aged medic, very good at CPR but not tech-savvy. And Arthur Ambitious, a very young teacher, a tech nerd but not great at CPR techniques.",
-            },
-            {
-              id: 'paperprototyping',
-              title: 'Paperprototyping',
-              content:
-                "The next step in our UX process was to create first ideas of an interface. Drawing raw sketches on paper is a very effective and fast method to create ideas before starting to design too early in a prototyping tool.\n\nWe started sketching and creating some ideas of how our app could look like. The first picture shows our first raw ideas and layout concepts. The second picture shows our final paper prototypes for the AR app and the third our final idea for the teacher's app.",
-            },
-            {
-              id: 'moodboard',
-              title: 'Moodboard',
-              content:
-                'The last step in the preparing phase was to create a moodboard. A moodboard is a very important tool in design processes. It helps to get a hint of how the final project will look like.\n\nIn our case, we had to design three different moodboards: one with only adjectives, one with general images like nature, architecture etc. and one with user interfaces only. With awesome tools like Dribbble and designinspiration.com we found some great example pictures.',
-            },
-          ],
+          id: 'study',
+          title: 'Phase III: User study',
+          content:
+            'Ten people tested the app between 16 May and 7 June 2026, with questionnaires (SUS, AttrakDiff, INTUI, NPS) and a debrief interview.\n\nUsability reached a SUS of 90.0, in the excellent range. AttrakDiff showed a profile driven mainly by joy and identity (HQ-I 2.03), which suggests participants identified with the app. All four INTUI scales were above the midpoint, with gut feeling highest (5.30 on a scale of 1 to 7). The NPS was 70 with no detractors. Together, the results tentatively support the idea that Positive Friction can lift the experience without hurting usability or intuitiveness.',
         },
         {
-          id: 'designing',
-          title: 'Designing Phase',
-          content: '',
-          subsections: [
-            {
-              id: 'wireframes',
-              title: 'Wireframes',
-              content:
-                'The first step in the designing phase is creating wireframes! Wireframes are sketches that are a lot more precise and exact than raw paper prototypes. After creating our paper prototypes, we got feedback and changed some details.\n\nAn important part was thinking about interactions between the different screens: "Which button has to be pressed to get to this screen?". We connected the screens and used orange stickers for links to other screens and green stickers for animations on the same screen.',
-            },
-            {
-              id: 'digital-prototypes',
-              title: 'Digital Prototypes',
-              content:
-                'Now that the content and the interactions between the screens were done, we could proceed with going digital! Digital prototypes are realistic enough to test most of the interface elements.\n\nUnder all the different prototyping tools like Figma, Framer or InVision we picked Adobe XD, because the collaboration with Adobe Illustrator and Adobe Photoshop is a lot better than with other common tools.',
-            },
-          ],
-        },
-        {
-          id: 'finalization',
-          title: 'Finalizations',
-          content: '',
-          subsections: [
-            {
-              id: 'storyboard',
-              title: 'Storyboard',
-              content:
-                "Now that our digital and clickable prototypes were done, we could proceed with the last steps. To explain the different use cases of our app, we had to create a movie. It's always useful to plan your story before you film it, so we started creating a storyboard.\n\nA storyboard provides a schematic overview of the basic structure of the project. The most important questions: When and where does the story take place? In which order do events happen? What are the screens we want to show?",
-            },
-            {
-              id: 'movie',
-              title: 'Final Movie',
-              content:
-                'The very last step was to film and cut the final movie about our project. The duration was only two minutes so we had to make sure the information was presented quickly. We created our movie in Adobe Premiere Pro and the animations in Adobe After Effects.\n\nSpecial thanks to Jonas Fischer for acting, to Anja Happernagl for lending us the mannequin and to the Evangelische Gemeinschaft Königsbrunn for the rooms!',
-            },
-            {
-              id: 'conclusion',
-              title: 'Conclusion',
-              content:
-                'We think we learned a lot during this project! We started with brainstorming and were really excited. Drawing sketches, a very important part of UX processes, was something we struggled with at first.\n\nDue to the Covid-19 pandemic, this project was very special. At first we started with presence classes, but as soon as the shutdown was reality, we moved to online lessons. Despite this, the outcome was very good and interesting!',
-            },
-          ],
+          id: 'limits',
+          title: 'Limits and outlook',
+          content:
+            'With ten participants, the results are indications, not proof. There was no comparison version without friction, and the study only captures first use. Whether holding to save keeps its effect over a whole season remains open. Club crests would need licences for a public release.\n\nThe biggest practical question: will a whole friend group move to a new app along with its league history? Next steps could be a field study across a full season and friction that adapts to how someone tips. The pattern of holding and a short reason also transfers to other areas where impulsive behaviour has real costs.',
         },
       ],
+    },
+  },
+  {
+    slug: 'morocco',
+    year: '2025',
+    timeline: '02/2025',
+    tools: 'Sony Alpha · Lightroom · Capture One',
+    thumbnail: {
+      src: '/images/project-morocco.jpg',
+      width: 768,
+      height: 1024,
+      alt: {
+        de: 'Marokkanische Flagge an einem Mast vor sonnigem Himmel',
+        en: 'Moroccan flag on a pole against a sunny sky',
+      },
+    },
+    service: 'photography',
+    gallery: [
+      {
+        src: '/images/projects/morocco-1.jpg',
+        width: 1200,
+        height: 1600,
+        alt: {
+          de: 'Serpentinenstraße durch kahles Atlasgebirge unter blauem Himmel',
+          en: 'Winding road through the bare Atlas mountains under a blue sky',
+        },
+      },
+      {
+        src: '/images/projects/morocco-2.jpg',
+        width: 1200,
+        height: 1600,
+        alt: {
+          de: 'Sonnenaufgang über Sanddünen mit Fußspuren in der Wüste',
+          en: 'Sunrise over sand dunes with footprints in the desert',
+        },
+      },
+      {
+        src: '/images/projects/morocco-3.jpg',
+        width: 1199,
+        height: 1600,
+        alt: {
+          de: 'Reihe beiger Zelte eines Wüstencamps im Sand',
+          en: 'Row of beige tents at a desert camp in the sand',
+        },
+      },
+      {
+        src: '/images/projects/morocco-4.jpg',
+        width: 1200,
+        height: 1600,
+        alt: {
+          de: 'Zwei schlafende Welpen aneinandergekuschelt im Gras',
+          en: 'Two sleeping puppies curled up together on the grass',
+        },
+      },
+      {
+        src: '/images/projects/morocco-5.jpg',
+        width: 1600,
+        height: 1200,
+        alt: {
+          de: 'Menschen auf einem Gipfel schauen auf den Sonnenaufgang über den Wolken',
+          en: 'People on a summit watching the sunrise above the clouds',
+        },
+      },
+      {
+        src: '/images/projects/morocco-6.jpg',
+        width: 1200,
+        height: 1600,
+        alt: {
+          de: 'Weißes Gebäude mit Balkonen vor tiefblauem Himmel',
+          en: 'White building with balconies against a deep blue sky',
+        },
+      },
+    ],
+    inlineImages: {},
+    de: {
+      title: 'Marokko',
+      tagline: 'Alltag und Schönheit in Marokko',
+      body: 'In Texturen und Traditionen Marokkos eingetaucht: Alltag und atemberaubende Szenerie in einer Serie eindrucksvoller Bilder.\n\nVon belebten Souks in Marrakesch bis zu stillen Wüstenlandschaften, eine Geschichte voller Kontraste, Farben und Geschichte.',
+      type: 'Fotografie · Dokumentarisch',
+      role: 'Fotograf',
+      metaTitle: 'Marokko: Dokumentarfotografie | Erik Bergheimer',
+      metaDescription: 'Atlasgebirge, Wüste und Alltag: eine dokumentarische Fotoserie aus Marokko.',
+      sections: [],
+    },
+    en: {
+      title: 'Morocco',
+      tagline: 'Everyday life and beauty in Morocco',
+      body: 'Immersed in the textures and traditions of Morocco: everyday life and breathtaking scenery captured in a series of evocative images.\n\nFrom the busy souks of Marrakech to quiet desert landscapes, a story full of contrasts, colors and history.',
+      type: 'Photography · Documentary',
+      role: 'Photographer',
+      metaTitle: 'Morocco: documentary photography | Erik Bergheimer',
+      metaDescription: 'Atlas mountains, desert and everyday life: a documentary photo series from Morocco.',
+      sections: [],
     },
   },
   {
@@ -834,108 +904,291 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: 'morocco',
-    year: '2023',
-    tools: 'Sony Alpha · Lightroom · Capture One',
+    slug: 'cpr',
+    year: '2020–2021',
+    timeline: '10/2020 – 01/2021',
+    tools: 'Photoshop, Illustrator, AfterEffects, PremierePro, XD',
+    team: 'Dominik Dumberger, Martin Ferstl',
     thumbnail: {
-      src: '/images/project-morocco.jpg',
-      width: 768,
-      height: 1024,
+      src: '/images/project-cpr.jpg',
+      width: 1920,
+      height: 977,
       alt: {
-        de: 'Marokkanische Flagge an einem Mast vor sonnigem Himmel',
-        en: 'Moroccan flag on a pole against a sunny sky',
+        de: 'Smartphones mit Screens der CPR-Trainings-App: Login, Training und Statistik',
+        en: 'Smartphones showing screens of the CPR training app: login, training and statistics',
       },
     },
-    service: 'photography',
-    gallery: [
-      {
-        src: '/images/projects/morocco-1.jpg',
-        width: 1200,
-        height: 1600,
-        alt: {
-          de: 'Serpentinenstraße durch kahles Atlasgebirge unter blauem Himmel',
-          en: 'Winding road through the bare Atlas mountains under a blue sky',
+    service: 'ux-ui-design',
+    gallery: [],
+    inlineImages: {
+      personae: [
+        {
+          src: '/images/projects/cpr-amy.jpg',
+          width: 1222,
+          height: 816,
+          alt: {
+            de: 'Persona Amy Average: 13-jährige Schülerin, kontaktfreudig, wenig motiviert',
+            en: 'Persona Amy Average: 13-year-old pupil, outgoing, not very motivated',
+          },
         },
-      },
-      {
-        src: '/images/projects/morocco-2.jpg',
-        width: 1200,
-        height: 1600,
-        alt: {
-          de: 'Sonnenaufgang über Sanddünen mit Fußspuren in der Wüste',
-          en: 'Sunrise over sand dunes with footprints in the desert',
+        {
+          src: '/images/projects/cpr-arthur.jpg',
+          width: 1278,
+          height: 856,
+          alt: {
+            de: 'Persona Arthur Ambitious: junger, technikbegeisterter Lehrer mit wenig CPR-Erfahrung',
+            en: 'Persona Arthur Ambitious: young, tech-savvy teacher with little CPR experience',
+          },
         },
-      },
-      {
-        src: '/images/projects/morocco-3.jpg',
-        width: 1199,
-        height: 1600,
-        alt: {
-          de: 'Reihe beiger Zelte eines Wüstencamps im Sand',
-          en: 'Row of beige tents at a desert camp in the sand',
+        {
+          src: '/images/projects/cpr-cooper.jpg',
+          width: 1280,
+          height: 858,
+          alt: {
+            de: 'Persona Cooper Curious: sehr motivierter, introvertierter Schüler',
+            en: 'Persona Cooper Curious: highly motivated, introverted pupil',
+          },
         },
-      },
-      {
-        src: '/images/projects/morocco-4.jpg',
-        width: 1200,
-        height: 1600,
-        alt: {
-          de: 'Zwei schlafende Welpen aneinandergekuschelt im Gras',
-          en: 'Two sleeping puppies curled up together on the grass',
+        {
+          src: '/images/projects/cpr-holly.jpg',
+          width: 1278,
+          height: 856,
+          alt: {
+            de: 'Persona Holly Helpful: Ärztin mit viel CPR-Erfahrung, wenig technikaffin',
+            en: 'Persona Holly Helpful: doctor with strong CPR skills, not very tech-savvy',
+          },
         },
-      },
-      {
-        src: '/images/projects/morocco-5.jpg',
-        width: 1600,
-        height: 1200,
-        alt: {
-          de: 'Menschen auf einem Gipfel schauen auf den Sonnenaufgang über den Wolken',
-          en: 'People on a summit watching the sunrise above the clouds',
-        },
-      },
-      {
-        src: '/images/projects/morocco-6.jpg',
-        width: 1200,
-        height: 1600,
-        alt: {
-          de: 'Weißes Gebäude mit Balkonen vor tiefblauem Himmel',
-          en: 'White building with balconies against a deep blue sky',
-        },
-      },
-    ],
-    inlineImages: {},
+      ],
+    },
     de: {
-      title: 'Marokko',
-      tagline: 'Alltag und Schönheit in Marokko',
-      body: 'In Texturen und Traditionen Marokkos eingetaucht: Alltag und atemberaubende Szenerie in einer Serie eindrucksvoller Bilder.\n\nVon belebten Souks in Marrakesch bis zu stillen Wüstenlandschaften, eine Geschichte voller Kontraste, Farben und Geschichte.',
-      type: 'Fotografie · Dokumentarisch',
-      role: 'Fotograf',
-      metaTitle: 'Marokko: Dokumentarfotografie | Erik Bergheimer',
-      metaDescription: 'Atlasgebirge, Wüste und Alltag: eine dokumentarische Fotoserie aus Marokko.',
-      sections: [],
+      title: 'CPR Training AR App',
+      tagline: 'Mit Augmented Reality Kinder zu Lebensrettern ausbilden',
+      body: 'CPR steht für Cardiopulmonary Resuscitation (kardiopulmonale Reanimation), eine lebensrettende Notfallmaßnahme. Wir wollten Kindern beibringen, diese Technik zu erlernen und zu potentiellen Lebensrettern zu werden.',
+      type: 'UX/UI · App-Design',
+      role: 'UX-Designer, Interface-Designer',
+      metaTitle: 'CPR Training AR App: Erste Hilfe für Kinder mit AR | Erik Bergheimer',
+      metaDescription:
+        'UX/UI-Uniprojekt: eine AR-App, mit der Kinder Wiederbelebung lernen. Meine Rolle: Konzept, Wireframes und UI für die Lehrer-App und die AR-Oberfläche.',
+      sections: [
+        {
+          id: 'overview',
+          title: 'Übersicht',
+          content: '',
+          subsections: [
+            {
+              id: 'problem',
+              title: 'Problem',
+              content:
+                'Zahllose Beispiele belegen, dass Kinder durch CPR Leben retten können. 2009 berichtete ABC News, dass Kinder ab 9 Jahren die Grundlagen der CPR erlernen können. Das bedeutet, dass junge Kinder CPR erlernen und durchführen können, aber aufgrund fehlender Lehrmethoden mussten wir eine digitale Lösung entwickeln.',
+            },
+            {
+              id: 'solution',
+              title: 'Lösung',
+              content:
+                'Wir haben uns entschieden, zwei verschiedene Apps zu designen: eine Oberfläche für den CPR-Lehrer, der ein Smartphone nutzt, und eine Oberfläche für die Kinder. In unserem Fall kamen wir auf die Idee, AR-Brillen für die Kinder zu verwenden. Die Oberfläche für die Kinder sollte also eine AR-Oberfläche sein.',
+            },
+            {
+              id: 'process',
+              title: 'Unser Prozess',
+              content:
+                'Vorbereitungsphase: Brainstorming, Personae, Paperprototyping, Moodboard\nDesignphase: Wireframes, Digitale Prototypen\nFinalisierung: Storyboard, Film, Fazit',
+            },
+          ],
+        },
+        {
+          id: 'preparing',
+          title: 'Vorbereitungsphase',
+          content: '',
+          subsections: [
+            {
+              id: 'brainstorming',
+              title: 'Brainstorming',
+              content:
+                'Der allererste Schritt, als wir uns im Oktober 2020 trafen, war ein Brainstorming über das Thema und intensive Recherche zur CPR. Zu Beginn hatten wir viele Ideen, z.B. mehrere iPads für die Kinder, aber dann kam die Idee einer AR-Erfahrung auf. Mit solchen AR-Brillen wäre es möglich, das Training für die CPR-Technik durchzuführen, während die AR-Oberfläche dem Kind nützliche Informationen über sein Training geben könnte. Es war uns sehr wichtig, nur die wichtigsten Informationen auf dieser Oberfläche anzuzeigen. Für die Lehrer-Oberfläche mussten wir recherchieren, wie viele Drücke man in einem Zyklus machen sollte (30 Drücke), wie oft man eine Mund-zu-Mund-Beatmung durchführen sollte (2 Mal) und weitere Fakten zur CPR-Technik.',
+            },
+            {
+              id: 'personae',
+              title: 'Personae',
+              content:
+                'Der nächste Schritt war die Definition unserer Zielgruppe durch die Erstellung von Personae. Eine Persona symbolisiert einen Prototyp für eine Gruppe von Nutzern und hat persönliche Gewohnheiten, Eigenschaften und Nutzungsverhalten.\n\nAuf der einen Seite gibt es Amy Average, ein typisches 13-jähriges Mädchen, extrovertiert, liebt die Schule wegen ihrer Freunde, aber nicht besonders motiviert. Sie repräsentiert eine unmotivierte Zielgruppe der Kinder. Dann gibt es Cooper Curious, einen supermotivierten Jungen, der lernen und besser werden möchte, aber introvertiert ist.\n\nAuf der anderen Seite gibt es Holly Helpful, eine Ärztin mittleren Alters, sehr gut in CPR-Techniken, aber nicht besonders technikaffin. Und Arthur Ambitious, einen sehr jungen Lehrer, der ein Tech-Nerd ist, aber nicht so gut in CPR-Techniken.',
+            },
+            {
+              id: 'paperprototyping',
+              title: 'Paperprototyping',
+              content:
+                'Der nächste Schritt in unserem UX-Prozess war die Erstellung erster Interface-Ideen und ein Gefühl dafür zu bekommen, wie Konzept und Layout unserer App aussehen könnten. Das Zeichnen dieser rohen Skizzen auf Papier ist eine sehr effektive und schnelle Methode, um Ideen zu entwickeln, bevor man zu früh in einem Prototyping-Tool mit dem Design beginnt.\n\nWir begannen mit dem Skizzieren und der Entwicklung einiger Ideen. Im ersten Bild sehen Sie unsere ersten Ideen, also rohe Skizzen und einige Layout-Ideen. Das zweite Bild zeigt unsere finalen Paperprototypes für die AR-App und das dritte unsere finale Idee für die Lehrer-App.',
+            },
+            {
+              id: 'moodboard',
+              title: 'Moodboard',
+              content:
+                'Der letzte Schritt in der Vorbereitungsphase war die Erstellung eines Moodboards. Ein Moodboard ist ein sehr wichtiges Werkzeug in Designprozessen. Es hilft, einen Eindruck davon zu bekommen, wie das finale Projekt aussehen wird.\n\nIn unserem Fall mussten wir drei verschiedene Moodboards erstellen: eines nur mit Adjektiven, eines mit allgemeinen Bildern wie Natur, Architektur etc. und eines nur mit User Interfaces. Mit Tools wie Dribbble und designinspiration.com fanden wir einige großartige Beispielbilder.',
+            },
+          ],
+        },
+        {
+          id: 'designing',
+          title: 'Designphase',
+          content: '',
+          subsections: [
+            {
+              id: 'wireframes',
+              title: 'Wireframes',
+              content:
+                'Der erste Schritt in der Designphase war die Erstellung von Wireframes! Wireframes sind ebenfalls Skizzen, aber viel präziser als rohe Paperprototypes. Nach dem Erstellen unserer Paperprototypes erhielten wir Feedback und änderten einige Details.\n\nEin wichtiger Teil war das Nachdenken über Interaktionen zwischen den verschiedenen Skizzen: "Welcher Button muss gedrückt werden, um zu diesem Screen zu kommen?". Wir verbanden die Screens miteinander und verwendeten orangefarbene Sticker für Links zu anderen Screens und grüne Sticker für Animationen auf demselben Screen.',
+            },
+            {
+              id: 'digital-prototypes',
+              title: 'Digitale Prototypen',
+              content:
+                'Nachdem Inhalt und Interaktionen zwischen den Screens fertig waren, konnten wir digital werden! Digitale Prototypen sind eine sehr wichtige Form des Prototypings und realistisch genug, um die meisten Interface-Elemente zu testen.\n\nUnter all den verschiedenen Prototyping-Tools wie Figma, Framer oder InVision wählten wir Adobe XD, weil die Zusammenarbeit mit Adobe Illustrator und Adobe Photoshop viel besser ist als mit anderen Tools.',
+            },
+          ],
+        },
+        {
+          id: 'finalization',
+          title: 'Finalisierung',
+          content: '',
+          subsections: [
+            {
+              id: 'storyboard',
+              title: 'Storyboard',
+              content:
+                'Nachdem unsere digitalen und klickbaren Prototypen fertig waren, konnten wir mit den letzten Schritten weitermachen. Um die verschiedenen Anwendungsfälle unserer App zu erklären, mussten wir einen Film erstellen. Es ist immer sinnvoll, die Geschichte zu planen, bevor man filmt, also begannen wir mit einem Storyboard.\n\nEin Storyboard bietet einen schematischen Überblick über die Grundstruktur des Projekts. Die wichtigsten Fragen: Wann und wo spielt die Geschichte? In welcher Reihenfolge passieren die Ereignisse? Welche Screens wollen wir zeigen?',
+            },
+            {
+              id: 'movie',
+              title: 'Finaler Film',
+              content:
+                'Der allerletzte Schritt war das Filmen und Schneiden des finalen Films über unser Projekt. Der Film dauert nur zwei Minuten, also mussten wir sicherstellen, dass die Informationen schnell präsentiert werden. Wir erstellten unseren Film in Adobe Premiere Pro und die Animationen in Adobe After Effects.\n\nBesonderer Dank an Jonas Fischer fürs Schauspielern, an Anja Happernagl fürs Ausleihen der Puppe und an die Evangelische Gemeinschaft Königsbrunn für die Räumlichkeiten!',
+            },
+            {
+              id: 'conclusion',
+              title: 'Fazit',
+              content:
+                'Wir haben während dieses Projekts viel gelernt! Wir begannen mit Brainstorming und danach waren wir wirklich begeistert. Das Zeichnen von Skizzen war ein wichtiger Teil des UX-Prozesses, bei dem wir anfangs etwas kämpften.\n\nAufgrund der Covid-19-Pandemie war dieses Projekt besonders. Zunächst begannen wir mit Präsenzunterricht, aber sobald der Shutdown Realität war, wechselten wir zu Online-Vorlesungen. Trotzdem war das Ergebnis sehr gut und interessant!',
+            },
+          ],
+        },
+      ],
     },
     en: {
-      title: 'Morocco',
-      tagline: 'Everyday life and beauty in Morocco',
-      body: 'Immersed in the textures and traditions of Morocco: everyday life and breathtaking scenery captured in a series of evocative images.\n\nFrom the busy souks of Marrakech to quiet desert landscapes, a story full of contrasts, colors and history.',
-      type: 'Photography · Documentary',
-      role: 'Photographer',
-      metaTitle: 'Morocco: documentary photography | Erik Bergheimer',
-      metaDescription: 'Atlas mountains, desert and everyday life: a documentary photo series from Morocco.',
-      sections: [],
+      title: 'CPR Training AR App',
+      tagline: 'Teaching kids lifesaving skills through Augmented Reality',
+      body: 'CPR stands for Cardiopulmonary Resuscitation, a life-saving emergency procedure. We wanted to help kids learn this technique to become potential lifesavers.',
+      type: 'UX/UI · App design',
+      role: 'UX designer, interface designer',
+      metaTitle: 'CPR Training AR App: teaching kids CPR with AR | Erik Bergheimer',
+      metaDescription:
+        "University UX/UI project: an AR app that teaches children CPR. My role: concept, wireframes and UI for the teacher app and the kids' AR interface.",
+      sections: [
+        {
+          id: 'overview',
+          title: 'Overview',
+          content: '',
+          subsections: [
+            {
+              id: 'problem',
+              title: 'Problem',
+              content:
+                'Countless examples demonstrate that children can save lives by performing CPR. In 2009, ABC News reported that children as young as 9 years old can learn the basics of CPR. That means that young kids can learn and perform CPR but due to the lack of ways to teach them this technique, we had to come up with a digital solution.',
+            },
+            {
+              id: 'solution',
+              title: 'Solution',
+              content:
+                "We decided to design two different apps, one interface for the CPR teacher, who's gonna use a smartphone and one interface for the kids. In our case we came up with the idea of using AR goggles for the kids, so the interface for the kids should be an AR interface.",
+            },
+            {
+              id: 'process',
+              title: 'Our Process',
+              content:
+                'Preparing Phase: Brainstorming, Personae, Paperprototyping, Moodboard\nDesigning Phase: Wireframes, Digital prototypes\nFinalizations: Storyboard, Movie, Conclusion',
+            },
+          ],
+        },
+        {
+          id: 'preparing',
+          title: 'Preparing Phase',
+          content: '',
+          subsections: [
+            {
+              id: 'brainstorming',
+              title: 'Brainstorming',
+              content:
+                'The very first step, when we first met in October 2020 was to brainstorm about this topic and doing a lot of research on CPR. At the very beginning we came up with a lot of ideas e.g. using multiple iPads for the kids but then the idea of an AR experience for the kids came up. With these type of AR goggles on, it would be possible to perform the training for the CPR technique, while the AR interface could give the kid useful informations about his or her training. It was very important for us, that we only display the most important informations on this interface.',
+            },
+            {
+              id: 'personae',
+              title: 'Personae',
+              content:
+                "The next step in our project was to define our target group with creating Personae. A persona symbolizes a prototype for a group of users and has personal habits, characteristics and usage behaviours.\n\nOn the one hand there's Amy Average, a typical 13-year-old girl, very extrovert, loves school because she can talk to her friends. She represents an unmotivated target group. Then there's Cooper Curious, a super motivated boy who wants to learn and help people, but introverted.\n\nOn the other hand there's Holly Helpful, a middle-aged medic, very good at CPR but not tech-savvy. And Arthur Ambitious, a very young teacher, a tech nerd but not great at CPR techniques.",
+            },
+            {
+              id: 'paperprototyping',
+              title: 'Paperprototyping',
+              content:
+                "The next step in our UX process was to create first ideas of an interface. Drawing raw sketches on paper is a very effective and fast method to create ideas before starting to design too early in a prototyping tool.\n\nWe started sketching and creating some ideas of how our app could look like. The first picture shows our first raw ideas and layout concepts. The second picture shows our final paper prototypes for the AR app and the third our final idea for the teacher's app.",
+            },
+            {
+              id: 'moodboard',
+              title: 'Moodboard',
+              content:
+                'The last step in the preparing phase was to create a moodboard. A moodboard is a very important tool in design processes. It helps to get a hint of how the final project will look like.\n\nIn our case, we had to design three different moodboards: one with only adjectives, one with general images like nature, architecture etc. and one with user interfaces only. With awesome tools like Dribbble and designinspiration.com we found some great example pictures.',
+            },
+          ],
+        },
+        {
+          id: 'designing',
+          title: 'Designing Phase',
+          content: '',
+          subsections: [
+            {
+              id: 'wireframes',
+              title: 'Wireframes',
+              content:
+                'The first step in the designing phase is creating wireframes! Wireframes are sketches that are a lot more precise and exact than raw paper prototypes. After creating our paper prototypes, we got feedback and changed some details.\n\nAn important part was thinking about interactions between the different screens: "Which button has to be pressed to get to this screen?". We connected the screens and used orange stickers for links to other screens and green stickers for animations on the same screen.',
+            },
+            {
+              id: 'digital-prototypes',
+              title: 'Digital Prototypes',
+              content:
+                'Now that the content and the interactions between the screens were done, we could proceed with going digital! Digital prototypes are realistic enough to test most of the interface elements.\n\nUnder all the different prototyping tools like Figma, Framer or InVision we picked Adobe XD, because the collaboration with Adobe Illustrator and Adobe Photoshop is a lot better than with other common tools.',
+            },
+          ],
+        },
+        {
+          id: 'finalization',
+          title: 'Finalizations',
+          content: '',
+          subsections: [
+            {
+              id: 'storyboard',
+              title: 'Storyboard',
+              content:
+                "Now that our digital and clickable prototypes were done, we could proceed with the last steps. To explain the different use cases of our app, we had to create a movie. It's always useful to plan your story before you film it, so we started creating a storyboard.\n\nA storyboard provides a schematic overview of the basic structure of the project. The most important questions: When and where does the story take place? In which order do events happen? What are the screens we want to show?",
+            },
+            {
+              id: 'movie',
+              title: 'Final Movie',
+              content:
+                'The very last step was to film and cut the final movie about our project. The duration was only two minutes so we had to make sure the information was presented quickly. We created our movie in Adobe Premiere Pro and the animations in Adobe After Effects.\n\nSpecial thanks to Jonas Fischer for acting, to Anja Happernagl for lending us the mannequin and to the Evangelische Gemeinschaft Königsbrunn for the rooms!',
+            },
+            {
+              id: 'conclusion',
+              title: 'Conclusion',
+              content:
+                'We think we learned a lot during this project! We started with brainstorming and were really excited. Drawing sketches, a very important part of UX processes, was something we struggled with at first.\n\nDue to the Covid-19 pandemic, this project was very special. At first we started with presence classes, but as soon as the shutdown was reality, we moved to online lessons. Despite this, the outcome was very good and interesting!',
+            },
+          ],
+        },
+      ],
     },
   },
 ];
 
 /** „Kommt bald"-Kacheln ohne Detailseite */
 export const comingSoon = [
-  {
-    slug: 'prematch',
-    type: { de: 'UX/UI · Masterarbeit', en: "UX/UI · Master's thesis" },
-    de: { title: 'PreMatch', tagline: 'App für Fußball-Tipps' },
-    en: { title: 'PreMatch', tagline: 'Football prediction app' },
-    color: '#d0d8e8',
-  },
   {
     slug: 'rose',
     type: { de: 'UX/UI · Digital-Business-Projekt', en: 'UX/UI · Digital business project' },

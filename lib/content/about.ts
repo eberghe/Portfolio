@@ -49,7 +49,7 @@ export const aboutContent = {
     subtitle: 'Portfolio · Augsburg',
     greeting: 'Servus, ich bin Erik',
     intro:
-      'Freiberuflicher UX/UI-Designer und Webflow-Entwickler aus Augsburg. Schreib mir, um herauszufinden, ob ich gerade Zeit für dein Projekt habe.',
+      'UX/UI-Designer und Webflow-Entwickler aus Augsburg. Schreib mir, um herauszufinden, ob ich gerade Zeit für dein Projekt habe.',
     photoAlt: 'Erik von hinten am Strand im weißen T-Shirt und mit Kappe, neben ihm ein Surfbrett',
     tools: 'Tools, mit denen ich arbeite',
     pause: 'Animation anhalten',
@@ -74,7 +74,7 @@ export const aboutContent = {
     subtitle: 'Portfolio · Augsburg',
     greeting: "Hi, I'm Erik",
     intro:
-      'Freelance UX/UI designer and Webflow developer from Augsburg. Get in touch to find out if I have time for your project.',
+      'UX/UI designer and Webflow developer from Augsburg. Get in touch to find out if I have time for your project.',
     photoAlt: 'Erik seen from behind on a beach in a white T-shirt and cap, next to a surfboard',
     tools: 'Tools I work with',
     pause: 'Pause animation',

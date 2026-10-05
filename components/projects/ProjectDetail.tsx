@@ -138,9 +138,11 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
             {project.metrics.map((m) => (
               <div key={m.label[locale]} className="border border-border rounded-xl p-4">
                 <dt className="text-[13px] text-text2">{m.label[locale]}</dt>
-                <dd className="text-2xl font-medium text-foreground">{m.value}</dd>
+                <dd className="text-2xl font-medium text-foreground">
+                  {typeof m.value === 'string' ? m.value : m.value[locale]}
+                </dd>
                 <dd className="text-[11px] text-text3 mt-1">
-                  {t.source}: {m.source}
+                  {t.source}: {typeof m.source === 'string' ? m.source : m.source[locale]}
                 </dd>
               </div>
             ))}
@@ -149,7 +151,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
       )}
 
       {sections.length > 0 && (
-        <div className="flex gap-12 relative">
+        <div className="flex lg:gap-12 relative">
           <TableOfContents items={sections.map((s) => ({ id: s.id, title: s.title }))} label={t.toc} />
           <div className="flex-1 min-w-0">
             {sections.map((section) => (
@@ -158,6 +160,15 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
                   {section.title}
                 </h2>
                 <Paragraphs content={section.content} className="text-sm text-text2 leading-[1.8] mb-6" />
+                {(project.inlineImages[section.id] ?? []).length > 0 && (
+                  <div className="mb-8">
+                    <ImageGallery
+                      images={localized(project.inlineImages[section.id]!, locale)}
+                      locale={locale}
+                      variant="wide"
+                    />
+                  </div>
+                )}
                 {section.subsections?.map((sub) => {
                   const images = project.inlineImages[sub.id] ?? [];
                   return (

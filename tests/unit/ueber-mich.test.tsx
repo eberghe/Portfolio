@@ -65,7 +65,7 @@ describe('AK-6: Deutsch auf der deutschen Seite', () => {
 
 describe('AK-8: Freelance', () => {
   it.each(['de', 'en'] as const)('%s', (locale) => {
-    expect(aboutContent[locale].intro).toMatch(locale === 'de' ? /Freelancer|freiberuflich/i : /freelance/i);
+    expect(aboutContent[locale].intro).not.toMatch(/Freelance|freiberuflich/i);
     expect(aboutContent[locale].intro).toMatch(/Augsburg/);
   });
 });

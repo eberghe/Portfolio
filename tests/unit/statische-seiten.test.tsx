@@ -69,6 +69,22 @@ describe('faq AK-1/AK-2: Aufbau', () => {
   });
 });
 
+describe('faq AK-8/AK-9: Fragen als Überschriften, Kasten mit Kontakt (Issue #7, #19)', () => {
+  it.each(locales)('%s', (locale) => {
+    const { container } = render(<FaqPage locale={locale} />);
+    expect(container.querySelectorAll('summary h2')).toHaveLength(faqs.length);
+    expect(screen.getByRole('heading', { level: 2, name: faqs[0]![locale].q })).toBeInTheDocument();
+    const aside = container.querySelector('aside')!;
+    expect(within(aside).getByRole('img')).toBeInTheDocument();
+    const hrefs = within(aside)
+      .getAllByRole('link')
+      .map((a) => a.getAttribute('href'));
+    expect(hrefs).toEqual(
+      expect.arrayContaining([locale === 'en' ? '/en/contact' : '/contact', 'mailto:erb1209@outlook.de']),
+    );
+  });
+});
+
 describe('faq AK-3: FAQPage', () => {
   it('alle Fragen der Sprache', () => {
     const data = faqJsonLd('en');

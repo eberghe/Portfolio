@@ -36,6 +36,7 @@ Globale Navigation und Footer wie auf der Lovable-Seite (`Navbar.tsx`, `Footer.t
 - AK-8: Alle Texte gibt es auf Deutsch und Englisch.
 - AK-15: Im Dunkelmodus trennt eine dezente Linie (`white/10`) den Footer vom Inhalt.
 - AK-17: Die Kopfzeile ist auf keiner Seite breiter als das Fenster (768 und 1280 px, DE und EN), auch mit hervorgehobenem aktivem Menüpunkt. Mona Sans läuft breiter als Inter, deshalb haben die Menülinks zwischen 768 und 1023 px weniger Innenabstand (`md:px-2.5 lg:px-3.5`). (AK-16, kein Umbruch der Menüpunkte, steht in `startseite.md`.)
+- AK-18 (Issue #13): Ein Seitenwechsel über Logo oder Menü öffnet die neue Seite ganz oben (`scrollY` 0), auch von /about und /services aus. Ursache war `scroll-behavior: smooth` auf `<html>`: Next 16 schaltet das sanfte Scrollen beim Seitenwechsel nur mit `data-scroll-behavior="smooth"` am `<html>` ab; sonst überlagern sich die Scroll-Sprünge und die Startseite landet unter dem Hero.
 
 ## Sprachen (DE/EN)
 
@@ -69,4 +70,5 @@ Offen, bewusst später:
 - Gleicher Seitentitel DE/EN → mit SEO-Funktion entscheiden
 
 ## Nachtrag
+
 - Das Herz im Footer-Satz „made with 🤍 in augsburg" ist für Screenreader ausgeblendet und wird als „love" vorgelesen (der Satz ist als Englisch ausgezeichnet).

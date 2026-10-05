@@ -309,7 +309,7 @@ export const services: Service[] = [
       description:
         'Travel, people, culture: images that tell stories. Created on journeys through New Zealand, Indonesia, Morocco and Europe.',
       features: [
-        'Travel & documentary',
+        'Travel & documentary photography',
         'Editorial photography',
         'Post-processing & colour grading',
         'Image selection & storytelling',

@@ -3,6 +3,7 @@
 import { ArrowUp, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { localPages } from '@/lib/content/local';
 import { localizedPath, messages, type Locale } from '@/lib/i18n';
 import Instagram from './icons/Instagram';
 import Linkedin from './icons/Linkedin';
@@ -121,6 +122,16 @@ export default function Footer({ locale }: { locale: Locale }) {
               >
                 {t.privacy}
               </Link>
+              {localPages.map((p) => (
+                <Link
+                  key={p.path}
+                  href={href(p.path)}
+                  aria-current={current(p.path)}
+                  className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
+                >
+                  {p[locale].footerLink}
+                </Link>
+              ))}
             </div>
             <p lang="en" className="text-[12px] text-white/60 flex-1 text-center">
               <MadeWith text={t.madeWith} />
@@ -129,7 +140,7 @@ export default function Footer({ locale }: { locale: Locale }) {
           </div>
 
           <div className="flex flex-col gap-3 md:hidden">
-            <div className="flex items-center justify-between w-full">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 w-full">
               <Link
                 href={href('/impressum')}
                 className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
@@ -142,6 +153,16 @@ export default function Footer({ locale }: { locale: Locale }) {
               >
                 {t.privacy}
               </Link>
+              {localPages.map((p) => (
+                <Link
+                  key={p.path}
+                  href={href(p.path)}
+                  aria-current={current(p.path)}
+                  className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
+                >
+                  {p[locale].footerLink}
+                </Link>
+              ))}
               <p className="text-[12px] text-white/60">© {year}, Erik Bergheimer</p>
             </div>
             <div className="flex items-center justify-between w-full mt-6">

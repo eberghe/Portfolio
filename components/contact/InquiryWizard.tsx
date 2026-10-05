@@ -29,7 +29,7 @@ const inputClass =
 const labelClass = 'text-[11px] font-medium tracking-wide uppercase text-text3 mb-1.5 block';
 const summaryHeadingClass = labelClass.replace('font-medium', 'font-bold');
 const choiceClass =
-  'flex items-center gap-3 min-h-11 px-3 py-2 rounded-lg border border-border bg-bg2 text-[13px] text-foreground cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-light';
+  'flex items-center gap-2 sm:gap-3 min-h-11 px-2.5 sm:px-3 py-2 rounded-lg border border-border bg-bg2 text-[13px] leading-tight hyphens-auto text-foreground cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-light motion-safe:transition-colors hover:border-primary/50';
 const buttonClass =
   'inline-flex items-center justify-center gap-2 min-h-11 px-5 py-2.5 rounded-lg text-[13px] font-medium transition-opacity max-sm:flex-1';
 
@@ -57,6 +57,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
   const summary = useRef<HTMLDivElement>(null);
   const notice = useRef<HTMLDivElement>(null);
   const thanks = useRef<HTMLHeadingElement>(null);
+  const actions = useRef<HTMLDivElement>(null);
 
   // Neue Antwort des Servers übernehmen (AK-2, AK-7, AK-8)
   if (state !== seen) {
@@ -104,6 +105,15 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
     setErrors({});
     setStep(target);
     requestFocus('step');
+  };
+
+  // Auf dem Handy kleben die Schritt-Buttons unten; ein fokussiertes Feld darunter wird hochgescrollt (kontakt.md AK-7)
+  const onFocusField = (e: React.FocusEvent<HTMLFormElement>) => {
+    const bar = actions.current;
+    if (!bar || bar.contains(e.target) || getComputedStyle(bar).position !== 'sticky') return;
+    const field = (e.target.closest('label') ?? e.target).getBoundingClientRect();
+    const overlap = field.bottom - bar.getBoundingClientRect().top + 8;
+    if (overlap > 0) window.scrollBy({ top: overlap, behavior: 'instant' });
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -176,9 +186,9 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
         data-schritt
         hidden={i !== step}
         aria-describedby={[description, ...groupErrors.map(errorId)].filter(Boolean).join(' ') || undefined}
-        className="mb-6 min-w-0"
+        className="mb-4 min-w-0"
       >
-        <legend className="mb-4">
+        <legend className="mb-3">
           <h3
             ref={(el) => {
               headings.current[i] = el;
@@ -202,7 +212,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
   ) => (
     <fieldset className="mb-5 min-w-0" {...describe(name)}>
       <legend className={labelClass}>{label(legend, false)}</legend>
-      <div className="grid gap-2">
+      <div className="grid gap-1.5 sm:gap-2 grid-cols-2">
         {options.map((o, i) => (
           <label key={o} className={choiceClass}>
             <input
@@ -222,13 +232,13 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
   );
 
   return (
-    <form ref={form} action={dispatch} onSubmit={onSubmit} noValidate className="relative">
+    <form ref={form} action={dispatch} onSubmit={onSubmit} onFocus={onFocusField} noValidate className="relative">
       <noscript>
         <style>{noScriptCss}</style>
       </noscript>
       <input type="hidden" name="sprache" value={locale} />
 
-      <ol aria-label={t.progress} data-nur-js className="grid grid-cols-4 gap-2 mb-6">
+      <ol aria-label={t.progress} data-nur-js className="grid grid-cols-4 gap-2 mb-4">
         {t.steps.map((s, i) => (
           <li key={s} aria-current={i === step ? 'step' : undefined} className="min-w-0">
             <span
@@ -302,7 +312,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
           tabIndex={-1}
           role="group"
           aria-labelledby="anfrage-fehler-titel"
-          className="border border-error rounded-xl p-4 mb-6"
+          className="border border-error rounded-xl p-4 mb-4"
         >
           <h3 id="anfrage-fehler-titel" className="text-[13px] font-bold text-foreground mb-2">
             {t.errorsTitle(errorList.length)}
@@ -332,7 +342,8 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
           <p id="anfrage-leistungen-hinweis" className="text-[13px] text-text2 mb-3">
             {t.servicesLegend}
           </p>
-          <div className="grid gap-2">
+          {/* Zweispaltig, damit alle Leistungen und „Weiter" ohne Scrollen sichtbar sind (kontakt.md AK-6) */}
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 sm:grid sm:grid-cols-2">
             {[...services.map((s) => [s.slug, s[locale].title] as const), [OTHER_SERVICE, t.other] as const].map(
               ([value, title], i) => (
                 <label key={value} className={choiceClass}>
@@ -468,7 +479,11 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
         <input id="anfrage-fax" name="fax" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="flex gap-2.5">
+      {/* Auf dem Handy bleiben die Schritt-Buttons unten im Bild (functions/seiten/kontakt.md AK-6) */}
+      <div
+        ref={actions}
+        className="flex gap-2.5 max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-6 max-sm:px-6 max-sm:py-3 max-sm:bg-background/95 max-sm:backdrop-blur-md max-sm:border-t max-sm:border-border"
+      >
         {step > 0 && (
           <button
             type="button"

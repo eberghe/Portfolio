@@ -55,3 +55,25 @@ for (const scheme of ['light', 'dark'] as const) {
     });
   });
 }
+
+test.describe('Übersicht ohne JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('AK-19: kein Filter, alle Projekte sichtbar', async ({ page }) => {
+    await page.goto('/projects');
+    await expect(page.getByRole('group', { name: 'Projekte filtern' })).toBeHidden();
+    for (const p of projects) await expect(page.getByRole('link', { name: p.de.title })).toBeVisible();
+  });
+});
+
+test('AK-19/AK-23: Filter wirkt, ohne axe-Verstöße und ohne horizontales Scrollen', async ({ page }) => {
+  await openHydrated(page, '/projects');
+  const group = page.getByRole('group', { name: 'Projekte filtern' });
+  await expect(group).toBeVisible();
+  await group.getByRole('button', { name: 'UX/UI' }).click();
+  const ux = projects.filter((p) => p.service === 'ux-ui-design');
+  await expect(page.getByRole('status')).toHaveText(`${ux.length} Projekte`);
+  for (const p of projects)
+    await expect(page.getByRole('link', { name: p.de.title })).toHaveCount(ux.includes(p) ? 1 : 0);
+  expect(await axe(page)).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+});

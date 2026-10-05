@@ -14,6 +14,10 @@ export async function settleAnimations(page: Page) {
 }
 
 export async function axe(page: Page, include: string[] = []) {
+  // Einblende-Elemente (functions/infrastruktur/animationen.md) zeigen, sonst prüft axe sie unsichtbar nicht mit
+  await page.evaluate(() =>
+    document.querySelectorAll('[data-reveal]').forEach((el) => el.setAttribute('data-revealed', '')),
+  );
   await settleAnimations(page);
   let builder = new AxeBuilder({ page }).withTags(AXE_TAGS);
   for (const sel of include) builder = builder.include(sel);

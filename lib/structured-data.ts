@@ -1,4 +1,5 @@
 import { faqs } from '@/lib/content/faq';
+import type { LocalPage } from '@/lib/content/local';
 import type { Project } from '@/lib/content/projects';
 import { services, type Service } from '@/lib/content/services';
 import { messages, type Locale } from '@/lib/i18n';
@@ -116,18 +117,26 @@ export function projectBreadcrumbJsonLd(project: Project, locale: Locale) {
   );
 }
 
-/** FAQPage (faq.md AK-3) */
-export function faqJsonLd(locale: Locale) {
+/** FAQPage aus beliebigen Fragen (leistungen.md AK-22): sichtbarer Text und Schema aus denselben Daten */
+export function faqListJsonLd(items: { q: string; a: string }[], locale: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     inLanguage: locale,
-    mainEntity: faqs.map((f) => ({
+    mainEntity: items.map((f) => ({
       '@type': 'Question',
-      name: f[locale].q,
-      acceptedAnswer: { '@type': 'Answer', text: f[locale].a },
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
   };
+}
+
+/** FAQPage (faq.md AK-3) */
+export function faqJsonLd(locale: Locale) {
+  return faqListJsonLd(
+    faqs.map((f) => f[locale]),
+    locale,
+  );
 }
 
 /** ProfilePage für Über mich (ueber-mich.md AK-2) */
@@ -160,4 +169,26 @@ export function contactPageJsonLd(locale: Locale) {
       },
     },
   };
+}
+
+/** ProfessionalService mit Stadt als Einsatzgebiet (staedte-landingpages.md AK-2) */
+export function localJsonLd(page: LocalPage, locale: Locale) {
+  const t = page[locale];
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: `Erik Bergheimer – ${t.title.replace(` in ${page.city}`, '')}`,
+    description: t.metaDescription,
+    url: absolute(page.path, locale),
+    address: { ...person(locale).address, streetAddress: undefined },
+    inLanguage: locale,
+    email: EMAIL,
+    provider: person(locale),
+    areaServed: [{ '@type': 'City', name: page.city }, areaServed[locale][1]],
+  };
+}
+
+/** BreadcrumbList Start › Landingpage (staedte-landingpages.md AK-2) */
+export function localBreadcrumbJsonLd(page: LocalPage, locale: Locale) {
+  return breadcrumbList([home(locale), { name: page[locale].title, path: page.path }], locale);
 }

@@ -1,3 +1,4 @@
+import { localPages } from '@/lib/content/local';
 import { projects } from '@/lib/content/projects';
 import { services } from '@/lib/content/services';
 
@@ -9,4 +10,5 @@ export const sitePaths = () => [
   ...staticPaths,
   ...services.map((s) => `/services/${s.slug}`),
   ...projects.map((p) => `/projects/${p.slug}`),
+  ...localPages.map((p) => p.path),
 ];

@@ -42,3 +42,9 @@ Offen, Entscheidung bei Erik: weitere Kundenfragen (Preise, Angebot, Nutzungsrec
 ## Befunde Blinder Kritiker (Issue #3)
 
 Behoben: „Ich sitze“ → „Ich wohne und arbeite“, EN „runs remote“ → „happens remotely“, doppelter Vor-Ort-Satz aus der Remote-Antwort entfernt. Bewusst gelassen: Startseite nennt „Augsburg“ als Standort (Suchbegriff), die FAQ präzisiert Königsbrunn bei Augsburg.
+
+## Umbau nach Vorlage designme.agency (Issue #19, Erik 2026-10-04; löst Issue #7)
+
+- AK-8: Jede Frage ist eine Überschrift (h2) im `summary`; das Akkordeon ist die gemeinsame Komponente `FaqList` (auch auf Leistungs- und Stadtseiten). Auf- und Zuklappen ist weich animiert, wo der Browser es kann, und ohne Animation bei reduzierter Bewegung.
+- AK-9: Zweispaltig ab 1024 px: links bleibt eine Spalte mit Eriks Foto, „Deine Frage ist nicht dabei?“, Button zum Erstgespräch und E-Mail-Adresse stehen; rechts die Fragen. Auf dem Handy steht dieser Kasten unter den Fragen.
+- AK-10: Kopf mit Überline, h1 und einem Satz; Fragen blenden beim Scrollen ein.

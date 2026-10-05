@@ -84,7 +84,7 @@ test('Kritiker 7: Fehlerliste und Schritt-Überschrift haben sichtbaren Fokus', 
 
 test('AK-9: Vorauswahl über die Leistungsseite', async ({ page }) => {
   await open(page, '/services/accessibility');
-  await page.getByRole('link', { name: 'Kostenloses Erstgespräch' }).click();
+  await page.getByRole('link', { name: 'Kostenloses Erstgespräch' }).first().click();
   await expect(page).toHaveURL(/\/contact\?leistung=accessibility$/);
   await expect(page.getByRole('checkbox', { name: 'Barrierefreiheit-Beratung' })).toBeChecked();
 });
@@ -132,3 +132,58 @@ for (const scheme of ['light', 'dark'] as const) {
     });
   });
 }
+
+// functions/seiten/kontakt.md AK-6: Assistent ohne Scrollen bedienbar
+test('seite AK-6: Assistent im ersten Bildschirm', async ({ page }, info) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await open(page, '/contact');
+  const visible = async (name: string) => {
+    const box = (await page.getByRole('button', { name, exact: true }).boundingBox())!;
+    const height = page.viewportSize()!.height;
+    expect(box.y + box.height, name).toBeLessThanOrEqual(height);
+  };
+  const lastOption = (await page.getByRole('checkbox').last().boundingBox())!;
+  expect(lastOption.y + lastOption.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+  await visible('Weiter');
+  if (info.project.name === 'mobile-360') return;
+  await page.getByRole('checkbox', { name: 'Webflow-Entwicklung' }).check();
+  await page.getByRole('button', { name: 'Weiter' }).click();
+  await page.getByRole('textbox', { name: /Beschreibung/ }).fill('Wir brauchen einen barrierefreien Relaunch.');
+  await visible('Weiter');
+  await page.getByRole('button', { name: 'Weiter' }).click();
+  await visible('Weiter');
+  await page.getByRole('button', { name: 'Weiter' }).click();
+  await visible('Anfrage senden');
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+});
+
+test('seite AK-7: Schritt-Buttons verdecken kein fokussiertes Feld', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile-360', 'Leiste klebt nur auf dem Handy');
+  await open(page, '/contact');
+  const boxes = page.getByRole('checkbox');
+  const bar = page.getByRole('button', { name: 'Weiter' });
+  for (let i = 0; i < (await boxes.count()); i++) {
+    await boxes.nth(i).focus();
+    await page.waitForTimeout(50);
+    const field = (await boxes.nth(i).locator('xpath=..').boundingBox())!;
+    const barTop = (await bar.locator('xpath=..').boundingBox())!.y;
+    expect(field.y + field.height, `Option ${i}`).toBeLessThanOrEqual(barTop + 1);
+  }
+});
+
+test('seite AK-8: Einleitung vor dem Assistenten vorgelesen', async ({ page }) => {
+  await open(page, '/contact');
+  const order = await page.evaluate(() => {
+    const walker = document.createTreeWalker(document.querySelector('main')!, NodeFilter.SHOW_TEXT);
+    const texts: string[] = [];
+    while (walker.nextNode()) {
+      const el = walker.currentNode.parentElement!;
+      if (el.closest('[aria-hidden="true"]') || getComputedStyle(el).display === 'none') continue;
+      texts.push(walker.currentNode.textContent!.trim());
+    }
+    const all = texts.join(' ');
+    return { intro: all.indexOf('vier kurzen Schritten'), form: all.indexOf('Projekt anfragen') };
+  });
+  expect(order.intro).toBeGreaterThanOrEqual(0);
+  expect(order.intro).toBeLessThan(order.form);
+});

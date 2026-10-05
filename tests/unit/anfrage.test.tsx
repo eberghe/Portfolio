@@ -335,10 +335,8 @@ describe('Anfrage-Assistent im Browser', () => {
   it('AK-9: Leistungsseite verlinkt die Kontaktseite mit Vorauswahl', () => {
     const service = services.find((s) => s.slug === 'accessibility')!;
     render(<ServiceDetail service={service} locale="en" />);
-    expect(screen.getByRole('link', { name: 'Free intro call' })).toHaveAttribute(
-      'href',
-      '/en/contact?leistung=accessibility',
-    );
+    for (const link of screen.getAllByRole('link', { name: 'Free intro call' }))
+      expect(link).toHaveAttribute('href', '/en/contact?leistung=accessibility');
   });
 
   it('AK-6/A11y: Pflichtfelder sind ausgeschrieben, Autocomplete gesetzt, Honeypot versteckt', () => {
@@ -472,8 +470,11 @@ describe('Befunde Blinder Kritiker (Runde 1)', () => {
     expect(state.status === 'fallback' && state.text).toContain(long.trim());
   });
 
-  it('seite AK-5: Sprunglink zum Formular für kleine Bildschirme', () => {
+  it('seite AK-6: Assistent steht vor dem Direktkontakt, kein Sprunglink mehr', () => {
     render(<ContactPage locale="de" />);
-    expect(screen.getByRole('link', { name: 'Zum Anfrageformular' })).toHaveAttribute('href', '#anfrage-titel');
+    expect(screen.queryByRole('link', { name: 'Zum Anfrageformular' })).toBeNull();
+    const form = screen.getByRole('heading', { name: 'Projekt anfragen' });
+    const direct = screen.getByRole('heading', { name: 'Direktkontakt' });
+    expect(form.compareDocumentPosition(direct) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   });
 });

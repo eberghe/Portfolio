@@ -75,3 +75,21 @@ Noch offen:
 - Schriftgrößen (10–13 px) und unauffällige h2 sind Bestandsdesign; Anhebung nur mit Freigabe.
 
 Später: JSON-LD (Person/ProfessionalService) mit der SEO-Funktion.
+
+## Umbau nach Vorlage designme.agency (Issue #17, Erik 2026-10-04)
+
+Erik wünscht sich die Startseite inhaltlich und in den Animationen nach dem Vorbild von designme.agency. Übernommen wird, was zu einem Freelancer passt. Kundenlogos, Kundenstimmen, Team und Kennzahlen gibt es (noch) nicht; offene Inhalte stehen in Issue #14.
+
+Reihenfolge: Hero → Werkzeug-Laufband → Faktenleiste → Leistungen als nummerierter Sticky-Stapel → Ablauf → Fallstudien → Persönliche Notiz → Abschluss-CTA.
+
+- AK-20: Unter dem Hero steht ein Abschnitt mit der h2 „Werkzeuge, mit denen ich arbeite“. Das Laufband ist dekorativ und hat einen Pause-Knopf; die Werkzeuge stehen zusätzlich als Liste für Screenreader.
+- AK-21: Die Leistungen sind nummeriert (01 bis 08). Jede Karte zeigt Nummer, Kategorie, Titel (h3), Kurztext, bis zu vier Leistungsmerkmale als Liste und einen Link „Mehr erfahren“. Der Link heißt wie die Leistung; der Kurztext ist seine Beschreibung (AK-12 bleibt). Die Liste ist ein Sticky-Stapel (`sticky-stack`, siehe `infrastruktur/animationen.md`). Links daneben bleibt ab 768 px die Abschnittsüberschrift mit einem Satz und dem Erstgespräch-Button stehen.
+- AK-22: Projektkarten sind Fallstudien-Karten: großes Bild, Schlagworte als Liste (aus dem Projekttyp), Titel (h3), Kurztext und der sichtbare Hinweis „Fallstudie lesen“. Linkname bleibt der Titel (AK-12).
+- AK-23: Abschnitt „Über mich“ (h2) in Ich-Form mit Foto, kurzem Text und Link „Mehr über mich“ auf `/about`.
+- AK-24: Abschluss-CTA (h2 „Erzähl mir, was du vorhast“ / „Tell me what you're planning“) mit Link zum Kontakt und E-Mail-Adresse.
+- AK-25: Abschnitte und Karten blenden beim Scrollen ein (`data-reveal`, gestaffelt); im ersten Bildschirm sofort.
+
+### Befunde Blinder Kritiker (Umbau, Runde 1)
+
+Behoben: Faktenleiste überlappte bei 768 px („Deutschland“ in einer Zeile), einheitliche Größe; CTA-Button im Dunkelmodus 3,5:1 (jetzt Hintergrund/Vordergrund-Tokens); Schlagwort-Chips im Dunkelmodus 4,1:1 (dunkles `--primary-text` auf 50 % Helligkeit angehoben, siehe `design-tokens.md`); Abschnittsüberschriften einheitlich groß; Leistungs-Sticky-Spalte erst ab 1024 px; nach Sprüngen (Anker, Ende-Taste) blendet alles Übersprungene ein; Ablauf-Nummern im gleichen Gewicht wie die Leistungs-Nummern. Die axe-Tests blenden jetzt alle `data-reveal`-Elemente ein, damit auch spätere Abschnitte geprüft werden.
+Offen: „Barrierefreiheit-Beratung“ vs. „Barrierefreiheits-Beratung“ und „Webflow Expert“ auf Deutsch (Erik entscheidet, Issue #14); Hero nutzt eine andere Seitenbreite als die Abschnitte.

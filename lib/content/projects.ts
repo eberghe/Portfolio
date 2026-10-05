@@ -116,7 +116,7 @@ export const projects: Project[] = [
     },
     de: {
       title: 'CPR Training AR App',
-      tagline: 'Kinder als Lebensretter ausbilden mit Augmented Reality',
+      tagline: 'Mit Augmented Reality Kinder zu Lebensrettern ausbilden',
       body: 'CPR steht für Cardiopulmonary Resuscitation (kardiopulmonale Reanimation), eine lebensrettende Notfallmaßnahme. Wir wollten Kindern beibringen, diese Technik zu erlernen und zu potentiellen Lebensrettern zu werden.',
       type: 'UX/UI · App-Design',
       role: 'UX-Designer, Interface-Designer',
@@ -700,7 +700,7 @@ export const projects: Project[] = [
     },
     de: {
       title: 'Webflow vs. Shopify',
-      tagline: 'Können No-Code Tools professionelle Shops liefern?',
+      tagline: 'Können No-Code-Tools professionelle Shops liefern?',
       body: 'Für meine Bachelorarbeit im Studiengang User Experience Design habe ich untersucht, wie weit Low-/No-Code Tools gehen können, wenn man sie auf einen komplexen Anwendungsfall wie E-Commerce anwendet. Plattformen wie Webflow und Shopify versprechen, digitale Gestaltung zu demokratisieren. Aber können sie wirklich professionelle, skalierbare und benutzerfreundliche Online-Shops liefern, ganz ohne Code?\n\nDafür habe ich eine fiktive Modemarke namens BlueBird entworfen und den gesamten Shop auf beiden Plattformen umgesetzt. Das Ergebnis: ein detaillierter, praxisnaher Vergleich zweier sehr unterschiedlicher Entwicklungsansätze.',
       type: 'Web · No-Code · Bachelorarbeit',
       role: 'Forschung & Entwicklung',

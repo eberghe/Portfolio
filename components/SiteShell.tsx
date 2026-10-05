@@ -4,9 +4,11 @@ import '@/app/globals.css';
 import { messages, type Locale } from '@/lib/i18n';
 import Footer from './Footer';
 import Navbar from './Navbar';
+import RevealObserver from './motion/RevealObserver';
 
-// Setzt die Klasse "dark" vor dem ersten Zeichnen: gespeicherte Wahl, sonst Systemeinstellung.
-const themeScript = `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark')}catch(e){}})()`;
+// Setzt vor dem ersten Zeichnen die Klasse "js" (Animationen, functions/infrastruktur/animationen.md)
+// und "dark": gespeicherte Wahl, sonst Systemeinstellung.
+const themeScript = `(function(){document.documentElement.classList.add('js');try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark')}catch(e){}})()`;
 
 /** Gemeinsames HTML-Gerüst beider Sprach-Root-Layouts. */
 export default function SiteShell({
@@ -19,7 +21,7 @@ export default function SiteShell({
   children: ReactNode;
 }) {
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-head-element -- App Router: SiteShell ist das Root-Layout */}
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
@@ -37,6 +39,7 @@ export default function SiteShell({
           {children}
         </main>
         <Footer locale={locale} />
+        <RevealObserver />
       </body>
     </html>
   );

@@ -5,6 +5,9 @@ import ServicesOverview from '@/components/services/ServicesOverview';
 import { breadcrumbJsonLd, serviceJsonLd, servicesItemListJsonLd } from '@/lib/structured-data';
 import { overviewText } from '@/components/services/ServicesOverview';
 import { services } from '@/lib/content/services';
+import { serviceDetails } from '@/lib/content/service-details';
+
+const detailOf = (slug: string) => serviceDetails.find((d) => d.slug === slug)!;
 
 // functions/seiten/leistungen.md
 
@@ -26,7 +29,8 @@ describe('AK-2: Detailseite', () => {
     const service = services.find((s) => s.slug === 'accessibility')!;
     render(<ServiceDetail service={service} locale={locale} />);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(service[locale].title);
+    // Umbau AK-18: h1 ist die Überschrift mit Suchbegriff
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(detailOf(service.slug)[locale].headline);
     const included = screen.getByRole('heading', {
       level: 2,
       name: locale === 'de' ? 'Das ist enthalten' : "What's included",
@@ -34,12 +38,13 @@ describe('AK-2: Detailseite', () => {
     const list = within(included.closest('section')!).getByRole('list');
     expect(within(list).getAllByRole('listitem').length).toBe(service[locale].features.length);
     expect(screen.getByRole('list', { name: locale === 'de' ? 'Schlagworte' : 'Keywords' })).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: locale === 'de' ? 'Kostenloses Erstgespräch' : 'Free intro call' }),
-    ).toHaveAttribute(
-      'href',
-      locale === 'de' ? '/contact?leistung=accessibility' : '/en/contact?leistung=accessibility',
-    );
+    for (const link of screen.getAllByRole('link', {
+      name: locale === 'de' ? 'Kostenloses Erstgespräch' : 'Free intro call',
+    }))
+      expect(link).toHaveAttribute(
+        'href',
+        locale === 'de' ? '/contact?leistung=accessibility' : '/en/contact?leistung=accessibility',
+      );
   });
 });
 
@@ -178,8 +183,9 @@ describe('AK-14: Orte und Sprache im JSON-LD', () => {
 describe('AK-16: Einsatzort im Text', () => {
   it.each(['de', 'en'] as const)('%s', (locale) => {
     render(<ServiceDetail service={services[1]!} locale={locale} />);
-    expect(screen.getByText(/Augsburg/)).toHaveTextContent(locale === 'de' ? /Deutschland/ : /Germany/);
-    expect(screen.getByText(/Augsburg/)).toHaveTextContent(/remote/);
+    // Der Satz zum Einsatzort (Überschrift und FAQ nennen Augsburg zusätzlich)
+    const place = screen.getAllByText(/Augsburg/).find((el) => /remote/.test(el.textContent!))!;
+    expect(place).toHaveTextContent(locale === 'de' ? /Deutschland/ : /Germany/);
   });
 });
 
@@ -193,5 +199,92 @@ describe('AK-17: englische Abschluss-Überschrift (Issue #4)', () => {
     const service = services.find((s) => s.slug === slug)!;
     render(<ServiceDetail service={service} locale="en" />);
     expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument();
+  });
+});
+
+// Umbau nach Vorlage designme.agency (Issue #16)
+describe('Umbau AK-25: Inhalte je Leistung vollständig und in DE/EN gleich aufgebaut', () => {
+  it('alle acht Leistungen haben Detailinhalte', () => {
+    expect(serviceDetails.map((d) => d.slug).sort()).toEqual(services.map((s) => s.slug).sort());
+  });
+  it.each(serviceDetails.map((d) => [d.slug, d] as const))('%s', (_slug, d) => {
+    for (const l of ['de', 'en'] as const) {
+      const t = d[l];
+      expect(t.steps.length).toBeGreaterThanOrEqual(4);
+      expect(t.steps.length).toBeLessThanOrEqual(5);
+      for (const step of t.steps) expect(step.outputs.length).toBeGreaterThanOrEqual(2);
+      expect(t.included).toHaveLength(6);
+      expect(t.packages).toHaveLength(2);
+      expect(t.faqs.length).toBeGreaterThanOrEqual(4);
+      expect(t.lead.trim()).not.toBe('');
+      expect(`${t.headline} ${t.lead}`).not.toMatch(/—/);
+    }
+    expect(d.en.steps.length).toBe(d.de.steps.length);
+    expect(d.en.faqs.length).toBe(d.de.faqs.length);
+    expect(d.en.packages.map((p) => p.items.length)).toEqual(d.de.packages.map((p) => p.items.length));
+  });
+});
+
+describe.each(['de', 'en'] as const)('Umbau Detailseite (%s)', (locale) => {
+  const service = services.find((s) => s.slug === 'webflow-development')!;
+  const d = detailOf(service.slug)[locale];
+  const t = {
+    de: { process: d.processTitle, faq: 'Häufige Fragen', tools: 'Werkzeuge', packages: 'Pakete' },
+    en: { process: d.processTitle, faq: 'Frequently asked questions', tools: 'Tools', packages: 'Packages' },
+  }[locale];
+
+  it('AK-19: Ablauf mit Schritten, Dauer und Ergebnissen', () => {
+    render(<ServiceDetail service={service} locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.process }).closest('section')!;
+    const steps = section.querySelector('ol')!;
+    expect(steps.querySelectorAll(':scope > li')).toHaveLength(d.steps.length);
+    expect(within(section).getAllByRole('heading', { level: 3 })).toHaveLength(d.steps.length);
+    expect(section).toHaveTextContent(d.steps[0]!.duration);
+    expect(section).toHaveTextContent(d.steps[0]!.outputs[0]!);
+  });
+
+  it('AK-20: sechs Karten „Was enthalten ist“', () => {
+    render(<ServiceDetail service={service} locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: d.includedTitle }).closest('section')!;
+    expect(within(section).getAllByRole('heading', { level: 3 })).toHaveLength(6);
+  });
+
+  it('AK-21: zwei Pakete ohne Preise mit Anfrage-Link', () => {
+    render(<ServiceDetail service={service} locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.packages }).closest('section')!;
+    const names = within(section).getAllByRole('heading', { level: 3 });
+    expect(names.map((h) => h.textContent)).toEqual(d.packages.map((p) => p.name));
+    expect(section.textContent).not.toMatch(/€|EUR/);
+    expect(within(section).getAllByRole('link')).toHaveLength(2);
+  });
+
+  it('AK-22: FAQ als details mit FAQPage-JSON-LD', () => {
+    const { container } = render(<ServiceDetail service={service} locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.faq }).closest('section')!;
+    expect(section.querySelectorAll('details')).toHaveLength(d.faqs.length);
+    expect(section.querySelectorAll('summary h3')).toHaveLength(d.faqs.length);
+    const ld = [...container.querySelectorAll('script[type="application/ld+json"]')]
+      .map((el) => JSON.parse(el.textContent!))
+      .find((j) => j['@type'] === 'FAQPage');
+    expect(ld.mainEntity).toHaveLength(d.faqs.length);
+    expect(ld.mainEntity[0].name).toBe(d.faqs[0]!.q);
+  });
+
+  it('AK-23: passendes Projekt verlinkt', () => {
+    render(<ServiceDetail service={service} locale={locale} />);
+    const slug = detailOf(service.slug).project!;
+    const links = screen.getAllByRole('link').map((a) => a.getAttribute('href'));
+    expect(links).toContain(`${locale === 'en' ? '/en' : ''}/projects/${slug}`);
+  });
+
+  it('AK-24: Werkzeuge als Liste', () => {
+    render(<ServiceDetail service={service} locale={locale} />);
+    const list = screen.getByRole('list', { name: t.tools });
+    expect(within(list).getAllByRole('listitem').length).toBe(detailOf(service.slug).tools.length);
+  });
+
+  it('AK-26: Abschnitte blenden ein', () => {
+    const { container } = render(<ServiceDetail service={service} locale={locale} />);
+    expect(container.querySelectorAll('[data-reveal]').length).toBeGreaterThan(5);
   });
 });

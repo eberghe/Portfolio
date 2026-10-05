@@ -107,9 +107,21 @@ describe.each([
     // AK-32: Teile des Linknamens mit Pausen, jeder Eintrag mit ehrlicher Rolle
     expect(hero).toHaveAccessibleName(
       locale === 'de'
-        ? 'HERO Software, Aktuell, Werkstudent Business Development (öffnet in neuem Tab)'
-        : 'HERO Software, Current, Working student, business development (opens in a new tab)',
+        ? 'HERO Software, Aktuell, Business Development Manager (öffnet in neuem Tab)'
+        : 'HERO Software, Current, Business Development Manager (opens in a new tab)',
     );
+    // AK-34: echte Logos als einfarbige SVG-Dateien, dekorativ
+    const logos = links.map((l) => l.querySelector('img')!);
+    expect(logos.map((img) => img.getAttribute('src'))).toEqual([
+      '/logos/hero.svg',
+      '/logos/team23.svg',
+      '/logos/amazon.svg',
+      '/logos/ikea.svg',
+    ]);
+    for (const img of logos) {
+      expect(img).toHaveAttribute('alt', '');
+      expect(img.className).toContain('dark:invert');
+    }
     for (const c of homeContent[locale].companies) expect(c.role).toBeTruthy();
     expect(homeContent[locale].companies.map((c) => c.name)).toEqual(['HERO Software', 'TEAM23', 'Amazon', 'IKEA']);
   });
@@ -210,11 +222,10 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
   }[locale];
   const prefix = locale === 'en' ? '/en' : '';
 
-  it('AK-20: Werkzeuge mit h2, Liste für Screenreader und Pause-Knopf', () => {
+  it('AK-35: kein Werkzeug-Abschnitt mehr auf der Startseite (ersetzt AK-20)', () => {
     render(<Home locale={locale} />);
-    const section = screen.getByRole('heading', { level: 2, name: t.tools }).closest('section')!;
-    expect(within(section).getByRole('list')).toHaveTextContent('Figma');
-    expect(within(section).getByRole('button', { pressed: false })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 2, name: t.tools })).toBeNull();
+    expect(screen.queryByRole('button', { pressed: false })).toBeNull();
   });
 
   it('AK-21: Leistungen nummeriert, mit Merkmalen, als Sticky-Stapel', () => {

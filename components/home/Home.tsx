@@ -2,10 +2,9 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, type CSSProperties } from 'react';
-import ToolsMarquee from '@/components/about/ToolsMarquee';
 import JsonLd from '@/components/JsonLd';
 import LocalClock from './LocalClock';
-import { aboutPhoto, tools } from '@/lib/content/about';
+import { aboutPhoto } from '@/lib/content/about';
 import { featuredProjects, homeContent } from '@/lib/content/home';
 import { services } from '@/lib/content/services';
 import { EMAIL } from '@/lib/site';
@@ -28,11 +27,12 @@ export default function Home({ locale }: { locale: Locale }) {
   return (
     <>
       <JsonLd data={homeJsonLd(locale)} />
-      <section className="relative overflow-hidden border-b border-border">
+      {/* Negativer Abstand = Navigationshöhe (64 px + 1 px Linie): der Hero liegt unter der (oben transparenten) Navigation, der Verlauf reicht bis an den Rand (AK-36) */}
+      <section className="relative overflow-hidden border-b border-border -mt-[65px] pt-[65px]">
         {/* Weicher Farbverlauf statt Hintergrundbild (AK-26) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.14),transparent_70%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.22),transparent_70%)]"
         />
         <div className="relative max-w-[900px] mx-auto px-6 sm:px-8 pt-16 pb-12 md:pt-20 md:pb-12 flex flex-col items-center text-center">
           <p className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-3 py-1 rounded-full text-[12px] font-medium tracking-wide mb-8 motion-safe:animate-fade-in">
@@ -99,16 +99,21 @@ export default function Home({ locale }: { locale: Locale }) {
                     .filter(Boolean)
                     .join(', ')
                     .concat(` ${t.newTab}`)}
-                  className={`group relative flex flex-col items-center justify-center text-center gap-2 h-full min-h-[120px] md:min-h-[150px] px-4 py-6 text-foreground motion-safe:transition-colors hover:bg-bg2 ${'current' in c && c.current ? 'bg-primary-light/60' : ''}`}
+                  className={`group relative flex flex-col items-center text-center gap-3 h-full min-h-[120px] md:min-h-[150px] px-4 pt-9 pb-6 md:pt-11 text-foreground motion-safe:transition-colors ${'current' in c && c.current ? 'bg-primary-light' : 'hover:bg-bg2'}`}
                 >
-                  <Wordmark name={c.name} />
+                  {/* Feste Logo-Höhe: Logos und Rollen stehen in allen Kacheln auf einer Linie */}
+                  <span className="flex items-center justify-center h-10 lg:h-12">
+                    <CompanyLogo name={c.name} />
+                  </span>
                   {'current' in c && c.current && (
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-primary-text">
+                    <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[11px] font-medium text-primary-text">
                       <span aria-hidden="true" className="w-[6px] h-[6px] bg-primary rounded-full" />
                       {t.current}
                     </span>
                   )}
-                  <span className="text-[12px] text-text2">{c.role}</span>
+                  <span className={`text-[12px] ${'current' in c && c.current ? 'text-foreground' : 'text-text2'}`}>
+                    {c.role}
+                  </span>
                   <ArrowUpRight
                     size={14}
                     aria-hidden="true"
@@ -122,20 +127,6 @@ export default function Home({ locale }: { locale: Locale }) {
         <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
           <LocalClock locale={locale} label={t.clockLabel} />
         </div>
-      </section>
-
-      <section aria-labelledby="werkzeuge" className="border-b border-border py-10 overflow-hidden">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
-          <h2 id="werkzeuge" className={`${eyebrow} mb-6`} data-reveal>
-            {t.tools}
-          </h2>
-          <ul aria-labelledby="werkzeuge" className="sr-only">
-            {tools.map((tool) => (
-              <li key={tool.name}>{tool.name}</li>
-            ))}
-          </ul>
-        </div>
-        <ToolsMarquee pauseLabel={t.pause} />
       </section>
 
       <dl className="grid grid-cols-2 md:grid-cols-4 border-b border-border">
@@ -414,22 +405,26 @@ export default function Home({ locale }: { locale: Locale }) {
   );
 }
 
-/** Wortmarke in Schrift, einfarbig (AK-28). TODO(Erik): durch offizielle SVG-Logos ersetzen (Issue #14) */
-function Wordmark({ name }: { name: string }) {
-  if (name === 'HERO Software')
-    return (
-      <span className="text-[20px] lg:text-[26px] leading-none whitespace-nowrap">
-        <span className="font-black tracking-tight">HERO</span> <span className="font-medium">Software</span>
-      </span>
-    );
-  const style: Record<string, string> = {
-    TEAM23: 'font-black tracking-[0.08em]',
-    Amazon: 'font-bold lowercase tracking-tight',
-    IKEA: 'font-black tracking-[0.18em]',
-  };
+/** Echte Logos als einfarbige SVG-Dateien, nachgezeichnet aus Eriks Dateien (AK-34).
+ *  Höhen gleichen die unterschiedlichen Seitenverhältnisse optisch an. */
+const logos: Record<string, { src: string; width: number; height: number; className: string }> = {
+  'HERO Software': { src: '/logos/hero.svg', width: 900, height: 233, className: 'h-6 lg:h-7' },
+  TEAM23: { src: '/logos/team23.svg', width: 137, height: 32, className: 'h-6 lg:h-7' },
+  Amazon: { src: '/logos/amazon.svg', width: 960, height: 290, className: 'h-7 lg:h-8 translate-y-1' },
+  IKEA: { src: '/logos/ikea.svg', width: 960, height: 384, className: 'h-7 lg:h-9' },
+};
+
+function CompanyLogo({ name }: { name: string }) {
+  const logo = logos[name];
+  if (!logo) return <span className="text-[20px] lg:text-[26px] font-bold leading-none">{name}</span>;
   return (
-    <span className={`text-[20px] lg:text-[26px] leading-none whitespace-nowrap ${style[name] ?? 'font-bold'}`}>
-      {name}
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element -- kleine SVG-Datei, keine Bildoptimierung nötig
+    <img
+      src={logo.src}
+      alt=""
+      width={logo.width}
+      height={logo.height}
+      className={`w-auto max-w-full dark:invert ${logo.className}`}
+    />
   );
 }

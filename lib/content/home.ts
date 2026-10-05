@@ -13,12 +13,11 @@ export const homeContent = {
     current: 'Aktuell',
     newTab: '(öffnet in neuem Tab)',
     clockLabel: 'Ortszeit in Königsbrunn',
-    // TODO(Erik): offizielle Logos (SVG) liefern; Amazon und IKEA behalten? (Issue #14)
     companies: [
       {
         name: 'HERO Software',
         url: 'https://hero-software.de/',
-        role: 'Werkstudent Business Development',
+        role: 'Business Development Manager',
         current: true,
       },
       { name: 'TEAM23', url: 'https://www.team23.de/', role: 'UX/UI-Designer' },
@@ -50,8 +49,6 @@ export const homeContent = {
     ],
     projects: 'Ausgewählte Projekte',
     viewAll: 'Alle Projekte ansehen',
-    tools: 'Werkzeuge, mit denen ich arbeite',
-    pause: 'Animation anhalten',
     offerIntro:
       'Acht Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Webflow-Website.',
     learnMore: 'Mehr erfahren',
@@ -84,7 +81,7 @@ export const homeContent = {
       {
         name: 'HERO Software',
         url: 'https://hero-software.de/',
-        role: 'Working student, business development',
+        role: 'Business Development Manager',
         current: true,
       },
       { name: 'TEAM23', url: 'https://www.team23.de/', role: 'UX/UI designer' },
@@ -113,8 +110,6 @@ export const homeContent = {
     ],
     projects: 'Selected projects',
     viewAll: 'View all projects',
-    tools: 'Tools I work with',
-    pause: 'Pause animation',
     offerIntro:
       'Eight services, one point of contact: from first user research and design to an accessible Webflow website.',
     learnMore: 'Learn more',

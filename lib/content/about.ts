@@ -40,7 +40,7 @@ export const aboutContent = {
     subtitle: 'Portfolio · Augsburg',
     facts: 'M.A. Management, Communication & IT, MCI Innsbruck',
     intro:
-      'Ich bin Erik und arbeite als Freelancer für UX/UI-Design, Webflow, Barrierefreiheit und KI-Beratung, vor Ort in Augsburg oder remote. Meinen Bachelor in User Experience Design habe ich an der TH Ingolstadt gemacht. Seitdem habe ich in verschiedenen Unternehmen und Ländern gearbeitet, von Augsburg über Bali bis Innsbruck. 2026 habe ich meinen Master in Management, Communication & IT (M.A.) am MCI in Innsbruck abgeschlossen; daneben war ich Werkstudent im Business Development bei HERO Software.',
+      'Ich bin Erik und arbeite als Freelancer für UX/UI-Design, Webflow, Barrierefreiheit und KI-Beratung, vor Ort in Augsburg oder remote. Meinen Bachelor in User Experience Design habe ich an der TH Ingolstadt gemacht. Seitdem habe ich in verschiedenen Unternehmen und Ländern gearbeitet, von Augsburg über Bali bis Innsbruck. 2026 habe ich meinen Master in Management, Communication & IT (M.A.) am MCI in Innsbruck abgeschlossen; daneben war ich Werkstudent im Business Development bei HERO Software. Heute arbeite ich dort als Business Development Manager.',
     photoAlt: 'Erik Bergheimer mit Sonnenbrille und schwarzem Hemd, lächelnd',
     tools: 'Tools, mit denen ich arbeite',
     pause: 'Animation anhalten',
@@ -57,7 +57,7 @@ export const aboutContent = {
     subtitle: 'Portfolio · Augsburg',
     facts: 'M.A. in Management, Communication & IT, MCI Innsbruck',
     intro:
-      "I'm Erik, a freelance UX/UI designer and Webflow developer who also advises on accessibility and AI, on site in Augsburg or remote. I completed my Bachelor's degree in User Experience Design at Technische Hochschule Ingolstadt (THI). Since then I have worked for different companies and in different countries, from Augsburg to Bali to Innsbruck. In 2026 I completed my Master's degree in Management, Communication and IT (M.A.) at MCI in Innsbruck, alongside a working-student role in Business Development at HERO Software.",
+      "I'm Erik, a freelance UX/UI designer and Webflow developer who also advises on accessibility and AI, on site in Augsburg or remote. I completed my Bachelor's degree in User Experience Design at Technische Hochschule Ingolstadt (THI). Since then I have worked for different companies and in different countries, from Augsburg to Bali to Innsbruck. In 2026 I completed my Master's degree in Management, Communication and IT (M.A.) at MCI in Innsbruck, alongside a working-student role in Business Development at HERO Software, where I now work as Business Development Manager.",
     photoAlt: 'Erik Bergheimer wearing sunglasses and a black shirt, smiling',
     tools: 'Tools I work with',
     pause: 'Pause animation',

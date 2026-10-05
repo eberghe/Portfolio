@@ -89,6 +89,48 @@ describe('Navbar', () => {
   });
 });
 
+// functions/seiten/startseite.md AK-36
+describe('Navbar transparent oben auf der Startseite', () => {
+  const header = () => document.querySelector('header')!;
+  const scrollTo = (y: number) => {
+    Object.defineProperty(window, 'scrollY', { value: y, configurable: true });
+    fireEvent.scroll(window);
+  };
+  beforeEach(() => scrollTo(0));
+
+  it.each(['/', '/en'])('%s: oben transparent, nach dem Scrollen deckend', (path) => {
+    pathname = path;
+    render(<Navbar locale={path === '/en' ? 'en' : 'de'} />);
+    expect(header()).toHaveAttribute('data-transparent', 'true');
+    scrollTo(40);
+    expect(header()).not.toHaveAttribute('data-transparent');
+    scrollTo(0);
+    expect(header()).toHaveAttribute('data-transparent', 'true');
+  });
+
+  it('andere Seiten bleiben deckend', () => {
+    render(<Navbar locale="de" />);
+    expect(header()).not.toHaveAttribute('data-transparent');
+  });
+
+  it('offenes Mobilmenü macht die Navigation deckend', () => {
+    pathname = '/';
+    render(<Navbar locale="de" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Menü' }));
+    expect(header()).not.toHaveAttribute('data-transparent');
+    // Seite dahinter scrollt nicht weiter (auch <html> gesperrt)
+    expect(document.documentElement.style.overflow).toBe('hidden');
+    fireEvent.click(screen.getByRole('button', { name: 'Menü' }));
+    expect(document.documentElement.style.overflow).toBe('');
+  });
+
+  it('oben dunklerer Linktext für ausreichenden Kontrast auf dem Verlauf', () => {
+    pathname = '/';
+    render(<Navbar locale="de" />);
+    expect(header().className).toContain('[&_.text-text2]:text-foreground');
+  });
+});
+
 describe('Footer', () => {
   it('AK-2: aktueller Link im Footer hat aria-current="page"', () => {
     render(<Footer locale="de" />);

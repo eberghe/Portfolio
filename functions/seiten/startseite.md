@@ -105,7 +105,7 @@ Ersetzt AK-1, AK-7, AK-14 und AK-18 (Hero-Foto und h1 mit vollem Namen entfallen
 - AK-28: Abschnitt „Unternehmen, für die ich gearbeitet habe“ (h2, EN „Companies I've worked for“) als Liste: HERO Software, TEAM23, Amazon, IKEA (aus dem Lebenslauf). Jeder Eintrag ist ein Link auf die Website des Unternehmens (neuer Tab, für Screenreader angekündigt), Logos einfarbig in Schwarz (im Dunkelmodus Weiß).
 - AK-29: HERO Software ist als aktuelles Unternehmen hervorgehoben: Kennzeichen „Aktuell“ (EN „Current“) und Rolle, im Linknamen enthalten.
 - AK-30: Uhrzeit in Königsbrunn (Zeitzone Europe/Berlin) als `time`-Element mit Zeitzonenkürzel; sie aktualisiert sich jede Minute und erzeugt keinen Hydration-Fehler (ohne JavaScript steht nur der Ort).
-- AK-32: Jede Kachel nennt eine ehrliche Rolle (Werkstudent, Job vor dem Studium); Inhalt zentriert, „HERO Software“ einzeilig; der Linkname hat Pausen („HERO Software, Aktuell, Werkstudent Business Development (öffnet in neuem Tab)“).
+- AK-32: Jede Kachel nennt eine ehrliche Rolle (Business Development Manager, UX/UI-Designer, Job vor dem Studium); Inhalt zentriert; der Linkname hat Pausen („HERO Software, Aktuell, Business Development Manager (öffnet in neuem Tab)“).
 - AK-33: Die Firmenleiste beginnt bei 1280 × 800 im ersten Bildschirm; ohne JavaScript erscheint die Uhrzeile gar nicht.
 - AK-31: Keine axe-Verstöße, kein horizontales Scrollen (AK-9 gilt weiter).
 
@@ -115,3 +115,19 @@ Offen: Offizielle Logo-Dateien (SVG) der Unternehmen fehlen; bis dahin Wortmarke
 
 Behoben: Amazon und IKEA ohne Rolle wirkten wie Designarbeit (jetzt „Job vor dem Studium“, AK-32), HERO-Kachel uneinheitlich ausgerichtet (AK-32), Firmenleiste unter dem ersten Bildschirm (AK-33), Linkname ohne Pausen (AK-32), halbe Uhrzeile ohne JavaScript (AK-33), aktuelle Rolle als Werkstudent benannt.
 Offen: Wortmarken statt offizieller Logos; ob Amazon und IKEA bleiben, entscheidet Erik.
+
+## Logos, Rolle und Navigation (Erik, 2026-10-05)
+
+Erik hat die Logos von HERO, TEAM23, Amazon und IKEA geschickt (PNG) und schreibt: „werkzeuge mit denen ich arbeite kann auf home raus. bin aktuell business development manager nicht werkstudent. außerdem oben die nav beim start nicht weiß erst on scroll damit der verlauf in grün bis ganz nach oben führt.“
+
+Ersetzt AK-20 (Werkzeug-Laufband auf der Startseite entfällt; auf „Über mich“ bleibt es).
+
+- AK-34: Die Kacheln zeigen die echten Logos als einfarbige SVG-Dateien (`public/logos/<firma>.svg`, aus Eriks Dateien nachgezeichnet): schwarz, im Dunkelmodus weiß. Das Bild ist dekorativ (`alt=""`), der Linkname kommt aus AK-32. Alle Logos haben dieselbe optische Höhe.
+- AK-35: Die Startseite hat keinen Abschnitt „Werkzeuge, mit denen ich arbeite“ mehr.
+- AK-36: Auf der Startseite ist die Navigation oben transparent (kein Hintergrund, keine Linie), der grüne Verlauf des Heros reicht bis an den oberen Rand. Ab dem ersten Scrollen bekommt sie wie auf allen anderen Seiten den weißen (im Dunkelmodus dunklen) Hintergrund und die Linie. Ohne JavaScript und bei offenem Mobilmenü bleibt sie deckend. Andere Seiten sind unverändert.
+- AK-32 nennt HERO jetzt mit der aktuellen Rolle „Business Development Manager“ (vorher Werkstudent).
+
+### Blinder Kritiker (Logos und Navigation, 2026-10-05)
+
+Behoben: Navigationslinks oben auf dem Verlauf nur 3,96:1 (oben jetzt in Vordergrundfarbe, AK-36); offenes Mobilmenü ließ die Seite dahinter weiterscrollen, Header und Schließen-Knopf verschwanden (jetzt ist auch `<html>` gesperrt); HERO im Dunkelmodus ohne Hervorhebung; Logos und Rollen standen wegen „Aktuell“ auf unterschiedlichen Höhen (Kennzeichen jetzt oben links, feste Logo-Höhe); IKEA-Oval zu schwer, TEAM23 zu leicht.
+Offen: Uhrzeit „Königsbrunn“ direkt über der Kennzahl „Augsburg – Aktueller Standort“ und drei Bänder mit Linien hintereinander (Faktenleiste bei Gelegenheit überarbeiten); Pfeil für externe Links nur bei Hover/Fokus sichtbar (Hinweis steht im Linknamen).

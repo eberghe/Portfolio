@@ -71,11 +71,41 @@ test('AK-33: Firmenleiste beginnt im ersten Bildschirm (1280 × 800)', async ({ 
   expect(box!.y + 60).toBeLessThan(800);
 });
 
-test('AK-32: Kacheln zentriert, HERO Software einzeilig', async ({ page }) => {
+test('AK-32/AK-34: Kacheln zentriert, Logos geladen', async ({ page }) => {
   await page.goto('/');
-  const mark = page.getByText('HERO', { exact: true });
-  const lines = await mark.evaluate((el) => el.parentElement!.getClientRects().length);
-  expect(lines).toBe(1);
   const aligns = await page.$$eval('#unternehmen ~ ul a', (els) => els.map((el) => getComputedStyle(el).textAlign));
   expect(aligns.every((a) => a === 'center')).toBe(true);
+  const logos = page.locator('#unternehmen ~ ul img');
+  await expect(logos).toHaveCount(4);
+  await expect
+    .poll(() => logos.evaluateAll((imgs) => imgs.every((i) => (i as HTMLImageElement).naturalWidth > 0)))
+    .toBe(true);
+});
+
+test.describe('AK-34: Logos im Dunkelmodus weiß', () => {
+  test.use({ colorScheme: 'dark' });
+  test('Filter invertiert', async ({ page }) => {
+    await page.goto('/');
+    const filters = await page.$$eval('#unternehmen ~ ul img', (els) => els.map((el) => getComputedStyle(el).filter));
+    expect(filters.every((f) => f.includes('invert(1)'))).toBe(true);
+  });
+});
+
+test('AK-36: Navigation oben transparent, nach dem Scrollen deckend', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  const bg = () => page.locator('header').evaluate((el) => getComputedStyle(el).backgroundColor);
+  await expect.poll(bg).toBe('rgba(0, 0, 0, 0)');
+  // Der Hero (mit Verlauf) beginnt ganz oben, unter der Navigation
+  const heroTop = await page
+    .locator('main section')
+    .first()
+    .evaluate((el) => el.getBoundingClientRect().top);
+  expect(heroTop).toBe(0);
+  await page.mouse.wheel(0, 400);
+  await page.mouse.wheel(0, -200);
+  await expect.poll(bg).not.toBe('rgba(0, 0, 0, 0)');
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  expect(await bg()).not.toBe('rgba(0, 0, 0, 0)');
 });

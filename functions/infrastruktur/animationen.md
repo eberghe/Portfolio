@@ -36,3 +36,14 @@ Sticky-Stapel erst ab 768 px; Einblenden auch auf dem Handy.
 ## Tests
 
 `tests/e2e/animationen.spec.ts` (AK-1 bis AK-6).
+
+## Ladeanimation und weiches Scrollen (Erik, 2026-10-05)
+
+Erik: „auch bitte die lade animation bauen mit meinem style. bitte auch das scrolling ein bisschen smoothen“.
+
+- **Ladeanimation**: Beim ersten Seitenaufruf einer Sitzung liegt kurz eine grüne Fläche (Primärfarbe) über der Seite, darauf baut sich der Schriftzug „Erik Bergheimer“ auf; danach gleitet die Fläche nach oben weg. Gesamtdauer höchstens 1,6 s. Läuft rein per CSS (Klasse `preload` am `<html>`, gesetzt im Kopf-Skript), damit sie auch ohne Hydration endet. Nicht bei reduzierter Bewegung, nicht ohne JavaScript, nicht bei weiteren Seitenwechseln in derselben Sitzung (`sessionStorage`). Die Fläche ist `aria-hidden` und blockiert keine Eingaben, nachdem sie weg ist.
+- **Weiches Scrollen**: Mausrad- und Tastatur-Scrollen werden mit Lenis leicht geglättet (Desktop). Touch bleibt nativ. Bei reduzierter Bewegung aus. Anker-Links springen weich, Fokus und Skip-Link funktionieren weiter. Ist das Mobilmenü offen (`<html>` mit `overflow: hidden`), steht das Scrollen still.
+
+- AK-7: Beim ersten Aufruf mit erlaubter Bewegung ist die Ladefläche sichtbar und nach spätestens 2 s weg (nicht sichtbar, keine Klicks abgefangen); beim zweiten Aufruf in derselben Sitzung erscheint sie nicht.
+- AK-8: Bei reduzierter Bewegung und ohne JavaScript erscheint keine Ladefläche.
+- AK-9: Mit erlaubter Bewegung ist weiches Scrollen aktiv (`html.lenis`), bei reduzierter Bewegung nicht; der Skip-Link führt weiter zum Hauptinhalt.

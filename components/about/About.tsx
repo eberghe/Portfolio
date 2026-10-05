@@ -1,58 +1,57 @@
-import { MapPin } from 'lucide-react';
+import { ArrowRight, MapPin } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import JsonLd from '@/components/JsonLd';
 import { aboutContent, aboutPhoto, chips, timeline, tools } from '@/lib/content/about';
 import { localizedPath, type Locale } from '@/lib/i18n';
+import { EMAIL } from '@/lib/site';
 import { profilePageJsonLd } from '@/lib/structured-data';
+import Journey from './Journey';
 import ToolsMarquee from './ToolsMarquee';
 
-// Über mich, übernommen aus Lovable (AboutPage.tsx, LogoSlider.tsx). Siehe functions/seiten/ueber-mich.md
+// Über mich, umgebaut nach Vorlage matteofabbiani.webflow.io/about. Siehe functions/seiten/ueber-mich.md
 export default function About({ locale }: { locale: Locale }) {
   const t = aboutContent[locale];
   return (
     <>
       <JsonLd data={profilePageJsonLd(locale)} />
-      <section className="min-h-[calc(100vh-64px)] grid grid-cols-1 md:grid-cols-2 border-b border-border">
-        <div className="px-6 sm:px-8 md:px-16 py-16 md:py-20 flex flex-col justify-center">
-          <p className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-2.5 py-1 rounded-full text-[11px] font-medium tracking-wide mb-8 w-fit">
-            <span
-              aria-hidden="true"
-              className="w-[5px] h-[5px] bg-primary rounded-full motion-safe:animate-pulse-dot"
-            />
-            {t.badge}
-          </p>
-          <h1 className="text-[32px] font-bold tracking-tight mb-2">{t.title}</h1>
-          <p className="text-sm text-primary-text mb-5">{t.subtitle}</p>
+      {/* Hero nach Vorlage matteofabbiani.webflow.io/about: große Begrüßung links, Hochkant-Foto rechts (AK-14) */}
+      <section className="max-w-[1200px] mx-auto px-6 sm:px-8 md:px-12 pt-14 md:pt-20 pb-16 md:pb-24 grid md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-10 md:gap-16 items-center">
+        <div className="motion-safe:animate-fade-in">
+          <p className="text-[11px] font-medium tracking-widest uppercase text-primary-text mb-4">{t.eyebrow}</p>
+          <h1 className="text-[44px] sm:text-[64px] md:text-[60px] lg:text-[84px] font-bold leading-[0.98] tracking-[-0.04em] mb-6">
+            Erik Bergheimer
+          </h1>
+          <p className="text-[18px] md:text-[21px] font-medium text-foreground mb-4 text-balance">{t.role}</p>
           <p className="flex items-center gap-1.5 text-[13px] text-text2 mb-6">
             <MapPin size={13} aria-hidden="true" />
-            {t.facts}
+            {t.badge} · {t.facts}
           </p>
-          <p className="text-[15px] text-text2 leading-relaxed max-w-[500px] mb-8">{t.intro}</p>
+          <p className="text-[16px] md:text-[17px] text-text2 leading-relaxed max-w-[560px] mb-8">{t.intro}</p>
           <ul className="flex flex-wrap gap-2">
             {chips[locale].map((c) => (
               <li
                 key={c}
-                className="bg-primary-light text-primary-text border border-primary-border px-3 py-1.5 rounded-full text-[11px] font-medium"
+                className="bg-primary-light text-primary-text border border-primary-border px-3 py-1.5 rounded-full text-[12px] font-medium"
               >
                 {c}
               </li>
             ))}
           </ul>
         </div>
-        <div className="relative border-t md:border-t-0 md:border-l border-border overflow-hidden min-h-[300px] md:min-h-0">
+        <div className="relative aspect-[4/5] w-full max-w-[460px] md:ml-auto rounded-3xl overflow-hidden bg-bg2 motion-safe:animate-fade-in">
           <Image
             src={aboutPhoto.src}
             alt={t.photoAlt}
             fill
             priority
-            sizes="(min-width: 768px) 50vw, 100vw"
+            sizes="(min-width: 768px) 460px, 100vw"
             className="object-cover"
           />
         </div>
       </section>
 
-      <section aria-labelledby="werkzeuge" className="border-b border-border py-8 overflow-hidden">
+      <section aria-labelledby="werkzeuge" className="border-y border-border py-8 overflow-hidden">
         <div className="max-w-[1100px] mx-auto px-6 sm:px-8">
           <h2 id="werkzeuge" className="text-[11px] font-bold tracking-widest uppercase text-text3 mb-6">
             {t.tools}
@@ -66,53 +65,43 @@ export default function About({ locale }: { locale: Locale }) {
         <ToolsMarquee pauseLabel={t.pause} />
       </section>
 
-      <section className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16">
-        <h2 className="text-[11px] font-bold tracking-widest text-text3 uppercase mb-10">{t.journey}</h2>
-        <ol className="relative">
-          <span aria-hidden="true" className="absolute left-[7px] top-0 bottom-0 w-[1.5px] bg-border" />
-          {timeline.map((item) => (
-            <li
-              key={item.date}
-              className="relative grid grid-cols-[24px_1fr] md:grid-cols-[24px_1fr_320px] gap-5 md:gap-8 py-10"
-            >
-              <span
-                aria-hidden="true"
-                className="absolute left-[3px] top-[46px] w-[9px] h-[9px] bg-primary rounded-full border-2 border-background shadow-[0_0_0_3px_hsl(var(--primary)/0.2)]"
-              />
-              <div />
-              <div className="md:sticky md:top-24 md:self-start">
-                <time dateTime={item.date} className="block text-[11px] text-text2 mb-1.5">
-                  {new Date(`${item.date}-01`).toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-GB', {
-                    month: 'short',
-                    year: 'numeric',
-                  })}
-                </time>
-                <h3 className="text-[15px] font-bold text-foreground mb-2 leading-snug">{item[locale].title}</h3>
-                <p className="text-[13px] text-text2 leading-relaxed">{item[locale].text}</p>
-              </div>
-              {item.image && (
-                <div className="col-start-2 md:col-start-3 w-full rounded-xl overflow-hidden border border-border">
-                  <Image
-                    src={item.image.src}
-                    width={item.image.width}
-                    height={item.image.height}
-                    alt={item.image.alt[locale]}
-                    sizes="(min-width: 768px) 320px, 90vw"
-                    className="w-full h-auto"
-                  />
-                </div>
-              )}
-            </li>
-          ))}
-        </ol>
-        <div className="mt-6 border-t border-border pt-10 text-center">
-          <p className="text-[13px] text-text2 mb-5 max-w-[420px] mx-auto">{t.ctaText}</p>
-          <Link
-            href={localizedPath('/contact', locale)}
-            className="inline-flex bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
+      <Journey items={timeline} locale={locale} title={t.journey} intro={t.journeyIntro} hint={t.journeyHint} />
+
+      {/* Abschluss nach Vorlage: „Jetzt bist du dran“ (AK-19) */}
+      <section
+        aria-labelledby="ueber-abschluss"
+        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-24 md:py-36"
+      >
+        <div data-reveal className="max-w-[860px]">
+          <h2
+            id="ueber-abschluss"
+            className="text-[40px] md:text-[72px] font-bold leading-[1.02] tracking-[-0.04em] mb-6 text-balance"
           >
-            {t.cta}
-          </Link>
+            {t.outroTitle}
+          </h2>
+          <p className="text-[17px] md:text-[20px] text-text2 leading-relaxed max-w-[620px] mb-10">{t.outroText}</p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+            <Link
+              href={localizedPath('/contact', locale)}
+              className="group inline-flex items-center gap-2 bg-primary text-primary-foreground px-7 py-3.5 rounded-lg text-[14px] font-medium hover:bg-primary-hover transition-colors"
+            >
+              {t.cta}
+              <ArrowRight
+                size={16}
+                aria-hidden="true"
+                className="motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
+              />
+            </Link>
+            <p className="text-[14px] text-text2">
+              {t.outroMail}{' '}
+              <a
+                href={`mailto:${EMAIL}`}
+                className="underline underline-offset-4 font-medium text-foreground whitespace-nowrap"
+              >
+                {EMAIL}
+              </a>
+            </p>
+          </div>
         </div>
       </section>
     </>

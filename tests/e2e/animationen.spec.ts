@@ -95,3 +95,47 @@ test.describe('mit Bewegung', () => {
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 });
+
+// Ladeanimation und weiches Scrollen (AK-7 bis AK-9). Unter Testautomatisierung sind beide nur mit
+// ?animationstest aktiv, damit die übrigen Tests nicht auf die Ladefläche warten müssen.
+test('AK-7: Ladefläche beim ersten Aufruf, danach weg und in derselben Sitzung nicht wieder', async ({ page }) => {
+  await page.goto('/?animationstest');
+  await expect(page.locator('html')).toHaveClass(/\bpreload\b/);
+  const loader = page.locator('[data-preloader]');
+  await expect(loader).toBeVisible();
+  await page.waitForTimeout(2000);
+  await expect(loader).toBeHidden();
+  expect(await loader.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none');
+  await page.goto('/about?animationstest');
+  await expect(page.locator('html')).not.toHaveClass(/\bpreload\b/);
+  await expect(page.locator('[data-preloader]')).toBeHidden();
+});
+
+test.describe('AK-8: reduzierte Bewegung', () => {
+  test.use({ reducedMotion: 'reduce' });
+  test('keine Ladefläche, kein weiches Scrollen', async ({ page }) => {
+    await page.goto('/?animationstest');
+    await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+    await expect(page.locator('html')).not.toHaveClass(/\bpreload\b/);
+    await expect(page.locator('[data-preloader]')).toBeHidden();
+    await expect(page.locator('html')).not.toHaveClass(/\blenis\b/);
+  });
+});
+
+test.describe('AK-8: ohne JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('keine Ladefläche', async ({ page }) => {
+    await page.goto('/?animationstest');
+    await expect(page.locator('[data-preloader]')).toBeHidden();
+  });
+});
+
+test('AK-9: weiches Scrollen aktiv, Skip-Link funktioniert', async ({ page }) => {
+  await page.goto('/about?animationstest');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('html')).toHaveClass(/\blenis\b/);
+  await page.waitForTimeout(1700);
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#inhalt')).toBeFocused();
+});

@@ -283,3 +283,31 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
     expect(container.querySelectorAll('[data-reveal]').length).toBeGreaterThan(10);
   });
 });
+
+// Restpunkte Umbau (#15, #17)
+describe.each(['de', 'en'] as const)('Restpunkte Startseite (%s)', (locale) => {
+  it('AK-38: Zahlen der Faktenleiste: Endwert für Screenreader, Ziffern dekorativ', () => {
+    const { container } = render(<Home locale={locale} />);
+    const counters = container.querySelectorAll('dd [data-count]');
+    expect(counters.length).toBe(2);
+    for (const c of counters) {
+      expect(c).toHaveAttribute('aria-hidden', 'true');
+      const sr = c.parentElement!.querySelector('.sr-only')!;
+      expect(sr.textContent).toBe(c.getAttribute('data-count'));
+    }
+  });
+
+  it('AK-39: FAQ-Auswahl mit vier Fragen und Link zu allen FAQs', () => {
+    render(<Home locale={locale} />);
+    const heading = screen.getByRole('heading', {
+      level: 2,
+      name: locale === 'de' ? 'Häufige Fragen' : 'Frequently asked questions',
+    });
+    const section = heading.closest('section')!;
+    expect(within(section).getAllByRole('heading', { level: 3 })).toHaveLength(4);
+    expect(within(section).getByRole('link', { name: locale === 'de' ? /Alle FAQs/ : /All FAQs/ })).toHaveAttribute(
+      'href',
+      locale === 'de' ? '/faqs' : '/en/faqs',
+    );
+  });
+});

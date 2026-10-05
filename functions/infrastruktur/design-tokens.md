@@ -49,7 +49,7 @@ Grün als Text im Dunkelmodus nutzt `--primary-text`; im hellen Modus ist `--pri
 - AK-2: Komponenten verwenden ausschließlich Tokens, keine freien Farbwerte.
 - AK-3: Hell- und Dunkelmodus funktionieren, Wahl bleibt gespeichert, `prefers-color-scheme` wird beim ersten Besuch berücksichtigt.
 - AK-4: Alle Text-Token-Kombinationen erfüllen 4,5:1 (automatischer Test über alle Text/Hintergrund-Paare, hell und dunkel).
-- AK-6 (Erik, 2026-10-04): Schrift ist **Mona Sans** (variable, Gewicht 200 bis 900) statt Inter, selbst gehostet über `@fontsource-variable/mona-sans`, Fallback `system-ui`. Keine Anfrage an fremde Server.
+- AK-6 (Erik, 2026-10-04): Schrift ist **Mona Sans** (variable, Gewicht 200 bis 900) statt Inter, selbst gehostet (Datei aus `@fontsource-variable/mona-sans`, seit Issue #28 über `next/font/local`, siehe AK-10), Fallback größenangepasstes Arial, dann `system-ui`. Keine Anfrage an fremde Server.
 - AK-7 (Erik, 2026-10-04): Alle Überschriften (`h1` bis `h4`) sind fett (`font-weight: 700`). Ausnahme: die Rollen-Zeile in der Startseiten-h1 („UX/UI Designer & Webflow Expert“) bleibt normal, weil sie optisch eine Unterzeile ist.
 - AK-8: Datenschutzerklärung nennt die tatsächlich genutzte Schrift (Mona Sans).
 - AK-9 (Blinder Kritiker): Keine Überschrift ist breiter als ihre Spalte (360/768/1280). Die Startseiten-h1 ist bei 768 px kleiner (40 px), weil die Hero-Spalte dort schmal ist; die Rechtstexte-h1 („Datenschutzerklärung“) ist auf dem Handy 26 px und trennt per `hyphens: auto`. Die Rollen-Zeile bricht ausgewogen um (`text-wrap: balance`), die Laufweite großer Überschriften ist −0,03 em statt −2 px.
@@ -58,3 +58,9 @@ Grün als Text im Dunkelmodus nutzt `--primary-text`; im hellen Modus ist `--pri
 ## Befunde Blinder Kritiker (Mona Sans, 2026-10-04)
 
 Bestätigt: Mona Sans wird selbst gehostet geladen, echtes Gewicht 700 (kein künstliches Fett), alle h1–h4 fett, kein horizontales Scrollen. Behoben mit Test (AK-9): Startseiten-h1 ragte bei 768 px aus der Spalte, „Datenschutzerklärung“ bei 360 px; dazu ausgewogener Umbruch der Rollen-Zeile und etwas weitere Laufweite der großen h1.
+
+## Kein Layout-Sprung beim Laden der Schrift (Issue #28, 2026-10-05)
+
+Befund Blinder Kritiker: Auf `/` springt der Hero beim Nachladen von Mona Sans (h1 bricht um eine Zeile anders um, CLS 0,24). Lösung: Mona Sans wird über `next/font/local` geladen (Datei aus `@fontsource-variable/mona-sans`, Latin, Gewicht 200 bis 900, vorgeladen). `next/font` erzeugt eine größenangepasste Ersatzschrift (Arial mit `size-adjust`), die so breit läuft wie Mona Sans; der Wechsel verschiebt kaum etwas. Weiterhin keine Anfrage an fremde Server (AK-6).
+
+- AK-10: Cumulative Layout Shift unter 0,1 auf `/`, `/en` und `/about` bei 360 und 1280 px, mit und ohne reduzierte Bewegung, gemessen ab dem Laden bis 2 s danach.

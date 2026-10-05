@@ -13,7 +13,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['"Mona Sans Variable"', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-mona)', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: 'hsl(var(--border))',

@@ -2,9 +2,12 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, type CSSProperties } from 'react';
+import FaqList from '@/components/faq/FaqList';
 import JsonLd from '@/components/JsonLd';
+import CountUp from '@/components/motion/CountUp';
 import LocalClock from './LocalClock';
 import { aboutPhoto } from '@/lib/content/about';
+import { faqs } from '@/lib/content/faq';
 import { featuredProjects, homeContent } from '@/lib/content/home';
 import { services } from '@/lib/content/services';
 import { EMAIL } from '@/lib/site';
@@ -13,6 +16,9 @@ import { homeJsonLd } from '@/lib/seo';
 
 // Startseite, übernommen aus Lovable (HomePage.tsx) und umgebaut nach Vorlage designme.agency (Issue #17).
 // Siehe functions/seiten/startseite.md, Animationen: functions/infrastruktur/animationen.md
+/** Fragen für die FAQ-Auswahl auf der Startseite (AK-39) */
+const HOME_FAQS = ['leistungen', 'ablauf', 'dauer', 'remote'];
+
 const cardHover =
   'motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.15)]';
 
@@ -154,7 +160,7 @@ export default function Home({ locale }: { locale: Locale }) {
             {t.contact}
           </Link>
         </div>
-        <ol className="sticky-stack grid gap-4">
+        <ol className="sticky-stack grid gap-4" style={{ '--stack-n': services.length } as CSSProperties}>
           {services.map((s, i) => {
             const Icon = s.icon;
             const text = s[locale];
@@ -372,12 +378,42 @@ export default function Home({ locale }: { locale: Locale }) {
               className="flex flex-col-reverse justify-end min-w-0 px-6 sm:px-8 lg:px-10 py-10 border-r border-b md:border-b-0 border-border last:border-r-0"
             >
               <dt className="text-xs text-text3 mt-2">{s.label}</dt>
-              <dd className="font-light text-primary-text leading-none tracking-tight text-[26px] md:text-[28px] lg:text-[34px] min-w-0 [overflow-wrap:anywhere]">
-                {s.value}
+              <dd
+                className={`font-light text-primary-text leading-none tracking-tight min-w-0 ${
+                  /^\d/.test(s.value)
+                    ? 'text-[26px] md:text-[28px] lg:text-[34px]'
+                    : 'text-[20px] md:text-[22px] lg:text-[26px]'
+                }`}
+              >
+                <CountUp value={s.value} />
               </dd>
             </div>
           ))}
         </dl>
+      </section>
+
+      {/* FAQ-Auswahl (AK-39) */}
+      <section
+        aria-labelledby="haeufige-fragen"
+        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 md:gap-12"
+      >
+        <div className="md:sticky md:top-24 md:self-start">
+          <h2 id="haeufige-fragen" className={`${sectionTitle} mb-4`}>
+            {t.faqTitle}
+          </h2>
+          <Link
+            href={href('/faqs')}
+            className="group inline-flex items-center gap-1.5 min-h-11 text-[14px] font-medium text-primary-text"
+          >
+            {t.faqAll}
+            <ArrowRight
+              size={14}
+              aria-hidden="true"
+              className="motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
+            />
+          </Link>
+        </div>
+        <FaqList items={HOME_FAQS.map((id) => faqs.find((f) => f.id === id)![locale])} idPrefix="start-frage" />
       </section>
 
       <section aria-labelledby="abschluss" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24">

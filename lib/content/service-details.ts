@@ -28,6 +28,8 @@ export interface ServiceDetailText {
   headline: string;
   /** Ein Satz unter der h1 */
   lead: string;
+  /** Erste Karte in „Warum mit mir“, passend zur Leistung (leistungen.md AK-27) */
+  whyFocus: { title: string; text: string };
   /** Überschrift und Einleitung des Ablaufs */
   processTitle: string;
   steps: ServiceStep[];
@@ -57,6 +59,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'UX/UI Design in Augsburg',
       headline: 'UX/UI Design in Augsburg: Interfaces, die einfach funktionieren',
       lead: 'Für Unternehmen und Start-ups, die ein Produkt wollen, das ihre Zielgruppe ohne Erklärung versteht und gern nutzt.',
+      whyFocus: {
+        title: 'Nutzer zuerst, nicht Annahmen',
+        text: 'Ich teste Entwürfe früh mit echten Menschen, damit Entscheidungen auf Beobachtung beruhen und nicht auf Bauchgefühl.',
+      },
       processTitle: 'Von der ersten Idee zum fertigen Interface in 4 bis 8 Wochen',
       steps: [
         {
@@ -170,6 +176,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'UX/UI design in Augsburg',
       headline: 'UX/UI design in Augsburg: interfaces that simply work',
       lead: 'For companies and start-ups who want a product their audience understands without explanation and enjoys using.',
+      whyFocus: {
+        title: 'Users first, not assumptions',
+        text: 'I test designs early with real people, so decisions rest on what we observe rather than gut feeling.',
+      },
       processTitle: 'From first idea to finished interface in 4 to 8 weeks',
       steps: [
         {
@@ -283,6 +293,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Webflow-Entwicklung',
       headline: 'Webflow-Entwicklung in Augsburg: schnelle Websites, die du selbst pflegst',
       lead: 'Am Ende hast du eine Website, die schnell lädt, auf jedem Gerät gut aussieht und die du ohne Agentur selbst aktualisierst.',
+      whyFocus: {
+        title: 'Sauber gebaut, leicht zu pflegen',
+        text: 'Klare Klassen, saubere Struktur und ein CMS, das dein Team ohne mich bedienen kann.',
+      },
       processTitle: 'Vom Erstgespräch zur fertigen Website in 2 bis 6 Wochen',
       steps: [
         {
@@ -390,6 +404,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Webflow development',
       headline: 'Webflow development in Augsburg: fast websites you can update yourself',
       lead: 'You end up with a website that loads fast, looks good on every device and that you update yourself, without an agency.',
+      whyFocus: {
+        title: 'Built clean, easy to maintain',
+        text: 'Clear classes, a tidy structure and a CMS your team can run without me.',
+      },
       processTitle: 'From intro call to finished website in 2 to 6 weeks',
       steps: [
         {
@@ -497,6 +515,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Barrierefreiheit nach BFSG und WCAG',
       headline: 'Barrierefreie Websites nach BFSG und WCAG, aus Augsburg',
       lead: 'Für Unternehmen, die wissen wollen, ob das BFSG sie betrifft, und ihre Website Schritt für Schritt für mehr Menschen nutzbar machen.',
+      whyFocus: {
+        title: 'Prüfung mit echten Hilfsmitteln',
+        text: 'Ich teste mit Tastatur und Screenreader statt nur mit automatischen Werkzeugen und erkläre jede Lücke verständlich.',
+      },
       processTitle: 'Vom Check zu einer deutlich barriereärmeren Website in 3 bis 8 Wochen',
       steps: [
         {
@@ -606,6 +628,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Accessibility under the EAA (German BFSG) and WCAG',
       headline: 'Accessible websites under the EAA (German BFSG) and WCAG, from Augsburg',
       lead: 'For businesses who want to know whether the BFSG affects them and make their website usable for more people, step by step.',
+      whyFocus: {
+        title: 'Tested with real assistive tech',
+        text: 'I test with keyboard and screen reader, not just automated tools, and explain every gap in plain words.',
+      },
       processTitle: 'From audit to a far more accessible website in 3 to 8 weeks',
       steps: [
         {
@@ -721,6 +747,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'KI-Beratung',
       headline: 'KI-Beratung in Augsburg: KI im Alltag sinnvoll einsetzen',
       lead: 'Für kleine und mittlere Teams, die KI nicht nur ausprobieren, sondern verlässlich und datenschutzbewusst im Alltag nutzen wollen.',
+      whyFocus: {
+        title: 'Praxis statt Hype',
+        text: 'Ich empfehle KI nur dort, wo sie euch wirklich Zeit spart, und sage es offen, wenn ein einfacher Prozess besser ist.',
+      },
       processTitle: 'Vom ersten Workshop zum eingeführten Werkzeug in 2 bis 6 Wochen',
       steps: [
         {
@@ -824,6 +854,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'AI consulting',
       headline: 'AI consulting in Augsburg: using AI sensibly in everyday work',
       lead: 'For small and mid-sized teams who want to use AI reliably and with data protection in mind, not just try it out.',
+      whyFocus: {
+        title: 'Practice, not hype',
+        text: 'I only recommend AI where it genuinely saves you time, and say so openly when a simple process works better.',
+      },
       processTitle: 'From the first workshop to a tool in daily use in 2 to 6 weeks',
       steps: [
         {
@@ -927,6 +961,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Website- & Prozessoptimierung',
       headline: 'Website-Optimierung in Augsburg: schneller, klarer, für mehr Anfragen',
       lead: 'Für alle, deren Website zwar existiert, aber zu wenig bringt: Du erfährst, was am meisten hilft, und wir setzen es um.',
+      whyFocus: {
+        title: 'Erst messen, dann ändern',
+        text: 'Jede Empfehlung stützt sich auf Daten und Beobachtung, damit du weißt, warum eine Änderung etwas bringt.',
+      },
       processTitle: 'Von der Analyse zur besseren Website in 2 bis 6 Wochen',
       steps: [
         {
@@ -1024,6 +1062,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Website & process optimisation',
       headline: 'Website optimisation in Augsburg: faster and clearer, for more enquiries',
       lead: 'For anyone whose website exists but does too little: you learn what will help most, and we put it into practice.',
+      whyFocus: {
+        title: 'Measure first, then change',
+        text: 'Every recommendation rests on data and observation, so you know why a change will pay off.',
+      },
       processTitle: 'From analysis to a better website in 2 to 6 weeks',
       steps: [
         {
@@ -1124,6 +1166,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Brand- & Logo-Design',
       headline: 'Logo-Design und Markenauftritt in Augsburg',
       lead: 'Für Selbstständige, Gründungsteams und kleine Unternehmen, die einen eigenen, wiedererkennbaren Auftritt wollen statt einer Vorlage von der Stange.',
+      whyFocus: {
+        title: 'Marke, die überall funktioniert',
+        text: 'Logo und Farben prüfe ich auf Kontrast und Lesbarkeit, damit sie im Web, im Druck und auf kleinen Bildschirmen tragen.',
+      },
       processTitle: 'Vom Erstgespräch zum fertigen Markenauftritt in 3 bis 6 Wochen',
       steps: [
         {
@@ -1221,6 +1267,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Brand & logo design',
       headline: 'Logo design and brand identity in Augsburg',
       lead: 'For freelancers, founding teams and small businesses who want a distinctive, recognisable presence rather than an off-the-shelf template.',
+      whyFocus: {
+        title: 'A brand that works everywhere',
+        text: 'I check logo and colours for contrast and legibility, so they hold up on the web, in print and on small screens.',
+      },
       processTitle: 'From intro call to finished brand identity in 3 to 6 weeks',
       steps: [
         {
@@ -1321,6 +1371,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Design Systems',
       headline: 'Design Systems in Augsburg: konsistent gestalten, schneller entwickeln',
       lead: 'Für Produktteams, die weniger Zeit mit Abstimmung und Einzellösungen verbringen und neue Seiten schneller und einheitlicher bauen wollen.',
+      whyFocus: {
+        title: 'Aus der Praxis gebaut',
+        text: 'Ich entwerfe Komponenten so, wie ich sie selbst umsetze, mit Tokens, Zuständen und Barrierefreiheit von Anfang an.',
+      },
       processTitle: 'Von der Bestandsaufnahme zum nutzbaren Design System in 4 bis 10 Wochen',
       steps: [
         {
@@ -1424,6 +1478,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Design systems',
       headline: 'Design systems in Augsburg: consistent design, faster development',
       lead: 'For product teams who want to spend less time on alignment and one-off fixes and build new pages faster and more consistently.',
+      whyFocus: {
+        title: 'Built from real practice',
+        text: 'I design components the way I build them myself, with tokens, states and accessibility from the start.',
+      },
       processTitle: 'From audit to a usable design system in 4 to 10 weeks',
       steps: [
         {
@@ -1527,6 +1585,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Reise- & Editorial-Fotografie',
       headline: 'Reise- und Editorial-Fotografie aus Augsburg',
       lead: 'Für Redaktionen, Reiseanbieter und Projekte, die ehrliche Bilder von Menschen und Orten statt austauschbarer Stockfotos brauchen.',
+      whyFocus: {
+        title: 'Ehrliche Bilder, echte Menschen',
+        text: 'Ich fotografiere unaufdringlich und respektvoll, damit Orte und Menschen so wirken, wie sie wirklich sind.',
+      },
       processTitle: 'Von der Idee zur fertigen Bildstrecke, je nach Projekt in wenigen Wochen',
       steps: [
         {
@@ -1625,6 +1687,10 @@ export const serviceDetails: ServiceDetail[] = [
       eyebrow: 'Travel & editorial photography',
       headline: 'Travel and editorial photography from Augsburg',
       lead: 'For editors, travel businesses and projects that need honest images of people and places instead of interchangeable stock photos.',
+      whyFocus: {
+        title: 'Honest pictures, real people',
+        text: 'I shoot unobtrusively and respectfully, so places and people come across as they really are.',
+      },
       processTitle: 'From idea to finished photo series, typically within a few weeks',
       steps: [
         {

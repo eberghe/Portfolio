@@ -82,6 +82,29 @@ test.describe('mit Bewegung', () => {
     else expect(positions.every((p) => p === 'sticky')).toBe(true);
   });
 
+  test('AK-13: Stapel behält am Ende seinen Versatz', async ({ page }, info) => {
+    test.skip(info.project.name === 'mobile-360', 'Stapel erst ab 768 px');
+    for (const path of ['/', '/services/accessibility']) {
+      await page.goto(path);
+      const lists = page.locator('ol.sticky-stack');
+      for (let n = 0; n < (await lists.count()); n++) {
+        const list = lists.nth(n);
+        // Liste so weit scrollen, dass ihr Ende die gestapelte letzte Karte schon 100 px nach oben schiebt
+        await list.evaluate((el) => {
+          const last = el.lastElementChild as HTMLElement;
+          const stuckBottom = 96 + (el.children.length - 1) * 16 + last.offsetHeight;
+          window.scrollTo({
+            top: window.scrollY + el.getBoundingClientRect().bottom - (stuckBottom - 100),
+            behavior: 'instant',
+          });
+        });
+        const tops = await list.evaluate((el) => [...el.children].map((c) => c.getBoundingClientRect().top));
+        for (let i = 1; i < tops.length; i++)
+          expect(tops[i]! - tops[i - 1]!, `${path} Liste ${n} Karte ${i}`).toBeGreaterThanOrEqual(12);
+      }
+    }
+  });
+
   test('AK-6: keine axe-Verstöße, kein horizontales Scrollen', async ({ page }) => {
     await page.goto('/');
     await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');

@@ -61,6 +61,8 @@ export const homeContent = {
       'Mir ist wichtig, dass Websites für alle funktionieren. Deshalb denke ich Barrierefreiheit, Ladezeit und Auffindbarkeit von Anfang an mit, und setze KI dort ein, wo sie dir wirklich Arbeit abnimmt.',
     ],
     aboutMore: 'Mehr über mich',
+    faqTitle: 'Häufige Fragen',
+    faqAll: 'Alle FAQs',
     aboutPhotoAlt: 'Erik Bergheimer mit Sonnenbrille und schwarzem Hemd, lächelnd',
     ctaTitle: 'Erzähl mir, was du vorhast',
     ctaText:
@@ -122,6 +124,8 @@ export const homeContent = {
       'I care about websites that work for everyone. That is why accessibility, speed and findability are part of every project from day one, and why I use AI where it genuinely saves you work.',
     ],
     aboutMore: 'More about me',
+    faqTitle: 'Frequently asked questions',
+    faqAll: 'All FAQs',
     aboutPhotoAlt: 'Erik Bergheimer wearing sunglasses and a black shirt, smiling',
     ctaTitle: "Tell me what you're planning",
     ctaText:

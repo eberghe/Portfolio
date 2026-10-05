@@ -211,9 +211,21 @@ html {
 }
 
 @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  /* AK-13: Am Listenende bleibt der 16px-Versatz erhalten. Jede Karte trägt unten (n-1-i)*16px Rand, damit sie
+     beim Wegscrollen über ihrer Nachfolgerin hält; der negative obere Rand (i-n)*16px gleicht das im Raster aus,
+     das Padding der Liste den ersten. Alle Zeilen gleich hoch (1fr), Karten so hoch wie die höchste.
+     Ohne --stack-n ist alles 0 und der Stapel verhält sich wie zuvor. */
+  .sticky-stack {
+    grid-auto-rows: 1fr;
+    padding-top: calc(var(--stack-n, 0) * 16px);
+  }
   .sticky-stack > * {
     position: sticky;
     top: calc(96px + var(--stack-i, 0) * 16px);
+    align-self: start;
+    min-height: calc(100% + min(16px, var(--stack-n, 0) * 16px));
+    margin-top: min(0px, calc((var(--stack-i, 0) - var(--stack-n, 0)) * 16px));
+    margin-bottom: max(0px, calc((var(--stack-n, 0) - 1 - var(--stack-i, 0)) * 16px));
   }
 }
 

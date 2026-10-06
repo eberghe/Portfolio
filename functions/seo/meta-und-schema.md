@@ -42,3 +42,9 @@ Behoben (mit Test): Startseite in drei URL-Formen (AK-6), JSON-LD-Entitäten nic
 Bewusst so gelassen: `Disallow: /projekt-` schützt künftige geheime Angebotsseiten (`kontakt/angebotsseiten.md`). Keine Postanschrift im JSON-LD, solange Erik keine nennen will.
 
 Offen: Seiten Über mich, Kontakt, FAQ, Impressum, Datenschutz (verlinkt, noch 404); FAQ-Abschnitte je Leistung (`seo/fragen-antworten.md`).
+
+## Favicon (Erik, 2026-10-06)
+
+Erik (mit „EB“-Logo, dunkel auf Weiß): „das bitte als favicon und in den tabs als image anzeigen oben.“
+
+- AK-12: Jede Seite (DE und EN) verweist im `<head>` auf ein Favicon (`rel="icon"`, PNG mit Eriks „EB“-Logo, quadratisch mit weißem Grund, damit es auch in dunklen Tab-Leisten sichtbar ist) und auf ein `apple-touch-icon` (180 × 180). `/favicon.ico` liefert dasselbe Logo (für Browser und Dienste, die direkt danach fragen). Alle drei antworten mit Status 200.

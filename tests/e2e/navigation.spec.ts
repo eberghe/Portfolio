@@ -287,3 +287,19 @@ for (const [path, label] of [
     expect(errors.filter((e) => /hydrat/i.test(e))).toEqual([]);
   });
 }
+
+test('AK-24: Ortszeit ganz unten links im Footer', async ({ page }, info) => {
+  await page.goto('/about');
+  const footer = page.locator('footer');
+  const clock = footer.locator('time').locator('xpath=..');
+  await expect(clock).toBeVisible();
+  const f = (await footer.boundingBox())!;
+  const c = (await clock.boundingBox())!;
+  expect(c.x - f.x).toBeLessThanOrEqual(49);
+  // Unter 768 px letzte Zeile über dem normalen Innenabstand, ab 768 px in der Ecke wie „Nach oben“
+  expect(f.y + f.height - (c.y + c.height)).toBeLessThanOrEqual(info.project.name === 'mobile-360' ? 81 : 49);
+  if (info.project.name !== 'mobile-360') {
+    const top = (await footer.getByRole('link', { name: 'Nach oben' }).last().boundingBox())!;
+    expect(Math.abs(top.y + top.height / 2 - (c.y + c.height / 2))).toBeLessThanOrEqual(4);
+  }
+});

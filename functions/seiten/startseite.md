@@ -183,3 +183,20 @@ Erik: „die unternehmen für die ich gearbeitet hab: beide lines oben und unten
 
 - AK-51: Zwischen Hero und Abschnitt „Unternehmen, für die ich gearbeitet habe“ und unter diesem Abschnitt steht keine durchgehende Linie mehr (die gestrichelten Kachelränder bleiben). Die Uhrzeile steht nicht mehr auf der Startseite, sondern im Footer (navigation-und-footer.md AK-23); ersetzt den Ort in AK-30 und AK-33.
 - AK-52: Auf dem Handy (zwei Spalten) sind alle vier Kacheln gleich hoch und gleich breit, auch wenn eine Rolle zweizeilig umbricht.
+
+## Referenzen als Querband, Über-mich-Linien, Hero-Fotos (Erik, 2026-10-06)
+
+Erik (mit Screenshot eines dunklen Referenz-Bands): „bitte als nächstes die referenzen section auf home so umbauen wie im screenshot. das ist dann auch mit vertical scroll. hover mit kreis mit zum projekt statt fallstudie lesen. bei über mich section bitte die linien bis ganz nach außen und bei den äußeren (6+ jahre und augsburg) auch vertikale linien. […] bilder für hero hab ich dir auch angehängt für die kleinen elemente.“
+
+Ersetzt AK-22 (Fallstudien-Karten). AK-12 (Linkname = Titel) und AK-40 (PreMatch zuerst, vier Projekte) gelten weiter.
+
+- AK-53: Der Projekt-Abschnitt ist ein dunkles Band über die volle Breite (in hell und dunkel gleich). Links oben steht klein ein Punkt in Akzentfarbe mit „Referenzen“ (EN „References“), daneben die h2 „Ein Auszug meiner Projekte.“ (EN „A selection of my projects.“) und darunter ein unterstrichener Link „Alle Projekte ansehen“ auf `/projects`.
+- AK-54: Darunter stehen die vier Projekte nebeneinander als große Karten: Bild, Titel (h3, groß), darunter „Jahr — Art“ (z. B. „2026 — Masterarbeit“, Jahr aus der Projektseite, Art = letztes Schlagwort) und rechts neben dem Titel die Kategorie (erstes Schlagwort). Kein Kurztext und kein „Fallstudie lesen“ mehr. Der Linkname ist der Titel, Jahr, Art und Kategorie sind seine Beschreibung.
+- AK-55: Querband beim senkrechten Scrollen (Erik: „mit vertical scroll“): Mit JavaScript und erlaubter Bewegung bleibt der Abschnitt stehen (sticky, so hoch wie der Bildschirm), und das Weiterscrollen nach unten schiebt die Karten nach links, bis die letzte Karte ganz zu sehen ist; danach geht die Seite normal weiter. Der Abschnitt ist dafür genau so viel höher, wie die Karten breiter als der Bildschirm sind. Bekommt eine Karte per Tastatur den Fokus, scrollt die Seite so, dass sie ganz im Bild ist. Ohne JavaScript, bei reduzierter Bewegung und bei Bildschirmen unter 560 px Höhe (Handy quer) ist die Kartenreihe einfach seitlich wischbar (`overflow-x: auto`, Einrasten), ohne Kleben. In keinem Fall scrollt die Seite selbst seitlich (AK-9).
+- AK-56: Hover (Erik: „hover mit kreis mit zum projekt“): Mit feinem Zeiger erscheint über dem Bild ein dunkler Kreis mit „Zum Projekt“ (EN „View project“), der dem Mauszeiger folgt; das Bild zoomt leicht. Bei Tastaturfokus steht der Kreis in der Bildmitte. Der Kreis ist dekorativ (`aria-hidden`), der Linkname bleibt der Titel. Bei reduzierter Bewegung erscheint er ohne Animation.
+- AK-57: Im Abschnitt „Über mich“ reichen die waagerechten Linien der Faktenleiste über die volle Breite, und ab 768 px haben auch die äußeren Felder („6+ Jahre UX Erfahrung“ links, „Augsburg“ rechts) eine senkrechte Linie nach außen. Unter 768 px (zwei Spalten) gibt es keine Linie am Bildschirmrand.
+- AK-58: Die drei Medien-Plätze im Hero (AK-44) zeigen Fotos von Erik (Mütze vor Holztür, beim Wandern mit Handy, auf dem Berg im Schnee) mit `alt=""`, ohne Metadaten (kein GPS) und höchstens 800 px breit; der Bildausschnitt zeigt das Gesicht.
+
+### Blinder Kritiker (Referenzen, 2026-10-06)
+
+Behoben: Fokusrahmen auf dem dunklen Band im hellen Modus dunkel auf dunkel (jetzt weiß); auf niedrigen Bildschirmen rutschte die Überschrift beim Kleben unter die Navigation (Kleben erst ab 560 px Höhe); Fokusrahmen in der wischbaren Reihe oben abgeschnitten; Kreis erschien beim Antippen auf Touch (jetzt nur mit Hover-fähigem Zeiger). Bewusst so: Der Wechsel zum Kleben passiert nach dem Laden, der Abschnitt liegt unter dem ersten Bildschirm, daher kein sichtbarer Sprung.

@@ -6,8 +6,10 @@ import FaqList from '@/components/faq/FaqList';
 import JsonLd from '@/components/JsonLd';
 import CountUp from '@/components/motion/CountUp';
 import Magnetic from '@/components/motion/Magnetic';
+import ProjectRail from '@/components/home/ProjectRail';
 import { aboutPhoto } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
+import { projects } from '@/lib/content/projects';
 import { featuredProjects, heroMedia, homeContent } from '@/lib/content/home';
 import { services } from '@/lib/content/services';
 import { EMAIL } from '@/lib/site';
@@ -258,69 +260,49 @@ export default function Home({ locale }: { locale: Locale }) {
         </ol>
       </section>
 
-      <section aria-labelledby="projekte" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pb-16 md:pb-24">
-        <div className="flex items-center justify-between gap-4 mb-6" data-reveal>
-          <h2 id="projekte" className={sectionTitle}>
-            {t.projects}
-          </h2>
-          <Link href={href('/projects')} className="py-1 text-xs text-primary-text hover:underline">
-            {t.viewAll} <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-          {featuredProjects.map((p, i) => {
+      {/* Referenzen als dunkles Querband (AK-53 bis AK-56) */}
+      <section aria-labelledby="projekte" className="bg-[#0b1219] text-white dark:border-y dark:border-white/10">
+        <ProjectRail
+          toProject={t.toProject}
+          items={featuredProjects.map((p) => {
             const text = p[locale];
-            return (
-              <li key={p.id} data-reveal style={stagger(i % 2)}>
-                <Link
-                  href={href(`/projects/${p.id}`)}
-                  aria-labelledby={`projekt-${p.id}`}
-                  aria-describedby={`projekt-${p.id}-typ projekt-${p.id}-text`}
-                  className={`bg-card border border-border rounded-2xl overflow-hidden group h-full flex flex-col ${cardHover}`}
-                >
-                  <span className="relative block overflow-hidden aspect-[16/10]" style={{ background: p.color }}>
-                    <Image
-                      src={p.image.src}
-                      alt=""
-                      fill
-                      sizes="(min-width: 640px) 550px, 100vw"
-                      className="object-cover motion-safe:transition-transform motion-safe:duration-700 motion-safe:group-hover:scale-[1.04]"
-                    />
-                  </span>
-                  <span className="p-5 md:p-6 flex-1 flex flex-col">
-                    <span id={`projekt-${p.id}-typ`} className="sr-only">
-                      {text.type}
-                    </span>
-                    <ul aria-label={t.tags} className="flex flex-wrap gap-1.5 mb-3">
-                      {text.type.split(' · ').map((tag) => (
-                        <li
-                          key={tag}
-                          className="text-[11px] font-medium tracking-wider uppercase text-primary-text bg-primary-light border border-primary-border rounded-full px-2.5 py-1"
-                        >
-                          {tag}
-                        </li>
-                      ))}
-                    </ul>
-                    <h3 id={`projekt-${p.id}`} className="text-lg font-bold text-foreground mb-1.5">
-                      {text.title}
-                    </h3>
-                    <span id={`projekt-${p.id}-text`} className="text-[13px] text-text2 leading-relaxed mb-4">
-                      {text.desc}
-                    </span>
-                    <span className="mt-auto inline-flex items-center gap-1.5 text-[13px] font-medium text-primary-text">
-                      {t.readCase}
-                      <ArrowRight
-                        size={14}
-                        aria-hidden="true"
-                        className="motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
-                      />
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            );
+            const tags = text.type.split(' · ');
+            return {
+              id: p.id,
+              href: href(`/projects/${p.id}`),
+              title: text.title,
+              year: projects.find((q) => q.slug === p.id)?.year ?? '',
+              kind: tags[tags.length - 1]!,
+              category: tags[0]!,
+              image: p.image,
+              color: p.color,
+            };
           })}
-        </ul>
+        >
+          <div
+            data-reveal
+            className="w-full px-6 sm:px-8 md:px-12 mb-8 md:mb-12 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-4 md:gap-8"
+          >
+            <p className="self-start flex items-center gap-3 text-[15px] font-medium md:pt-4">
+              <span aria-hidden="true" className="w-2 h-2 rounded-full bg-primary" />
+              {t.references}
+            </p>
+            <div>
+              <h2
+                id="projekte"
+                className="text-[30px] md:text-[48px] font-bold leading-[1.1] tracking-tight text-balance"
+              >
+                {t.projects}
+              </h2>
+              <Link
+                href={href('/projects')}
+                className="inline-flex items-center min-h-11 mt-2 text-[15px] text-white/80 underline underline-offset-4 hover:text-white focus-visible:outline-white"
+              >
+                {t.viewAll}
+              </Link>
+            </div>
+          </div>
+        </ProjectRail>
       </section>
 
       <section aria-labelledby="ueber-mich" className="border-y border-border bg-bg2">
@@ -359,28 +341,30 @@ export default function Home({ locale }: { locale: Locale }) {
             </Link>
           </div>
         </div>
-        {/* Faktenleiste unter Foto und Text (AK-37) */}
-        <dl className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 border-t border-border">
-          {t.stats.map((s, i) => (
-            <div
-              key={s.label}
-              data-reveal
-              style={stagger(i)}
-              className="flex flex-col-reverse justify-end min-w-0 px-6 sm:px-8 lg:px-10 py-10 border-r border-b md:border-b-0 border-border last:border-r-0"
-            >
-              <dt className="text-xs text-text3 mt-2">{s.label}</dt>
-              <dd
-                className={`font-light text-primary-text leading-none tracking-tight min-w-0 ${
-                  /^\d/.test(s.value)
-                    ? 'text-[26px] md:text-[28px] lg:text-[34px]'
-                    : 'text-[20px] md:text-[22px] lg:text-[26px]'
-                }`}
+        {/* Faktenleiste unter Foto und Text (AK-37); Linien über die volle Breite, außen senkrecht (AK-57) */}
+        <div className="border-t border-border">
+          <dl className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 md:border-l border-border">
+            {t.stats.map((s, i) => (
+              <div
+                key={s.label}
+                data-reveal
+                style={stagger(i)}
+                className="flex flex-col-reverse justify-end min-w-0 px-6 sm:px-8 lg:px-10 py-10 border-b md:border-b-0 border-border [&:nth-child(odd)]:border-r md:border-r"
               >
-                <CountUp value={s.value} />
-              </dd>
-            </div>
-          ))}
-        </dl>
+                <dt className="text-xs text-text3 mt-2">{s.label}</dt>
+                <dd
+                  className={`font-light text-primary-text leading-none tracking-tight min-w-0 ${
+                    /^\d/.test(s.value)
+                      ? 'text-[26px] md:text-[28px] lg:text-[34px]'
+                      : 'text-[20px] md:text-[22px] lg:text-[26px]'
+                  }`}
+                >
+                  <CountUp value={s.value} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </section>
 
       {/* FAQ-Auswahl (AK-39) */}
@@ -485,7 +469,10 @@ function HeroMedia({ index, className }: { index: number; className: string }) {
             unoptimized={m.src.endsWith('.gif')}
             className="object-cover"
             // Leicht gegenläufig zum Magneten (AK-49)
-            style={{ transform: 'translate(var(--magnet-x, 0), var(--magnet-y, 0)) scale(1.1)' }}
+            style={{
+              transform: 'translate(var(--magnet-x, 0), var(--magnet-y, 0)) scale(1.1)',
+              objectPosition: m.position,
+            }}
           />
         )}
       </span>

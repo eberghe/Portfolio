@@ -147,8 +147,6 @@ export default function Footer({ locale }: { locale: Locale }) {
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col gap-3">
-          {/* Ortszeit in Augsburg (AK-23) */}
-          <LocalClock locale={locale} label={t.clockLabel} />
           <div className="hidden md:flex items-center w-full">
             <div className="flex items-center gap-4">
               <Link
@@ -198,6 +196,11 @@ export default function Footer({ locale }: { locale: Locale }) {
                 <ArrowUp size={16} aria-hidden="true" />
               </a>
             </div>
+          </div>
+
+          {/* Ortszeit in Augsburg (AK-23), ab 768 px unten links in der Ecke gegenüber „Nach oben“ (AK-24) */}
+          <div className="md:absolute md:bottom-8 md:left-12">
+            <LocalClock locale={locale} label={t.clockLabel} />
           </div>
         </div>
       </div>

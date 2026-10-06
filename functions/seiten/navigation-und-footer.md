@@ -91,3 +91,9 @@ Offen, bewusst später:
 
 - AK-23: Der Footer zeigt auf jeder Seite die Ortszeit „Augsburg | 09:41 MESZ“ (Zeitzone Europe/Berlin, `time`-Element, aktualisiert sich, kein Hydration-Fehler). Für Screenreader heißt die Zeile „Ortszeit in Augsburg“ (EN „Local time in Augsburg“). Ohne JavaScript erscheint sie nicht. Vorher stand sie mit „Königsbrunn“ auf der Startseite (startseite.md AK-30).
 - Nachtrag (axe, 2026-10-06): Die mobile Footer-Navigation (Projekte, Leistungen, …) hat jetzt ebenfalls 44 px hohe Links. Mit nur 24 px meldete axe `target-size`/`target-offset`, sobald die feste Kopfzeile beim Scrollen über ihnen lag.
+
+## Ortszeit unten links (Erik, 2026-10-06)
+
+Erik: „ort und uhrzeit im footer ganz links unten in die ecke. bitte“
+
+- AK-24: Ab 768 px steht die Ortszeit (AK-23) ganz unten links in der Ecke des Footers, auf derselben Höhe wie „Zurück nach oben“ rechts unten (gleicher Abstand zum Rand). Unter 768 px steht sie als letzte Zeile ganz unten links.

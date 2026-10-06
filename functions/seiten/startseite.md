@@ -220,3 +220,9 @@ Behoben: Safari/VoiceOver verlor die Listen-Semantik der `ol` ohne Aufzählungsz
 Erik: „bitte auch bei den unternehmen für die ich gearbeitet hab die linien nicht gestrichelt sondern durchgängig und bis zum rand rechts und links. dann ist es schön durchgehend.“
 
 - AK-62: Die Kacheln der Firmenleiste haben durchgezogene statt gestrichelte Linien. Die waagerechten Linien über und unter der Leiste (unter 768 px auch die zwischen den zwei Reihen) reichen über die volle Bildschirmbreite, wie bei der Faktenleiste in „Über mich“ (AK-57); ab 768 px haben die äußeren Kacheln auch außen eine senkrechte Linie. Ersetzt „die gestrichelten Kachelränder bleiben“ aus AK-51 (der Abschnitt selbst hat weiterhin keinen eigenen Rand oben und unten).
+
+## Hero auf dem Handy größer (Erik, 2026-10-06)
+
+Erik: „auf mobile gefällt mir die hero section auf home nicht. da ist das element viel zu klein im verhältnis zum paragraph. kannst du das anpassen?“
+
+- AK-63: Unter 640 px ist die h1 im Hero mindestens 2,25-mal so groß wie der Absatz darunter (vorher rund 1,7-mal: 28 px zu 16 px). Dafür darf die erste Zeile umbrechen („Hey, ich bin“ / „[Bild] Erik“), so entstehen vier zentrierte Zeilen. Medien-Plätze wachsen mit der Schrift. Kein horizontales Scrollen ab 320 px (AK-9), keine Silbentrennung mitten im Wort. Ab 640 px bleibt alles wie bisher.

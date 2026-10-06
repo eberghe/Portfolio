@@ -436,3 +436,31 @@ test('AK-62: Firmenleiste mit durchgehenden Linien bis zum Rand', async ({ page 
     ).toBe('1px');
   }
 });
+
+test('AK-63: Hero-Überschrift auf dem Handy groß im Verhältnis zum Absatz', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile-360', 'nur unter 640 px');
+  for (const width of [320, 360, 390, 430]) {
+    await page.setViewportSize({ width, height: 800 });
+    await page.goto('/');
+    const h1 = await page.locator('h1').evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    const p = await page
+      .locator('main section')
+      .first()
+      .locator('p')
+      .last()
+      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    expect(h1 / p).toBeGreaterThanOrEqual(2.25);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+    // Keine Wortteile ragen aus der Zeile: jedes Wort bleibt innerhalb des Fensters
+    const outside = await page.$$eval(
+      'h1 [data-word]',
+      (els) =>
+        els.filter((el) => {
+          const r = el.getBoundingClientRect();
+          return r.left < 0 || r.right > window.innerWidth;
+        }).length,
+    );
+    expect(outside).toBe(0);
+  }
+});

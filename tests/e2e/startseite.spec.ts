@@ -8,9 +8,9 @@ test.describe('ohne JavaScript', () => {
   test('AK-26: Hero-Überschrift sichtbar ohne JavaScript, keine halbe Uhrzeile', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText('Königsbrunn', { exact: true })).toHaveCount(0);
-    await expect(page.getByRole('heading', { level: 1, name: 'Hey, ich bin Erik, Product Designer' })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'Hey, ich bin Erik, Design Engineer' })).toBeVisible();
     await page.goto('/en');
-    await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik, Product Designer" })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik, Design Engineer" })).toBeVisible();
   });
 
   test('AK-65: ohne JavaScript sind alle Leistungen offen', async ({ page }) => {
@@ -131,9 +131,9 @@ test('AK-15: fokussierte Elemente verschwinden nicht unter dem Header', async ({
 
 test('AK-26: h1-Name je Sprache', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Hey, ich bin Erik, Product Designer');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Hey, ich bin Erik, Design Engineer');
   await page.goto('/en');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName("Hey, I'm Erik, Product Designer");
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName("Hey, I'm Erik, Design Engineer");
 });
 
 test('AK-42: Hero füllt den ersten Bildschirm, Firmenleiste beginnt darunter', async ({ page }) => {

@@ -404,3 +404,24 @@ html.preload .hero-rise {
 html.lenis {
   scroll-behavior: auto;
 }
+
+/* Ablauf-Timeline (startseite.md AK-61): Linien füllen sich beim Scrollen. Ohne Unterstützung oder bei
+   reduzierter Bewegung sind sie gleich ganz gefüllt. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .process-line {
+      animation: process-line-fill linear both;
+      /* Füllt sich, während die Linie von 75 % der Fensterhöhe bis 45 % nach oben wandert */
+      animation-timeline: view(45% 25%);
+      animation-range: cover 0% cover 100%;
+    }
+  }
+}
+@keyframes process-line-fill {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}

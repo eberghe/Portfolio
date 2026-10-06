@@ -200,3 +200,13 @@ Ersetzt AK-22 (Fallstudien-Karten). AK-12 (Linkname = Titel) und AK-40 (PreMatch
 ### Blinder Kritiker (Referenzen, 2026-10-06)
 
 Behoben: Fokusrahmen auf dem dunklen Band im hellen Modus dunkel auf dunkel (jetzt weiß); auf niedrigen Bildschirmen rutschte die Überschrift beim Kleben unter die Navigation (Kleben erst ab 560 px Höhe); Fokusrahmen in der wischbaren Reihe oben abgeschnitten; Kreis erschien beim Antippen auf Touch (jetzt nur mit Hover-fähigem Zeiger). Bewusst so: Der Wechsel zum Kleben passiert nach dem Laden, der Abschnitt liegt unter dem ersten Bildschirm, daher kein sichtbarer Sprung.
+
+## Ablauf als Timeline (Erik, 2026-10-06)
+
+Erik (mit Screenshot einer „How it works“-Timeline als Vorlage): „das als vorlage für den prozess auf home. das links muss sticky mit laufen. bitte in meinen farben. icons bitte passend raussuchen und in der heading dann halt 1. und 2. etc reinpacken. dann ist klar ersichtlich das es ein prozess is. bg color der section bitte auch wie bei der über mich section“
+
+Ersetzt die Kartenreihe für den Ablauf (AK-3 bleibt: geordnete Liste mit vier Schritten).
+
+- AK-59: Der Abschnitt „So arbeiten wir zusammen“ hat denselben Hintergrund wie „Über mich“ (`bg-bg2`, Linien oben und unten über die volle Breite). Ab 768 px steht links eine Spalte mit dem Kennzeichen „Ablauf“ (EN „Process“) in Akzentfarbe, der h2 und zwei Links: „Kostenloses Erstgespräch“ (gefüllt, `/contact`) und „Projekte ansehen“ (Rahmen, `/projects`). Diese Spalte bleibt beim Scrollen kleben (`sticky`), solange die Schritte daneben durchlaufen; unter 768 px steht sie einfach darüber.
+- AK-60: Rechts stehen die vier Schritte als senkrechte Timeline: je ein runder Icon-Kreis in Akzentfarbe (Lucide-Icons: Gespräch, Lupe/Analyse, Stift/Umsetzung, Rakete/Launch; dekorativ, `aria-hidden`), daneben die h3 mit Nummer („1. Kennenlernen“, „2. Analyse & Angebot“ …) und der Text. Zwischen den Kreisen verbindet eine senkrechte Linie die Schritte (nicht nach dem letzten).
+- AK-61: Die Verbindungslinien füllen sich beim Scrollen in Akzentfarbe (wie im Screenshot: erledigt farbig, kommend grau), per CSS-Scroll-Animation (`animation-timeline: view()`), nur bei erlaubter Bewegung. Ohne Unterstützung dafür und bei reduzierter Bewegung sind die Linien gleich ganz farbig. Kein JavaScript nötig.

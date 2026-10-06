@@ -39,6 +39,8 @@ export const homeContent = {
     ],
     offer: 'Was ich anbiete',
     process: 'So arbeiten wir zusammen',
+    processEyebrow: 'Ablauf',
+    processProjects: 'Projekte ansehen',
     processSteps: [
       { title: 'Kennenlernen', text: 'Kostenloses Erstgespräch: Wo stehst du, wo willst du hin?' },
       { title: 'Analyse & Angebot', text: 'Ich schaue mir deine Website und Abläufe an und mache ein klares Angebot.' },
@@ -105,6 +107,8 @@ export const homeContent = {
     ],
     offer: 'What I offer',
     process: 'How we work together',
+    processEyebrow: 'Process',
+    processProjects: 'View projects',
     processSteps: [
       { title: 'Intro call', text: 'Free first call: where are you now, where do you want to go?' },
       { title: 'Analysis & offer', text: 'I review your website and workflows and send you a clear offer.' },

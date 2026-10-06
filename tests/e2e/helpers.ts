@@ -3,12 +3,14 @@ import type { Page } from '@playwright/test';
 
 export const AXE_TAGS = ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'];
 
-/** Wartet, bis alle endlichen Animationen (z. B. Einblenden) fertig sind, damit axe Endfarben misst. */
+/** Wartet, bis alle endlichen Animationen (z. B. Einblenden) fertig sind, damit axe Endfarben misst.
+ * Scroll-gesteuerte Animationen (startseite.md AK-61) laufen dauerhaft und zählen nicht. */
 export async function settleAnimations(page: Page) {
   await page.waitForFunction(() =>
     document
       .getAnimations()
       .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+      .filter((a) => !a.timeline || a.timeline instanceof DocumentTimeline)
       .every((a) => a.playState !== 'running'),
   );
 }

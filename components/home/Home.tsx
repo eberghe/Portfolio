@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, MessagesSquare, PenTool, Rocket, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, type CSSProperties } from 'react';
@@ -20,6 +20,8 @@ import { homeJsonLd } from '@/lib/seo';
 // Siehe functions/seiten/startseite.md, Animationen: functions/infrastruktur/animationen.md
 /** Fragen für die FAQ-Auswahl auf der Startseite (AK-39) */
 const HOME_FAQS = ['leistungen', 'ablauf', 'dauer', 'remote'];
+/** Icons der Ablauf-Schritte (AK-60): Kennenlernen, Analyse & Angebot, Umsetzung, Launch & Betreuung */
+const PROCESS_ICONS = [MessagesSquare, Search, PenTool, Rocket];
 
 const cardHover =
   'motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.15)]';
@@ -235,29 +237,71 @@ export default function Home({ locale }: { locale: Locale }) {
         </ol>
       </section>
 
-      <section aria-labelledby="ablauf" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pb-16 md:pb-24">
-        <h2 id="ablauf" className={`${sectionTitle} mb-8`} data-reveal>
-          {t.process}
-        </h2>
-        <ol className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-          {t.processSteps.map((step, i) => (
-            <li
-              key={step.title}
-              data-reveal
-              style={stagger(i)}
-              className="rounded-2xl border border-border bg-card p-6"
-            >
-              <span
-                aria-hidden="true"
-                className="block text-[36px] font-bold leading-none tracking-tight text-primary-text mb-4"
+      {/* Ablauf als Timeline mit klebender linker Spalte (AK-59 bis AK-61) */}
+      <section aria-labelledby="ablauf" className="border-y border-border bg-bg2">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] gap-10 md:gap-16">
+          <div data-process-intro data-reveal className="md:sticky md:top-28 md:self-start">
+            <p className="text-[14px] font-semibold text-primary-text mb-3">{t.processEyebrow}</p>
+            <h2 id="ablauf" className={`${sectionTitle} mb-6`}>
+              {t.process}
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href={href('/contact')}
+                className="inline-flex items-center min-h-11 px-5 rounded-lg bg-primary text-primary-foreground text-[14px] font-medium hover:bg-primary-hover transition-colors"
               >
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <h3 className="text-base font-bold text-foreground mb-2">{step.title}</h3>
-              <p className="text-[13px] leading-relaxed text-text2">{step.text}</p>
-            </li>
-          ))}
-        </ol>
+                {t.contact}
+              </Link>
+              <Link
+                href={href('/projects')}
+                className="inline-flex items-center min-h-11 px-5 rounded-lg border border-border bg-background text-foreground text-[14px] font-medium hover:border-primary/40 transition-colors"
+              >
+                {t.processProjects}
+              </Link>
+            </div>
+          </div>
+          <ol>
+            {t.processSteps.map((step, i) => {
+              const Icon = PROCESS_ICONS[i]!;
+              const last = i === t.processSteps.length - 1;
+              return (
+                <li
+                  key={step.title}
+                  data-reveal
+                  style={stagger(i)}
+                  className="grid grid-cols-[56px_minmax(0,1fr)] gap-x-5 md:gap-x-8"
+                >
+                  <div className="flex flex-col items-center">
+                    <span
+                      aria-hidden="true"
+                      data-step-icon
+                      className="flex items-center justify-center w-14 h-14 rounded-full bg-primary/[0.08] shrink-0"
+                    >
+                      <span className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/[0.14] text-primary-text">
+                        <Icon size={20} />
+                      </span>
+                    </span>
+                    {!last && (
+                      <span
+                        aria-hidden="true"
+                        data-step-line
+                        className="relative flex-1 w-0.5 min-h-16 my-3 rounded-full bg-border overflow-clip"
+                      >
+                        <span className="process-line absolute inset-0 rounded-full bg-primary origin-top" />
+                      </span>
+                    )}
+                  </div>
+                  <div className={`pt-3 ${last ? '' : 'pb-12 md:pb-16'}`}>
+                    <h3 className="text-[18px] md:text-[20px] font-bold leading-snug text-foreground mb-2">
+                      {i + 1}. {step.title}
+                    </h3>
+                    <p className="text-[15px] md:text-[16px] leading-relaxed text-text2">{step.text}</p>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       </section>
 
       {/* Referenzen als dunkles Querband (AK-53 bis AK-56) */}

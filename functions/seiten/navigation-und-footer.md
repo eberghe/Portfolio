@@ -82,3 +82,7 @@ Offen, bewusst später:
 ## Dunkelmodus ohne JavaScript (Issue #22, 2026-10-06)
 
 - AK-21: Der Dunkelmodus-Button erscheint nur mit JavaScript (`hidden [.js_&]:flex`, die Klasse `js` setzt das Kopf-Skript). Ohne JavaScript gibt es kein funktionsloses Bedienelement, die Seite folgt der Systemeinstellung.
+
+## Mobilmenü ohne JavaScript (Issue #34, 2026-10-06)
+
+- AK-22: Unter 768 px ohne JavaScript steht statt des Burger-Buttons ein Link „Menü“ (EN „Menu“), der zur Footer-Navigation springt (`#footer-nav`). Mit JavaScript bleibt der Burger-Button wie bisher, der Link ist dann ausgeblendet. Ab 768 px ist keins von beiden sichtbar.

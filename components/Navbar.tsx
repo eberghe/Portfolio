@@ -203,7 +203,7 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
               aria-expanded={mobileOpen}
               aria-controls="mobile-menu"
               aria-label={t.menu}
-              className="md:hidden w-9 h-9 flex flex-col items-center justify-center gap-1"
+              className="hidden [.js_&]:flex md:[.js_&]:hidden w-9 h-9 flex-col items-center justify-center gap-1"
             >
               <span
                 aria-hidden="true"
@@ -214,6 +214,13 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
                 className={`block w-4 h-0.5 bg-foreground transition ${mobileOpen ? '-rotate-45 -translate-y-[3px]' : ''}`}
               />
             </button>
+            {/* Ohne JavaScript springt „Menü“ zur Footer-Navigation (navigation-und-footer.md AK-22) */}
+            <a
+              href="#footer-nav"
+              className="md:hidden [.js_&]:hidden h-9 px-2 rounded-lg border border-border flex items-center text-[13px] text-text2 hover:text-foreground"
+            >
+              {t.menu}
+            </a>
           </div>
         </nav>
       </header>

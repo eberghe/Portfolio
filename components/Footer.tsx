@@ -93,7 +93,7 @@ export default function Footer({ locale }: { locale: Locale }) {
           </ul>
         </div>
 
-        <nav aria-label={t.label} className="md:hidden">
+        <nav id="footer-nav" aria-label={t.label} className="md:hidden scroll-mt-24">
           <ul className="flex flex-col gap-2">
             {NAV_ITEMS.map((item) => (
               <li key={item.path}>

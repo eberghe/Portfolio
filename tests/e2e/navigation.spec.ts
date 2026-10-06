@@ -245,3 +245,28 @@ test('AK-21: Dunkelmodus-Button mit JavaScript sichtbar', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('button', { name: 'Dunkelmodus' })).toBeVisible();
 });
+
+test.describe('Mobilmenü ohne JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('AK-22: Link „Menü“ springt zur Footer-Navigation', async ({ page }, info) => {
+    await page.goto('/about');
+    const header = page.locator('header');
+    await expect(header.getByRole('button', { name: 'Menü' })).toHaveCount(0);
+    const link = header.getByRole('link', { name: 'Menü' });
+    if (info.project.name !== 'mobile-360') {
+      await expect(link).toBeHidden();
+      return;
+    }
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute('href', '#footer-nav');
+    await expect(page.locator('#footer-nav')).toBeVisible();
+  });
+});
+
+test('AK-22: mit JavaScript Burger statt Link', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile-360', 'nur mobil');
+  await page.goto('/about');
+  const header = page.locator('header');
+  await expect(header.getByRole('button', { name: 'Menü' })).toBeVisible();
+  await expect(header.getByRole('link', { name: 'Menü' })).toBeHidden();
+});

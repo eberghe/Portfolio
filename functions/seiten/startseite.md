@@ -253,3 +253,9 @@ Erik (Screenshot: große Überschrift „Support for every stage“, Zeilen übe
 Erik: „das bild in über mich kann noch größer sein bitte.“
 
 - AK-69: Im Abschnitt „Über mich“ teilen sich Foto und Text ab 768 px die Breite je zur Hälfte; das Foto (quadratisch) füllt seine Spalte, bei 1280 px also mindestens 480 px breit (vorher höchstens 360 px). Unter 768 px ist es so breit wie der Inhalt.
+
+## Design Engineer statt Product Designer (Erik, 2026-10-06)
+
+Erik: „ändere bitte product designer in Design Engineer auf home.“
+
+- AK-70: Die zweite und dritte Zeile der h1 lauten „Design [Bild]“ / „[Bild] _Engineer_“ („Engineer“ kursiv wie vorher „Designer“). Der Name der h1 lautet „Hey, ich bin Erik, Design Engineer“ (EN „Hey, I'm Erik, Design Engineer“). Ersetzt die Wörter und den Namen aus AK-43; Layout, Größe und Randnotiz bleiben, auch unter 640 px läuft nichts über.

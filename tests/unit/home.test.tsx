@@ -12,7 +12,7 @@ describe.each([
     'de',
     '',
     {
-      h1: /^Hey, ich bin Erik, Product Designer$/,
+      h1: /^Hey, ich bin Erik, Design Engineer$/,
       offer: 'Was ich anbiete',
       process: 'So arbeiten wir zusammen',
       projects: 'Ein Auszug meiner Projekte.',
@@ -23,7 +23,7 @@ describe.each([
     'en',
     '/en',
     {
-      h1: /^Hey, I'm Erik, Product Designer$/,
+      h1: /^Hey, I'm Erik, Design Engineer$/,
       offer: 'What I offer',
       process: 'How we work together',
       projects: 'A selection of my projects.',

@@ -7,9 +7,9 @@ export const homeContent = {
     metaTitle: 'Erik Bergheimer: UX/UI-Design & Webflow aus Augsburg',
     metaDescription:
       'UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung aus Augsburg, vor Ort oder remote. Kostenloses Erstgespräch.',
-    // Hero im Product-Designer-Stil (functions/seiten/startseite.md AK-43 bis AK-46)
+    // Typografischer Hero (functions/seiten/startseite.md AK-43 bis AK-46, Wörter AK-70)
     hero: {
-      lines: ['Hey, ich bin', 'Erik', 'Product', 'Designer'],
+      lines: ['Hey, ich bin', 'Erik', 'Design', 'Engineer'],
       note: 'Mit Herz für Fußball, Bergsport & Kochen',
       text: 'Ich bin aus Augsburg und mag Design, das bei den Menschen anfängt. Gerade bin ich',
       accent: 'Business Development Manager bei HERO Software',
@@ -79,7 +79,7 @@ export const homeContent = {
     metaDescription:
       'UX/UI design, Webflow websites, accessibility and AI consulting from Augsburg, on site or remote. Book a free intro call.',
     hero: {
-      lines: ["Hey, I'm", 'Erik', 'Product', 'Designer'],
+      lines: ["Hey, I'm", 'Erik', 'Design', 'Engineer'],
       note: 'Passionate about football, mountain sports & cooking',
       text: "I'm from Augsburg and like design that starts with people. Right now I'm",
       accent: 'Business Development Manager at HERO Software',

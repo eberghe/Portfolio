@@ -39,7 +39,7 @@ export default function Home({ locale }: { locale: Locale }) {
           Navigation (AK-36) und füllt mit ihr den ersten Bildschirm (AK-42) */}
       <section className="relative overflow-hidden -mt-[65px] pt-[65px] min-h-[100svh] flex flex-col justify-center">
         <div className="w-full max-w-page mx-auto px-6 sm:px-8 md:px-12 py-10 md:py-10">
-          {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Designer“ kursiv.
+          {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Engineer“ kursiv.
               Medien-Plätze und Randnotiz sind dekorativ (AK-44, AK-45), das Komma nur für Screenreader. */}
           {/* Unter 640 px größer und mit Umbruch nach „Hey, ich bin“ (AK-63) */}
           <h1 className="text-[clamp(36px,11.5vw,60px)] sm:text-[clamp(28px,7.6vw,80px)] leading-[0.98] tracking-[-0.035em] text-foreground font-bold uppercase">

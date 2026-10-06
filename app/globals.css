@@ -150,6 +150,12 @@ html {
   .dark textarea:focus-visible {
     outline-color: white;
   }
+
+  /* Footer ist in beiden Modi dunkel: Fokusrahmen weiß (Kritiker Referenzen 2026-10-06) */
+  footer a:focus-visible,
+  footer button:focus-visible {
+    outline-color: #fff;
+  }
 }
 
 @layer utilities {

@@ -48,13 +48,13 @@ export const homeContent = {
         text: 'Test inklusive Barrierefreiheit, Launch und auf Wunsch laufende Optimierung.',
       },
     ],
-    projects: 'Ausgewählte Projekte',
+    projects: 'Ein Auszug meiner Projekte.',
+    references: 'Referenzen',
     viewAll: 'Alle Projekte ansehen',
     offerIntro:
       'Sieben Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Webflow-Website.',
     learnMore: 'Mehr erfahren',
-    readCase: 'Fallstudie lesen',
-    tags: 'Schlagworte',
+    toProject: 'Zum Projekt',
     aboutTitle: 'Über mich',
     // TODO(Erik): persönliche Notiz prüfen oder ersetzen (Issue #14)
     aboutText: [
@@ -111,13 +111,13 @@ export const homeContent = {
       { title: 'Build', text: 'Concept, design and development with regular check-ins.' },
       { title: 'Launch & care', text: 'Testing including accessibility, launch and ongoing optimisation if you like.' },
     ],
-    projects: 'Selected projects',
+    projects: 'A selection of my projects.',
+    references: 'References',
     viewAll: 'View all projects',
     offerIntro:
       'Seven services, one point of contact: from first user research and design to an accessible Webflow website.',
     learnMore: 'Learn more',
-    readCase: 'Read case study',
-    tags: 'Tags',
+    toProject: 'View project',
     aboutTitle: 'About me',
     // TODO(Erik): review or replace the personal note (issue #14)
     aboutText: [
@@ -195,7 +195,11 @@ export const featuredProjects = [
 ];
 
 /**
- * Medien-Plätze im Hero (startseite.md AK-44), dekorativ. TODO(Erik): Bilder oder GIFs liefern,
- * dann `src`, `width` und `height` eintragen. Ohne `src` erscheint eine ruhige Fläche.
+ * Medien-Plätze im Hero (startseite.md AK-44, AK-58), dekorativ. Fotos von Erik, ohne Metadaten auf 480 px verkleinert.
+ * `position` ist der Bildausschnitt (object-position), damit das Gesicht im Ausschnitt bleibt.
  */
-export const heroMedia: { src?: string; width?: number; height?: number }[] = [{}, {}, {}];
+export const heroMedia: { src?: string; width?: number; height?: number; position?: string }[] = [
+  { src: '/images/hero-cap.jpg', width: 480, height: 720, position: '50% 28%' },
+  { src: '/images/hero-wandern.jpg', width: 480, height: 720, position: '50% 22%' },
+  { src: '/images/hero-berg.jpg', width: 480, height: 853, position: '50% 34%' },
+];

@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Home from '@/components/home/Home';
-import { homeContent } from '@/lib/content/home';
+import { heroMedia, homeContent } from '@/lib/content/home';
 import { projects } from '@/lib/content/projects';
 import { services } from '@/lib/content/services';
 
@@ -15,7 +15,7 @@ describe.each([
       h1: /^Hey, ich bin Erik, Product Designer$/,
       offer: 'Was ich anbiete',
       process: 'So arbeiten wir zusammen',
-      projects: 'Ausgewählte Projekte',
+      projects: 'Ein Auszug meiner Projekte.',
       contact: 'Kostenloses Erstgespräch',
     },
   ],
@@ -26,7 +26,7 @@ describe.each([
       h1: /^Hey, I'm Erik, Product Designer$/,
       offer: 'What I offer',
       process: 'How we work together',
-      projects: 'Selected projects',
+      projects: 'A selection of my projects.',
       contact: 'Free intro call',
     },
   ],
@@ -236,6 +236,11 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
       more: 'Mehr über mich',
       cta: 'Erzähl mir, was du vorhast',
       read: 'Fallstudie lesen',
+      refs: 'Referenzen',
+      refsTitle: 'Ein Auszug meiner Projekte.',
+      all: 'Alle Projekte ansehen',
+      toProject: 'Zum Projekt',
+      skType: 'Masterprojekt',
     },
     en: {
       tools: 'Tools I work with',
@@ -243,6 +248,11 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
       more: 'More about me',
       cta: "Tell me what you're planning",
       read: 'Read case study',
+      refs: 'References',
+      refsTitle: 'A selection of my projects.',
+      all: 'View all projects',
+      toProject: 'View project',
+      skType: "Master's project",
     },
   }[locale];
   const prefix = locale === 'en' ? '/en' : '';
@@ -273,11 +283,23 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
     );
   });
 
-  it('AK-22: Fallstudien-Karten mit Schlagworten und Hinweis', () => {
-    render(<Home locale={locale} />);
-    const link = screen.getByRole('link', { name: "SIGHT'KICK" });
-    expect(link).toHaveTextContent(t.read);
-    expect(within(link).getAllByRole('listitem').length).toBeGreaterThan(1);
+  it('AK-53/AK-54: dunkles Referenz-Band mit großen Karten, ohne „Fallstudie lesen“', () => {
+    const { container } = render(<Home locale={locale} />);
+    const h2 = screen.getByRole('heading', { level: 2, name: t.refsTitle });
+    const section = h2.closest('section')!;
+    expect(section).toHaveTextContent(t.refs);
+    expect(within(section).getByRole('link', { name: t.all })).toHaveAttribute('href', `${prefix}/projects`);
+    expect(container).not.toHaveTextContent(t.read);
+    const link = within(section).getByRole('link', { name: "SIGHT'KICK" });
+    expect(within(link).getByRole('heading', { level: 3 })).toHaveTextContent("SIGHT'KICK");
+    const sk = projects.find((p) => p.slug === 'sightkick')!;
+    expect(link).toHaveAccessibleDescription(new RegExp(`${sk.year}.*${t.skType}.*UX/UI`));
+    expect(within(link).queryByRole('list')).toBeNull();
+    // AK-56: Kreis „Zum Projekt“ ist dekorativ
+    const circle = link.querySelector('[data-cursor]')!;
+    expect(circle).toHaveTextContent(t.toProject);
+    expect(circle).toHaveAttribute('aria-hidden', 'true');
+    expect(section.querySelectorAll('[data-rail-track] > li')).toHaveLength(4);
   });
 
   it('AK-23: Über-mich-Abschnitt mit Link', () => {
@@ -355,5 +377,28 @@ describe('AK-41: nicht als freiberuflich bezeichnen', () => {
     ]);
     const text = JSON.stringify(mods.slice(0, 3)) + mods[3].llmsTxt();
     expect(text).not.toMatch(/freiberuflich|freelancer\b|freelance (ux|for)|a freelance/i);
+  });
+});
+
+describe('AK-57/AK-58: Über-mich-Linien und Hero-Fotos', () => {
+  it('Faktenleiste: volle Breite, äußere senkrechte Linien ab 768 px', () => {
+    const { container } = render(<Home locale="de" />);
+    const dl = container.querySelector('dl')!;
+    expect(dl.parentElement!.className).toMatch(/border-t/);
+    expect(dl.className).toMatch(/md:border-l/);
+    for (const cell of dl.children) expect(cell.className).toMatch(/md:border-r(\s|$)/);
+  });
+
+  it('AK-54: jedes Referenz-Projekt hat ein Jahr', async () => {
+    const { featuredProjects } = await import('@/lib/content/home');
+    for (const p of featuredProjects) expect(projects.find((q) => q.slug === p.id)?.year).toBeTruthy();
+  });
+
+  it('drei Hero-Fotos, dekorativ', () => {
+    expect(heroMedia.every((m) => m.src && m.width && m.height && m.width <= 800)).toBe(true);
+    const { container } = render(<Home locale="de" />);
+    const imgs = container.querySelectorAll('h1 [data-hero-media] img');
+    expect(imgs).toHaveLength(3);
+    for (const img of imgs) expect(img).toHaveAttribute('alt', '');
   });
 });

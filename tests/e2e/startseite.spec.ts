@@ -244,3 +244,118 @@ test('AK-52: Unternehmens-Kacheln gleich groß', async ({ page }) => {
   expect(sizes).toHaveLength(4);
   for (const s of sizes) expect(s).toEqual(sizes[0]);
 });
+
+test.describe('AK-55: Referenzen beim senkrechten Scrollen', () => {
+  test('Band klebt und schiebt die Karten nach links bis zur letzten', async ({ page }) => {
+    await page.goto('/?animationstest');
+    await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+    const rail = page.locator('[data-rail]');
+    await expect(rail).toHaveAttribute('data-pinned', 'true');
+    const track = page.locator('[data-rail-track]');
+    const top = await rail.evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
+    const extra = await rail.evaluate((el) => (el as HTMLElement).offsetHeight - window.innerHeight);
+    expect(extra).toBeGreaterThan(100);
+    // Mitte: Band steht, Karten sind ein Stück nach links gewandert
+    await page.evaluate((y) => window.scrollTo(0, y), top + extra / 2);
+    await expect
+      .poll(() => track.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41))
+      .toBeLessThan(-50);
+    const sticky = page.locator('[data-rail-sticky]');
+    expect(Math.abs((await sticky.boundingBox())!.y)).toBeLessThanOrEqual(2);
+    // Ende: letzte Karte ganz im Bild
+    await page.evaluate((y) => window.scrollTo(0, y), top + extra);
+    await expect
+      .poll(() =>
+        page.$eval(
+          '[data-rail-track] > li:last-child',
+          (el) => el.getBoundingClientRect().right <= window.innerWidth + 1,
+        ),
+      )
+      .toBe(true);
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+
+  test('Tastaturfokus holt die Karte ins Bild', async ({ page }) => {
+    await page.goto('/?animationstest');
+    await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+    await expect(page.locator('[data-rail]')).toHaveAttribute('data-pinned', 'true');
+    await page.locator('[data-rail-track] > li:last-child a').focus();
+    await expect
+      .poll(() =>
+        page.$eval('[data-rail-track] > li:last-child', (el) => {
+          const r = el.getBoundingClientRect();
+          return r.left >= -1 && r.right <= window.innerWidth + 1 && r.top < window.innerHeight;
+        }),
+      )
+      .toBe(true);
+  });
+
+  test.describe('reduzierte Bewegung', () => {
+    test.use({ reducedMotion: 'reduce' });
+    test('seitlich wischbar, kein Kleben', async ({ page }) => {
+      await page.goto('/');
+      await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+      const rail = page.locator('[data-rail]');
+      await expect(rail).not.toHaveAttribute('data-pinned', 'true');
+      const scroller = page.locator('[data-rail-scroller]');
+      expect(await scroller.evaluate((el) => getComputedStyle(el).overflowX)).toBe('auto');
+      expect(await scroller.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(true);
+      expect(await rail.evaluate((el) => (el as HTMLElement).offsetHeight <= window.innerHeight * 1.5)).toBe(true);
+    });
+  });
+});
+
+test('AK-56: Kreis „Zum Projekt“ folgt dem Zeiger', async ({ page }, info) => {
+  test.skip(info.project.name === 'mobile-360', 'Touch');
+  await page.goto('/?animationstest');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  const card = page.locator('[data-rail-track] > li').first().locator('a');
+  await card.scrollIntoViewIfNeeded();
+  // Weiches Scrollen (Lenis) zur Ruhe kommen lassen
+  await page.waitForTimeout(1000);
+  const circle = card.locator('[data-cursor]');
+  await expect(circle).toHaveCSS('opacity', '0');
+  const img = (await card.locator('img').boundingBox())!;
+  await page.mouse.move(img.x + 60, img.y + 60);
+  await page.mouse.move(img.x + 80, img.y + 90, { steps: 3 });
+  await expect(circle).toHaveCSS('opacity', '1');
+  const c = (await circle.boundingBox())!;
+  expect(Math.abs(c.x + c.width / 2 - (img.x + 80))).toBeLessThan(30);
+  expect(Math.abs(c.y + c.height / 2 - (img.y + 90))).toBeLessThan(30);
+  await expect(circle).toHaveText('Zum Projekt');
+});
+
+test('AK-57: Faktenleiste mit Linien bis an den Rand', async ({ page }, info) => {
+  await page.goto('/');
+  const dl = page.locator('section[aria-labelledby="ueber-mich"] dl');
+  const lineWidth = await dl.evaluate((el) => el.parentElement!.getBoundingClientRect().width);
+  expect(Math.round(lineWidth)).toBe(await page.evaluate(() => document.documentElement.clientWidth));
+  const first = dl.locator('> div').first();
+  const last = dl.locator('> div').last();
+  if (info.project.name === 'mobile-360') {
+    expect(await dl.evaluate((el) => getComputedStyle(el).borderLeftWidth)).toBe('0px');
+  } else {
+    expect(await dl.evaluate((el) => getComputedStyle(el).borderLeftWidth)).toBe('1px');
+    expect(await last.evaluate((el) => getComputedStyle(el).borderRightWidth)).toBe('1px');
+    expect(await first.textContent()).toContain('6+');
+    expect(await last.textContent()).toContain('Augsburg');
+  }
+});
+
+test.describe('AK-53: Fokusrahmen auf dunklen Flächen hell', () => {
+  test.use({ colorScheme: 'light' });
+  test('Referenz-Karte, „Alle Projekte ansehen“ und Footer-Link', async ({ page }) => {
+    await page.goto('/');
+    for (const link of [
+      page.locator('[data-rail-track] a').first(),
+      page.getByRole('link', { name: 'Alle Projekte ansehen' }),
+      page.locator('footer').getByRole('link', { name: 'Impressum' }).first(),
+    ]) {
+      await link.focus();
+      await page.keyboard.press('Shift+Tab');
+      await page.keyboard.press('Tab');
+      expect(await link.evaluate((el) => getComputedStyle(el).outlineColor)).toBe('rgb(255, 255, 255)');
+    }
+  });
+});

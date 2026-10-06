@@ -94,6 +94,8 @@ describe.each([
     expect(hero).toHaveTextContent('Königsbrunn');
     expect(hero).toHaveTextContent(locale === 'de' ? /Fußball/ : /football/);
     expect(hero.querySelector('p .text-primary-text')).toHaveTextContent('HERO Software');
+    expect(hero).toHaveTextContent('HEROCON');
+    expect(hero.textContent).not.toMatch(/freiberuflich|freelanc/i);
     // AK-46: keine Buttons im Hero
     expect(within(hero).queryAllByRole('link')).toHaveLength(0);
   });

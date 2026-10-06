@@ -165,3 +165,10 @@ Nachtrag Erik (2026-10-06): „nicht meinen ganzen namen bitte. also nachname ra
 ### Blinder Kritiker (Hero, 2026-10-06)
 
 Behoben: Randnotiz erbte die Großschreibung der h1 („FUSSBALL“, jetzt normal geschrieben, 12 px statt 11 px); Platzhalter im Dunkelmodus kaum sichtbar (jetzt kräftigere Fläche). Bewusst so: das Komma im h1-Namen bleibt mit Schriftgröße 0 (siehe AK-18, `sr-only` erzeugt ein Leerzeichen; per Test im Accessibility-Tree geprüft).
+
+## Hero: Text und Magnet-Effekt (Erik, 2026-10-06)
+
+Erik: „diesen text bitte menschlicher schreiben! gerade business development manager bei hero software und gestalte das Handwerker Event des Jahres "HEROCON". offen für weitere private projekte. kannst du über die bilder noch so eine nice animation reinbauen? so magnetic das das bild ein bisschen am cursor mit hängt?“
+
+- AK-48: Der Absatz im Hero ist in Ich-Form und erzählend geschrieben: Wohnort Königsbrunn bei Augsburg, menschzentriertes Design, aktuelle Rolle als Business Development Manager bei HERO Software (hervorgehoben) mit der HEROCON als Handwerker-Event des Jahres, offen für private Projekte, Fußball, Technik und Sport. Kein „freiberuflich“ (AK-41).
+- AK-49: Die Medien-Plätze im Hero sind magnetisch: Kommt der Mauszeiger in ihre Nähe, folgen sie ihm ein Stück (höchstens rund ein Drittel des Abstands) und federn beim Weggehen weich zurück; das Bild darin verschiebt sich leicht gegenläufig. Nur mit feinem Zeiger (Maus, Trackpad) und erlaubter Bewegung; auf Touch-Geräten, bei reduzierter Bewegung und ohne JavaScript bleiben sie still. Der Effekt ändert nur `transform`, kein Layout.

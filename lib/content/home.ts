@@ -11,9 +11,10 @@ export const homeContent = {
     hero: {
       lines: ['Hey, ich bin', 'Erik', 'Product', 'Designer'],
       note: 'Mit Herz für Fußball, Technologie & Sport',
-      text: 'Zuhause in Königsbrunn bei Augsburg. Ich mag Design, das vom Menschen aus gedacht ist und wirklich genutzt wird.',
-      accent: 'Gerade bin ich Business Development Manager bei HERO Software',
-      after: '. Abseits davon: Fußball, Technologie und Sport.',
+      text: 'Ich wohne in Königsbrunn bei Augsburg und mag Design, das bei den Menschen anfängt und im Alltag einfach funktioniert. Gerade bin ich',
+      accent: 'Business Development Manager bei HERO Software',
+      after:
+        ' und gestalte dort die HEROCON mit, das Handwerker-Event des Jahres. Für private Projekte habe ich trotzdem ein offenes Ohr. Und wenn ich gerade nicht arbeite, dreht sich bei mir viel um Fußball, Technik und Sport.',
     },
     companiesTitle: 'Unternehmen, für die ich gearbeitet habe',
     current: 'Aktuell',
@@ -77,9 +78,10 @@ export const homeContent = {
     hero: {
       lines: ["Hey, I'm", 'Erik', 'Product', 'Designer'],
       note: 'Passionate about football, tech & sport',
-      text: 'Based in Königsbrunn near Augsburg. I like design that starts with people and actually gets used.',
-      accent: "Right now I'm Business Development Manager at HERO Software",
-      after: '. Away from work: football, tech and sport.',
+      text: "I live in Königsbrunn near Augsburg and like design that starts with people and simply works in everyday life. Right now I'm",
+      accent: 'Business Development Manager at HERO Software',
+      after:
+        ", helping shape HEROCON, the trade event of the year. I'm still open to private projects. And when I'm not working, it's mostly football, tech and sport.",
     },
     companiesTitle: "Companies I've worked for",
     current: 'Current',

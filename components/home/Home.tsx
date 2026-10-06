@@ -5,6 +5,7 @@ import { Fragment, type CSSProperties } from 'react';
 import FaqList from '@/components/faq/FaqList';
 import JsonLd from '@/components/JsonLd';
 import CountUp from '@/components/motion/CountUp';
+import Magnetic from '@/components/motion/Magnetic';
 import LocalClock from './LocalClock';
 import { aboutPhoto } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
@@ -468,19 +469,30 @@ function CompanyLogo({ name }: { name: string }) {
   );
 }
 
-/** Medien-Platz im Hero (AK-44): Bild/GIF von Erik oder, solange es fehlt, eine ruhige Fläche. Dekorativ. */
+/** Medien-Platz im Hero (AK-44): Bild/GIF von Erik oder, solange es fehlt, eine ruhige Fläche. Dekorativ, magnetisch (AK-49). */
 function HeroMedia({ index, className }: { index: number; className: string }) {
   const m = heroMedia[index];
   return (
-    <span
-      aria-hidden="true"
-      data-hero-media
-      className={`hero-media relative inline-block shrink-0 overflow-hidden rounded-[0.14em] bg-primary-light dark:bg-primary/25 border border-primary-border ${className}`}
-      style={{ '--r': index + 1 } as CSSProperties}
-    >
-      {m?.src && (
-        <Image src={m.src} alt="" fill sizes="200px" unoptimized={m.src.endsWith('.gif')} className="object-cover" />
-      )}
-    </span>
+    <Magnetic>
+      <span
+        aria-hidden="true"
+        data-hero-media
+        className={`hero-media relative inline-block shrink-0 overflow-hidden rounded-[0.14em] bg-primary-light dark:bg-primary/25 border border-primary-border ${className}`}
+        style={{ '--r': index + 1 } as CSSProperties}
+      >
+        {m?.src && (
+          <Image
+            src={m.src}
+            alt=""
+            fill
+            sizes="200px"
+            unoptimized={m.src.endsWith('.gif')}
+            className="object-cover"
+            // Leicht gegenläufig zum Magneten (AK-49)
+            style={{ transform: 'translate(var(--magnet-x, 0), var(--magnet-y, 0)) scale(1.1)' }}
+          />
+        )}
+      </span>
+    </Magnetic>
   );
 }

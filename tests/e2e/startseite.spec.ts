@@ -190,3 +190,35 @@ test('AK-38: Faktenwerte bleiben einzeilig', async ({ page }) => {
   expect(lines.length).toBeGreaterThan(0);
   for (const l of lines) expect(l.ratio, String(l.text)).toBeLessThan(1.5);
 });
+
+test.describe('AK-49: Medien-Plätze magnetisch', () => {
+  for (const motion of ['no-preference', 'reduce'] as const) {
+    test.describe(motion, () => {
+      test.use({ reducedMotion: motion });
+      test(`folgen dem Zeiger (${motion})`, async ({ page }, info) => {
+        test.skip(info.project.name === 'mobile-360', 'Touch');
+        await page.goto('/?animationstest');
+        await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+        const magnet = page.locator('h1 [data-magnet]').first();
+        await expect
+          .poll(() =>
+            page.$$eval('h1 [data-hero-media]', (els) => els.every((el) => getComputedStyle(el).opacity === '1')),
+          )
+          .toBe(true);
+        await page.waitForTimeout(1500);
+        const box = (await magnet.boundingBox())!;
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+        await page.mouse.move(box.x + box.width + 30, box.y + box.height / 2, { steps: 5 });
+        await page.waitForTimeout(600);
+        const moved = await magnet.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41);
+        if (motion === 'reduce') expect(moved).toBe(0);
+        else expect(moved).toBeGreaterThan(3);
+        // Weit weg: federt zurück
+        await page.mouse.move(5, 5, { steps: 5 });
+        await expect
+          .poll(() => magnet.evaluate((el) => Math.abs(new DOMMatrix(getComputedStyle(el).transform).m41)))
+          .toBeLessThan(1);
+      });
+    });
+  }
+});

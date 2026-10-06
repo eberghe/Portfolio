@@ -8,18 +8,27 @@ export interface InquiryStore {
   save(inquiry: Inquiry, ipHash: string | null): Promise<void>;
   /** Anfragen desselben Absenders seit dem Zeitpunkt (ISO) */
   recentCount(ipHash: string, sinceIso: string): Promise<number>;
+  /** Anfragen an dieselbe E-Mail-Adresse seit dem Zeitpunkt (ISO), für das Limit der Bestätigungen */
+  recentEmailCount(email: string, sinceIso: string): Promise<number>;
+}
+
+export interface NotifyOptions {
+  /** Bestätigung an den Absender erlaubt (AK-21) */
+  confirm: boolean;
 }
 
 export type { InquiryState };
 
 export interface Deps {
   store: InquiryStore | null;
-  notify?: ((inquiry: Inquiry) => Promise<void>) | null;
+  notify?: ((inquiry: Inquiry, options: NotifyOptions) => Promise<void>) | null;
   ipHash: string | null;
 }
 
 const LIMIT = 3;
 const HOUR = 60 * 60 * 1000;
+/** Höchstens so viele Bestätigungen pro E-Mail-Adresse in 24 Stunden (AK-21) */
+const CONFIRM_LIMIT = 2;
 
 function values(fd: FormData) {
   return Object.fromEntries(
@@ -37,9 +46,14 @@ export async function handleInquiry(fd: FormData, { store, notify, ipHash }: Dep
   if (!store)
     return { status: 'fallback', reason: 'unavailable', mailto: inquiryMailto(data), text: inquiryText(data) };
 
+  let confirm = false;
   try {
     if (ipHash && (await store.recentCount(ipHash, new Date(Date.now() - HOUR).toISOString())) >= LIMIT)
       return { status: 'limited' };
+    // Vor dem Speichern zählen, damit die neue Anfrage nicht mitzählt
+    confirm =
+      !!ipHash &&
+      (await store.recentEmailCount(data.email, new Date(Date.now() - 24 * HOUR).toISOString())) < CONFIRM_LIMIT;
     await store.save(data, ipHash);
   } catch (error) {
     console.error('Anfrage nicht gespeichert', error);
@@ -47,7 +61,7 @@ export async function handleInquiry(fd: FormData, { store, notify, ipHash }: Dep
   }
 
   try {
-    await notify?.(data);
+    await notify?.(data, { confirm });
   } catch (error) {
     console.error('Benachrichtigung fehlgeschlagen', error);
   }

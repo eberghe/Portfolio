@@ -87,7 +87,11 @@ describe('AK-6: Prüfregeln', () => {
 });
 
 describe('AK-3/AK-5/AK-7: Verarbeitung auf dem Server', () => {
-  const store = () => ({ save: vi.fn(async () => {}), recentCount: vi.fn(async () => 0) });
+  const store = () => ({
+    save: vi.fn(async () => {}),
+    recentCount: vi.fn(async () => 0),
+    recentEmailCount: vi.fn(async () => 0),
+  });
 
   it('speichert gültige Anfragen und benachrichtigt Erik (AK-5)', async () => {
     const s = store();
@@ -95,7 +99,7 @@ describe('AK-3/AK-5/AK-7: Verarbeitung auf dem Server', () => {
     const state = await handleInquiry(formData(), { store: s, notify, ipHash: 'h1' });
     expect(state.status).toBe('sent');
     expect(s.save).toHaveBeenCalledWith(expect.objectContaining({ email: 'alex@beispiel.de' }), 'h1');
-    expect(notify).toHaveBeenCalledWith(expect.objectContaining({ name: 'Alex Muster' }));
+    expect(notify).toHaveBeenCalledWith(expect.objectContaining({ name: 'Alex Muster' }), { confirm: true });
   });
 
   it('fehlgeschlagene Benachrichtigung ändert nichts am Erfolg (AK-5)', async () => {
@@ -103,6 +107,28 @@ describe('AK-3/AK-5/AK-7: Verarbeitung auf dem Server', () => {
       throw new Error('mail down');
     });
     expect((await handleInquiry(formData(), { store: store(), notify, ipHash: null })).status).toBe('sent');
+  });
+
+  it.each([
+    ['ohne IP-Prüfwert', null, 0],
+    ['nach zwei Bestätigungen an dieselbe Adresse in 24 Stunden', 'h1', 2],
+  ])('AK-21: keine Bestätigung %s', async (_, ipHash, count) => {
+    const s = { ...store(), recentEmailCount: vi.fn(async () => count) };
+    const notify = vi.fn(async () => {});
+    expect((await handleInquiry(formData(), { store: s, notify, ipHash })).status).toBe('sent');
+    expect(notify).toHaveBeenCalledWith(expect.anything(), { confirm: false });
+    if (ipHash) {
+      const [email, since] = s.recentEmailCount.mock.calls[0] as unknown as [string, string];
+      expect(email).toBe('alex@beispiel.de');
+      expect(Date.now() - new Date(since).getTime()).toBeGreaterThanOrEqual(23.9 * 60 * 60 * 1000);
+    }
+  });
+
+  it('AK-21: Honeypot und Limit lösen keine Mail aus', async () => {
+    const notify = vi.fn(async () => {});
+    await handleInquiry(formData({ ...valid, fax: 'spam' }), { store: store(), notify, ipHash: 'h1' });
+    await handleInquiry(formData(), { store: { ...store(), recentCount: vi.fn(async () => 3) }, notify, ipHash: 'h1' });
+    expect(notify).not.toHaveBeenCalled();
   });
 
   it('ungültige Anfragen liefern Fehler und Eingaben zurück', async () => {
@@ -216,6 +242,80 @@ describe('AK-4: Speicherung nur serverseitig', () => {
     await expect(resendNotifier({ RESEND_API_KEY: 'k' })!(validateInquiry(formData()).data!)).rejects.toThrow(
       /403.*own email address/,
     );
+    vi.unstubAllGlobals();
+  });
+
+  const sent = (m: ReturnType<typeof vi.fn>) =>
+    m.mock.calls.map((c) => JSON.parse((c as unknown as [string, RequestInit])[1].body as string));
+
+  it('AK-18: ohne ANFRAGE_ABSENDER nur die Mail an Erik', async () => {
+    const fetchMock = vi.fn(async () => new Response('{}', { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+    await resendNotifier({ RESEND_API_KEY: 'k' })!(validateInquiry(formData()).data!);
+    expect(sent(fetchMock).map((b) => b.to)).toEqual([['erb1209@outlook.de']]);
+    vi.unstubAllGlobals();
+  });
+
+  it.each([
+    ['de', 'Deine Anfrage bei Erik Bergheimer'],
+    ['en', 'Your enquiry to Erik Bergheimer'],
+  ])(
+    'AK-18/19: mit eigener Domain Bestätigung an den Absender (%s), ohne Name und Beschreibung',
+    async (sprache, subject) => {
+      const fetchMock = vi.fn(async () => new Response('{}', { status: 200 }));
+      vi.stubGlobal('fetch', fetchMock);
+      const env = { RESEND_API_KEY: 'k', ANFRAGE_ABSENDER: 'Erik Bergheimer <anfrage@erik-bergheimer.de>' };
+      await resendNotifier(env)!(validateInquiry(formData({ ...valid, sprache })).data!, { confirm: true });
+      const [toErik, confirm] = sent(fetchMock);
+      expect(toErik.to).toEqual(['erb1209@outlook.de']);
+      expect(confirm).toMatchObject({ from: env.ANFRAGE_ABSENDER, to: ['alex@beispiel.de'], subject });
+      expect(confirm.reply_to).toBe('erb1209@outlook.de');
+      expect(confirm.text).toContain('Webflow');
+      for (const v of ['Alex Muster', 'barrierefreien Relaunch', '+49 821 123456'])
+        expect(confirm.text).not.toContain(v);
+      vi.unstubAllGlobals();
+    },
+  );
+
+  it('AK-21: ohne Freigabe keine Bestätigung, auch mit eigener Domain', async () => {
+    const fetchMock = vi.fn(async () => new Response('{}', { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+    await resendNotifier({ RESEND_API_KEY: 'k', ANFRAGE_ABSENDER: 'a@erik-bergheimer.de' })!(
+      validateInquiry(formData()).data!,
+      { confirm: false },
+    );
+    expect(sent(fetchMock).map((b) => b.to)).toEqual([['erb1209@outlook.de']]);
+    vi.unstubAllGlobals();
+  });
+
+  it('AK-21: Supabase zählt Anfragen pro E-Mail-Adresse', async () => {
+    const fetchMock = vi.fn(async () => new Response(null, { status: 200, headers: { 'content-range': '0-1/2' } }));
+    vi.stubGlobal('fetch', fetchMock);
+    const s = supabaseStore({ SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'k' })!;
+    expect(await s.recentEmailCount('a+b@beispiel.de', '2026-10-06T00:00:00.000Z')).toBe(2);
+    const [url] = fetchMock.mock.calls[0] as unknown as [string];
+    expect(url).toContain('email=eq.a%2Bb%40beispiel.de');
+    vi.unstubAllGlobals();
+  });
+
+  it('AK-20: Fehler bei der Bestätigung verhindert Eriks Mail nicht', async () => {
+    const fetchMock = vi.fn(async (_u: string, init: RequestInit) =>
+      JSON.parse(init.body as string).to[0] === 'alex@beispiel.de'
+        ? new Response('kaputt', { status: 422 })
+        : new Response('{}', { status: 200 }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    await resendNotifier({ RESEND_API_KEY: 'k', ANFRAGE_ABSENDER: 'anfrage@erik-bergheimer.de' })!(
+      validateInquiry(formData()).data!,
+      { confirm: true },
+    );
+    expect(sent(fetchMock).map((b) => b.to[0])).toContain('erb1209@outlook.de');
+    expect(error).toHaveBeenCalledWith(
+      expect.stringContaining('Bestätigung'),
+      expect.objectContaining({ message: expect.stringMatching(/422.*kaputt/) }),
+    );
+    error.mockRestore();
     vi.unstubAllGlobals();
   });
 
@@ -499,5 +599,15 @@ describe('Befunde Blinder Kritiker (Runde 1)', () => {
   it('seite AK-6: kein Sprunglink mehr', () => {
     render(<ContactPage locale="de" />);
     expect(screen.queryByRole('link', { name: 'Zum Anfrageformular' })).toBeNull();
+  });
+});
+
+describe('AK-22: Datenschutzerklärung nennt die Bestätigung', () => {
+  it.each([
+    ['de', /Bestätigung.*Resend|Resend.*Bestätigung/],
+    ['en', /confirmation.*Resend|Resend.*confirmation/],
+  ] as const)('%s', async (locale, pattern) => {
+    const { legal } = await import('@/lib/content/legal');
+    expect(JSON.stringify(legal.datenschutz[locale])).toMatch(pattern);
   });
 });

@@ -71,7 +71,7 @@ Umgebungsvariablen (nur in Vercel, nie im Code): `SUPABASE_URL` (oder `NEXT_PUBL
 
 ## Tests
 
-`tests/unit/anfrage.test.tsx` (AK-1 bis AK-9, AK-11 bis AK-14), `tests/e2e/kontakt.spec.ts` (AK-1, AK-2, AK-7, AK-10, AK-15, axe).
+`tests/unit/anfrage.test.tsx` (AK-1 bis AK-9, AK-11 bis AK-14, AK-16 bis AK-20), `tests/e2e/kontakt.spec.ts` (AK-1, AK-2, AK-7, AK-10, AK-15, axe).
 
 ## Befunde Blinder Kritiker (Runde 1)
 
@@ -84,7 +84,7 @@ Verschoben: englische Slugs für Impressum und Datenschutz (`/en/datenschutz`).
 - Antwortzeit nennen (z. B. „innerhalb von zwei Werktagen")? Nur, wenn Erik das zusagen will.
 
 - Terminbuchung direkt nach der Anfrage (z. B. Cal.com)? Bis dahin schlägt Erik Termine per Mail vor.
-- Bestätigungsmail an Kunden: bewusst weggelassen, weil ein Formular, das an beliebige Adressen Mails verschickt, für Spam missbraucht werden kann. Die Bestätigung steht auf der Seite.
+- Bestätigungsmail an Kunden: von Erik gewünscht (2026-10-06), siehe AK-18.
 - Budget-Spannen sind ein Vorschlag; Erik prüft, ob sie zu seinen Preisen passen.
 
 ## Benachrichtigung kommt nicht an (Erik 2026-10-05)
@@ -93,3 +93,17 @@ Anfragen werden gespeichert (Supabase), aber die Mail an Erik fehlt. Ursache (ge
 
 - AK-16: Empfänger der Benachrichtigung ist `ANFRAGE_EMPFAENGER`, sonst die E-Mail der Seite. Damit kann Erik ohne Code-Änderung auf die Adresse seines Resend-Kontos umstellen, bis die Domain bei Resend bestätigt ist (dann `ANFRAGE_ABSENDER`, z. B. `anfrage@erik-bergheimer.de`).
 - AK-17: Schlägt die Benachrichtigung fehl, steht der Statuscode und die Antwort von Resend im Server-Log, damit die Ursache sichtbar ist.
+
+## Bestätigung an den Absender (Erik 2026-10-06)
+
+Erik möchte, dass auch der Absender eine Mail bekommt.
+
+- AK-18: Ist `ANFRAGE_ABSENDER` gesetzt (eigene, bei Resend bestätigte Domain, am besten als `Erik Bergheimer <anfrage@erik-bergheimer.de>`), bekommt der Absender nach dem Speichern eine kurze Bestätigung in seiner Sprache (Betreff „Deine Anfrage bei Erik Bergheimer" / „Your enquiry to Erik Bergheimer", Antwort-an: Eriks Adresse). Ohne eigene Domain wird keine Bestätigung verschickt, weil Resend dann ohnehin nur an das eigene Konto zustellt. Die Bestätigung geht erst nach Eriks Benachrichtigung raus.
+- AK-19: Die Bestätigung enthält nur festen Text und die gewählten Leistungen (feste Bezeichnungen), weder Name noch Beschreibung. So lässt sich das Formular nicht missbrauchen, um fremden Leuten beliebigen Text zu schicken; dazu kommen Honeypot und das Limit von drei Anfragen pro Stunde (AK-3).
+- AK-20: Schlägt die Bestätigung fehl, kommt Eriks Benachrichtigung trotzdem an, und der Fehler steht im Server-Log.
+- AK-21: Bestätigungen werden auch in der Menge begrenzt: keine Bestätigung ohne IP-Prüfwert, und höchstens zwei Bestätigungen pro E-Mail-Adresse in 24 Stunden. So lässt sich niemandes Postfach fluten, auch nicht mit wechselnden IP-Adressen.
+- AK-22: Die Datenschutzerklärung (DE und EN) nennt, dass der Absender über Resend eine Bestätigung an seine E-Mail-Adresse bekommt.
+
+### Blinder Kritiker (2026-10-06)
+
+Behoben (mit Test): Menge der Bestätigungen nur pro IP begrenzt (AK-21); Datenschutzerklärung erwähnte die Bestätigung nicht (AK-22); englischer Text holprig; Absenderformat mit Namen empfohlen (AK-18). Bewusst so gelassen: beide Mails laufen nacheinander vor der Antwort, das kostet etwa eine Sekunde.

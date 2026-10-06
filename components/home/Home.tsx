@@ -295,16 +295,13 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="ueber-mich" className="border-y border-border bg-bg2">
-        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-8 md:gap-14 items-center">
-          <div
-            data-reveal
-            className="relative aspect-square max-w-[360px] w-full rounded-2xl overflow-hidden border border-border"
-          >
+        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+          <div data-reveal className="relative aspect-square w-full rounded-2xl overflow-hidden border border-border">
             <Image
               src={aboutPhoto.src}
               alt={t.aboutPhotoAlt}
               fill
-              sizes="(min-width: 768px) 360px, 90vw"
+              sizes="(min-width: 1280px) 600px, (min-width: 768px) 50vw, 100vw"
               className="object-cover"
             />
           </div>

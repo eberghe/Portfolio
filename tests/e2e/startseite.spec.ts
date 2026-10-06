@@ -538,3 +538,13 @@ test('AK-63: Hero-Überschrift auf dem Handy groß im Verhältnis zum Absatz', a
     expect(outside).toBe(0);
   }
 });
+
+test('AK-69: Foto in „Über mich“ groß', async ({ page }, info) => {
+  await page.goto('/');
+  const img = page.locator('section[aria-labelledby="ueber-mich"] img').first();
+  await img.scrollIntoViewIfNeeded();
+  const { width } = (await img.boundingBox())!;
+  const vw = page.viewportSize()!.width;
+  if (info.project.name === 'desktop-1280') expect(width).toBeGreaterThanOrEqual(480);
+  if (info.project.name === 'mobile-360') expect(width).toBeGreaterThanOrEqual(vw - 2 * 24 - 3); // minus 1 px Rahmen je Seite
+});

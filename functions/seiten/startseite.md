@@ -247,3 +247,9 @@ Erik (Screenshot: große Überschrift „Support for every stage“, Zeilen übe
 
 - AK-67: Der Leistungsabschnitt ist so breit wie der Seitencontainer (design-tokens.md AK-11; vorher volle Breite); Überschrift ab 768 px mindestens 56 px groß, Nummer und Titel der Zeilen ab 768 px mindestens 40 px. Die Zeilen sind oben und unten durch Linien über die ganze Breite getrennt, auch die offene.
 - AK-68: Die offene Zeile hat keinen grünen Rahmen mehr (ersetzt den Rahmen aus AK-66). Grün umrandet wird ein Schalter nur beim Tastaturfokus (`:focus-visible`), nicht nach einem Mausklick.
+
+## Größeres Foto in „Über mich“ (Erik, 2026-10-06)
+
+Erik: „das bild in über mich kann noch größer sein bitte.“
+
+- AK-69: Im Abschnitt „Über mich“ teilen sich Foto und Text ab 768 px die Breite je zur Hälfte; das Foto (quadratisch) füllt seine Spalte, bei 1280 px also mindestens 480 px breit (vorher höchstens 360 px). Unter 768 px ist es so breit wie der Inhalt.

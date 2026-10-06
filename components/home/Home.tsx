@@ -96,13 +96,21 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="unternehmen">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12 pb-10 md:pb-12">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
           <h2 id="unternehmen" className={`${eyebrow} text-center mb-6`} data-reveal>
             {t.companiesTitle}
           </h2>
-          <ul className="grid grid-cols-2 md:grid-cols-4 auto-rows-fr border-t border-l border-dashed border-border">
+        </div>
+        {/* Durchgehende Linien über die volle Breite, außen senkrecht ab 768 px (AK-62) */}
+        <div className="border-y border-border mb-10 md:mb-12">
+          <ul className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 auto-rows-fr md:border-l border-border">
             {t.companies.map((c, i) => (
-              <li key={c.name} data-reveal style={stagger(i)} className="border-r border-b border-dashed border-border">
+              <li
+                key={c.name}
+                data-reveal
+                style={stagger(i)}
+                className="border-border [&:nth-child(odd)]:border-r md:border-r [&:nth-child(-n+2)]:border-b md:[&:nth-child(-n+2)]:border-b-0"
+              >
                 <a
                   href={c.url}
                   target="_blank"

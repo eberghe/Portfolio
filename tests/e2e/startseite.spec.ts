@@ -359,3 +359,55 @@ test.describe('AK-53: Fokusrahmen auf dunklen Flächen hell', () => {
     }
   });
 });
+
+test('AK-59: Ablauf mit Hintergrund wie „Über mich“, linke Spalte klebt', async ({ page }, info) => {
+  await page.goto('/');
+  const process = page.locator('section[aria-labelledby="ablauf"]');
+  const about = page.locator('section[aria-labelledby="ueber-mich"]');
+  const bg = (l: typeof process) => l.evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(await bg(process)).toBe(await bg(about));
+  const aside = process.locator('[data-process-intro]');
+  if (info.project.name === 'mobile-360') {
+    expect(await aside.evaluate((el) => getComputedStyle(el).position)).toBe('static');
+    return;
+  }
+  expect(await aside.evaluate((el) => getComputedStyle(el).position)).toBe('sticky');
+  // Beim Scrollen durch die Schritte bleibt die Spalte im Bild
+  const last = process.locator('ol > li').last();
+  await last.scrollIntoViewIfNeeded();
+  await page.waitForTimeout(300);
+  const box = (await aside.boundingBox())!;
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  expect(box.y).toBeLessThan(page.viewportSize()!.height / 2);
+});
+
+test.describe('AK-61: Linien füllen sich beim Scrollen', () => {
+  test('mit Bewegung: Füllung wächst', async ({ page }) => {
+    await page.goto('/');
+    const fill = page.locator('section[aria-labelledby="ablauf"] [data-step-line] > span').first();
+    const scale = () => fill.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).d);
+    await page.locator('section[aria-labelledby="ablauf"] h2').scrollIntoViewIfNeeded();
+    await page
+      .locator('section[aria-labelledby="ablauf"] ol > li')
+      .first()
+      .evaluate((el) =>
+        window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.95),
+      );
+    await page.waitForTimeout(200);
+    const before = await scale();
+    await page
+      .locator('section[aria-labelledby="ablauf"] ol > li')
+      .first()
+      .evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.2));
+    await page.waitForTimeout(200);
+    expect(await scale()).toBeGreaterThan(before);
+  });
+  test.describe('reduzierte Bewegung', () => {
+    test.use({ reducedMotion: 'reduce' });
+    test('ganz gefüllt', async ({ page }) => {
+      await page.goto('/');
+      const fill = page.locator('section[aria-labelledby="ablauf"] [data-step-line] > span').first();
+      expect(await fill.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).d)).toBe(1);
+    });
+  });
+});

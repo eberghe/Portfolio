@@ -402,3 +402,32 @@ describe('AK-57/AK-58: Über-mich-Linien und Hero-Fotos', () => {
     for (const img of imgs) expect(img).toHaveAttribute('alt', '');
   });
 });
+
+describe.each([
+  ['de', '', 'Ablauf', 'Projekte ansehen', '1. Kennenlernen'],
+  ['en', '/en', 'Process', 'View projects', '1. '],
+] as const)('AK-59/AK-60: Ablauf als Timeline (%s)', (locale, prefix, eyebrow, projectsLink, first) => {
+  it('Kennzeichen, zwei Links, nummerierte h3 mit dekorativen Icons', () => {
+    render(<Home locale={locale} />);
+    const h2 = screen.getByRole('heading', { level: 2, name: homeContent[locale].process });
+    const section = h2.closest('section')!;
+    expect(section.className).toMatch(/bg-bg2/);
+    expect(section).toHaveTextContent(eyebrow);
+    expect(within(section).getByRole('link', { name: homeContent[locale].contact })).toHaveAttribute(
+      'href',
+      `${prefix}/contact`,
+    );
+    expect(within(section).getByRole('link', { name: projectsLink })).toHaveAttribute('href', `${prefix}/projects`);
+    const steps = section.querySelectorAll('ol > li');
+    expect(steps).toHaveLength(4);
+    steps.forEach((li, i) => {
+      const h3 = within(li as HTMLElement).getByRole('heading', { level: 3 });
+      expect(h3.textContent).toMatch(new RegExp(`^${i + 1}\\. `));
+      expect(li.querySelector('[data-step-icon]')).toHaveAttribute('aria-hidden', 'true');
+      expect(li.querySelector('[data-step-icon] svg')).not.toBeNull();
+    });
+    expect(steps[0]!.querySelector('h3')!.textContent).toContain(first);
+    expect(steps[3]!.querySelector('[data-step-line]')).toBeNull();
+    expect(steps[0]!.querySelector('[data-step-line]')).not.toBeNull();
+  });
+});

@@ -21,6 +21,53 @@ test.describe('ohne JavaScript', () => {
   });
 });
 
+test('AK-67: Leistungen über die volle Breite, große Überschrift', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop-1280', 'Maße ab 768 px');
+  await page.goto('/');
+  const section = page.locator('section[aria-labelledby="angebot"]');
+  const list = section.locator('ol');
+  const box = (await list.boundingBox())!;
+  expect(box.width).toBeGreaterThanOrEqual(1280 - 2 * 48 - 20);
+  const size = (sel: string) =>
+    section
+      .locator(sel)
+      .first()
+      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  expect(await size('h2')).toBeGreaterThanOrEqual(56);
+  expect(await size('h3 button span:nth-child(2)')).toBeGreaterThanOrEqual(40);
+});
+
+test('AK-68: grüner Rahmen nur beim Tastaturfokus', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  const section = page.locator('section[aria-labelledby="angebot"]');
+  const style = (el: Element) => {
+    const li = el.closest('li')!;
+    const cs = getComputedStyle(el);
+    return { outline: cs.outlineStyle, outlineColor: cs.outlineColor, liBorder: getComputedStyle(li).borderLeftWidth };
+  };
+  const primary = await page.evaluate(() => {
+    const d = document.createElement('div');
+    d.style.color = 'hsl(var(--primary))';
+    document.body.append(d);
+    const c = getComputedStyle(d).color;
+    d.remove();
+    return c;
+  });
+  const second = section.getByRole('button').nth(1);
+  await second.click();
+  await expect(second).toHaveAttribute('aria-expanded', 'true');
+  const clicked = await second.evaluate(style);
+  expect(clicked.outline).toBe('none');
+  expect(clicked.liBorder).toBe('0px');
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Tab');
+  await expect(second).toBeFocused();
+  const keyboard = await second.evaluate(style);
+  expect(keyboard.outline).toBe('solid');
+  expect(keyboard.outlineColor).toBe(primary);
+});
+
 test('AK-65: Akkordeon per Tastatur, geschlossene Felder unsichtbar', async ({ page }) => {
   await page.goto('/');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');

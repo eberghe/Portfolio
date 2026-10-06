@@ -22,60 +22,58 @@ export default function ServiceAccordion({ items }: { items: AccordionItem[] }) 
   const id = useId();
 
   return (
-    <ol role="list">
+    <ol role="list" className="border-t border-border">
       {items.map((s, i) => {
         const isOpen = open === i;
         const panel = `${id}-${s.slug}`;
         return (
-          <li
-            key={s.slug}
-            className={`border motion-safe:transition-colors motion-safe:duration-300 ${
-              isOpen ? 'border-primary rounded-xl' : 'border-transparent [&:not(:last-child)]:border-b-border'
-            }`}
-          >
+          <li key={s.slug} className="border-b border-border">
             <h3 className="font-bold">
               <button
                 type="button"
                 aria-expanded={isOpen}
                 aria-controls={panel}
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="group w-full flex items-center gap-4 sm:gap-6 md:gap-12 px-3 sm:px-4 md:px-6 py-5 md:py-7 text-left rounded-xl"
+                className="group w-full flex items-center gap-4 sm:gap-8 md:gap-16 lg:gap-24 py-6 md:py-10 text-left rounded-lg focus-visible:outline-primary focus-visible:outline-offset-0"
               >
                 <span
                   aria-hidden="true"
-                  className="w-7 sm:w-10 md:w-14 shrink-0 text-[17px] sm:text-[22px] md:text-[28px] font-medium text-text2"
+                  className="w-8 sm:w-12 md:w-20 shrink-0 text-[20px] sm:text-[28px] md:text-[44px] lg:text-[52px] font-medium leading-none tracking-tight text-foreground"
                 >
                   {String(i + 1).padStart(2, '0')}
                 </span>{' '}
-                <span className="flex-1 min-w-0 break-words hyphens-auto text-[20px] sm:text-[22px] md:text-[30px] font-bold leading-tight tracking-tight text-foreground group-hover:text-primary-text motion-safe:transition-colors">
+                <span className="flex-1 min-w-0 break-words hyphens-auto text-[20px] sm:text-[28px] md:text-[44px] lg:text-[52px] font-semibold leading-[1.05] tracking-tight text-foreground group-hover:text-primary-text motion-safe:transition-colors">
                   {s.title}
                 </span>
                 <span aria-hidden="true" className="shrink-0 text-primary-text">
                   {isOpen ? (
-                    <Minus className="w-[22px] h-[22px] md:w-[26px] md:h-[26px]" strokeWidth={1.5} />
+                    <Minus className="w-6 h-6 md:w-10 md:h-10" strokeWidth={1.75} />
                   ) : (
-                    <Plus className="w-[22px] h-[22px] md:w-[26px] md:h-[26px]" strokeWidth={1.5} />
+                    <Plus className="w-6 h-6 md:w-10 md:h-10" strokeWidth={1.75} />
                   )}
                 </span>
               </button>
             </h3>
             <div id={panel} data-open={isOpen || undefined} className="service-panel">
               <div>
-                <div className="grid md:grid-cols-2 gap-6 md:gap-8 px-3 sm:px-4 md:px-0 pb-4 md:pb-0">
+                <div className="grid md:grid-cols-2 gap-6 md:gap-12 lg:gap-16 pb-8 md:pb-12">
                   <div
                     data-service-media
                     aria-hidden="true"
-                    className="relative aspect-[4/3] md:aspect-auto md:min-h-[300px] rounded-lg md:rounded-none md:rounded-bl-xl overflow-hidden bg-[#0b1219] dark:bg-white/[0.07] dark:ring-1 dark:ring-inset dark:ring-white/10 text-white flex items-center justify-center"
+                    className="relative aspect-[4/3] md:aspect-[16/10] rounded-xl overflow-hidden bg-[#0b1219] dark:bg-white/[0.07] dark:ring-1 dark:ring-inset dark:ring-white/10 text-white flex items-center justify-center"
                   >
                     {s.media}
                   </div>
-                  <div className="flex flex-col md:py-6 md:pr-8">
-                    <p id={`${panel}-text`} className="text-[15px] md:text-[16px] leading-relaxed text-foreground">
+                  <div className="flex flex-col md:py-2">
+                    <p
+                      id={`${panel}-text`}
+                      className="text-[16px] md:text-[18px] leading-relaxed text-foreground max-w-[560px]"
+                    >
                       {s.description}
                     </p>
                     <ul className="mt-6 grid gap-1.5 list-disc pl-5 marker:text-primary-text">
                       {s.features.map((f) => (
-                        <li key={f} className="text-[14px] text-text2">
+                        <li key={f} className="text-[14px] md:text-[15px] text-text2">
                           {f}
                         </li>
                       ))}

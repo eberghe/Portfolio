@@ -149,16 +149,18 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       {/* Leistungen als Akkordeon (AK-64 bis AK-66) */}
-      <section
-        aria-labelledby="angebot"
-        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 pb-12 md:pb-16"
-      >
-        <div className="text-center max-w-[560px] mx-auto mb-10 md:mb-14" data-reveal>
-          <p className={`${eyebrow} mb-3`}>{t.offerEyebrow}</p>
-          <h2 id="angebot" className={`${sectionTitle} mb-4`}>
+      <section aria-labelledby="angebot" className="px-6 sm:px-8 md:px-12 pt-16 md:pt-28 pb-16 md:pb-24">
+        <div className="text-center max-w-[900px] mx-auto mb-12 md:mb-24" data-reveal>
+          <p className={`${eyebrow} mb-4`}>{t.offerEyebrow}</p>
+          <h2
+            id="angebot"
+            className="text-[36px] sm:text-[48px] md:text-[64px] lg:text-[80px] font-bold leading-[1.02] tracking-[-0.03em] text-foreground text-balance mb-5 md:mb-6"
+          >
             {t.offer}
           </h2>
-          <p className="text-[16px] md:text-[17px] leading-relaxed text-text2">{t.offerIntro}</p>
+          <p className="text-[16px] md:text-[19px] leading-relaxed text-foreground max-w-[620px] mx-auto">
+            {t.offerIntro}
+          </p>
         </div>
         <ServiceAccordion
           items={services.map((s) => {

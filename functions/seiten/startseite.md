@@ -240,3 +240,10 @@ Ersetzt AK-21 (Sticky-Stapel) auf der Startseite; AK-5 und AK-12 gelten weiter.
 ### Blinder Kritiker (Leistungen, 2026-10-06)
 
 Behoben (mit Test): Nummer wurde siebenmal vorgelesen („null eins …“), jetzt nur sichtbar; Platzhalterbild im Dunkelmodus unsichtbar (gleiche Farbe wie der Hintergrund); zwei Erstgespräch-Buttons direkt hintereinander. Offen für Erik: Der englische Text zu UX/UI Design ist länger als der deutsche und sagt „pixel-perfect“; beide Fassungen angleichen.
+
+## Leistungen breit, Rahmen nur beim Tastaturfokus (Erik, 2026-10-06)
+
+Erik (Screenshot: große Überschrift „Support for every stage“, Zeilen über die volle Breite mit Linien oben und unten): „bitte das schön breit und die grüne outline nur bei keyboard focus.“
+
+- AK-67: Der Leistungsabschnitt nutzt die volle Breite (nur der seitliche Rand wie bei den Referenzen, 48 px ab 768 px); Überschrift ab 768 px mindestens 56 px groß, Nummer und Titel der Zeilen ab 768 px mindestens 40 px. Die Zeilen sind oben und unten durch Linien über die ganze Breite getrennt, auch die offene.
+- AK-68: Die offene Zeile hat keinen grünen Rahmen mehr (ersetzt den Rahmen aus AK-66). Grün umrandet wird ein Schalter nur beim Tastaturfokus (`:focus-visible`), nicht nach einem Mausklick.

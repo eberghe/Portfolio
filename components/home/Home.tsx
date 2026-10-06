@@ -43,11 +43,14 @@ export default function Home({ locale }: { locale: Locale }) {
         <div className="max-w-[1200px] w-full mx-auto px-5 sm:px-8 md:px-12 py-10 md:py-10">
           {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Designer“ kursiv.
               Medien-Plätze und Randnotiz sind dekorativ (AK-44, AK-45), das Komma nur für Screenreader. */}
-          <h1 className="text-[clamp(28px,7.6vw,80px)] leading-[0.98] tracking-[-0.035em] text-foreground font-bold uppercase">
-            <span className="flex items-center justify-center gap-[0.2em]">
+          {/* Unter 640 px größer und mit Umbruch nach „Hey, ich bin“ (AK-63) */}
+          <h1 className="text-[clamp(36px,11.5vw,60px)] sm:text-[clamp(28px,7.6vw,80px)] leading-[0.98] tracking-[-0.035em] text-foreground font-bold uppercase">
+            <span className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-x-[0.2em]">
               <span data-word className="hero-word hero-line whitespace-nowrap" style={{ '--w': 0 } as CSSProperties}>
                 {t.hero.lines[0]}
               </span>
+              {/* Zeilenumbruch nur unter 640 px; das Wort selbst bleibt so breit wie sein Text (AK-63) */}
+              <span aria-hidden="true" className="basis-full h-0 sm:hidden" />
               <HeroMedia index={0} className="w-[1.3em] h-[0.78em]" />{' '}
               <span
                 data-word

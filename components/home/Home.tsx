@@ -260,7 +260,7 @@ export default function Home({ locale }: { locale: Locale }) {
               </Link>
             </div>
           </div>
-          <ol>
+          <ol role="list">
             {t.processSteps.map((step, i) => {
               const Icon = PROCESS_ICONS[i]!;
               const last = i === t.processSteps.length - 1;
@@ -275,9 +275,9 @@ export default function Home({ locale }: { locale: Locale }) {
                     <span
                       aria-hidden="true"
                       data-step-icon
-                      className="flex items-center justify-center w-14 h-14 rounded-full bg-primary/[0.08] shrink-0"
+                      className="flex items-center justify-center w-14 h-14 rounded-full bg-primary/[0.08] dark:bg-primary/[0.18] shrink-0"
                     >
-                      <span className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/[0.14] text-primary-text">
+                      <span className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/[0.14] dark:bg-primary/30 text-primary-text">
                         <Icon size={20} />
                       </span>
                     </span>
@@ -285,7 +285,7 @@ export default function Home({ locale }: { locale: Locale }) {
                       <span
                         aria-hidden="true"
                         data-step-line
-                        className="relative flex-1 w-0.5 min-h-16 my-3 rounded-full bg-border overflow-clip"
+                        className="relative flex-1 w-0.5 min-h-16 my-3 rounded-full bg-foreground/15 overflow-clip"
                       >
                         <span className="process-line absolute inset-0 rounded-full bg-primary origin-top" />
                       </span>

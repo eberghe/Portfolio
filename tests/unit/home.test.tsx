@@ -91,7 +91,16 @@ describe.each([
   it('AK-46: Absatz mit Wohnort und Leidenschaften, ohne Buttons', () => {
     render(<Home locale={locale} />);
     const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
-    expect(hero).toHaveTextContent('Königsbrunn');
+    // AK-50: nur Augsburg, kurze Sätze, Fußball, Bergsport, Kochen
+    expect(hero).toHaveTextContent('Augsburg');
+    expect(hero.textContent).not.toMatch(/Königsbrunn|Handwerker-Event|trade event/);
+    expect(hero).toHaveTextContent(locale === 'de' ? /Bergsport/ : /mountain sports/);
+    expect(
+      hero
+        .querySelector('p')!
+        .textContent!.split(/[.!?](\s|$)/)
+        .filter((x) => x && x.trim()).length,
+    ).toBeLessThanOrEqual(4);
     expect(hero).toHaveTextContent(locale === 'de' ? /Fußball/ : /football/);
     expect(hero.querySelector('p .text-primary-text')).toHaveTextContent('HERO Software');
     expect(hero).toHaveTextContent('HEROCON');

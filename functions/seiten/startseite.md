@@ -172,3 +172,7 @@ Erik: „diesen text bitte menschlicher schreiben! gerade business development m
 
 - AK-48: Der Absatz im Hero ist in Ich-Form und erzählend geschrieben: Wohnort Königsbrunn bei Augsburg, menschzentriertes Design, aktuelle Rolle als Business Development Manager bei HERO Software (hervorgehoben) mit der HEROCON als Handwerker-Event des Jahres, offen für private Projekte, Fußball, Technik und Sport. Kein „freiberuflich“ (AK-41).
 - AK-49: Die Medien-Plätze im Hero sind magnetisch: Kommt der Mauszeiger in ihre Nähe, folgen sie ihm ein Stück (höchstens rund ein Drittel des Abstands) und federn beim Weggehen weich zurück; das Bild darin verschiebt sich leicht gegenläufig. Nur mit feinem Zeiger (Maus, Trackpad) und erlaubter Bewegung; auf Touch-Geräten, bei reduzierter Bewegung und ohne JavaScript bleiben sie still. Der Effekt ändert nur `transform`, kein Layout.
+
+Nachtrag Erik (2026-10-06): „der paragraph bitte kürzer. nur augsburg. handwerker event des jahres raus. wenn ich nicht arbeite dann dreht sich viel um fußball, bergsport und kochen.“
+
+- AK-50: Der Hero-Absatz hat höchstens vier kurze Sätze und nennt als Ort nur Augsburg (nicht Königsbrunn), die HEROCON ohne Zusatz „Handwerker-Event des Jahres“ und als Hobbys Fußball, Bergsport und Kochen; die Randnotiz neben „Designer“ nennt dieselben drei. Ersetzt die Inhaltsangaben in AK-45, AK-46 und AK-48.

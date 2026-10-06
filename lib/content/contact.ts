@@ -95,6 +95,10 @@ const de = {
   thanks: (name: string) => `Danke, ${name}.`,
   thanksText:
     'Deine Anfrage ist angekommen. Ich melde mich per E-Mail, meist mit einem Terminvorschlag für ein kostenloses Erstgespräch.',
+  // Bestätigung an den Absender: nur fester Text und Leistungen (anfrage-assistent.md AK-19)
+  confirmSubject: 'Deine Anfrage bei Erik Bergheimer',
+  confirmText: (services: string) =>
+    `Hallo,\n\ndanke für deine Anfrage zu: ${services}.\n\nSie ist bei mir angekommen. Ich melde mich per E-Mail, meist mit einem Terminvorschlag für ein kostenloses Erstgespräch.\n\nWenn du noch etwas ergänzen möchtest, antworte einfach auf diese Mail.\n\nViele Grüße\nErik Bergheimer\nerik-bergheimer.de\n\nDu hast diese Mail nicht angefordert? Dann kannst du sie ignorieren.`,
   summary: 'Deine Angaben',
   fallbackUnavailable: 'Das Formular lässt sich gerade nicht absenden.',
   fallbackFailed: 'Beim Senden ist etwas schiefgegangen.',
@@ -190,6 +194,9 @@ const en: ContactText = {
 
   thanks: (name) => `Thank you, ${name}.`,
   thanksText: 'Your enquiry has arrived. I will reply by email, usually suggesting a date for a free intro call.',
+  confirmSubject: 'Your enquiry to Erik Bergheimer',
+  confirmText: (services) =>
+    `Hello,\n\nThank you for your enquiry about: ${services}.\n\nI have received it and will reply by email, usually suggesting a date for a free intro call.\n\nIf you want to add anything, just reply to this email.\n\nBest regards\nErik Bergheimer\nerik-bergheimer.de\n\nDidn't request this email? You can ignore it.`,
   summary: 'Your details',
   fallbackUnavailable: "The form can't be sent right now.",
   fallbackFailed: 'Something went wrong while sending.',

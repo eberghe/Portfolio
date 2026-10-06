@@ -1,6 +1,7 @@
 import { EMAIL } from '@/lib/site';
-import { inquiryText } from './mailto';
-import type { InquiryStore } from './submit';
+import { contactText } from '@/lib/content/contact';
+import { inquiryText, serviceLabel } from './mailto';
+import type { InquiryStore, NotifyOptions } from './submit';
 import type { Inquiry } from './validate';
 
 // Speicherung in Supabase (REST, Service-Role-Schlüssel) und Benachrichtigung per Resend.
@@ -14,6 +15,17 @@ export function supabaseStore(env: Env): InquiryStore | null {
   if (!url || !key) return null;
   const endpoint = `${url.replace(/\/$/, '')}/rest/v1/anfragen`;
   const headers = { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' };
+
+  const count = async (column: string, value: string, sinceIso: string) => {
+    const query = `?select=id&${column}=eq.${encodeURIComponent(value)}&created_at=gte.${encodeURIComponent(sinceIso)}`;
+    const res = await fetch(endpoint + query, {
+      method: 'HEAD',
+      headers: { ...headers, Prefer: 'count=exact' },
+      cache: 'no-store',
+    });
+    if (!res.ok) throw new Error(`Supabase ${res.status}`);
+    return Number(res.headers.get('content-range')?.split('/')[1] ?? 0);
+  };
 
   return {
     async save(i: Inquiry, ipHash: string | null) {
@@ -37,35 +49,38 @@ export function supabaseStore(env: Env): InquiryStore | null {
       });
       if (!res.ok) throw new Error(`Supabase ${res.status}`);
     },
-    async recentCount(ipHash: string, sinceIso: string) {
-      const query = `?select=id&ip_hash=eq.${encodeURIComponent(ipHash)}&created_at=gte.${encodeURIComponent(sinceIso)}`;
-      const res = await fetch(endpoint + query, {
-        method: 'HEAD',
-        headers: { ...headers, Prefer: 'count=exact' },
-        cache: 'no-store',
-      });
-      if (!res.ok) throw new Error(`Supabase ${res.status}`);
-      return Number(res.headers.get('content-range')?.split('/')[1] ?? 0);
-    },
+    recentCount: (ipHash: string, sinceIso: string) => count('ip_hash', ipHash, sinceIso),
+    recentEmailCount: (email: string, sinceIso: string) => count('email', email, sinceIso),
   };
 }
 
-export function resendNotifier(env: Env): ((i: Inquiry) => Promise<void>) | null {
+export function resendNotifier(env: Env): ((i: Inquiry, options?: NotifyOptions) => Promise<void>) | null {
   const key = env.RESEND_API_KEY;
   if (!key) return null;
-  return async (i) => {
+  const owner = env.ANFRAGE_EMPFAENGER ?? EMAIL;
+  const send = async (mail: Record<string, unknown>) => {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: env.ANFRAGE_ABSENDER ?? 'onboarding@resend.dev',
-        to: [env.ANFRAGE_EMPFAENGER ?? EMAIL],
-        reply_to: i.email,
-        subject: `Neue Anfrage: ${i.name}`,
-        text: inquiryText(i),
-      }),
+      body: JSON.stringify({ from: env.ANFRAGE_ABSENDER ?? 'onboarding@resend.dev', ...mail }),
     });
     // Status und Antwort ins Log, damit die Ursache sichtbar ist (anfrage-assistent.md AK-17)
     if (!res.ok) throw new Error(`Resend ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  };
+  return async (i, options) => {
+    await send({ to: [owner], reply_to: i.email, subject: `Neue Anfrage: ${i.name}`, text: inquiryText(i) });
+    // Bestätigung an den Absender nur mit eigener Domain (AK-18), ohne Name und Beschreibung (AK-19), nur mit Freigabe (AK-21)
+    if (!env.ANFRAGE_ABSENDER || !options?.confirm) return;
+    const t = contactText[i.sprache];
+    try {
+      await send({
+        to: [i.email],
+        reply_to: owner,
+        subject: t.confirmSubject,
+        text: t.confirmText(i.leistungen.map((l) => serviceLabel(l, i.sprache)).join(', ')),
+      });
+    } catch (error) {
+      console.error('Bestätigung an den Absender fehlgeschlagen', error);
+    }
   };
 }

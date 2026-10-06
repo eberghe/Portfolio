@@ -126,7 +126,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
           title: 'Anfrageformular',
           paragraphs: [
             'Wenn du das Anfrageformular auf der Kontaktseite nutzt, speichere ich deine Angaben (gewählte Leistungen, Beschreibung, Website, Zeitrahmen, Budget, Name, E-Mail, optional Telefon) sowie den Zeitpunkt deiner Einwilligung, um deine Anfrage zu beantworten. Rechtsgrundlage: Art. 6 Abs. 1 lit. a und b DSGVO. Du kannst deine Einwilligung jederzeit per E-Mail an {email} widerrufen.',
-            'Die Daten liegen bei Supabase Inc. auf Servern in der EU (Frankfurt). Zum Schutz vor Missbrauch speichere ich statt deiner IP-Adresse nur einen verschlüsselten Prüfwert, mit dem sich wiederholte Anfragen begrenzen lassen. Über jede neue Anfrage werde ich per E-Mail über den Dienst Resend (Resend Inc., USA, EU-US Data Privacy Framework) benachrichtigt.',
+            'Die Daten liegen bei Supabase Inc. auf Servern in der EU (Frankfurt). Zum Schutz vor Missbrauch speichere ich statt deiner IP-Adresse nur einen verschlüsselten Prüfwert, mit dem sich wiederholte Anfragen begrenzen lassen. Über jede neue Anfrage werde ich per E-Mail über den Dienst Resend (Resend Inc., USA, EU-US Data Privacy Framework) benachrichtigt. Über denselben Dienst bekommst du eine kurze Bestätigung an deine E-Mail-Adresse.',
             'Die Angaben werden gelöscht, sobald die Anfrage erledigt ist und keine Aufbewahrungspflichten bestehen.',
           ],
         },
@@ -190,7 +190,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
           title: 'Enquiry form',
           paragraphs: [
             'If you use the enquiry form on the contact page, I store your details (selected services, description, website, timeframe, budget, name, email, optional phone) and the time of your consent in order to answer your enquiry. Legal basis: Art. 6 (1) (a) and (b) GDPR. You can withdraw your consent at any time by emailing {email}.',
-            'The data is stored with Supabase Inc. on servers in the EU (Frankfurt). To prevent abuse, I store only an encrypted check value instead of your IP address, which allows repeated enquiries to be limited. I am notified of each new enquiry by email via the service Resend (Resend Inc., USA, EU-US Data Privacy Framework).',
+            'The data is stored with Supabase Inc. on servers in the EU (Frankfurt). To prevent abuse, I store only an encrypted check value instead of your IP address, which allows repeated enquiries to be limited. I am notified of each new enquiry by email via the service Resend (Resend Inc., USA, EU-US Data Privacy Framework). Through the same service, you receive a short confirmation at your email address.',
             'The details are deleted once the enquiry is completed and no retention obligations apply.',
           ],
         },

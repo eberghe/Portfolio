@@ -24,7 +24,7 @@ export default function About({ locale }: { locale: Locale }) {
     <>
       <JsonLd data={profilePageJsonLd(locale)} />
       {/* Schlichter Hero nach Vorlage matteofabbiani.webflow.io/about: Begrüßung, ein Satz, Links, Foto (AK-14, AK-26) */}
-      <section className="max-w-[1200px] mx-auto px-6 sm:px-8 md:px-12 pt-14 md:pt-16 pb-16 md:pb-24 lg:min-h-[calc(100svh-5rem)] grid md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-12 md:gap-16 items-center">
+      <section className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-14 md:pt-16 pb-16 md:pb-24 lg:min-h-[calc(100svh-5rem)] grid md:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] gap-12 md:gap-16 items-center">
         <div>
           <h1
             className="text-[44px] sm:text-[60px] md:text-[56px] lg:text-[80px] font-bold leading-[1.02] tracking-[-0.04em] mb-6 text-balance hero-rise"
@@ -69,7 +69,7 @@ export default function About({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="werkzeuge" className="border-y border-border py-8 overflow-hidden">
-        <div className="max-w-[1200px] mx-auto px-6 sm:px-8 md:px-12">
+        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12">
           <h2 id="werkzeuge" className="text-[11px] font-bold tracking-widest uppercase text-text3 mb-6">
             {t.tools}
           </h2>
@@ -93,10 +93,7 @@ export default function About({ locale }: { locale: Locale }) {
       />
 
       {/* Abschluss nach Vorlage: „Jetzt bist du dran“ (AK-19) */}
-      <section
-        aria-labelledby="ueber-abschluss"
-        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-24 md:py-36"
-      >
+      <section aria-labelledby="ueber-abschluss" className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-24 md:py-36">
         <div data-reveal className="max-w-[860px]">
           <h2
             id="ueber-abschluss"

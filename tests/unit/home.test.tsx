@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Home from '@/components/home/Home';
 import { heroMedia, homeContent } from '@/lib/content/home';
@@ -169,7 +169,7 @@ describe.each([
 describe('AK-12: kurze Linknamen mit Beschreibung', () => {
   it('Leistungs- und Projektlinks heißen wie ihre Überschrift, der Rest ist Beschreibung', () => {
     render(<Home locale="de" />);
-    const ux = screen.getByRole('link', { name: 'UX/UI Design' });
+    const ux = screen.getByRole('link', { name: 'Mehr zu UX/UI Design' });
     expect(ux).toHaveAccessibleDescription(/Von der ersten Idee/);
     const project = screen.getByRole('link', { name: "SIGHT'KICK" });
     expect(project).toHaveAccessibleDescription(/Masterprojekt/);
@@ -241,6 +241,10 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
       all: 'Alle Projekte ansehen',
       toProject: 'Zum Projekt',
       skType: 'Masterprojekt',
+      offer: 'Was ich anbiete',
+      offerEyebrow: 'Leistungen',
+      contact: 'Kostenloses Erstgespräch',
+      serviceMore: (title: string) => `Mehr zu ${title}`,
     },
     en: {
       tools: 'Tools I work with',
@@ -253,6 +257,10 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
       all: 'View all projects',
       toProject: 'View project',
       skType: "Master's project",
+      offer: 'What I offer',
+      offerEyebrow: 'Services',
+      contact: 'Free intro call',
+      serviceMore: (title: string) => `More on ${title}`,
     },
   }[locale];
   const prefix = locale === 'en' ? '/en' : '';
@@ -263,24 +271,56 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
     expect(screen.queryByRole('button', { pressed: false })).toBeNull();
   });
 
-  it('AK-21: Leistungen nummeriert, mit Merkmalen, als Sticky-Stapel', () => {
-    const { container } = render(<Home locale={locale} />);
-    const stack = container.querySelector('.sticky-stack')!;
-    expect(stack).not.toBeNull();
-    const cards = stack.querySelectorAll(':scope > li');
-    expect(cards).toHaveLength(7);
-    expect(cards[0]).toHaveTextContent('01');
-    expect(cards[6]).toHaveTextContent('07');
-    for (const card of cards) {
-      expect(card.querySelector('h3')).not.toBeNull();
-      const features = card.querySelectorAll('ul li');
-      expect(features.length).toBeGreaterThan(0);
-      expect(features.length).toBeLessThanOrEqual(4);
+  it('AK-64: zentrierter Kopf und Akkordeon mit sieben nummerierten Schaltern, erste offen', () => {
+    render(<Home locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.offer }).closest('section')!;
+    expect(section).toHaveTextContent(t.offerEyebrow);
+    expect(section.querySelector('.sticky-stack')).toBeNull();
+    const buttons = within(section).getAllByRole('button');
+    expect(buttons).toHaveLength(7);
+    buttons.forEach((b, i) => {
+      expect(b.closest('h3')).not.toBeNull();
+      expect(b).toHaveAccessibleName(services[i]![locale].title);
+      expect(b).toHaveTextContent(String(i + 1).padStart(2, '0'));
+      expect(b).toHaveAttribute('aria-expanded', i === 0 ? 'true' : 'false');
+      const panel = document.getElementById(b.getAttribute('aria-controls')!)!;
+      expect(panel).not.toBeNull();
+      expect(panel.hasAttribute('data-open')).toBe(i === 0);
+    });
+  });
+
+  it('AK-65: höchstens eine Leistung offen', () => {
+    render(<Home locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.offer }).closest('section')!;
+    const buttons = within(section).getAllByRole('button');
+    const open = () => buttons.map((b) => b.getAttribute('aria-expanded'));
+    const panelOpen = (i: number) =>
+      document.getElementById(buttons[i]!.getAttribute('aria-controls')!)!.hasAttribute('data-open');
+    fireEvent.click(buttons[2]!);
+    expect(open()).toEqual(['false', 'false', 'true', 'false', 'false', 'false', 'false']);
+    expect(panelOpen(2)).toBe(true);
+    expect(panelOpen(0)).toBe(false);
+    fireEvent.click(buttons[2]!);
+    expect(open().every((v) => v === 'false')).toBe(true);
+    expect(panelOpen(2)).toBe(false);
+  });
+
+  it('AK-66: Feld mit Platzhalterbild, allen Merkmalen und Link zur Leistung', () => {
+    render(<Home locale={locale} />);
+    const section = screen.getByRole('heading', { level: 2, name: t.offer }).closest('section')!;
+    for (const [i, s] of services.entries()) {
+      const button = within(section).getAllByRole('button')[i]!;
+      const panel = document.getElementById(button.getAttribute('aria-controls')!)!;
+      const media = panel.querySelector('[data-service-media]')!;
+      expect(media).toHaveAttribute('aria-hidden', 'true');
+      expect(panel.querySelectorAll('ul li')).toHaveLength(s[locale].features.length);
+      expect(within(panel).getByRole('link', { name: t.serviceMore(s[locale].title) })).toHaveAttribute(
+        'href',
+        `${prefix}/services/${s.slug}`,
+      );
     }
-    expect(within(stack as HTMLElement).getByRole('link', { name: services[0]![locale].title })).toHaveAttribute(
-      'href',
-      `${prefix}/services/${services[0]!.slug}`,
-    );
+    // Kein zweiter Erstgespräch-Button direkt vor dem im Ablauf (Kritiker)
+    expect(within(section).queryByRole('link', { name: t.contact })).toBeNull();
   });
 
   it('AK-53/AK-54: dunkles Referenz-Band mit großen Karten, ohne „Fallstudie lesen“', () => {

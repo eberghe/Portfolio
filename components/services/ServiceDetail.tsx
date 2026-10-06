@@ -116,7 +116,7 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
   const local = localPageForService(service.slug);
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
+    <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12">
       <JsonLd data={serviceJsonLd(service, locale)} />
       <JsonLd data={breadcrumbJsonLd(service, locale)} />
       <JsonLd data={faqListJsonLd(d.faqs, locale)} />

@@ -7,6 +7,7 @@ import JsonLd from '@/components/JsonLd';
 import CountUp from '@/components/motion/CountUp';
 import Magnetic from '@/components/motion/Magnetic';
 import ProjectRail from '@/components/home/ProjectRail';
+import ServiceAccordion from '@/components/home/ServiceAccordion';
 import { aboutPhoto } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
 import { projects } from '@/lib/content/projects';
@@ -23,9 +24,6 @@ const HOME_FAQS = ['leistungen', 'ablauf', 'dauer', 'remote'];
 /** Icons der Ablauf-Schritte (AK-60): Kennenlernen, Analyse & Angebot, Umsetzung, Launch & Betreuung */
 const PROCESS_ICONS = [MessagesSquare, Search, PenTool, Rocket];
 
-const cardHover =
-  'motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.15)]';
-
 export default function Home({ locale }: { locale: Locale }) {
   const t = homeContent[locale];
   const href = (path: string) => localizedPath(path, locale);
@@ -40,7 +38,7 @@ export default function Home({ locale }: { locale: Locale }) {
       {/* Negativer Abstand = Navigationshöhe (64 px + 1 px Linie): der Hero liegt unter der (oben transparenten)
           Navigation (AK-36) und füllt mit ihr den ersten Bildschirm (AK-42) */}
       <section className="relative overflow-hidden -mt-[65px] pt-[65px] min-h-[100svh] flex flex-col justify-center">
-        <div className="max-w-[1200px] w-full mx-auto px-5 sm:px-8 md:px-12 py-10 md:py-10">
+        <div className="w-full max-w-page mx-auto px-6 sm:px-8 md:px-12 py-10 md:py-10">
           {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Designer“ kursiv.
               Medien-Plätze und Randnotiz sind dekorativ (AK-44, AK-45), das Komma nur für Screenreader. */}
           {/* Unter 640 px größer und mit Umbruch nach „Hey, ich bin“ (AK-63) */}
@@ -99,14 +97,14 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="unternehmen">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
+        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
           <h2 id="unternehmen" className={`${eyebrow} text-center mb-6`} data-reveal>
             {t.companiesTitle}
           </h2>
         </div>
         {/* Durchgehende Linien über die volle Breite, außen senkrecht ab 768 px (AK-62) */}
         <div className="border-y border-border mb-10 md:mb-12">
-          <ul className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 auto-rows-fr md:border-l border-border">
+          <ul className="md:w-[calc(100%-6rem)] md:max-w-[calc(1280px-6rem)] mx-auto grid grid-cols-2 md:grid-cols-4 auto-rows-fr md:border-l border-border">
             {t.companies.map((c, i) => (
               <li
                 key={c.name}
@@ -150,107 +148,43 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
       </section>
 
+      {/* Leistungen als Akkordeon (AK-64 bis AK-66) */}
       <section
         aria-labelledby="angebot"
-        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 pb-12 md:pb-16 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-12"
+        className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-28 pb-16 md:pb-24"
       >
-        <div className="lg:sticky lg:top-24 lg:self-start" data-reveal>
-          <h2 id="angebot" className={`${sectionTitle} mb-4`}>
+        <div className="text-center max-w-[900px] mx-auto mb-12 md:mb-24" data-reveal>
+          <p className={`${eyebrow} mb-4`}>{t.offerEyebrow}</p>
+          <h2
+            id="angebot"
+            className="text-[36px] sm:text-[48px] md:text-[64px] lg:text-[80px] font-bold leading-[1.02] tracking-[-0.03em] text-foreground text-balance mb-5 md:mb-6"
+          >
             {t.offer}
           </h2>
-          <p className="text-[16px] md:text-[17px] leading-relaxed text-text2 mb-6 max-w-[520px]">{t.offerIntro}</p>
-          <Link
-            href={href('/contact')}
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-3 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
-          >
-            {t.contact}
-          </Link>
+          <p className="text-[16px] md:text-[19px] leading-relaxed text-foreground max-w-[620px] mx-auto">
+            {t.offerIntro}
+          </p>
         </div>
-        <ol className="sticky-stack grid gap-4" style={{ '--stack-n': services.length } as CSSProperties}>
-          {services.map((s, i) => {
+        <ServiceAccordion
+          items={services.map((s) => {
             const Icon = s.icon;
             const text = s[locale];
-            const accent = s.featured;
-            return (
-              <li
-                key={s.slug}
-                data-reveal
-                style={{ '--stack-i': i } as CSSProperties}
-                className={`group relative rounded-2xl p-6 md:p-8 border shadow-[0_-8px_30px_-20px_hsl(var(--foreground)/0.25)] ${cardHover} ${
-                  accent ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border'
-                }`}
-              >
-                <div className="flex items-start justify-between gap-4 mb-5">
-                  <span
-                    aria-hidden="true"
-                    className={`text-[40px] md:text-[48px] font-bold leading-none tracking-tight ${
-                      accent ? 'text-primary-foreground' : 'text-primary-text'
-                    }`}
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      accent ? 'bg-primary-foreground/15' : 'bg-primary-light'
-                    }`}
-                  >
-                    <Icon size={18} className={accent ? 'text-primary-foreground' : 'text-primary-text'} />
-                  </span>
-                </div>
-                <p
-                  className={`text-[10px] font-medium tracking-wider uppercase mb-2 ${
-                    accent ? 'text-primary-foreground' : 'text-text3'
-                  }`}
-                >
-                  {text.label}
-                </p>
-                <h3 id={`leistung-${s.slug}`} className={`text-xl font-bold mb-2 ${accent ? '' : 'text-foreground'}`}>
-                  {text.title}
-                </h3>
-                <p
-                  id={`leistung-${s.slug}-text`}
-                  className={`text-[14px] leading-relaxed mb-4 ${accent ? 'text-primary-foreground' : 'text-text2'}`}
-                >
-                  {text.short}
-                </p>
-                <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 mb-5">
-                  {text.features.slice(0, 4).map((f) => (
-                    <li
-                      key={f}
-                      className={`flex gap-2 text-[13px] ${accent ? 'text-primary-foreground' : 'text-foreground'}`}
-                    >
-                      <span aria-hidden="true" className={accent ? '' : 'text-primary-text'}>
-                        ✓
-                      </span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={href(`/services/${s.slug}`)}
-                  aria-labelledby={`leistung-${s.slug}`}
-                  aria-describedby={`leistung-${s.slug}-text`}
-                  className={`inline-flex items-center gap-1.5 text-[13px] font-medium after:absolute after:inset-0 after:rounded-2xl ${
-                    accent ? 'text-primary-foreground' : 'text-primary-text'
-                  }`}
-                >
-                  {t.learnMore}
-                  <ArrowRight
-                    size={14}
-                    aria-hidden="true"
-                    className="motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
-                  />
-                </Link>
-              </li>
-            );
+            return {
+              slug: s.slug,
+              href: href(`/services/${s.slug}`),
+              title: text.title,
+              description: text.description,
+              features: text.features,
+              more: t.serviceMore(text.title),
+              media: <Icon size={72} strokeWidth={1.25} className="opacity-90" />,
+            };
           })}
-        </ol>
+        />
       </section>
 
       {/* Ablauf als Timeline mit klebender linker Spalte (AK-59 bis AK-61) */}
       <section aria-labelledby="ablauf" className="border-y border-border bg-bg2">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] gap-10 md:gap-16">
+        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] gap-10 md:gap-16">
           <div data-process-intro data-reveal className="md:sticky md:top-28 md:self-start">
             <p className="text-[14px] font-semibold text-primary-text mb-3">{t.processEyebrow}</p>
             <h2 id="ablauf" className={`${sectionTitle} mb-6`}>
@@ -336,7 +270,7 @@ export default function Home({ locale }: { locale: Locale }) {
         >
           <div
             data-reveal
-            className="w-full px-6 sm:px-8 md:px-12 mb-8 md:mb-12 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-4 md:gap-8"
+            className="w-full max-w-page mx-auto px-6 sm:px-8 md:px-12 mb-8 md:mb-12 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-4 md:gap-8"
           >
             <p className="self-start flex items-center gap-3 text-[15px] font-medium md:pt-4">
               <span aria-hidden="true" className="w-2 h-2 rounded-full bg-primary" />
@@ -361,16 +295,13 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="ueber-mich" className="border-y border-border bg-bg2">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-8 md:gap-14 items-center">
-          <div
-            data-reveal
-            className="relative aspect-square max-w-[360px] w-full rounded-2xl overflow-hidden border border-border"
-          >
+        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+          <div data-reveal className="relative aspect-square w-full rounded-2xl overflow-hidden border border-border">
             <Image
               src={aboutPhoto.src}
               alt={t.aboutPhotoAlt}
               fill
-              sizes="(min-width: 768px) 360px, 90vw"
+              sizes="(min-width: 1280px) 600px, (min-width: 768px) 50vw, 100vw"
               className="object-cover"
             />
           </div>
@@ -398,7 +329,7 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
         {/* Faktenleiste unter Foto und Text (AK-37); Linien über die volle Breite, außen senkrecht (AK-57) */}
         <div className="border-t border-border">
-          <dl className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 md:border-l border-border">
+          <dl className="md:w-[calc(100%-6rem)] md:max-w-[calc(1280px-6rem)] mx-auto grid grid-cols-2 md:grid-cols-4 md:border-l border-border">
             {t.stats.map((s, i) => (
               <div
                 key={s.label}
@@ -425,7 +356,7 @@ export default function Home({ locale }: { locale: Locale }) {
       {/* FAQ-Auswahl (AK-39) */}
       <section
         aria-labelledby="haeufige-fragen"
-        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 md:gap-12"
+        className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 md:gap-12"
       >
         <div className="md:sticky md:top-24 md:self-start">
           <h2 id="haeufige-fragen" className={`${sectionTitle} mb-4`}>
@@ -446,7 +377,7 @@ export default function Home({ locale }: { locale: Locale }) {
         <FaqList items={HOME_FAQS.map((id) => faqs.find((f) => f.id === id)![locale])} idPrefix="start-frage" />
       </section>
 
-      <section aria-labelledby="abschluss" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24">
+      <section aria-labelledby="abschluss" className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24">
         <div data-reveal className="rounded-3xl bg-primary text-primary-foreground px-6 py-12 md:px-14 md:py-16">
           <h2
             id="abschluss"

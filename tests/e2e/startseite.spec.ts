@@ -12,6 +12,80 @@ test.describe('ohne JavaScript', () => {
     await page.goto('/en');
     await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik, Product Designer" })).toBeVisible();
   });
+
+  test('AK-65: ohne JavaScript sind alle Leistungen offen', async ({ page }) => {
+    await page.goto('/');
+    const links = page.locator('section[aria-labelledby="angebot"] a[href^="/services/"]');
+    await expect(links).toHaveCount(7);
+    for (const link of await links.all()) await expect(link).toBeVisible();
+  });
+});
+
+test('AK-67: Leistungen so breit wie der Container, große Überschrift', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop-1280', 'Maße ab 768 px');
+  await page.goto('/');
+  const section = page.locator('section[aria-labelledby="angebot"]');
+  const list = section.locator('ol');
+  const box = (await list.boundingBox())!;
+  expect(box.width).toBeGreaterThanOrEqual(1280 - 2 * 48 - 20);
+  // Containerbreite (design-tokens.md AK-11): bei breitem Bildschirm nicht breiter als 1280 − 2 × 48
+  await page.setViewportSize({ width: 1600, height: 900 });
+  expect((await list.boundingBox())!.width).toBeLessThanOrEqual(1184 + 1);
+  const size = (sel: string) =>
+    section
+      .locator(sel)
+      .first()
+      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  expect(await size('h2')).toBeGreaterThanOrEqual(56);
+  expect(await size('h3 button span:nth-child(2)')).toBeGreaterThanOrEqual(40);
+});
+
+test('AK-68: grüner Rahmen nur beim Tastaturfokus', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  const section = page.locator('section[aria-labelledby="angebot"]');
+  const style = (el: Element) => {
+    const li = el.closest('li')!;
+    const cs = getComputedStyle(el);
+    return { outline: cs.outlineStyle, outlineColor: cs.outlineColor, liBorder: getComputedStyle(li).borderLeftWidth };
+  };
+  const primary = await page.evaluate(() => {
+    const d = document.createElement('div');
+    d.style.color = 'hsl(var(--primary))';
+    document.body.append(d);
+    const c = getComputedStyle(d).color;
+    d.remove();
+    return c;
+  });
+  const second = section.getByRole('button').nth(1);
+  await second.click();
+  await expect(second).toHaveAttribute('aria-expanded', 'true');
+  const clicked = await second.evaluate(style);
+  expect(clicked.outline).toBe('none');
+  expect(clicked.liBorder).toBe('0px');
+  await page.keyboard.press('Shift+Tab');
+  await page.keyboard.press('Tab');
+  await expect(second).toBeFocused();
+  const keyboard = await second.evaluate(style);
+  expect(keyboard.outline).toBe('solid');
+  expect(keyboard.outlineColor).toBe(primary);
+});
+
+test('AK-65: Akkordeon per Tastatur, geschlossene Felder unsichtbar', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  const section = page.locator('section[aria-labelledby="angebot"]');
+  const buttons = section.getByRole('button');
+  await expect(section.getByRole('link', { name: 'Mehr zu UX/UI Design' })).toBeVisible();
+  const second = buttons.nth(1);
+  const panel = page.locator(`#${await second.getAttribute('aria-controls')}`);
+  await expect(panel.locator('a')).toBeHidden();
+  await second.focus();
+  await page.keyboard.press('Enter');
+  await expect(second).toHaveAttribute('aria-expanded', 'true');
+  await expect(buttons.first()).toHaveAttribute('aria-expanded', 'false');
+  await expect(panel.getByRole('link')).toBeVisible();
+  await expect(section.getByRole('link', { name: 'Mehr zu UX/UI Design' })).toBeHidden();
 });
 
 test('AK-27/AK-30: Animation endet sichtbar, Uhrzeit ohne Hydration-Fehler', async ({ page }) => {
@@ -463,4 +537,14 @@ test('AK-63: Hero-Überschrift auf dem Handy groß im Verhältnis zum Absatz', a
     );
     expect(outside).toBe(0);
   }
+});
+
+test('AK-69: Foto in „Über mich“ groß', async ({ page }, info) => {
+  await page.goto('/');
+  const img = page.locator('section[aria-labelledby="ueber-mich"] img').first();
+  await img.scrollIntoViewIfNeeded();
+  const { width } = (await img.boundingBox())!;
+  const vw = page.viewportSize()!.width;
+  if (info.project.name === 'desktop-1280') expect(width).toBeGreaterThanOrEqual(480);
+  if (info.project.name === 'mobile-360') expect(width).toBeGreaterThanOrEqual(vw - 2 * 24 - 3); // minus 1 px Rahmen je Seite
 });

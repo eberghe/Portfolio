@@ -39,7 +39,7 @@ test.describe('reduzierte Bewegung', () => {
   });
 
   test('AK-5: Sticky-Stapel statisch', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/services/accessibility');
     const positions = await page.$$eval('.sticky-stack > *', (els) => els.map((el) => getComputedStyle(el).position));
     expect(positions.length).toBeGreaterThan(0);
     expect(positions.some((p) => p === 'sticky')).toBe(false);
@@ -75,7 +75,7 @@ test.describe('mit Bewegung', () => {
   });
 
   test('AK-5: Sticky-Stapel ab 768 px', async ({ page }, info) => {
-    await page.goto('/');
+    await page.goto('/services/accessibility');
     const positions = await page.$$eval('.sticky-stack > *', (els) => els.map((el) => getComputedStyle(el).position));
     expect(positions.length).toBeGreaterThan(0);
     if (info.project.name === 'mobile-360') expect(positions.some((p) => p === 'sticky')).toBe(false);
@@ -84,7 +84,7 @@ test.describe('mit Bewegung', () => {
 
   test('AK-13: Stapel behält am Ende seinen Versatz', async ({ page }, info) => {
     test.skip(info.project.name === 'mobile-360', 'Stapel erst ab 768 px');
-    for (const path of ['/', '/services/accessibility']) {
+    for (const path of ['/services/accessibility']) {
       await page.goto(path);
       const lists = page.locator('ol.sticky-stack');
       for (let n = 0; n < (await lists.count()); n++) {

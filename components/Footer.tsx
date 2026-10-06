@@ -53,8 +53,8 @@ export default function Footer({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <footer className="relative py-20 md:py-28 px-6 sm:px-8 md:px-12 bg-[#0b1219] dark:border-t dark:border-white/10">
-      <div className="max-w-[1100px] mx-auto flex flex-col gap-10 md:gap-20">
+    <footer className="relative py-20 md:py-28 bg-[#0b1219] dark:border-t dark:border-white/10">
+      <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 flex flex-col gap-10 md:gap-20">
         <div className="flex flex-wrap items-center justify-between gap-y-6">
           <Link
             href={href('/')}

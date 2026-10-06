@@ -75,3 +75,32 @@ for (const path of [
     expect(overflow).toEqual([]);
   });
 }
+
+// functions/infrastruktur/design-tokens.md AK-11
+test.describe('design-tokens AK-11: einheitliche Containerbreite', () => {
+  test.use({ viewport: { width: 1600, height: 900 } });
+  for (const path of ['/', '/about', '/services', '/services/accessibility', '/projects', '/faqs', '/contact']) {
+    test(`Logo, Überschriften und Footer bündig bei 208 px auf ${path}`, async ({ page }, info) => {
+      test.skip(info.project.name !== 'desktop-1280', 'nur einmal, bei 1600 px');
+      await page.goto(path);
+      const left = 208;
+      const logo = await page.locator('header nav > a').first().boundingBox();
+      expect(Math.round(logo!.x)).toBe(left);
+      const footer = await page
+        .locator('footer > div')
+        .first()
+        .evaluate((el) => {
+          const cs = getComputedStyle(el);
+          return el.getBoundingClientRect().left + parseFloat(cs.paddingLeft);
+        });
+      expect(Math.round(footer)).toBe(left);
+      const lefts = await page.$$eval('main h1, main h2', (els) =>
+        els
+          .filter((el) => getComputedStyle(el).textAlign !== 'center' && el.getBoundingClientRect().width > 0)
+          .map((el) => Math.round(el.getBoundingClientRect().left)),
+      );
+      expect(lefts.length).toBeGreaterThan(0);
+      expect(Math.min(...lefts)).toBe(left);
+    });
+  }
+});

@@ -12,7 +12,7 @@ export default function ContactPage({ locale }: { locale: Locale }) {
     <>
       <JsonLd data={contactPageJsonLd(locale)} />
       {/* Links Überschrift und Absatz, rechts der Assistent, alles im ersten Bildschirm (functions/seiten/kontakt.md AK-6, AK-9) */}
-      <div className="max-w-[1100px] mx-auto px-6 sm:px-8 py-4 md:py-10 grid grid-cols-1 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-x-10 lg:gap-x-16 gap-y-4 md:items-start">
+      <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-4 md:py-10 grid grid-cols-1 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-x-10 lg:gap-x-16 gap-y-4 md:items-start">
         <div className="md:sticky md:top-28">
           <h1 className="text-[26px] md:text-[40px] lg:text-[48px] leading-[1.1] font-bold tracking-tight mb-2 md:mb-4 text-balance">
             {t.title}

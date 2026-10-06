@@ -13,7 +13,7 @@ test.describe('ohne JavaScript', () => {
     await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik, Design Engineer" })).toBeVisible();
   });
 
-  test('AK-65: ohne JavaScript sind alle Leistungen offen', async ({ page }) => {
+  test('AK-73: ohne JavaScript sind alle Leistungen sichtbar', async ({ page }) => {
     await page.goto('/');
     const links = page.locator('section[aria-labelledby="angebot"] a[href^="/services/"]');
     await expect(links).toHaveCount(7);
@@ -21,71 +21,58 @@ test.describe('ohne JavaScript', () => {
   });
 });
 
-test('AK-67: Leistungen so breit wie der Container, große Überschrift', async ({ page }, info) => {
+test('AK-67/AK-71: Leistungen so breit wie der Container, linke Liste bleibt stehen', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop-1280', 'Maße ab 768 px');
   await page.goto('/');
   const section = page.locator('section[aria-labelledby="angebot"]');
-  const list = section.locator('ol');
-  const box = (await list.boundingBox())!;
-  expect(box.width).toBeGreaterThanOrEqual(1280 - 2 * 48 - 20);
-  // Containerbreite (design-tokens.md AK-11): bei breitem Bildschirm nicht breiter als 1280 − 2 × 48
+  const grid = section.locator('[data-services-grid]');
+  expect((await grid.boundingBox())!.width).toBeGreaterThanOrEqual(1280 - 2 * 48 - 20);
   await page.setViewportSize({ width: 1600, height: 900 });
-  expect((await list.boundingBox())!.width).toBeLessThanOrEqual(1184 + 1);
-  const size = (sel: string) =>
-    section
-      .locator(sel)
-      .first()
-      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
-  expect(await size('h2')).toBeGreaterThanOrEqual(56);
-  expect(await size('h3 button span:nth-child(2)')).toBeGreaterThanOrEqual(40);
+  expect((await grid.boundingBox())!.width).toBeLessThanOrEqual(1184 + 1);
+  expect(
+    await section.locator('h2').evaluate((el) => parseFloat(getComputedStyle(el).fontSize)),
+  ).toBeGreaterThanOrEqual(56);
+  const nav = section.getByRole('navigation', { name: 'Leistungen auf dieser Seite' });
+  await expect(nav).toBeVisible();
+  await section.locator('#leistung-ai-consulting').scrollIntoViewIfNeeded();
+  const top = (await nav.boundingBox())!.y;
+  expect(top).toBeGreaterThanOrEqual(0);
+  expect(top).toBeLessThan(300);
 });
 
-test('AK-68: grüner Rahmen nur beim Tastaturfokus', async ({ page }) => {
+test('AK-73: beim Scrollen wird die passende Leistung links hervorgehoben', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop-1280', 'Liste ab 768 px');
   await page.goto('/');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   const section = page.locator('section[aria-labelledby="angebot"]');
-  const style = (el: Element) => {
-    const li = el.closest('li')!;
-    const cs = getComputedStyle(el);
-    return { outline: cs.outlineStyle, outlineColor: cs.outlineColor, liBorder: getComputedStyle(li).borderLeftWidth };
-  };
-  const primary = await page.evaluate(() => {
-    const d = document.createElement('div');
-    d.style.color = 'hsl(var(--primary))';
-    document.body.append(d);
-    const c = getComputedStyle(d).color;
-    d.remove();
-    return c;
-  });
-  const second = section.getByRole('button').nth(1);
-  await second.click();
-  await expect(second).toHaveAttribute('aria-expanded', 'true');
-  const clicked = await second.evaluate(style);
-  expect(clicked.outline).toBe('none');
-  expect(clicked.liBorder).toBe('0px');
-  await page.keyboard.press('Shift+Tab');
-  await page.keyboard.press('Tab');
-  await expect(second).toBeFocused();
-  const keyboard = await second.evaluate(style);
-  expect(keyboard.outline).toBe('solid');
-  expect(keyboard.outlineColor).toBe(primary);
+  const nav = section.getByRole('navigation', { name: 'Leistungen auf dieser Seite' });
+  const current = () => nav.locator('a[aria-current="location"]');
+  const third = section.locator('article[id^="leistung-"]').nth(2);
+  const id = (await third.getAttribute('id'))!;
+  await third.evaluate((el) =>
+    window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - window.innerHeight / 3),
+  );
+  await expect(current()).toHaveCount(1);
+  await expect(current()).toHaveAttribute('href', `#${id}`);
+  const color = await current().evaluate((el) => getComputedStyle(el).color);
+  const other = await nav
+    .locator('a:not([aria-current])')
+    .first()
+    .evaluate((el) => getComputedStyle(el).color);
+  expect(color).not.toBe(other);
+  // Klick springt zur Leistung und hebt sie hervor
+  await nav.locator('a').last().click();
+  await expect(current()).toHaveAttribute('href', (await nav.locator('a').last().getAttribute('href')) ?? '');
 });
 
-test('AK-65: Akkordeon per Tastatur, geschlossene Felder unsichtbar', async ({ page }) => {
+test('AK-74: unter 768 px keine linke Liste, kein Überlauf', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile-360', 'nur unter 768 px');
   await page.goto('/');
-  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   const section = page.locator('section[aria-labelledby="angebot"]');
-  const buttons = section.getByRole('button');
-  await expect(section.getByRole('link', { name: 'Mehr zu UX/UI Design' })).toBeVisible();
-  const second = buttons.nth(1);
-  const panel = page.locator(`#${await second.getAttribute('aria-controls')}`);
-  await expect(panel.locator('a')).toBeHidden();
-  await second.focus();
-  await page.keyboard.press('Enter');
-  await expect(second).toHaveAttribute('aria-expanded', 'true');
-  await expect(buttons.first()).toHaveAttribute('aria-expanded', 'false');
-  await expect(panel.getByRole('link')).toBeVisible();
-  await expect(section.getByRole('link', { name: 'Mehr zu UX/UI Design' })).toBeHidden();
+  await expect(section.getByRole('navigation')).toBeHidden();
+  await expect(section.locator('h3')).toHaveCount(7);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
 });
 
 test('AK-27/AK-30: Animation endet sichtbar, Uhrzeit ohne Hydration-Fehler', async ({ page }) => {

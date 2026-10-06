@@ -37,36 +37,34 @@ export default function Home({ locale }: { locale: Locale }) {
           Navigation (AK-36) und füllt mit ihr den ersten Bildschirm (AK-42) */}
       <section className="relative overflow-hidden border-b border-border -mt-[65px] pt-[65px] min-h-[100svh] flex flex-col justify-center">
         <div className="max-w-[1200px] w-full mx-auto px-5 sm:px-8 md:px-12 py-10 md:py-10">
-          {/* Typografische h1 (AK-43): vier Zeilen, Name und „Designer“ kursiv in der Serifenschrift.
+          {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Designer“ kursiv.
               Medien-Plätze und Randnotiz sind dekorativ (AK-44, AK-45), das Komma nur für Screenreader. */}
-          <h1 className="text-[clamp(30px,9.8vw,112px)] leading-[0.96] tracking-[-0.035em] text-foreground font-bold uppercase">
-            <span className="flex items-center justify-center gap-[0.18em] lg:pr-[1.2em]">
-              <span data-word className="hero-word whitespace-nowrap" style={{ '--w': 0 } as CSSProperties}>
+          <h1 className="text-[clamp(30px,8.6vw,96px)] leading-[0.98] tracking-[-0.035em] text-foreground font-bold uppercase">
+            <span className="flex items-center justify-center gap-[0.2em]">
+              <span data-word className="hero-word hero-line whitespace-nowrap" style={{ '--w': 0 } as CSSProperties}>
                 {t.hero.lines[0]}
               </span>
-              <HeroMedia index={0} className="w-[1.45em] h-[0.82em]" />
-            </span>{' '}
-            <span className="flex justify-center">
+              <HeroMedia index={0} className="w-[1.3em] h-[0.78em]" />{' '}
               <span
                 data-word
-                className="hero-word whitespace-nowrap font-serif italic font-normal normal-case tracking-[-0.02em] text-primary-text"
+                className="hero-word hero-line whitespace-nowrap italic text-primary-text pr-[0.06em]"
                 style={{ '--w': 1 } as CSSProperties}
               >
                 {t.hero.lines[1]}
                 <span className="text-[0px]">,</span>
               </span>
             </span>{' '}
-            <span className="flex items-center justify-center gap-[0.18em] lg:pl-[1em]">
-              <span data-word className="hero-word whitespace-nowrap" style={{ '--w': 2 } as CSSProperties}>
+            <span className="flex items-center justify-center gap-[0.2em] lg:pl-[1.4em]">
+              <span data-word className="hero-word hero-line whitespace-nowrap" style={{ '--w': 2 } as CSSProperties}>
                 {t.hero.lines[2]}
               </span>
-              <HeroMedia index={1} className="w-[1.1em] h-[1.1em]" />
+              <HeroMedia index={1} className="w-[1.05em] h-[1.05em]" />
             </span>{' '}
-            <span className="flex items-center justify-center gap-[0.18em]">
-              <HeroMedia index={2} className="w-[1.2em] h-[0.7em]" />
+            <span className="flex items-center justify-center gap-[0.2em]">
+              <HeroMedia index={2} className="w-[1.2em] h-[0.72em]" />
               <span
                 data-word
-                className="hero-word whitespace-nowrap font-serif italic font-normal normal-case tracking-[-0.02em]"
+                className="hero-word hero-line whitespace-nowrap italic pr-[0.06em]"
                 style={{ '--w': 3 } as CSSProperties}
               >
                 {t.hero.lines[3]}
@@ -74,7 +72,7 @@ export default function Home({ locale }: { locale: Locale }) {
               <span
                 aria-hidden="true"
                 data-hero-note
-                className="hidden sm:block normal-case text-[12px] md:text-[13px] font-medium leading-snug tracking-wide max-w-[12ch] self-end mb-[0.2em] hero-rise"
+                className="hidden sm:block normal-case not-italic text-[12px] md:text-[13px] font-medium leading-snug tracking-wide max-w-[12ch] self-end mb-[0.2em] hero-rise"
                 style={{ '--r': 4 } as CSSProperties}
               >
                 {t.hero.note}
@@ -491,7 +489,7 @@ function HeroMedia({ index, className }: { index: number; className: string }) {
     <span
       aria-hidden="true"
       data-hero-media
-      className={`hero-rise relative inline-block shrink-0 overflow-hidden rounded-[0.14em] bg-primary-light dark:bg-primary/25 border border-primary-border ${className}`}
+      className={`hero-media relative inline-block shrink-0 overflow-hidden rounded-[0.14em] bg-primary-light dark:bg-primary/25 border border-primary-border ${className}`}
       style={{ '--r': index + 1 } as CSSProperties}
     >
       {m?.src && (

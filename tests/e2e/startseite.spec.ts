@@ -8,13 +8,9 @@ test.describe('ohne JavaScript', () => {
   test('AK-26: Hero-Überschrift sichtbar ohne JavaScript, keine halbe Uhrzeile', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText('Königsbrunn', { exact: true })).toHaveCount(0);
-    await expect(
-      page.getByRole('heading', { level: 1, name: 'Hey, ich bin Erik Bergheimer, Product Designer' }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: 'Hey, ich bin Erik, Product Designer' })).toBeVisible();
     await page.goto('/en');
-    await expect(
-      page.getByRole('heading', { level: 1, name: "Hey, I'm Erik Bergheimer, Product Designer" }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik, Product Designer" })).toBeVisible();
   });
 });
 
@@ -61,13 +57,9 @@ test('AK-15: fokussierte Elemente verschwinden nicht unter dem Header', async ({
 
 test('AK-26: h1-Name je Sprache', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
-    'Hey, ich bin Erik Bergheimer, Product Designer',
-  );
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Hey, ich bin Erik, Product Designer');
   await page.goto('/en');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
-    "Hey, I'm Erik Bergheimer, Product Designer",
-  );
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName("Hey, I'm Erik, Product Designer");
 });
 
 test('AK-42: Hero füllt den ersten Bildschirm, Firmenleiste beginnt darunter', async ({ page }) => {
@@ -83,14 +75,45 @@ test('AK-42: Hero füllt den ersten Bildschirm, Firmenleiste beginnt darunter', 
   expect(gradient).toBe(false);
 });
 
-test('AK-43: Name und „Designer“ in der Serifenschrift', async ({ page }) => {
+test('AK-43: nur Mona Sans, „Erik“ und „Designer“ kursiv', async ({ page }) => {
   await page.goto('/');
-  const fonts = await page.$$eval('h1 .font-serif', (els) => els.map((el) => getComputedStyle(el).fontFamily));
-  expect(fonts).toHaveLength(2);
-  for (const f of fonts) expect(f).toMatch(/serif/i);
+  const styles = await page.$$eval('h1 *', (els) =>
+    els.map((el) => ({ family: getComputedStyle(el).fontFamily, style: getComputedStyle(el).fontStyle })),
+  );
+  for (const s of styles) expect(s.family).toContain('mona');
+  expect(styles.filter((s) => s.style === 'italic').length).toBeGreaterThanOrEqual(2);
   await expect
     .poll(() => page.evaluate(() => [...document.fonts].some((f) => f.style === 'italic' && f.status === 'loaded')))
     .toBe(true);
+  const size = await page.locator('h1').evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  expect(size).toBeLessThanOrEqual(96);
+});
+
+test.describe('AK-47: Hero-Animation', () => {
+  for (const motion of ['no-preference', 'reduce'] as const) {
+    test.describe(motion, () => {
+      test.use({ reducedMotion: motion });
+      test(`Wörter und Medien (${motion})`, async ({ page }) => {
+        await page.goto('/?animationstest');
+        const names = (sel: string) => page.$$eval(sel, (els) => els.map((el) => getComputedStyle(el).animationName));
+        const lines = await names('h1 .hero-line');
+        const media = await names('h1 [data-hero-media]');
+        expect(lines).toHaveLength(4);
+        expect(media).toHaveLength(3);
+        if (motion === 'reduce') {
+          expect([...lines, ...media].every((n) => n === 'none')).toBe(true);
+        } else {
+          expect(lines.every((n) => n === 'hero-line-in')).toBe(true);
+          expect(media.every((n) => n === 'hero-media-in')).toBe(true);
+        }
+        await expect
+          .poll(() => page.$$eval('h1 .hero-line', (els) => els.every((el) => getComputedStyle(el).opacity === '1')), {
+            timeout: 6000,
+          })
+          .toBe(true);
+      });
+    });
+  }
 });
 
 test('AK-32/AK-34: Kacheln zentriert, Logos geladen', async ({ page }) => {

@@ -210,7 +210,8 @@ test.describe('Hero-Einstieg', () => {
         test(`AK-12: ${path} Bausteine unter der h1 steigen gestaffelt ein`, async ({ page }) => {
           await page.goto(`${path}?animationstest`);
           const rise = page.locator('main .hero-rise');
-          expect(await rise.count()).toBeGreaterThanOrEqual(4);
+          // Startseite: Randnotiz, Absatz, Buttons (die Medien-Plätze haben eine eigene Animation, startseite.md AK-47)
+          expect(await rise.count()).toBeGreaterThanOrEqual(3);
           const names = await rise.evaluateAll((els) => els.map((el) => getComputedStyle(el).animationName));
           if (motion === 'reduce') {
             expect(names.every((n) => n === 'none')).toBe(true);

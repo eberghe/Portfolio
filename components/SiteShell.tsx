@@ -10,23 +10,15 @@ import SmoothScroll from './motion/SmoothScroll';
 
 // Mona Sans selbst gehostet über next/font: vorgeladen, mit größenangepasster Ersatzschrift gegen
 // Layout-Sprünge beim Laden (functions/infrastruktur/design-tokens.md AK-6, AK-10)
+// Kursiv nur für Akzente (Hero der Startseite, startseite.md AK-43)
 const mona = localFont({
-  src: '../app/fonts/mona-sans-latin-wght-normal.woff2',
-  weight: '200 900',
-  style: 'normal',
+  src: [
+    { path: '../app/fonts/mona-sans-latin-wght-normal.woff2', weight: '200 900', style: 'normal' },
+    { path: '../app/fonts/mona-sans-latin-wght-italic.woff2', weight: '200 900', style: 'italic' },
+  ],
   display: 'swap',
   variable: '--font-mona',
   adjustFontFallback: 'Arial',
-});
-
-// Instrument Serif kursiv für die Akzentzeilen im Hero der Startseite (startseite.md AK-43), OFL
-const serif = localFont({
-  src: '../app/fonts/instrument-serif-latin-400-italic.woff2',
-  weight: '400',
-  style: 'italic',
-  display: 'swap',
-  variable: '--font-serif',
-  adjustFontFallback: 'Times New Roman',
 });
 
 // Setzt vor dem ersten Zeichnen die Klasse "js" (Animationen, functions/infrastruktur/animationen.md)
@@ -46,12 +38,7 @@ export default function SiteShell({
   children: ReactNode;
 }) {
   return (
-    <html
-      lang={locale}
-      data-scroll-behavior="smooth"
-      className={`${mona.variable} ${serif.variable}`}
-      suppressHydrationWarning
-    >
+    <html lang={locale} data-scroll-behavior="smooth" className={mona.variable} suppressHydrationWarning>
       {/* eslint-disable-next-line @next/next/no-head-element -- App Router: SiteShell ist das Root-Layout */}
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />

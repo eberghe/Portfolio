@@ -12,7 +12,7 @@ describe.each([
     'de',
     '',
     {
-      h1: /^Hey, ich bin Erik Bergheimer, Product Designer$/,
+      h1: /^Hey, ich bin Erik, Product Designer$/,
       offer: 'Was ich anbiete',
       process: 'So arbeiten wir zusammen',
       projects: 'Ausgewählte Projekte',
@@ -23,7 +23,7 @@ describe.each([
     'en',
     '/en',
     {
-      h1: /^Hey, I'm Erik Bergheimer, Product Designer$/,
+      h1: /^Hey, I'm Erik, Product Designer$/,
       offer: 'What I offer',
       process: 'How we work together',
       projects: 'Selected projects',
@@ -79,7 +79,8 @@ describe.each([
     render(<Home locale={locale} />);
     const h1 = screen.getByRole('heading', { level: 1 });
     expect(h1.querySelectorAll('[data-word]').length).toBe(4);
-    expect(h1.querySelectorAll('.font-serif').length).toBe(2);
+    expect(h1.querySelectorAll('.italic').length).toBe(2);
+    expect(h1.textContent).not.toContain('Bergheimer');
     const media = h1.querySelectorAll('[data-hero-media]');
     expect(media).toHaveLength(3);
     for (const m of media) expect(m).toHaveAttribute('aria-hidden', 'true');

@@ -247,23 +247,46 @@ html {
 }
 
 /* Hero: Begrüßung baut sich Wort für Wort auf, functions/seiten/startseite.md AK-27 */
-.hero-word,
-.hero-wave {
+.hero-word {
   display: inline-block;
-}
-.hero-wave {
-  transform-origin: 70% 70%;
 }
 @media (prefers-reduced-motion: no-preference) {
   .hero-word {
     animation: hero-word-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
     animation-delay: calc(var(--w, 0) * 120ms + 80ms);
   }
-  .hero-wave {
-    animation:
-      hero-word-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both,
-      hero-wave 2s ease-in-out 1s 1;
-    animation-delay: calc(var(--w, 0) * 120ms + 80ms), 1s;
+  /* Typografischer Hero der Startseite (startseite.md AK-47): Zeilen kippen von unten herein,
+     Medien-Plätze öffnen sich von links wie ein Vorhang */
+  .hero-word.hero-line {
+    animation-name: hero-line-in;
+    animation-duration: 1s;
+    transform-origin: 0 100%;
+  }
+  .hero-media {
+    animation: hero-media-in 1s cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation-delay: calc(var(--r, 0) * 140ms + 350ms);
+  }
+}
+@keyframes hero-line-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(0.45em) rotate(4deg);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+@keyframes hero-media-in {
+  from {
+    clip-path: inset(0 100% 0 0 round 0.14em);
+    transform: scale(0.85);
+  }
+  to {
+    clip-path: inset(0 0 0 0 round 0.14em);
+    transform: none;
   }
 }
 /* Hero: Bausteine unter der h1 steigen gestaffelt ein, functions/infrastruktur/animationen.md AK-12 */
@@ -298,27 +321,6 @@ html {
     transform: none;
   }
 }
-@keyframes hero-wave {
-  0%,
-  60%,
-  100% {
-    rotate: 0deg;
-  }
-  10%,
-  30% {
-    rotate: 14deg;
-  }
-  20% {
-    rotate: -8deg;
-  }
-  40% {
-    rotate: -4deg;
-  }
-  50% {
-    rotate: 10deg;
-  }
-}
-
 /* Ladeanimation (functions/infrastruktur/animationen.md AK-7, AK-8): nur mit html.preload, das Kopf-Skript setzt die
    Klasse beim ersten Aufruf der Sitzung und nur bei erlaubter Bewegung. Endet rein per CSS. */
 .preloader {
@@ -365,12 +367,11 @@ html.preload .preloader {
   animation: preloader-bar 0.8s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both;
 }
 /* Begrüßung auf der Startseite startet erst, wenn die Fläche weggleitet */
-html.preload .hero-word,
-html.preload .hero-wave {
+html.preload .hero-word {
   animation-delay: calc(var(--w, 0) * 120ms + 1.3s);
 }
-html.preload .hero-wave {
-  animation-delay: calc(var(--w, 0) * 120ms + 1.3s), 2.3s;
+html.preload .hero-media {
+  animation-delay: calc(var(--r, 0) * 140ms + 1.5s);
 }
 html.preload .hero-rise {
   animation-delay: calc(var(--r, 0) * 120ms + 1.4s);

@@ -210,8 +210,8 @@ test.describe('Hero-Einstieg', () => {
         test(`AK-12: ${path} Bausteine unter der h1 steigen gestaffelt ein`, async ({ page }) => {
           await page.goto(`${path}?animationstest`);
           const rise = page.locator('main .hero-rise');
-          // Startseite: Randnotiz, Absatz, Buttons (die Medien-Plätze haben eine eigene Animation, startseite.md AK-47)
-          expect(await rise.count()).toBeGreaterThanOrEqual(3);
+          // Startseite: Randnotiz und Absatz (Medien-Plätze haben eine eigene Animation, startseite.md AK-47)
+          expect(await rise.count()).toBeGreaterThanOrEqual(2);
           const names = await rise.evaluateAll((els) => els.map((el) => getComputedStyle(el).animationName));
           if (motion === 'reduce') {
             expect(names.every((n) => n === 'none')).toBe(true);
@@ -219,7 +219,7 @@ test.describe('Hero-Einstieg', () => {
           }
           expect(names.every((n) => n === 'hero-rise-in')).toBe(true);
           const delays = await rise.evaluateAll((els) => els.map((el) => getComputedStyle(el).animationDelay));
-          expect(new Set(delays).size).toBeGreaterThan(2);
+          expect(new Set(delays).size).toBeGreaterThanOrEqual(Math.min(3, delays.length));
           await expect
             .poll(() => rise.evaluateAll((els) => els.every((el) => getComputedStyle(el).opacity === '1')), {
               timeout: 5000,

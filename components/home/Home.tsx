@@ -39,7 +39,7 @@ export default function Home({ locale }: { locale: Locale }) {
         <div className="max-w-[1200px] w-full mx-auto px-5 sm:px-8 md:px-12 py-10 md:py-10">
           {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Designer“ kursiv.
               Medien-Plätze und Randnotiz sind dekorativ (AK-44, AK-45), das Komma nur für Screenreader. */}
-          <h1 className="text-[clamp(30px,8.6vw,96px)] leading-[0.98] tracking-[-0.035em] text-foreground font-bold uppercase">
+          <h1 className="text-[clamp(28px,7.6vw,80px)] leading-[0.98] tracking-[-0.035em] text-foreground font-bold uppercase">
             <span className="flex items-center justify-center gap-[0.2em]">
               <span data-word className="hero-word hero-line whitespace-nowrap" style={{ '--w': 0 } as CSSProperties}>
                 {t.hero.lines[0]}
@@ -79,28 +79,14 @@ export default function Home({ locale }: { locale: Locale }) {
               </span>
             </span>
           </h1>
-          <div className="mt-10 md:mt-12 md:ml-auto md:mr-[6%] max-w-[560px]">
+          <div className="mt-10 md:mt-12 md:ml-auto md:mr-[6%] max-w-[500px]">
             <p
-              className="text-[17px] md:text-[21px] leading-[1.45] text-foreground text-pretty hero-rise"
+              className="text-[16px] md:text-[18px] leading-[1.5] text-foreground text-pretty hero-rise"
               style={{ '--r': 5 } as CSSProperties}
             >
               {t.hero.text} <span className="text-primary-text">{t.hero.accent}</span>
               {t.hero.after}
             </p>
-            <div className="flex flex-wrap gap-3 mt-7 hero-rise" style={{ '--r': 6 } as CSSProperties}>
-              <Link
-                href={href('/contact')}
-                className="bg-primary text-primary-foreground px-6 py-3 rounded-lg text-[14px] font-medium hover:bg-primary-hover transition-colors"
-              >
-                {t.contact}
-              </Link>
-              <Link
-                href={href('/projects')}
-                className="bg-card border border-border text-foreground px-6 py-3 rounded-lg text-[14px] font-medium hover:border-muted-foreground transition"
-              >
-                {t.viewProjects}
-              </Link>
-            </div>
           </div>
         </div>
       </section>

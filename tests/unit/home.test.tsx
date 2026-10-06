@@ -88,16 +88,14 @@ describe.each([
     expect(h1.textContent).not.toContain('👋');
   });
 
-  it('AK-46: Absatz mit Wohnort, Leidenschaften und Buttons', () => {
+  it('AK-46: Absatz mit Wohnort und Leidenschaften, ohne Buttons', () => {
     render(<Home locale={locale} />);
     const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
     expect(hero).toHaveTextContent('Königsbrunn');
     expect(hero).toHaveTextContent(locale === 'de' ? /Fußball/ : /football/);
     expect(hero.querySelector('p .text-primary-text')).toHaveTextContent('HERO Software');
-    expect(within(hero).getByRole('link', { name: t.contact })).toHaveAttribute('href', `${prefix}/contact`);
-    expect(
-      within(hero).getByRole('link', { name: locale === 'de' ? 'Projekte ansehen' : 'View projects' }),
-    ).toHaveAttribute('href', `${prefix}/projects`);
+    // AK-46: keine Buttons im Hero
+    expect(within(hero).queryAllByRole('link')).toHaveLength(0);
   });
 
   it('AK-28/AK-29: Unternehmen als Links, HERO Software hervorgehoben', () => {

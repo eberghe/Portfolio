@@ -86,7 +86,7 @@ test('AK-43: nur Mona Sans, „Erik“ und „Designer“ kursiv', async ({ page
     .poll(() => page.evaluate(() => [...document.fonts].some((f) => f.style === 'italic' && f.status === 'loaded')))
     .toBe(true);
   const size = await page.locator('h1').evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
-  expect(size).toBeLessThanOrEqual(96);
+  expect(size).toBeLessThanOrEqual(80);
 });
 
 test.describe('AK-47: Hero-Animation', () => {

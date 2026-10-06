@@ -31,7 +31,6 @@ export const homeContent = {
       { name: 'IKEA', url: 'https://www.ikea.com/de/de/', role: 'Job vor dem Studium' },
     ],
     contact: 'Kostenloses Erstgespräch',
-    viewProjects: 'Projekte ansehen',
     stats: [
       { value: '6+', label: 'Jahre UX Erfahrung' },
       { value: String(projects.length), label: 'Projekte im Portfolio' },
@@ -98,7 +97,6 @@ export const homeContent = {
       { name: 'IKEA', url: 'https://www.ikea.com/de/de/', role: 'Job before university' },
     ],
     contact: 'Free intro call',
-    viewProjects: 'View projects',
     stats: [
       { value: '6+', label: 'Years UX experience' },
       { value: String(projects.length), label: 'Projects in portfolio' },

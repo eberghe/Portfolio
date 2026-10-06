@@ -7,6 +7,8 @@ export interface ServiceText {
   /** Kleine Überschrift über dem Titel */
   label: string;
   title: string;
+  /** „Wann du das brauchst“: ein Satz aus Sicht des Kunden (leistungen.md AK-33) */
+  need: string;
   /** Kurzbeschreibung für Kacheln */
   short: string;
   /** Einleitung der Detailseite */
@@ -45,6 +47,8 @@ export const services: Service[] = [
       ],
       label: 'Kernservice',
       title: 'UX/UI Design',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Dein Produkt kann viel, aber Nutzer finden sich nicht zurecht: Abläufe sind umständlich, Fragen an den Support häufen sich und jede neue Funktion macht es komplizierter.',
       short:
         'Von der ersten Idee bis zum fertigen Interface. Ich gestalte digitale Produkte, die sich gut anfühlen und einfach funktionieren.',
     },
@@ -61,6 +65,8 @@ export const services: Service[] = [
       ],
       label: 'Core service',
       title: 'UX/UI Design',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Your product can do a lot, but people get lost in it: flows feel clunky, support questions pile up and every new feature makes it more complicated.',
       short: 'From first idea to final interface. I design digital products that feel right and just work.',
     },
   },
@@ -81,6 +87,8 @@ export const services: Service[] = [
       ],
       label: 'Webflow',
       title: 'Webflow-Entwicklung',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Deine Website wirkt veraltet, lädt langsam oder jede kleine Änderung braucht eine Agentur. Du willst eine Seite, die gut aussieht und die dein Team selbst pflegen kann.',
       short: 'Schnelle, professionelle Websites mit Webflow, inklusive CMS, Animationen und sauberer Struktur.',
     },
     en: {
@@ -96,6 +104,8 @@ export const services: Service[] = [
       ],
       label: 'Webflow',
       title: 'Webflow development',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Your website looks dated, loads slowly or every small change needs an agency. You want a site that looks good and that your team can update on its own.',
       short: 'Fast, professional websites built in Webflow, including CMS, animations and a clean structure.',
     },
   },
@@ -116,6 +126,8 @@ export const services: Service[] = [
       ],
       label: 'Barrierefreiheit',
       title: 'Barrierefreiheit-Beratung',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Seit Juni 2025 gilt das Barrierefreiheitsstärkungsgesetz, und du weißt nicht, ob deine Website oder App die Anforderungen erfüllt oder wo du anfangen sollst.',
       short: 'WCAG-Audits und Umsetzung der BFSG-Anforderungen, damit dein Produkt für alle nutzbar ist.',
     },
     en: {
@@ -131,6 +143,8 @@ export const services: Service[] = [
       ],
       label: 'Accessibility',
       title: 'Accessibility consulting',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'The European Accessibility Act has applied since June 2025, and you are not sure whether your website or app meets it or where to start.',
       short:
         'WCAG audits and implementing the European Accessibility Act requirements, so your product works for everyone.',
     },
@@ -152,6 +166,8 @@ export const services: Service[] = [
       ],
       label: 'KI',
       title: 'KI-Beratung',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Alle reden über KI, aber in deinem Team bleibt es beim Ausprobieren. Du willst wissen, wo sie euch wirklich Arbeit abnimmt und wie ihr sie sicher einsetzt.',
       short: 'Wo KI dir wirklich Zeit spart: vom ersten Workshop bis zum eingeführten Werkzeug im Alltag.',
     },
     en: {
@@ -167,6 +183,8 @@ export const services: Service[] = [
       ],
       label: 'AI',
       title: 'AI consulting',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Everyone talks about AI, but your team never gets past experimenting. You want to know where it really saves work and how to use it safely.',
       short: 'Where AI actually saves you time: from the first workshop to a tool your team uses every day.',
     },
   },
@@ -187,6 +205,8 @@ export const services: Service[] = [
       ],
       label: 'Optimierung',
       title: 'Website- & Prozessoptimierung',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Deine Website bringt zu wenige Anfragen, und intern laufen Abläufe über Umwege, Tabellen und doppelte Arbeit. Du spürst, dass mehr drin ist.',
       short: 'Ich analysiere deine Website und Abläufe und mache sie schneller, klarer und wirksamer.',
     },
     en: {
@@ -202,6 +222,8 @@ export const services: Service[] = [
       ],
       label: 'Optimisation',
       title: 'Website & process optimisation',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Your website brings in too few enquiries, and internal workflows run through detours, spreadsheets and duplicate work. You know there is more potential.',
       short: 'I analyse your website and workflows and make them faster, clearer and more effective.',
     },
   },
@@ -222,6 +244,8 @@ export const services: Service[] = [
       ],
       label: 'Brand',
       title: 'Brand- & Logo-Design',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Dein Unternehmen ist gewachsen, aber der Auftritt hat nicht mitgezogen: Logo, Farben und Unterlagen passen nicht zusammen und wirken nicht mehr wie du.',
       short: 'Logo, Typografie und Styleguide für einen Auftritt, der zu dir passt und überall gleich wirkt.',
     },
     en: {
@@ -237,6 +261,8 @@ export const services: Service[] = [
       ],
       label: 'Brand',
       title: 'Brand & logo design',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Your business has grown, but its look has not kept up: logo, colours and materials do not match and no longer feel like you.',
       short: 'Logo, typography and style guide for a presence that fits you and stays consistent everywhere.',
     },
   },
@@ -257,6 +283,8 @@ export const services: Service[] = [
       ],
       label: 'Design Systems',
       title: 'Design Systems',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Dein Team baut dieselben Komponenten immer wieder neu, Screens sehen überall etwas anders aus und Übergaben an die Entwicklung kosten zu viel Zeit.',
       short: 'Konsistenz, die mitwächst: Design-Tokens, Komponenten und Doku, mit denen dein Team schneller gestaltet.',
     },
     en: {
@@ -272,6 +300,8 @@ export const services: Service[] = [
       ],
       label: 'Design Systems',
       title: 'Design systems',
+      // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
+      need: 'Your team keeps rebuilding the same components, screens look slightly different everywhere and handoffs to development take too long.',
       short: 'Consistency that scales: design tokens, components and docs that help your team design faster.',
     },
   },

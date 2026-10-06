@@ -76,3 +76,22 @@ test('AK-15: Fokusrahmen beim Tab sofort 2 px breit', async ({ page }) => {
   }
   expect(narrow).toEqual([]);
 });
+
+test('AK-30: Sprunglink scrollt zum Abschnitt, nicht unter die Navigation', async ({ page }) => {
+  await page.goto('/services');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await page.getByRole('navigation', { name: 'Leistungen auf dieser Seite' }).getByRole('link').nth(3).click();
+  await expect(page).toHaveURL(/#ai-consulting$/);
+  const heading = page.locator('section#ai-consulting h2');
+  await expect.poll(async () => Math.round((await heading.boundingBox())!.y)).toBeGreaterThanOrEqual(64);
+  await expect.poll(async () => (await heading.boundingBox())!.y).toBeLessThan(400);
+});
+
+test('AK-32: Vollbild über die ganze Breite', async ({ page }) => {
+  await page.goto('/services');
+  const img = page.locator('[data-fullbleed]').first();
+  const box = (await img.boundingBox())!;
+  const vw = page.viewportSize()!.width;
+  expect(Math.round(box.width)).toBe(vw);
+  expect(box.height).toBeGreaterThanOrEqual(240);
+});

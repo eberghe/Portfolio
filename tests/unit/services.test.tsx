@@ -66,14 +66,102 @@ describe('AK-3: strukturierte Daten', () => {
 });
 
 describe('AK-6: Übersicht', () => {
-  it('alle Leistungen mit kurzem Linknamen', () => {
+  it('alle Leistungen mit kurzem Linknamen, Detailseite über „Mehr zu …“', () => {
     render(<ServicesOverview locale="de" />);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     for (const s of services) {
-      const link = screen.getByRole('link', { name: s.de.title });
-      expect(link).toHaveAttribute('href', `/services/${s.slug}`);
-      expect(link).toHaveAccessibleDescription(/\S/);
+      expect(screen.getByRole('link', { name: s.de.title })).toHaveAttribute('href', `#${s.slug}`);
+      const more = screen.getByRole('link', { name: `Mehr zu ${s.de.title}` });
+      expect(more).toHaveAttribute('href', `/services/${s.slug}`);
+      expect(more).toHaveAccessibleDescription(/\S/);
     }
+  });
+});
+
+describe.each([
+  [
+    'de',
+    '',
+    {
+      eyebrow: 'Was ich mache',
+      need: 'Wann du das brauchst:',
+      get: 'Das bekommst du:',
+      related: 'Passende Arbeit:',
+      more: 'Mehr zu',
+      cta: 'Nicht sicher, was passt?',
+      contact: 'Kostenloses Erstgespräch',
+    },
+  ],
+  [
+    'en',
+    '/en',
+    {
+      eyebrow: 'What I do',
+      need: 'When you need this:',
+      get: 'What you get:',
+      related: 'Related work:',
+      more: 'More on',
+      cta: 'Not sure what fits?',
+      contact: 'Free intro call',
+    },
+  ],
+] as const)('Übersicht neu (%s)', (locale, prefix, t) => {
+  it('AK-29: Kopf mit Verlauf, Kennzeichen und h1', () => {
+    const { container } = render(<ServicesOverview locale={locale} />);
+    const h1 = screen.getByRole('heading', { level: 1 });
+    const head = h1.closest('header')!;
+    expect(head).toHaveTextContent(t.eyebrow);
+    expect(head.querySelector('[data-gradient]')).toHaveAttribute('aria-hidden', 'true');
+    expect(container.querySelector('[data-gradient]')).not.toBeNull();
+  });
+
+  it('AK-30: Sprungliste mit sieben nummerierten Einträgen', () => {
+    render(<ServicesOverview locale={locale} />);
+    const nav = screen.getByRole('navigation', { name: overviewText[locale].jumpLabel });
+    const links = within(nav).getAllByRole('link');
+    expect(links).toHaveLength(services.length);
+    links.forEach((link, i) => {
+      expect(link).toHaveAccessibleName(services[i]![locale].title);
+      expect(link).toHaveAttribute('href', `#${services[i]!.slug}`);
+      expect(link).toHaveTextContent(String(i + 1).padStart(2, '0'));
+    });
+  });
+
+  it('AK-31/AK-32: Abschnitt je Leistung mit Bedarf, Link, Merkmalen und Vollbild', () => {
+    const { container } = render(<ServicesOverview locale={locale} />);
+    for (const s of services) {
+      const section = container.querySelector(`section#${s.slug}`) as HTMLElement;
+      expect(section).not.toBeNull();
+      expect(within(section).getByRole('heading', { level: 2, name: s[locale].title })).toBeInTheDocument();
+      expect(section).toHaveTextContent(t.need);
+      expect(section).toHaveTextContent(s[locale].need);
+      expect(section).toHaveTextContent(t.get);
+      const items = within(section).getAllByRole('listitem');
+      expect(items.length).toBeGreaterThanOrEqual(s[locale].features.length);
+      expect(within(section).getByRole('link', { name: `${t.more} ${s[locale].title}` })).toHaveAttribute(
+        'href',
+        `${prefix}/services/${s.slug}`,
+      );
+      const image = section.nextElementSibling as HTMLElement;
+      expect(image).toHaveAttribute('data-fullbleed');
+      expect(image).toHaveAttribute('aria-hidden', 'true');
+    }
+    // Passende Arbeit nur, wenn es Projekte zur Leistung gibt
+    const ux = container.querySelector('section#ux-ui-design') as HTMLElement;
+    expect(ux).toHaveTextContent(t.related);
+  });
+
+  it('AK-35: Abschluss mit Erstgespräch', () => {
+    render(<ServicesOverview locale={locale} />);
+    const h2 = screen.getByRole('heading', { level: 2, name: t.cta });
+    expect(within(h2.closest('section')!).getByRole('link', { name: t.contact })).toHaveAttribute(
+      'href',
+      `${prefix}/contact`,
+    );
+  });
+
+  it('AK-33: Bedarfssatz je Leistung', () => {
+    for (const s of services) expect(s[locale].need.length).toBeGreaterThanOrEqual(60);
   });
 });
 

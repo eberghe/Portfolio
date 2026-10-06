@@ -42,3 +42,20 @@ test('sitemap AK-2 und meta AK-5: robots.txt und llms.txt', async ({ request }) 
   expect(llms.headers()['content-type']).toContain('text/plain');
   expect(await llms.text()).toContain(`${base}/services/accessibility`);
 });
+
+test('meta-und-schema AK-12: Favicon und Apple-Touch-Icon', async ({ page, request }) => {
+  for (const path of ['/', '/en/about']) {
+    await page.goto(path);
+    const icon = await page.locator('head link[rel="icon"][type="image/png"]').first().getAttribute('href');
+    const apple = await page.locator('head link[rel="apple-touch-icon"]').first().getAttribute('href');
+    expect(icon).toBeTruthy();
+    expect(apple).toBeTruthy();
+    for (const href of [icon!, apple!]) {
+      const res = await request.get(href);
+      expect(res.status()).toBe(200);
+      expect(res.headers()['content-type']).toContain('image/png');
+    }
+  }
+  const ico = await request.get('/favicon.ico');
+  expect(ico.status()).toBe(200);
+});

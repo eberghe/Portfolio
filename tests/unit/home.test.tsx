@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Home from '@/components/home/Home';
 import { homeContent } from '@/lib/content/home';
@@ -145,10 +145,10 @@ describe.each([
     expect(homeContent[locale].companies.map((c) => c.name)).toEqual(['HERO Software', 'TEAM23', 'Amazon', 'IKEA']);
   });
 
-  it('AK-30: Uhrzeit in Königsbrunn', async () => {
+  it('AK-51: keine Uhrzeile mehr auf der Startseite (jetzt im Footer)', () => {
     render(<Home locale={locale} />);
-    await waitFor(() => expect(screen.getByText('Königsbrunn')).toBeInTheDocument());
-    await waitFor(() => expect(document.querySelector('time')).toHaveTextContent(/^\d{2}:\d{2}/));
+    expect(document.querySelector('time')).toBeNull();
+    expect(screen.queryByText('Königsbrunn')).toBeNull();
   });
 
   it('AK-37: Faktenleiste steht im Abschnitt „Über mich“', () => {

@@ -19,7 +19,6 @@ export const homeContent = {
     companiesTitle: 'Unternehmen, für die ich gearbeitet habe',
     current: 'Aktuell',
     newTab: '(öffnet in neuem Tab)',
-    clockLabel: 'Ortszeit in Königsbrunn',
     companies: [
       {
         name: 'HERO Software',
@@ -86,7 +85,6 @@ export const homeContent = {
     companiesTitle: "Companies I've worked for",
     current: 'Current',
     newTab: '(opens in a new tab)',
-    clockLabel: 'Local time in Königsbrunn',
     companies: [
       {
         name: 'HERO Software',

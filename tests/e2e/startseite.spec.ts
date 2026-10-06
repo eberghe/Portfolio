@@ -222,3 +222,25 @@ test.describe('AK-49: Medien-Plätze magnetisch', () => {
     });
   }
 });
+
+test('AK-51: keine Linien um den Unternehmen-Abschnitt, Uhr nicht mehr dort', async ({ page }) => {
+  await page.goto('/');
+  const hero = page.locator('main section').first();
+  const companies = page.locator('section[aria-labelledby="unternehmen"]');
+  expect(await hero.evaluate((el) => getComputedStyle(el).borderBottomWidth)).toBe('0px');
+  expect(await companies.evaluate((el) => getComputedStyle(el).borderBottomWidth)).toBe('0px');
+  expect(await companies.evaluate((el) => getComputedStyle(el).borderTopWidth)).toBe('0px');
+  await expect(companies.locator('time')).toHaveCount(0);
+});
+
+test('AK-52: Unternehmens-Kacheln gleich groß', async ({ page }) => {
+  await page.goto('/');
+  const sizes = await page.$$eval('#unternehmen ~ ul > li', (els) =>
+    els.map((el) => {
+      const r = el.getBoundingClientRect();
+      return [Math.round(r.width), Math.round(r.height)];
+    }),
+  );
+  expect(sizes).toHaveLength(4);
+  for (const s of sizes) expect(s).toEqual(sizes[0]);
+});

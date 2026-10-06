@@ -270,3 +270,20 @@ test('AK-22: mit JavaScript Burger statt Link', async ({ page }, info) => {
   await expect(header.getByRole('button', { name: 'Menü' })).toBeVisible();
   await expect(header.getByRole('link', { name: 'Menü' })).toBeHidden();
 });
+
+for (const [path, label] of [
+  ['/about', 'Ortszeit in Augsburg'],
+  ['/en', 'Local time in Augsburg'],
+] as const) {
+  test(`AK-23: Ortszeit Augsburg im Footer (${path})`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+    await page.goto(path);
+    const footer = page.locator('footer');
+    await expect(footer.locator('time')).toHaveText(/^\d{2}:\d{2}/);
+    await expect(footer).toContainText('Augsburg');
+    await expect(footer).toContainText(label);
+    await expect(page.getByText('Königsbrunn', { exact: true })).toHaveCount(0);
+    expect(errors.filter((e) => /hydrat/i.test(e))).toEqual([]);
+  });
+}

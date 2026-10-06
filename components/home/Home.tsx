@@ -6,7 +6,6 @@ import FaqList from '@/components/faq/FaqList';
 import JsonLd from '@/components/JsonLd';
 import CountUp from '@/components/motion/CountUp';
 import Magnetic from '@/components/motion/Magnetic';
-import LocalClock from './LocalClock';
 import { aboutPhoto } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
 import { featuredProjects, heroMedia, homeContent } from '@/lib/content/home';
@@ -36,7 +35,7 @@ export default function Home({ locale }: { locale: Locale }) {
       <JsonLd data={homeJsonLd(locale)} />
       {/* Negativer Abstand = Navigationshöhe (64 px + 1 px Linie): der Hero liegt unter der (oben transparenten)
           Navigation (AK-36) und füllt mit ihr den ersten Bildschirm (AK-42) */}
-      <section className="relative overflow-hidden border-b border-border -mt-[65px] pt-[65px] min-h-[100svh] flex flex-col justify-center">
+      <section className="relative overflow-hidden -mt-[65px] pt-[65px] min-h-[100svh] flex flex-col justify-center">
         <div className="max-w-[1200px] w-full mx-auto px-5 sm:px-8 md:px-12 py-10 md:py-10">
           {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Designer“ kursiv.
               Medien-Plätze und Randnotiz sind dekorativ (AK-44, AK-45), das Komma nur für Screenreader. */}
@@ -92,12 +91,12 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <section aria-labelledby="unternehmen" className="border-b border-border">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
+      <section aria-labelledby="unternehmen">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12 pb-10 md:pb-12">
           <h2 id="unternehmen" className={`${eyebrow} text-center mb-6`} data-reveal>
             {t.companiesTitle}
           </h2>
-          <ul className="grid grid-cols-2 md:grid-cols-4 border-t border-l border-dashed border-border">
+          <ul className="grid grid-cols-2 md:grid-cols-4 auto-rows-fr border-t border-l border-dashed border-border">
             {t.companies.map((c, i) => (
               <li key={c.name} data-reveal style={stagger(i)} className="border-r border-b border-dashed border-border">
                 <a
@@ -133,9 +132,6 @@ export default function Home({ locale }: { locale: Locale }) {
               </li>
             ))}
           </ul>
-        </div>
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
-          <LocalClock locale={locale} label={t.clockLabel} />
         </div>
       </section>
 

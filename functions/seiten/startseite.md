@@ -176,3 +176,10 @@ Erik: „diesen text bitte menschlicher schreiben! gerade business development m
 Nachtrag Erik (2026-10-06): „der paragraph bitte kürzer. nur augsburg. handwerker event des jahres raus. wenn ich nicht arbeite dann dreht sich viel um fußball, bergsport und kochen.“
 
 - AK-50: Der Hero-Absatz hat höchstens vier kurze Sätze und nennt als Ort nur Augsburg (nicht Königsbrunn), die HEROCON ohne Zusatz „Handwerker-Event des Jahres“ und als Hobbys Fußball, Bergsport und Kochen; die Randnotiz neben „Designer“ nennt dieselben drei. Ersetzt die Inhaltsangaben in AK-45, AK-46 und AK-48.
+
+## Unternehmen-Abschnitt aufgeräumt (Erik, 2026-10-06)
+
+Erik: „die unternehmen für die ich gearbeitet hab: beide lines oben und unten weg; die uhrzeit und ort in den footer bitte. statt königsbrunn augsburg; auf mobile bitte alle cards gleich groß“.
+
+- AK-51: Zwischen Hero und Abschnitt „Unternehmen, für die ich gearbeitet habe“ und unter diesem Abschnitt steht keine durchgehende Linie mehr (die gestrichelten Kachelränder bleiben). Die Uhrzeile steht nicht mehr auf der Startseite, sondern im Footer (navigation-und-footer.md AK-23); ersetzt den Ort in AK-30 und AK-33.
+- AK-52: Auf dem Handy (zwei Spalten) sind alle vier Kacheln gleich hoch und gleich breit, auch wenn eine Rolle zweizeilig umbricht.

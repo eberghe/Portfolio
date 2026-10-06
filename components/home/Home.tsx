@@ -7,7 +7,7 @@ import JsonLd from '@/components/JsonLd';
 import CountUp from '@/components/motion/CountUp';
 import Magnetic from '@/components/motion/Magnetic';
 import ProjectRail from '@/components/home/ProjectRail';
-import ServiceAccordion from '@/components/home/ServiceAccordion';
+import ServiceScroller from '@/components/home/ServiceScroller';
 import { aboutPhoto } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
 import { projects } from '@/lib/content/projects';
@@ -148,7 +148,7 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      {/* Leistungen als Akkordeon (AK-64 bis AK-66) */}
+      {/* Leistungen mit mitlaufender Liste links (AK-71 bis AK-74) */}
       <section
         aria-labelledby="angebot"
         className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-28 pb-16 md:pb-24"
@@ -165,7 +165,8 @@ export default function Home({ locale }: { locale: Locale }) {
             {t.offerIntro}
           </p>
         </div>
-        <ServiceAccordion
+        <ServiceScroller
+          navLabel={t.offerNav}
           items={services.map((s) => {
             const Icon = s.icon;
             const text = s[locale];

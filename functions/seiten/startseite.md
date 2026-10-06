@@ -259,3 +259,18 @@ Erik: „das bild in über mich kann noch größer sein bitte.“
 Erik: „ändere bitte product designer in Design Engineer auf home.“
 
 - AK-70: Die zweite und dritte Zeile der h1 lauten „Design [Bild]“ / „[Bild] _Engineer_“ („Engineer“ kursiv wie vorher „Designer“). Der Name der h1 lautet „Hey, ich bin Erik, Design Engineer“ (EN „Hey, I'm Erik, Design Engineer“). Ersetzt die Wörter und den Namen aus AK-43; Layout, Größe und Randnotiz bleiben, auch unter 640 px läuft nichts über.
+
+## Leistungen mit mitlaufender Liste (Erik, 2026-10-06)
+
+Erik (Screenshot im Stil von attio.com: links eine Liste „Build pipeline“, „Convert leads“ …, die aktive dunkel mit Strich links, die übrigen hell; rechts je Punkt ein großer Satz „Fett. Grau weiter …“ und darunter ein großes Produktbild): „bitte den screenshot als vorlage für den umbau der leistungen section auf der home verwenden. links scroll dann durch und wird dementsprechend gehighlighted. content bleibt bitte weiterhin der gleiche!“
+
+Ersetzt das Akkordeon (AK-64 Liste, AK-65, AK-66, AK-68). Kopf aus AK-64 (Kennzeichen, h2, Einleitung) und Containerbreite aus AK-67 bleiben, ebenso alle Inhalte: Titel, Beschreibung, Merkmale, Link „Mehr zu …“ und Platzhalterbild je Leistung.
+
+- AK-71: Ab 768 px ist der Bereich unter dem Kopf zweispaltig, durch eine senkrechte Linie getrennt. Links steht eine Navigation „Leistungen auf dieser Seite“ (EN „Services on this page“) mit allen sieben Titeln als Sprunglinks (`#leistung-<slug>`); sie bleibt beim Scrollen oben stehen (sticky). Rechts folgen die sieben Leistungen untereinander.
+- AK-72: Jede Leistung beginnt mit einem großen Satz: Titel als h3 fett in Textfarbe, direkt dahinter die Beschreibung in Grau (mindestens 4,5:1 Kontrast). Darunter Merkmale als Liste, der Link „Mehr zu <Leistung> →“ und ein großes Platzhalterbild (dekorativ, dunkle Fläche mit Icon, im Dunkelmodus heller als der Hintergrund) auf grauer Fläche.
+- AK-73: Beim Scrollen ist in der linken Liste die Leistung hervorgehoben, die gerade in der Mitte des Bildschirms steht: dunkle Schrift, Strich in Akzentfarbe links und `aria-current="location"`; die anderen sind grau. Ohne JavaScript ist die erste hervorgehoben, die Links springen trotzdem. Der Wechsel ist animiert, bei reduzierter Bewegung sofort.
+- AK-74: Unter 768 px gibt es keine linke Liste; die Leistungen stehen untereinander, Satz und Bild über die volle Breite, kein horizontales Scrollen ab 320 px.
+
+### Blinder Kritiker (Leistungen mit Liste, 2026-10-06)
+
+Behoben (mit Test): Jede Beschreibung wurde zweimal vorgelesen (der Link „Mehr zu …“ verwies per `aria-describedby` auf den Absatz direkt davor); `aria-current` ist jetzt `location`; die Platzhalterbilder sind ab 768 px flacher (2:1 statt 16:10), damit der Abschnitt nicht aus leeren Flächen besteht. Offen: Unter 768 px gibt es bewusst keine Liste (AK-74); echte Bilder je Leistung fehlen noch (Erik hat noch keine).

@@ -182,7 +182,8 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
               onClick={toggleDark}
               aria-pressed={dark}
               aria-label={t.darkMode}
-              className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition"
+              // Nur mit JavaScript, sonst wäre der Button ohne Funktion (navigation-und-footer.md AK-21)
+              className="w-9 h-9 rounded-lg border border-border hidden [.js_&]:flex items-center justify-center text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition"
             >
               {dark ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
             </button>

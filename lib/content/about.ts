@@ -46,7 +46,6 @@ export const aboutContent = {
     metaDescription:
       'Erik Bergheimer: UX/UI-Designer und Webflow-Entwickler aus Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. am MCI Innsbruck.',
     title: 'Erik Bergheimer: UX/UI-Designer & Webflow-Entwickler',
-    subtitle: 'Portfolio · Augsburg',
     greeting: 'Servus, ich bin Erik',
     intro:
       'UX/UI-Designer und Webflow-Entwickler aus Augsburg. Schreib mir, um herauszufinden, ob ich gerade Zeit für dein Projekt habe.',
@@ -71,7 +70,6 @@ export const aboutContent = {
     metaDescription:
       'Erik Bergheimer: UX/UI designer and Webflow developer from Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. at MCI Innsbruck.',
     title: 'Erik Bergheimer: UX/UI Designer & Webflow Developer',
-    subtitle: 'Portfolio · Augsburg',
     greeting: "Hi, I'm Erik",
     intro:
       'UX/UI designer and Webflow developer from Augsburg. Get in touch to find out if I have time for your project.',

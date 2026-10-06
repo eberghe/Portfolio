@@ -50,7 +50,7 @@ Grün als Text im Dunkelmodus nutzt `--primary-text`; im hellen Modus ist `--pri
 - AK-3: Hell- und Dunkelmodus funktionieren, Wahl bleibt gespeichert, `prefers-color-scheme` wird beim ersten Besuch berücksichtigt.
 - AK-4: Alle Text-Token-Kombinationen erfüllen 4,5:1 (automatischer Test über alle Text/Hintergrund-Paare, hell und dunkel).
 - AK-6 (Erik, 2026-10-04): Schrift ist **Mona Sans** (variable, Gewicht 200 bis 900) statt Inter, selbst gehostet (Datei aus `@fontsource-variable/mona-sans`, seit Issue #28 über `next/font/local`, siehe AK-10), Fallback größenangepasstes Arial, dann `system-ui`. Keine Anfrage an fremde Server.
-- AK-7 (Erik, 2026-10-04): Alle Überschriften (`h1` bis `h4`) sind fett (`font-weight: 700`). Ausnahme: die Rollen-Zeile in der Startseiten-h1 („UX/UI Designer & Webflow Expert“) bleibt normal, weil sie optisch eine Unterzeile ist.
+- AK-7 (Erik, 2026-10-04): Alle Überschriften (`h1` bis `h4`) sind fett (`font-weight: 700`).
 - AK-8: Datenschutzerklärung nennt die tatsächlich genutzte Schrift (Mona Sans).
 - AK-9 (Blinder Kritiker): Keine Überschrift ist breiter als ihre Spalte (360/768/1280). Die Startseiten-h1 ist bei 768 px kleiner (40 px), weil die Hero-Spalte dort schmal ist; die Rechtstexte-h1 („Datenschutzerklärung“) ist auf dem Handy 26 px und trennt per `hyphens: auto`. Die Rollen-Zeile bricht ausgewogen um (`text-wrap: balance`), die Laufweite großer Überschriften ist −0,03 em statt −2 px.
 - AK-5: Auch im Hover-Zustand erreicht Button-Text 4,5:1. Der Bestand hellt grüne Buttons per `opacity-90` auf (weiß auf Grün nur 4,35:1); stattdessen dunkelt `--primary-hover` leicht ab. Fehlermeldungen nutzen `--error-text` (4,5:1 auf allen Hintergründen).

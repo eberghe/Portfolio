@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Home from '@/components/home/Home';
 import { homeContent } from '@/lib/content/home';
@@ -12,7 +12,7 @@ describe.each([
     'de',
     '',
     {
-      h1: /^Hey, ich bin Erik$/,
+      h1: /^Hey, ich bin Erik, Product Designer$/,
       offer: 'Was ich anbiete',
       process: 'So arbeiten wir zusammen',
       projects: 'Ausgewählte Projekte',
@@ -23,7 +23,7 @@ describe.each([
     'en',
     '/en',
     {
-      h1: /^Hey, I'm Erik$/,
+      h1: /^Hey, I'm Erik, Product Designer$/,
       offer: 'What I offer',
       process: 'How we work together',
       projects: 'Selected projects',
@@ -34,7 +34,7 @@ describe.each([
   it('AK-2: genau eine h1 und je Abschnitt eine h2', () => {
     render(<Home locale={locale} />);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    // AK-26: nur „Hey, ich bin Erik“, das Winken ist dekorativ
+    // AK-43: Medien-Plätze und Randnotiz sind dekorativ
     expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(t.h1);
     for (const name of [t.offer, t.process, t.projects]) {
       expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument();
@@ -75,19 +75,38 @@ describe.each([
     for (const img of within(section).getAllByRole('presentation')) expect(img).toHaveAttribute('alt', '');
   });
 
-  it('AK-26: Hero ohne Foto, Rolle und Einleitung als Absätze', () => {
-    render(<Home locale={locale} />);
-    const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
-    expect(within(hero).queryByRole('img')).toBeNull();
-    expect(hero).toHaveTextContent(homeContent[locale].role);
-    expect(within(hero).getByRole('link', { name: t.contact })).toHaveAttribute('href', `${prefix}/contact`);
-  });
-
-  it('AK-27: Wörter einzeln animiert, Winken dekorativ', () => {
+  it('AK-43/AK-44/AK-45: typografische h1, Medien-Plätze und Randnotiz dekorativ', () => {
     render(<Home locale={locale} />);
     const h1 = screen.getByRole('heading', { level: 1 });
-    expect(h1.querySelectorAll('[data-word]').length).toBeGreaterThanOrEqual(3);
-    expect(h1.querySelector('[aria-hidden="true"]')).toHaveTextContent('👋');
+    expect(h1.querySelectorAll('[data-word]').length).toBe(4);
+    expect(h1.querySelectorAll('.italic').length).toBe(2);
+    expect(h1.textContent).not.toContain('Bergheimer');
+    const media = h1.querySelectorAll('[data-hero-media]');
+    expect(media).toHaveLength(3);
+    for (const m of media) expect(m).toHaveAttribute('aria-hidden', 'true');
+    expect(h1.querySelector('[data-hero-note]')).toHaveAttribute('aria-hidden', 'true');
+    expect(h1.textContent).not.toContain('👋');
+  });
+
+  it('AK-46: Absatz mit Wohnort und Leidenschaften, ohne Buttons', () => {
+    render(<Home locale={locale} />);
+    const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
+    // AK-50: nur Augsburg, kurze Sätze, Fußball, Bergsport, Kochen
+    expect(hero).toHaveTextContent('Augsburg');
+    expect(hero.textContent).not.toMatch(/Königsbrunn|Handwerker-Event|trade event/);
+    expect(hero).toHaveTextContent(locale === 'de' ? /Bergsport/ : /mountain sports/);
+    expect(
+      hero
+        .querySelector('p')!
+        .textContent!.split(/[.!?](\s|$)/)
+        .filter((x) => x && x.trim()).length,
+    ).toBeLessThanOrEqual(4);
+    expect(hero).toHaveTextContent(locale === 'de' ? /Fußball/ : /football/);
+    expect(hero.querySelector('p .text-primary-text')).toHaveTextContent('HERO Software');
+    expect(hero).toHaveTextContent('HEROCON');
+    expect(hero.textContent).not.toMatch(/freiberuflich|freelanc/i);
+    // AK-46: keine Buttons im Hero
+    expect(within(hero).queryAllByRole('link')).toHaveLength(0);
   });
 
   it('AK-28/AK-29: Unternehmen als Links, HERO Software hervorgehoben', () => {
@@ -126,10 +145,10 @@ describe.each([
     expect(homeContent[locale].companies.map((c) => c.name)).toEqual(['HERO Software', 'TEAM23', 'Amazon', 'IKEA']);
   });
 
-  it('AK-30: Uhrzeit in Königsbrunn', async () => {
+  it('AK-51: keine Uhrzeile mehr auf der Startseite (jetzt im Footer)', () => {
     render(<Home locale={locale} />);
-    await waitFor(() => expect(screen.getByText('Königsbrunn')).toBeInTheDocument());
-    await waitFor(() => expect(document.querySelector('time')).toHaveTextContent(/^\d{2}:\d{2}/));
+    expect(document.querySelector('time')).toBeNull();
+    expect(screen.queryByText('Königsbrunn')).toBeNull();
   });
 
   it('AK-37: Faktenleiste steht im Abschnitt „Über mich“', () => {

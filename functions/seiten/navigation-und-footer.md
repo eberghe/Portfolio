@@ -82,3 +82,12 @@ Offen, bewusst später:
 ## Dunkelmodus ohne JavaScript (Issue #22, 2026-10-06)
 
 - AK-21: Der Dunkelmodus-Button erscheint nur mit JavaScript (`hidden [.js_&]:flex`, die Klasse `js` setzt das Kopf-Skript). Ohne JavaScript gibt es kein funktionsloses Bedienelement, die Seite folgt der Systemeinstellung.
+
+## Mobilmenü ohne JavaScript (Issue #34, 2026-10-06)
+
+- AK-22: Unter 768 px ohne JavaScript steht statt des Burger-Buttons ein Link „Menü“ (EN „Menu“), der zur Footer-Navigation springt (`#footer-nav`). Mit JavaScript bleibt der Burger-Button wie bisher, der Link ist dann ausgeblendet. Ab 768 px ist keins von beiden sichtbar.
+
+## Ortszeit im Footer (Erik, 2026-10-06)
+
+- AK-23: Der Footer zeigt auf jeder Seite die Ortszeit „Augsburg | 09:41 MESZ“ (Zeitzone Europe/Berlin, `time`-Element, aktualisiert sich, kein Hydration-Fehler). Für Screenreader heißt die Zeile „Ortszeit in Augsburg“ (EN „Local time in Augsburg“). Ohne JavaScript erscheint sie nicht. Vorher stand sie mit „Königsbrunn“ auf der Startseite (startseite.md AK-30).
+- Nachtrag (axe, 2026-10-06): Die mobile Footer-Navigation (Projekte, Leistungen, …) hat jetzt ebenfalls 44 px hohe Links. Mit nur 24 px meldete axe `target-size`/`target-offset`, sobald die feste Kopfzeile beim Scrollen über ihnen lag.

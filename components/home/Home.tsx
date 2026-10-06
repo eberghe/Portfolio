@@ -5,10 +5,10 @@ import { Fragment, type CSSProperties } from 'react';
 import FaqList from '@/components/faq/FaqList';
 import JsonLd from '@/components/JsonLd';
 import CountUp from '@/components/motion/CountUp';
-import LocalClock from './LocalClock';
+import Magnetic from '@/components/motion/Magnetic';
 import { aboutPhoto } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
-import { featuredProjects, homeContent } from '@/lib/content/home';
+import { featuredProjects, heroMedia, homeContent } from '@/lib/content/home';
 import { services } from '@/lib/content/services';
 import { EMAIL } from '@/lib/site';
 import { localizedPath, type Locale } from '@/lib/i18n';
@@ -33,76 +33,70 @@ export default function Home({ locale }: { locale: Locale }) {
   return (
     <>
       <JsonLd data={homeJsonLd(locale)} />
-      {/* Negativer Abstand = Navigationshöhe (64 px + 1 px Linie): der Hero liegt unter der (oben transparenten) Navigation, der Verlauf reicht bis an den Rand (AK-36) */}
-      <section className="relative overflow-hidden border-b border-border -mt-[65px] pt-[65px]">
-        {/* Weicher Farbverlauf statt Hintergrundbild (AK-26) */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.22),transparent_70%)]"
-        />
-        <div className="relative max-w-[900px] mx-auto px-6 sm:px-8 pt-16 pb-12 md:pt-20 md:pb-12 flex flex-col items-center text-center">
-          <p
-            className="inline-flex items-center gap-1.5 bg-primary-light text-primary-text border border-primary-border px-3 py-1 rounded-full text-[12px] font-medium tracking-wide mb-8 hero-rise"
-            style={{ '--r': 0 } as CSSProperties}
-          >
-            <span
-              aria-hidden="true"
-              className="w-[6px] h-[6px] bg-primary rounded-full motion-safe:animate-pulse-dot"
-            />
-            {t.available}
-          </p>
-          <h1 className="text-[52px] sm:text-[72px] md:text-[96px] font-bold leading-[1.02] tracking-[-0.04em] text-foreground mb-6">
-            {t.greeting.map((word, i) => (
-              <Fragment key={word}>
-                {i > 0 && ' '}
-                <span
-                  data-word
-                  className={`hero-word ${i === t.greeting.length - 1 ? 'text-primary-text' : ''}`}
-                  style={{ '--w': i } as CSSProperties}
-                >
-                  {word}
-                </span>
-              </Fragment>
-            ))}{' '}
-            <span aria-hidden="true" className="hero-wave" style={{ '--w': t.greeting.length } as CSSProperties}>
-              👋
+      {/* Negativer Abstand = Navigationshöhe (64 px + 1 px Linie): der Hero liegt unter der (oben transparenten)
+          Navigation (AK-36) und füllt mit ihr den ersten Bildschirm (AK-42) */}
+      <section className="relative overflow-hidden -mt-[65px] pt-[65px] min-h-[100svh] flex flex-col justify-center">
+        <div className="max-w-[1200px] w-full mx-auto px-5 sm:px-8 md:px-12 py-10 md:py-10">
+          {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Designer“ kursiv.
+              Medien-Plätze und Randnotiz sind dekorativ (AK-44, AK-45), das Komma nur für Screenreader. */}
+          <h1 className="text-[clamp(28px,7.6vw,80px)] leading-[0.98] tracking-[-0.035em] text-foreground font-bold uppercase">
+            <span className="flex items-center justify-center gap-[0.2em]">
+              <span data-word className="hero-word hero-line whitespace-nowrap" style={{ '--w': 0 } as CSSProperties}>
+                {t.hero.lines[0]}
+              </span>
+              <HeroMedia index={0} className="w-[1.3em] h-[0.78em]" />{' '}
+              <span
+                data-word
+                className="hero-word hero-line whitespace-nowrap italic text-primary-text pr-[0.06em]"
+                style={{ '--w': 1 } as CSSProperties}
+              >
+                {t.hero.lines[1]}
+                <span className="text-[0px]">,</span>
+              </span>
+            </span>{' '}
+            <span className="flex items-center justify-center gap-[0.2em] lg:pl-[1.4em]">
+              <span data-word className="hero-word hero-line whitespace-nowrap" style={{ '--w': 2 } as CSSProperties}>
+                {t.hero.lines[2]}
+              </span>
+              <HeroMedia index={1} className="w-[1.05em] h-[1.05em]" />
+            </span>{' '}
+            <span className="flex items-center justify-center gap-[0.2em]">
+              <HeroMedia index={2} className="w-[1.2em] h-[0.72em]" />
+              <span
+                data-word
+                className="hero-word hero-line whitespace-nowrap italic pr-[0.06em]"
+                style={{ '--w': 3 } as CSSProperties}
+              >
+                {t.hero.lines[3]}
+              </span>
+              <span
+                aria-hidden="true"
+                data-hero-note
+                className="hidden sm:block normal-case not-italic text-[12px] md:text-[13px] font-medium leading-snug tracking-wide max-w-[12ch] self-end mb-[0.2em] hero-rise"
+                style={{ '--r': 4 } as CSSProperties}
+              >
+                {t.hero.note}
+              </span>
             </span>
           </h1>
-          <p
-            className="text-[19px] md:text-[24px] font-medium text-foreground mb-4 text-balance hero-rise"
-            style={{ '--r': 3 } as CSSProperties}
-          >
-            {t.role}
-          </p>
-          <p
-            className="text-[16px] md:text-[18px] text-text2 leading-relaxed max-w-[620px] mb-8 text-balance hero-rise"
-            style={{ '--r': 4 } as CSSProperties}
-          >
-            {t.intro}
-          </p>
-          <div className="flex flex-wrap justify-center gap-3 hero-rise" style={{ '--r': 5 } as CSSProperties}>
-            <Link
-              href={href('/contact')}
-              className="bg-primary text-primary-foreground px-7 py-3.5 rounded-lg text-[14px] font-medium hover:bg-primary-hover transition-colors"
+          <div className="mt-10 md:mt-12 md:ml-auto md:mr-[6%] max-w-[500px]">
+            <p
+              className="text-[16px] md:text-[18px] leading-[1.5] text-foreground text-pretty hero-rise"
+              style={{ '--r': 5 } as CSSProperties}
             >
-              {t.contact}
-            </Link>
-            <Link
-              href={href('/projects')}
-              className="bg-card border border-border text-foreground px-7 py-3.5 rounded-lg text-[14px] font-medium hover:border-muted-foreground transition"
-            >
-              {t.viewProjects}
-            </Link>
+              {t.hero.text} <span className="text-primary-text">{t.hero.accent}</span>
+              {t.hero.after}
+            </p>
           </div>
         </div>
       </section>
 
-      <section aria-labelledby="unternehmen" className="border-b border-border">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
+      <section aria-labelledby="unternehmen">
+        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12 pb-10 md:pb-12">
           <h2 id="unternehmen" className={`${eyebrow} text-center mb-6`} data-reveal>
             {t.companiesTitle}
           </h2>
-          <ul className="grid grid-cols-2 md:grid-cols-4 border-t border-l border-dashed border-border">
+          <ul className="grid grid-cols-2 md:grid-cols-4 auto-rows-fr border-t border-l border-dashed border-border">
             {t.companies.map((c, i) => (
               <li key={c.name} data-reveal style={stagger(i)} className="border-r border-b border-dashed border-border">
                 <a
@@ -138,9 +132,6 @@ export default function Home({ locale }: { locale: Locale }) {
               </li>
             ))}
           </ul>
-        </div>
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
-          <LocalClock locale={locale} label={t.clockLabel} />
         </div>
       </section>
 
@@ -471,5 +462,33 @@ function CompanyLogo({ name }: { name: string }) {
       height={logo.height}
       className={`w-auto max-w-full dark:invert ${logo.className}`}
     />
+  );
+}
+
+/** Medien-Platz im Hero (AK-44): Bild/GIF von Erik oder, solange es fehlt, eine ruhige Fläche. Dekorativ, magnetisch (AK-49). */
+function HeroMedia({ index, className }: { index: number; className: string }) {
+  const m = heroMedia[index];
+  return (
+    <Magnetic>
+      <span
+        aria-hidden="true"
+        data-hero-media
+        className={`hero-media relative inline-block shrink-0 overflow-hidden rounded-[0.14em] bg-primary-light dark:bg-primary/25 border border-primary-border ${className}`}
+        style={{ '--r': index + 1 } as CSSProperties}
+      >
+        {m?.src && (
+          <Image
+            src={m.src}
+            alt=""
+            fill
+            sizes="200px"
+            unoptimized={m.src.endsWith('.gif')}
+            className="object-cover"
+            // Leicht gegenläufig zum Magneten (AK-49)
+            style={{ transform: 'translate(var(--magnet-x, 0), var(--magnet-y, 0)) scale(1.1)' }}
+          />
+        )}
+      </span>
+    </Magnetic>
   );
 }

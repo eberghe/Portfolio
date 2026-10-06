@@ -245,3 +245,45 @@ test('AK-21: Dunkelmodus-Button mit JavaScript sichtbar', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('button', { name: 'Dunkelmodus' })).toBeVisible();
 });
+
+test.describe('Mobilmenü ohne JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('AK-22: Link „Menü“ springt zur Footer-Navigation', async ({ page }, info) => {
+    await page.goto('/about');
+    const header = page.locator('header');
+    await expect(header.getByRole('button', { name: 'Menü' })).toHaveCount(0);
+    const link = header.getByRole('link', { name: 'Menü' });
+    if (info.project.name !== 'mobile-360') {
+      await expect(link).toBeHidden();
+      return;
+    }
+    await expect(link).toBeVisible();
+    await expect(link).toHaveAttribute('href', '#footer-nav');
+    await expect(page.locator('#footer-nav')).toBeVisible();
+  });
+});
+
+test('AK-22: mit JavaScript Burger statt Link', async ({ page }, info) => {
+  test.skip(info.project.name !== 'mobile-360', 'nur mobil');
+  await page.goto('/about');
+  const header = page.locator('header');
+  await expect(header.getByRole('button', { name: 'Menü' })).toBeVisible();
+  await expect(header.getByRole('link', { name: 'Menü' })).toBeHidden();
+});
+
+for (const [path, label] of [
+  ['/about', 'Ortszeit in Augsburg'],
+  ['/en', 'Local time in Augsburg'],
+] as const) {
+  test(`AK-23: Ortszeit Augsburg im Footer (${path})`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+    await page.goto(path);
+    const footer = page.locator('footer');
+    await expect(footer.locator('time')).toHaveText(/^\d{2}:\d{2}/);
+    await expect(footer).toContainText('Augsburg');
+    await expect(footer).toContainText(label);
+    await expect(page.getByText('Königsbrunn', { exact: true })).toHaveCount(0);
+    expect(errors.filter((e) => /hydrat/i.test(e))).toEqual([]);
+  });
+}

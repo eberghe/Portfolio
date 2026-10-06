@@ -10,10 +10,12 @@ import SmoothScroll from './motion/SmoothScroll';
 
 // Mona Sans selbst gehostet über next/font: vorgeladen, mit größenangepasster Ersatzschrift gegen
 // Layout-Sprünge beim Laden (functions/infrastruktur/design-tokens.md AK-6, AK-10)
+// Kursiv nur für Akzente (Hero der Startseite, startseite.md AK-43)
 const mona = localFont({
-  src: '../app/fonts/mona-sans-latin-wght-normal.woff2',
-  weight: '200 900',
-  style: 'normal',
+  src: [
+    { path: '../app/fonts/mona-sans-latin-wght-normal.woff2', weight: '200 900', style: 'normal' },
+    { path: '../app/fonts/mona-sans-latin-wght-italic.woff2', weight: '200 900', style: 'italic' },
+  ],
   display: 'swap',
   variable: '--font-mona',
   adjustFontFallback: 'Arial',

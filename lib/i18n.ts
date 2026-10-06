@@ -60,6 +60,7 @@ const de = {
     services: 'Leistungen',
     madeWith: 'made with 🤍 in augsburg',
     backToTop: 'Nach oben',
+    clockLabel: 'Ortszeit in Augsburg',
     email: 'E-Mail',
   },
 };
@@ -88,6 +89,7 @@ const en: Messages = {
     services: 'Services',
     madeWith: 'made with 🤍 in augsburg',
     backToTop: 'Back to top',
+    clockLabel: 'Local time in Augsburg',
     email: 'Email',
   },
 };

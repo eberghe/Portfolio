@@ -7,12 +7,18 @@ export const homeContent = {
     metaTitle: 'Erik Bergheimer: UX/UI-Design & Webflow aus Augsburg',
     metaDescription:
       'UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung aus Augsburg, vor Ort oder remote. Kostenloses Erstgespräch.',
-    available: 'Verfügbar für Projekte',
-    greeting: ['Hey,', 'ich', 'bin', 'Erik'],
+    // Hero im Product-Designer-Stil (functions/seiten/startseite.md AK-43 bis AK-46)
+    hero: {
+      lines: ['Hey, ich bin', 'Erik', 'Product', 'Designer'],
+      note: 'Mit Herz für Fußball, Bergsport & Kochen',
+      text: 'Ich bin aus Augsburg und mag Design, das bei den Menschen anfängt. Gerade bin ich',
+      accent: 'Business Development Manager bei HERO Software',
+      after:
+        ' und gestalte die HEROCON mit. Für private Projekte bin ich trotzdem offen. Wenn ich nicht arbeite, dreht sich viel um Fußball, Bergsport und Kochen.',
+    },
     companiesTitle: 'Unternehmen, für die ich gearbeitet habe',
     current: 'Aktuell',
     newTab: '(öffnet in neuem Tab)',
-    clockLabel: 'Ortszeit in Königsbrunn',
     companies: [
       {
         name: 'HERO Software',
@@ -24,12 +30,7 @@ export const homeContent = {
       { name: 'Amazon', url: 'https://www.amazon.de/', role: 'Job vor dem Studium' },
       { name: 'IKEA', url: 'https://www.ikea.com/de/de/', role: 'Job vor dem Studium' },
     ],
-    role: 'UX/UI Designer & Webflow Expert',
-    intro:
-      'UX/UI-Designer und Webflow-Entwickler aus Augsburg, für Kunden in Deutschland und remote. Ich gestalte digitale Erlebnisse, die sinnvoll sind, gut aussehen und sich menschlich anfühlen.',
     contact: 'Kostenloses Erstgespräch',
-    viewProjects: 'Projekte ansehen',
-    heroAlt: 'Erik Bergheimer, UX/UI Designer und Webflow-Experte, im Porträt',
     stats: [
       { value: '6+', label: 'Jahre UX Erfahrung' },
       { value: String(projects.length), label: 'Projekte im Portfolio' },
@@ -73,12 +74,17 @@ export const homeContent = {
     metaTitle: 'Erik Bergheimer: UX/UI design & Webflow, Augsburg',
     metaDescription:
       'UX/UI design, Webflow websites, accessibility and AI consulting from Augsburg, on site or remote. Book a free intro call.',
-    available: 'Available for projects',
-    greeting: ['Hey,', "I'm", 'Erik'],
+    hero: {
+      lines: ["Hey, I'm", 'Erik', 'Product', 'Designer'],
+      note: 'Passionate about football, mountain sports & cooking',
+      text: "I'm from Augsburg and like design that starts with people. Right now I'm",
+      accent: 'Business Development Manager at HERO Software',
+      after:
+        ", helping shape HEROCON. I'm still open to private projects. When I'm not working, it's mostly football, mountain sports and cooking.",
+    },
     companiesTitle: "Companies I've worked for",
     current: 'Current',
     newTab: '(opens in a new tab)',
-    clockLabel: 'Local time in Königsbrunn',
     companies: [
       {
         name: 'HERO Software',
@@ -90,12 +96,7 @@ export const homeContent = {
       { name: 'Amazon', url: 'https://www.amazon.de/', role: 'Job before university' },
       { name: 'IKEA', url: 'https://www.ikea.com/de/de/', role: 'Job before university' },
     ],
-    role: 'UX/UI Designer & Webflow Expert',
-    intro:
-      'UX/UI designer and Webflow developer based in Augsburg, working with clients in Germany and remotely. I create digital experiences that are meaningful, look great, and feel human.',
     contact: 'Free intro call',
-    viewProjects: 'View projects',
-    heroAlt: 'Portrait of Erik Bergheimer, UX/UI designer and Webflow expert',
     stats: [
       { value: '6+', label: 'Years UX experience' },
       { value: String(projects.length), label: 'Projects in portfolio' },
@@ -192,3 +193,9 @@ export const featuredProjects = [
     },
   },
 ];
+
+/**
+ * Medien-Plätze im Hero (startseite.md AK-44), dekorativ. TODO(Erik): Bilder oder GIFs liefern,
+ * dann `src`, `width` und `height` eintragen. Ohne `src` erscheint eine ruhige Fläche.
+ */
+export const heroMedia: { src?: string; width?: number; height?: number }[] = [{}, {}, {}];

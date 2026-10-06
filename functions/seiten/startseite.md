@@ -146,3 +146,40 @@ Erik: „danach bitte die prio hoch issues angehen!“. Aus #15 fehlten die Zäh
 - AK-39: Vor dem Abschluss-Abschnitt steht „Häufige Fragen“ (EN „Frequently asked questions“, h2) mit vier Fragen aus der FAQ im selben Akkordeon wie auf der FAQ-Seite (Fragen als h3) und einem Link „Alle FAQs“ zur FAQ-Seite (mindestens 44 px hoch). Kein zusätzliches FAQ-JSON-LD auf der Startseite (das steht auf der FAQ-Seite).
 - AK-40 (PreMatch, 2026-10-05): Unter „Ausgewählte Projekte“ steht PreMatch (Masterarbeit, 2026) an erster Stelle und ersetzt das älteste Projekt CPR; es bleiben vier Karten. SIGHT'KICK heißt wie auf der Projektseite „Masterprojekt“, nicht „Masterarbeit“.
 - AK-41 (Erik 2026-10-05): Bis die Freiberuflichkeit angemeldet ist (Steuer-ID), steht nirgends „freiberuflich“, „Freelancer“ oder „freelance“ als Selbstbeschreibung (Startseite, Über mich, Städteseiten, llms.txt). Ersetzt den Teil „freiberuflich“ aus AK-17 und ueber-mich.md AK-8.
+
+## Hero im Product-Designer-Stil (Erik, 2026-10-06)
+
+Erik (mit Screenshot eines typografischen Heros als Richtung, nicht als Vorlage): „können wir meinen hero bereich vlt in die richtung umbauen? das finde ich nicht so generisch 🙂 ich bin auch product designer. passionate about fußball, technologie, sport. mag gutes mensch zentriertes design. based in königsbrunn bei augsburg. element bitte 100vh hoch. diese kleinen images/gifs kann ich dir im nachhinein geben. da bitte platzhalter einbauen“.
+
+Ersetzt AK-26, AK-27 (Winken entfällt) und AK-33 (die Firmenleiste beginnt jetzt unter dem ersten Bildschirm).
+
+- AK-42: Der Hero ist mindestens so hoch wie der Bildschirm (`100svh`, inklusive der darüberliegenden Navigation) und hat keinen Hintergrundverlauf mehr; die Navigation bleibt oben transparent (AK-36).
+- AK-43: Die h1 ist eine große typografische Komposition in drei Zeilen, ganz in Mona Sans (fett, groß geschrieben): „Hey, ich bin [Bild] _Erik_“ / „Product [Bild]“ / „[Bild] _Designer_“ (EN „Hey, I'm …“). „Erik“ und „Designer“ stehen in Mona Sans kursiv, „Erik“ in der Akzentfarbe; keine zweite Schriftfamilie und kein Nachname (Erik, 2026-10-06). Der Name der h1 lautet „Hey, ich bin Erik, Product Designer“ (EN „Hey, I'm Erik, Product Designer“). Höchstens 80 px groß (Erik: „noch ein bisschen kleiner“).
+- AK-44: Zwischen den Zeilen stehen drei Medien-Plätze (Bilder oder GIFs, kommen von Erik). Solange ein Platz leer ist, zeigt er eine ruhige Fläche in Akzentfarbe ohne Text. Die Plätze sind dekorativ (`aria-hidden`), ein Bild darin hat `alt=""`. Sie skalieren mit der Schrift und bleiben auch unter 640 px sichtbar.
+- AK-45: Neben „Designer“ steht klein „Mit Herz für Fußball, Technologie & Sport“ (EN „Passionate about football, tech & sport“), dekorativ, weil der Absatz darunter dasselbe sagt; unter 640 px ausgeblendet.
+- AK-46: Rechts unter der h1 steht ein Absatz: Wohnort Königsbrunn bei Augsburg, menschzentriertes Design, Fußball, Technologie und Sport; ein Satzteil ist in Akzentfarbe hervorgehoben (aktuelle Rolle bei HERO Software). Schrift höchstens 18 px. Keine Buttons im Hero (Erik: „die buttons stehen sehr random. nimm die gerne weg“); das Erstgespräch bleibt in Navigation, Leistungen und Abschluss erreichbar.
+- AK-47: Animation (Erik: „gerne animiert“): Die vier Wörter der h1 kippen nacheinander von unten herein (Animation `hero-line-in`: Deckkraft, Unschärfe, leichte Drehung), die Medien-Plätze öffnen sich danach von links wie ein Vorhang (`hero-media-in`), Randnotiz und Absatz steigen ein (`hero-rise`). Mit Ladeanimation startet alles nach ihr. Bei reduzierter Bewegung und ohne JavaScript steht alles sofort da. Kein horizontales Scrollen bei 320 px, keine axe-Verstöße in hell und dunkel.
+
+Nachtrag Erik (2026-10-06): „nicht meinen ganzen namen bitte. also nachname raus. das ist außerdem zu viel unterschiedliche schrift! immer mona sans wenn dann mona sans in italic verwenden. kann auch bisschen kleiner und gerne animiert“. Instrument Serif ist wieder entfernt.
+
+### Blinder Kritiker (Hero, 2026-10-06)
+
+Behoben: Randnotiz erbte die Großschreibung der h1 („FUSSBALL“, jetzt normal geschrieben, 12 px statt 11 px); Platzhalter im Dunkelmodus kaum sichtbar (jetzt kräftigere Fläche). Bewusst so: das Komma im h1-Namen bleibt mit Schriftgröße 0 (siehe AK-18, `sr-only` erzeugt ein Leerzeichen; per Test im Accessibility-Tree geprüft).
+
+## Hero: Text und Magnet-Effekt (Erik, 2026-10-06)
+
+Erik: „diesen text bitte menschlicher schreiben! gerade business development manager bei hero software und gestalte das Handwerker Event des Jahres "HEROCON". offen für weitere private projekte. kannst du über die bilder noch so eine nice animation reinbauen? so magnetic das das bild ein bisschen am cursor mit hängt?“
+
+- AK-48: Der Absatz im Hero ist in Ich-Form und erzählend geschrieben: Wohnort Königsbrunn bei Augsburg, menschzentriertes Design, aktuelle Rolle als Business Development Manager bei HERO Software (hervorgehoben) mit der HEROCON als Handwerker-Event des Jahres, offen für private Projekte, Fußball, Technik und Sport. Kein „freiberuflich“ (AK-41).
+- AK-49: Die Medien-Plätze im Hero sind magnetisch: Kommt der Mauszeiger in ihre Nähe, folgen sie ihm ein Stück (höchstens rund ein Drittel des Abstands) und federn beim Weggehen weich zurück; das Bild darin verschiebt sich leicht gegenläufig. Nur mit feinem Zeiger (Maus, Trackpad) und erlaubter Bewegung; auf Touch-Geräten, bei reduzierter Bewegung und ohne JavaScript bleiben sie still. Der Effekt ändert nur `transform`, kein Layout.
+
+Nachtrag Erik (2026-10-06): „der paragraph bitte kürzer. nur augsburg. handwerker event des jahres raus. wenn ich nicht arbeite dann dreht sich viel um fußball, bergsport und kochen.“
+
+- AK-50: Der Hero-Absatz hat höchstens vier kurze Sätze und nennt als Ort nur Augsburg (nicht Königsbrunn), die HEROCON ohne Zusatz „Handwerker-Event des Jahres“ und als Hobbys Fußball, Bergsport und Kochen; die Randnotiz neben „Designer“ nennt dieselben drei. Ersetzt die Inhaltsangaben in AK-45, AK-46 und AK-48.
+
+## Unternehmen-Abschnitt aufgeräumt (Erik, 2026-10-06)
+
+Erik: „die unternehmen für die ich gearbeitet hab: beide lines oben und unten weg; die uhrzeit und ort in den footer bitte. statt königsbrunn augsburg; auf mobile bitte alle cards gleich groß“.
+
+- AK-51: Zwischen Hero und Abschnitt „Unternehmen, für die ich gearbeitet habe“ und unter diesem Abschnitt steht keine durchgehende Linie mehr (die gestrichelten Kachelränder bleiben). Die Uhrzeile steht nicht mehr auf der Startseite, sondern im Footer (navigation-und-footer.md AK-23); ersetzt den Ort in AK-30 und AK-33.
+- AK-52: Auf dem Handy (zwei Spalten) sind alle vier Kacheln gleich hoch und gleich breit, auch wenn eine Rolle zweizeilig umbricht.

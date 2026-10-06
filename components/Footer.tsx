@@ -9,6 +9,7 @@ import { localizedPath, messages, type Locale } from '@/lib/i18n';
 import { EMAIL, INSTAGRAM, LINKEDIN } from '@/lib/site';
 import Instagram from './icons/Instagram';
 import Linkedin from './icons/Linkedin';
+import LocalClock from './LocalClock';
 import Logo from './Logo';
 
 const NAV_ITEMS = [
@@ -93,14 +94,14 @@ export default function Footer({ locale }: { locale: Locale }) {
           </ul>
         </div>
 
-        <nav aria-label={t.label} className="md:hidden">
+        <nav id="footer-nav" aria-label={t.label} className="md:hidden scroll-mt-24">
           <ul className="flex flex-col gap-2">
             {NAV_ITEMS.map((item) => (
               <li key={item.path}>
                 <Link
                   href={href(item.path)}
                   aria-current={current(item.path)}
-                  className="inline-block py-1 text-base text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4"
+                  className="inline-flex items-center min-h-11 text-base text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4"
                 >
                   {nav[item.key]}
                 </Link>
@@ -146,6 +147,8 @@ export default function Footer({ locale }: { locale: Locale }) {
         </div>
 
         <div className="border-t border-white/10 pt-8 flex flex-col gap-3">
+          {/* Ortszeit in Augsburg (AK-23) */}
+          <LocalClock locale={locale} label={t.clockLabel} />
           <div className="hidden md:flex items-center w-full">
             <div className="flex items-center gap-4">
               <Link

@@ -12,7 +12,7 @@ describe.each([
     'de',
     '',
     {
-      h1: /^Hey, ich bin Erik$/,
+      h1: /^Hey, ich bin Erik Bergheimer, Product Designer$/,
       offer: 'Was ich anbiete',
       process: 'So arbeiten wir zusammen',
       projects: 'Ausgewählte Projekte',
@@ -23,7 +23,7 @@ describe.each([
     'en',
     '/en',
     {
-      h1: /^Hey, I'm Erik$/,
+      h1: /^Hey, I'm Erik Bergheimer, Product Designer$/,
       offer: 'What I offer',
       process: 'How we work together',
       projects: 'Selected projects',
@@ -34,7 +34,7 @@ describe.each([
   it('AK-2: genau eine h1 und je Abschnitt eine h2', () => {
     render(<Home locale={locale} />);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    // AK-26: nur „Hey, ich bin Erik“, das Winken ist dekorativ
+    // AK-43: Medien-Plätze und Randnotiz sind dekorativ
     expect(screen.getByRole('heading', { level: 1 })).toHaveAccessibleName(t.h1);
     for (const name of [t.offer, t.process, t.projects]) {
       expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument();
@@ -75,19 +75,28 @@ describe.each([
     for (const img of within(section).getAllByRole('presentation')) expect(img).toHaveAttribute('alt', '');
   });
 
-  it('AK-26: Hero ohne Foto, Rolle und Einleitung als Absätze', () => {
-    render(<Home locale={locale} />);
-    const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
-    expect(within(hero).queryByRole('img')).toBeNull();
-    expect(hero).toHaveTextContent(homeContent[locale].role);
-    expect(within(hero).getByRole('link', { name: t.contact })).toHaveAttribute('href', `${prefix}/contact`);
-  });
-
-  it('AK-27: Wörter einzeln animiert, Winken dekorativ', () => {
+  it('AK-43/AK-44/AK-45: typografische h1, Medien-Plätze und Randnotiz dekorativ', () => {
     render(<Home locale={locale} />);
     const h1 = screen.getByRole('heading', { level: 1 });
-    expect(h1.querySelectorAll('[data-word]').length).toBeGreaterThanOrEqual(3);
-    expect(h1.querySelector('[aria-hidden="true"]')).toHaveTextContent('👋');
+    expect(h1.querySelectorAll('[data-word]').length).toBe(4);
+    expect(h1.querySelectorAll('.font-serif').length).toBe(2);
+    const media = h1.querySelectorAll('[data-hero-media]');
+    expect(media).toHaveLength(3);
+    for (const m of media) expect(m).toHaveAttribute('aria-hidden', 'true');
+    expect(h1.querySelector('[data-hero-note]')).toHaveAttribute('aria-hidden', 'true');
+    expect(h1.textContent).not.toContain('👋');
+  });
+
+  it('AK-46: Absatz mit Wohnort, Leidenschaften und Buttons', () => {
+    render(<Home locale={locale} />);
+    const hero = screen.getByRole('heading', { level: 1 }).closest('section')!;
+    expect(hero).toHaveTextContent('Königsbrunn');
+    expect(hero).toHaveTextContent(locale === 'de' ? /Fußball/ : /football/);
+    expect(hero.querySelector('p .text-primary-text')).toHaveTextContent('HERO Software');
+    expect(within(hero).getByRole('link', { name: t.contact })).toHaveAttribute('href', `${prefix}/contact`);
+    expect(
+      within(hero).getByRole('link', { name: locale === 'de' ? 'Projekte ansehen' : 'View projects' }),
+    ).toHaveAttribute('href', `${prefix}/projects`);
   });
 
   it('AK-28/AK-29: Unternehmen als Links, HERO Software hervorgehoben', () => {

@@ -14,6 +14,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ['var(--font-mona)', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
       },
       colors: {
         border: 'hsl(var(--border))',

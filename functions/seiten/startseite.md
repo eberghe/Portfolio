@@ -146,3 +146,20 @@ Erik: „danach bitte die prio hoch issues angehen!“. Aus #15 fehlten die Zäh
 - AK-39: Vor dem Abschluss-Abschnitt steht „Häufige Fragen“ (EN „Frequently asked questions“, h2) mit vier Fragen aus der FAQ im selben Akkordeon wie auf der FAQ-Seite (Fragen als h3) und einem Link „Alle FAQs“ zur FAQ-Seite (mindestens 44 px hoch). Kein zusätzliches FAQ-JSON-LD auf der Startseite (das steht auf der FAQ-Seite).
 - AK-40 (PreMatch, 2026-10-05): Unter „Ausgewählte Projekte“ steht PreMatch (Masterarbeit, 2026) an erster Stelle und ersetzt das älteste Projekt CPR; es bleiben vier Karten. SIGHT'KICK heißt wie auf der Projektseite „Masterprojekt“, nicht „Masterarbeit“.
 - AK-41 (Erik 2026-10-05): Bis die Freiberuflichkeit angemeldet ist (Steuer-ID), steht nirgends „freiberuflich“, „Freelancer“ oder „freelance“ als Selbstbeschreibung (Startseite, Über mich, Städteseiten, llms.txt). Ersetzt den Teil „freiberuflich“ aus AK-17 und ueber-mich.md AK-8.
+
+## Hero im Product-Designer-Stil (Erik, 2026-10-06)
+
+Erik (mit Screenshot eines typografischen Heros als Richtung, nicht als Vorlage): „können wir meinen hero bereich vlt in die richtung umbauen? das finde ich nicht so generisch 🙂 ich bin auch product designer. passionate about fußball, technologie, sport. mag gutes mensch zentriertes design. based in königsbrunn bei augsburg. element bitte 100vh hoch. diese kleinen images/gifs kann ich dir im nachhinein geben. da bitte platzhalter einbauen“.
+
+Ersetzt AK-26, AK-27 (Winken entfällt) und AK-33 (die Firmenleiste beginnt jetzt unter dem ersten Bildschirm).
+
+- AK-42: Der Hero ist mindestens so hoch wie der Bildschirm (`100svh`, inklusive der darüberliegenden Navigation) und hat keinen Hintergrundverlauf mehr; die Navigation bleibt oben transparent (AK-36).
+- AK-43: Die h1 ist eine große typografische Komposition in vier Zeilen: „Hey, ich bin“ / „Erik Bergheimer“ / „Product“ / „Designer“ (EN „Hey, I'm“ / „Erik Bergheimer“ / „Product“ / „Designer“). Der Name und „Designer“ stehen kursiv in einer Serifenschrift (Instrument Serif, selbst gehostet, OFL), der Name in der Akzentfarbe; der Rest in Mona Sans, fett und groß geschrieben (design-tokens.md AK-7). Der Name der h1 lautet „Hey, ich bin Erik Bergheimer, Product Designer“ (EN „Hey, I'm Erik Bergheimer, Product Designer“).
+- AK-44: Zwischen den Zeilen stehen drei Medien-Plätze (Bilder oder GIFs, kommen von Erik). Solange ein Platz leer ist, zeigt er eine ruhige Fläche in Akzentfarbe ohne Text. Die Plätze sind dekorativ (`aria-hidden`), ein Bild darin hat `alt=""`. Sie skalieren mit der Schrift und bleiben auch unter 640 px sichtbar.
+- AK-45: Neben „Designer“ steht klein „Mit Herz für Fußball, Technologie & Sport“ (EN „Passionate about football, tech & sport“), dekorativ, weil der Absatz darunter dasselbe sagt; unter 640 px ausgeblendet.
+- AK-46: Rechts unter der h1 steht ein Absatz: Wohnort Königsbrunn bei Augsburg, menschzentriertes Design, Fußball, Technologie und Sport; ein Satzteil ist in Akzentfarbe hervorgehoben (aktuelle Rolle bei HERO Software). Darunter die Buttons „Kostenloses Erstgespräch“ und „Projekte ansehen“.
+- AK-47: Zeilen und Medien bauen sich gestaffelt auf (wie AK-27, ohne Winken); bei reduzierter Bewegung und ohne JavaScript steht alles sofort da. Kein horizontales Scrollen bei 320 px, keine axe-Verstöße in hell und dunkel.
+
+### Blinder Kritiker (Hero, 2026-10-06)
+
+Behoben: Randnotiz erbte die Großschreibung der h1 („FUSSBALL“, jetzt normal geschrieben, 12 px statt 11 px); Platzhalter im Dunkelmodus kaum sichtbar (jetzt kräftigere Fläche). Bewusst so: das Komma im h1-Namen bleibt mit Schriftgröße 0 (siehe AK-18, `sr-only` erzeugt ein Leerzeichen; per Test im Accessibility-Tree geprüft). Instrument Serif wird auf allen Seiten vorgeladen (22 KB), damit der Hero beim ersten Aufruf nicht umspringt.

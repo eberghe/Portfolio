@@ -8,9 +8,13 @@ test.describe('ohne JavaScript', () => {
   test('AK-26: Hero-Überschrift sichtbar ohne JavaScript, keine halbe Uhrzeile', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText('Königsbrunn', { exact: true })).toHaveCount(0);
-    await expect(page.getByRole('heading', { level: 1, name: 'Hey, ich bin Erik' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Hey, ich bin Erik Bergheimer, Product Designer' }),
+    ).toBeVisible();
     await page.goto('/en');
-    await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik" })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { level: 1, name: "Hey, I'm Erik Bergheimer, Product Designer" }),
+    ).toBeVisible();
   });
 });
 
@@ -57,18 +61,36 @@ test('AK-15: fokussierte Elemente verschwinden nicht unter dem Header', async ({
 
 test('AK-26: h1-Name je Sprache', async ({ page }) => {
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName('Hey, ich bin Erik');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
+    'Hey, ich bin Erik Bergheimer, Product Designer',
+  );
   await page.goto('/en');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName("Hey, I'm Erik");
+  await expect(page.getByRole('heading', { level: 1 })).toHaveAccessibleName(
+    "Hey, I'm Erik Bergheimer, Product Designer",
+  );
 });
 
-test('AK-33: Firmenleiste beginnt im ersten Bildschirm (1280 × 800)', async ({ page }, info) => {
-  test.skip(info.project.name !== 'desktop-1280');
-  await page.setViewportSize({ width: 1280, height: 800 });
+test('AK-42: Hero füllt den ersten Bildschirm, Firmenleiste beginnt darunter', async ({ page }) => {
   await page.goto('/');
-  const list = page.getByRole('heading', { level: 2, name: 'Unternehmen, für die ich gearbeitet habe' });
-  const box = await list.locator('xpath=..').locator('ul').boundingBox();
-  expect(box!.y + 60).toBeLessThan(800);
+  const vh = page.viewportSize()!.height;
+  const hero = page.locator('main section').first();
+  const box = (await hero.boundingBox())!;
+  expect(box.y).toBe(0);
+  expect(box.height).toBeGreaterThanOrEqual(vh - 1);
+  const gradient = await hero.evaluate((el) =>
+    [el, ...el.querySelectorAll('*')].some((n) => getComputedStyle(n).backgroundImage.includes('gradient')),
+  );
+  expect(gradient).toBe(false);
+});
+
+test('AK-43: Name und „Designer“ in der Serifenschrift', async ({ page }) => {
+  await page.goto('/');
+  const fonts = await page.$$eval('h1 .font-serif', (els) => els.map((el) => getComputedStyle(el).fontFamily));
+  expect(fonts).toHaveLength(2);
+  for (const f of fonts) expect(f).toMatch(/serif/i);
+  await expect
+    .poll(() => page.evaluate(() => [...document.fonts].some((f) => f.style === 'italic' && f.status === 'loaded')))
+    .toBe(true);
 });
 
 test('AK-32/AK-34: Kacheln zentriert, Logos geladen', async ({ page }) => {
@@ -96,7 +118,7 @@ test('AK-36: Navigation oben transparent, nach dem Scrollen deckend', async ({ p
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   const bg = () => page.locator('header').evaluate((el) => getComputedStyle(el).backgroundColor);
   await expect.poll(bg).toBe('rgba(0, 0, 0, 0)');
-  // Der Hero (mit Verlauf) beginnt ganz oben, unter der Navigation
+  // Der Hero beginnt ganz oben, unter der Navigation
   const heroTop = await page
     .locator('main section')
     .first()

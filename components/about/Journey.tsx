@@ -193,7 +193,7 @@ export default function Journey({
 
   return (
     <section aria-labelledby="mein-weg" data-journey data-pinned={pinned || undefined}>
-      <div className="max-w-[1200px] mx-auto px-6 sm:px-8 md:px-12 pt-20 md:pt-28 pb-10 md:pb-14">
+      <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-20 md:pt-28 pb-10 md:pb-14">
         <h2
           id="mein-weg"
           className="text-[36px] md:text-[56px] font-bold leading-[1.05] tracking-[-0.03em] mb-4"

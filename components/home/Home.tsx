@@ -38,7 +38,7 @@ export default function Home({ locale }: { locale: Locale }) {
       {/* Negativer Abstand = Navigationshöhe (64 px + 1 px Linie): der Hero liegt unter der (oben transparenten)
           Navigation (AK-36) und füllt mit ihr den ersten Bildschirm (AK-42) */}
       <section className="relative overflow-hidden -mt-[65px] pt-[65px] min-h-[100svh] flex flex-col justify-center">
-        <div className="max-w-[1200px] w-full mx-auto px-5 sm:px-8 md:px-12 py-10 md:py-10">
+        <div className="w-full max-w-page mx-auto px-6 sm:px-8 md:px-12 py-10 md:py-10">
           {/* Typografische h1 (AK-43): drei Zeilen in Mona Sans, „Erik“ und „Designer“ kursiv.
               Medien-Plätze und Randnotiz sind dekorativ (AK-44, AK-45), das Komma nur für Screenreader. */}
           {/* Unter 640 px größer und mit Umbruch nach „Hey, ich bin“ (AK-63) */}
@@ -97,14 +97,14 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="unternehmen">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
+        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-10 md:pt-12">
           <h2 id="unternehmen" className={`${eyebrow} text-center mb-6`} data-reveal>
             {t.companiesTitle}
           </h2>
         </div>
         {/* Durchgehende Linien über die volle Breite, außen senkrecht ab 768 px (AK-62) */}
         <div className="border-y border-border mb-10 md:mb-12">
-          <ul className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 auto-rows-fr md:border-l border-border">
+          <ul className="md:w-[calc(100%-6rem)] md:max-w-[calc(1280px-6rem)] mx-auto grid grid-cols-2 md:grid-cols-4 auto-rows-fr md:border-l border-border">
             {t.companies.map((c, i) => (
               <li
                 key={c.name}
@@ -149,7 +149,10 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       {/* Leistungen als Akkordeon (AK-64 bis AK-66) */}
-      <section aria-labelledby="angebot" className="px-6 sm:px-8 md:px-12 pt-16 md:pt-28 pb-16 md:pb-24">
+      <section
+        aria-labelledby="angebot"
+        className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-28 pb-16 md:pb-24"
+      >
         <div className="text-center max-w-[900px] mx-auto mb-12 md:mb-24" data-reveal>
           <p className={`${eyebrow} mb-4`}>{t.offerEyebrow}</p>
           <h2
@@ -181,7 +184,7 @@ export default function Home({ locale }: { locale: Locale }) {
 
       {/* Ablauf als Timeline mit klebender linker Spalte (AK-59 bis AK-61) */}
       <section aria-labelledby="ablauf" className="border-y border-border bg-bg2">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] gap-10 md:gap-16">
+        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] gap-10 md:gap-16">
           <div data-process-intro data-reveal className="md:sticky md:top-28 md:self-start">
             <p className="text-[14px] font-semibold text-primary-text mb-3">{t.processEyebrow}</p>
             <h2 id="ablauf" className={`${sectionTitle} mb-6`}>
@@ -267,7 +270,7 @@ export default function Home({ locale }: { locale: Locale }) {
         >
           <div
             data-reveal
-            className="w-full px-6 sm:px-8 md:px-12 mb-8 md:mb-12 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-4 md:gap-8"
+            className="w-full max-w-page mx-auto px-6 sm:px-8 md:px-12 mb-8 md:mb-12 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-4 md:gap-8"
           >
             <p className="self-start flex items-center gap-3 text-[15px] font-medium md:pt-4">
               <span aria-hidden="true" className="w-2 h-2 rounded-full bg-primary" />
@@ -292,7 +295,7 @@ export default function Home({ locale }: { locale: Locale }) {
       </section>
 
       <section aria-labelledby="ueber-mich" className="border-y border-border bg-bg2">
-        <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-8 md:gap-14 items-center">
+        <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24 grid md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-8 md:gap-14 items-center">
           <div
             data-reveal
             className="relative aspect-square max-w-[360px] w-full rounded-2xl overflow-hidden border border-border"
@@ -329,7 +332,7 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
         {/* Faktenleiste unter Foto und Text (AK-37); Linien über die volle Breite, außen senkrecht (AK-57) */}
         <div className="border-t border-border">
-          <dl className="max-w-[1100px] mx-auto grid grid-cols-2 md:grid-cols-4 md:border-l border-border">
+          <dl className="md:w-[calc(100%-6rem)] md:max-w-[calc(1280px-6rem)] mx-auto grid grid-cols-2 md:grid-cols-4 md:border-l border-border">
             {t.stats.map((s, i) => (
               <div
                 key={s.label}
@@ -356,7 +359,7 @@ export default function Home({ locale }: { locale: Locale }) {
       {/* FAQ-Auswahl (AK-39) */}
       <section
         aria-labelledby="haeufige-fragen"
-        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 md:gap-12"
+        className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 grid md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 md:gap-12"
       >
         <div className="md:sticky md:top-24 md:self-start">
           <h2 id="haeufige-fragen" className={`${sectionTitle} mb-4`}>
@@ -377,7 +380,7 @@ export default function Home({ locale }: { locale: Locale }) {
         <FaqList items={HOME_FAQS.map((id) => faqs.find((f) => f.id === id)![locale])} idPrefix="start-frage" />
       </section>
 
-      <section aria-labelledby="abschluss" className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24">
+      <section aria-labelledby="abschluss" className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-16 md:py-24">
         <div data-reveal className="rounded-3xl bg-primary text-primary-foreground px-6 py-12 md:px-14 md:py-16">
           <h2
             id="abschluss"

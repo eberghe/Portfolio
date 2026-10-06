@@ -138,7 +138,10 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
             : ''
         }`}
       >
-        <nav aria-label={t.label} className="flex items-center justify-between gap-2 px-4 sm:px-6 md:px-8 h-16">
+        <nav
+          aria-label={t.label}
+          className="flex items-center justify-between gap-2 max-w-page mx-auto px-6 sm:px-8 md:px-12 h-16"
+        >
           <Link
             href={localizedPath('/', locale)}
             aria-label={`Erik Bergheimer – ${t.home}`}

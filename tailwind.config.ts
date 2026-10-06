@@ -12,6 +12,8 @@ export default {
       screens: { '2xl': '1400px' },
     },
     extend: {
+      // Einheitliche Containerbreite aller Seiten (functions/infrastruktur/design-tokens.md AK-11)
+      maxWidth: { page: '1280px' },
       fontFamily: {
         sans: ['var(--font-mona)', 'system-ui', 'sans-serif'],
       },

@@ -132,7 +132,7 @@ export default function ProjectRail({
             ref={track}
             data-rail-track
             onFocus={onFocus}
-            className="flex w-max gap-5 md:gap-7 px-6 sm:px-8 md:px-12 will-change-transform"
+            className="flex w-max gap-5 md:gap-7 px-6 sm:px-8 md:px-[max(3rem,calc((100%-1280px)/2+3rem))] will-change-transform"
           >
             {items.map((p) => (
               <li key={p.id} className={`${CARD} shrink-0 snap-start scroll-ml-6 sm:scroll-ml-8 md:scroll-ml-12`}>

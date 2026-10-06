@@ -21,13 +21,16 @@ test.describe('ohne JavaScript', () => {
   });
 });
 
-test('AK-67: Leistungen über die volle Breite, große Überschrift', async ({ page }, info) => {
+test('AK-67: Leistungen so breit wie der Container, große Überschrift', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop-1280', 'Maße ab 768 px');
   await page.goto('/');
   const section = page.locator('section[aria-labelledby="angebot"]');
   const list = section.locator('ol');
   const box = (await list.boundingBox())!;
   expect(box.width).toBeGreaterThanOrEqual(1280 - 2 * 48 - 20);
+  // Containerbreite (design-tokens.md AK-11): bei breitem Bildschirm nicht breiter als 1280 − 2 × 48
+  await page.setViewportSize({ width: 1600, height: 900 });
+  expect((await list.boundingBox())!.width).toBeLessThanOrEqual(1184 + 1);
   const size = (sel: string) =>
     section
       .locator(sel)

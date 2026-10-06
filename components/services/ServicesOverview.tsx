@@ -28,7 +28,7 @@ export const overviewText = {
 export default function ServicesOverview({ locale }: { locale: Locale }) {
   const t = overviewText[locale];
   return (
-    <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
+    <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12">
       <JsonLd data={servicesItemListJsonLd(locale)} />
       <div className="py-16 border-b border-border mb-10">
         <h1 className="text-[32px] font-bold tracking-tight mb-3">{t.title}</h1>

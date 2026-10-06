@@ -31,7 +31,7 @@ export default function LocalLanding({ page, locale }: { page: LocalPage; locale
   const offered = page.services.flatMap((slug) => services.filter((s) => s.slug === slug));
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
+    <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12">
       <JsonLd data={localJsonLd(page, locale)} />
       <JsonLd data={localBreadcrumbJsonLd(page, locale)} />
       <JsonLd data={faqListJsonLd(d.faqs, locale)} />

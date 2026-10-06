@@ -245,5 +245,5 @@ Behoben (mit Test): Nummer wurde siebenmal vorgelesen („null eins …“), jet
 
 Erik (Screenshot: große Überschrift „Support for every stage“, Zeilen über die volle Breite mit Linien oben und unten): „bitte das schön breit und die grüne outline nur bei keyboard focus.“
 
-- AK-67: Der Leistungsabschnitt nutzt die volle Breite (nur der seitliche Rand wie bei den Referenzen, 48 px ab 768 px); Überschrift ab 768 px mindestens 56 px groß, Nummer und Titel der Zeilen ab 768 px mindestens 40 px. Die Zeilen sind oben und unten durch Linien über die ganze Breite getrennt, auch die offene.
+- AK-67: Der Leistungsabschnitt ist so breit wie der Seitencontainer (design-tokens.md AK-11; vorher volle Breite); Überschrift ab 768 px mindestens 56 px groß, Nummer und Titel der Zeilen ab 768 px mindestens 40 px. Die Zeilen sind oben und unten durch Linien über die ganze Breite getrennt, auch die offene.
 - AK-68: Die offene Zeile hat keinen grünen Rahmen mehr (ersetzt den Rahmen aus AK-66). Grün umrandet wird ein Schalter nur beim Tastaturfokus (`:focus-visible`), nicht nach einem Mausklick.

@@ -89,7 +89,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
   ];
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 sm:px-7 md:px-12 pt-8 pb-28 lg:pb-16">
+    <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 pt-8 pb-28 lg:pb-16">
       <JsonLd data={projectJsonLd(project, locale)} />
       <JsonLd data={projectBreadcrumbJsonLd(project, locale)} />
 

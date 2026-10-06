@@ -133,7 +133,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
   });
 
   return (
-    <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
+    <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12">
       <JsonLd data={projectsItemListJsonLd(locale, projects)} />
       <header className="pt-14 pb-10 md:pt-20 md:pb-14 motion-safe:animate-fade-in">
         <p className="text-[11px] font-medium tracking-widest uppercase text-primary-text mb-3">{t.eyebrow}</p>

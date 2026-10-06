@@ -64,3 +64,10 @@ Bestätigt: Mona Sans wird selbst gehostet geladen, echtes Gewicht 700 (kein kü
 Befund Blinder Kritiker: Auf `/` springt der Hero beim Nachladen von Mona Sans (h1 bricht um eine Zeile anders um, CLS 0,24). Lösung: Mona Sans wird über `next/font/local` geladen (Datei aus `@fontsource-variable/mona-sans`, Latin, Gewicht 200 bis 900, vorgeladen). `next/font` erzeugt eine größenangepasste Ersatzschrift (Arial mit `size-adjust`), die so breit läuft wie Mona Sans; der Wechsel verschiebt kaum etwas. Weiterhin keine Anfrage an fremde Server (AK-6).
 
 - AK-10: Cumulative Layout Shift unter 0,1 auf `/`, `/en` und `/about` bei 360 und 1280 px, mit und ohne reduzierte Bewegung, gemessen ab dem Laden bis 2 s danach.
+
+## Einheitliche Containerbreite (Erik, 2026-10-06)
+
+Erik: „bitte nicht full width aber die ganze seite eigentlich auf die selbe container width zu bekommen? also recht breit aber nicht fullwidth?“
+
+- AK-11: Alle Seiten nutzen dieselbe Containerbreite (Kachelreihen wie Firmen und Fakten sitzen mit ihren äußeren Linien bündig am Inhalt): höchstens 1280 px, mittig, mit seitlichem Rand 24 px (unter 640 px), 32 px (ab 640 px) und 48 px (ab 768 px). Das gilt für Navigation, Footer und jeden Abschnitt; Hintergründe und Linien von Bändern dürfen weiter über die volle Breite gehen, ihr Inhalt sitzt im Container. Bei 1600 px Bildschirmbreite beginnen Logo, Überschriften und Footer also bündig bei 208 px. Die Breite steht als Token `max-w-page` in `tailwind.config.ts`; feste Breiten wie 1100 px oder 1200 px für Seitencontainer gibt es nicht mehr.
+- AK-12: Das Leistungs-Akkordeon auf der Startseite ist so breit wie der Container (ersetzt „volle Breite“ aus startseite.md AK-67).

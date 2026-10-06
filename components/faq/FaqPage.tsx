@@ -41,7 +41,7 @@ export const faqText = {
 export default function FaqPage({ locale }: { locale: Locale }) {
   const t = faqText[locale];
   return (
-    <div className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12">
+    <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12">
       <JsonLd data={faqJsonLd(locale)} />
       <div className="pt-14 pb-10 md:pt-20 md:pb-14 motion-safe:animate-fade-in">
         <p className="text-[11px] font-medium tracking-widest uppercase text-primary-text mb-3">{t.title}</p>

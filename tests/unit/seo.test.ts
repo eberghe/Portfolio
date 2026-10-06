@@ -6,6 +6,7 @@ import sitemap from '@/app/sitemap';
 import { projects } from '@/lib/content/projects';
 import { services } from '@/lib/content/services';
 import { llmsTxt } from '@/lib/llms';
+import { person } from '@/lib/site';
 import { sitePaths } from '@/lib/routes';
 import { homeJsonLd, pageMetadata } from '@/lib/seo';
 import { homeContent } from '@/lib/content/home';
@@ -190,5 +191,24 @@ describe('sitemap AK-1: x-default', () => {
   it('zeigt auf die deutsche Seite', () => {
     const e = sitemap().find((x) => x.url === `${base}/en/services`)!;
     expect(e.alternates?.languages).toMatchObject({ 'x-default': `${base}/services` });
+  });
+});
+
+describe('Issue #10', () => {
+  it('AK-10: Hochschulen mit sameAs und einheitlichen Namen', () => {
+    const p = person('de');
+    expect(p.alumniOf.map((a) => [a.name, a.alternateName, a.sameAs])).toEqual([
+      ['Technische Hochschule Ingolstadt', 'THI', 'https://www.thi.de'],
+      ['Management Center Innsbruck', 'MCI', 'https://www.mci.edu'],
+    ]);
+  });
+
+  it('AK-11: llms.txt mit Über mich und FAQ, ohne doppelte Zeichensetzung', () => {
+    const txt = llmsTxt();
+    const pages = txt.slice(txt.indexOf('## Pages'), txt.indexOf('## Services'));
+    expect(pages).toContain('https://erik-bergheimer.de/en/about');
+    expect(pages).toContain('https://erik-bergheimer.de/en/faqs');
+    expect(pages).not.toMatch(/direct contact/i);
+    expect(txt).not.toMatch(/[?!]\./);
   });
 });

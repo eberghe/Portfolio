@@ -232,3 +232,16 @@ test('AK-19/AK-20: Footer-Leistungen antippbar, aktuelle Seite markiert', async 
   expect(style.color).toBe('rgb(255, 255, 255)');
   expect(style.line).toContain('underline');
 });
+
+test.describe('ohne JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+  test('AK-21: Dunkelmodus-Button nur mit JavaScript', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.getByRole('button', { name: 'Dunkelmodus' })).toHaveCount(0);
+  });
+});
+
+test('AK-21: Dunkelmodus-Button mit JavaScript sichtbar', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Dunkelmodus' })).toBeVisible();
+});

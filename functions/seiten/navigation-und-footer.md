@@ -76,5 +76,9 @@ Offen, bewusst später:
 
 ## Leistungen im Footer (Issue #17, 2026-10-05)
 
-- AK-19: Der Footer listet unter „Leistungen“ (EN „Services“) alle acht Leistungsseiten als Links in der jeweiligen Sprache, neben „Webdesign nach Stadt“. Unter 768 px sind die Leistungs- und Stadtlinks mindestens 44 px hoch (Touch), darüber mindestens 24 px.
+- AK-19: Der Footer listet unter „Leistungen“ (EN „Services“) alle Leistungsseiten (seit 2026-10-05 sieben) als Links in der jeweiligen Sprache, neben „Webdesign nach Stadt“. Unter 768 px sind die Leistungs- und Stadtlinks mindestens 44 px hoch (Touch), darüber mindestens 24 px.
 - AK-20: Ein Footer-Link mit `aria-current="page"` ist auch sichtbar markiert: volle Weiß-Deckkraft und unterstrichen (Kritiker 2026-10-05). Gilt für alle Footer-Navigationen.
+
+## Dunkelmodus ohne JavaScript (Issue #22, 2026-10-06)
+
+- AK-21: Der Dunkelmodus-Button erscheint nur mit JavaScript (`hidden [.js_&]:flex`, die Klasse `js` setzt das Kopf-Skript). Ohne JavaScript gibt es kein funktionsloses Bedienelement, die Seite folgt der Systemeinstellung.

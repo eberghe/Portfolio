@@ -24,6 +24,8 @@ Jede Seite liefert Suchmaschinen und KI-Suchsystemen (ChatGPT, Perplexity, Googl
 - AK-8: `og:image` im Format 1200 × 630, höchstens 300 KB; Projekte `og:type=article`; englische Seiten `og:locale=en_GB` (britische Schreibweise).
 - AK-9: Title der Startseite höchstens 60 Zeichen; Description 120 bis 160 Zeichen mit Ort und „kostenloses Erstgespräch". Beschreibungen der Leistungsseiten nennen Augsburg.
 - AK-5: `/llms.txt` mit Kurzprofil und absoluten Links zu allen Leistungen und Projekten (DE und EN), erzeugt aus den Inhaltsdaten; nennt Kontakt (E-Mail, Erstgespräch), Arbeitsweise (vor Ort DE/AT oder remote), Sprachen und BFSG.
+- AK-10: Hochschulen im Person-JSON-LD heißen wie auf der Seite („Technische Hochschule Ingolstadt“, „Management Center Innsbruck“ mit `alternateName` THI bzw. MCI) und verweisen per `sameAs` auf https://www.thi.de und https://www.mci.edu (Issue #10).
+- AK-11: `/llms.txt` listet unter „## Pages“ auch Über mich (`/about`) und FAQ (`/faqs`); die Kontaktbeschreibung nennt nur, was die Seite bietet (Anfrage-Assistent, keine Direktkontakt-Liste mehr); kein Satzende mit doppelter Zeichensetzung wie „?.“ (Issue #10).
 
 ## Sprachen
 

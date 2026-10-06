@@ -7,6 +7,8 @@ import { EMAIL, absoluteUrl } from '@/lib/site';
 export function llmsTxt() {
   const link = (title: string, path: string, desc: string) =>
     `- [${title}](${absoluteUrl(path, 'en')}): ${desc} [German](${absoluteUrl(path, 'de')})`;
+  // Punkt nur anhängen, wenn der Text nicht schon mit Satzzeichen endet (AK-11)
+  const sentence = (text: string) => (/[.!?]$/.test(text) ? text : `${text}.`);
   return [
     '# Erik Bergheimer',
     '',
@@ -26,11 +28,9 @@ export function llmsTxt() {
     link('Home', '/', 'Introduction, services and featured projects.'),
     link('Services', '/services', 'Overview of all services.'),
     link('Projects', '/projects', 'Selected UX/UI and Webflow case studies, plus photo series.'),
-    link(
-      'Contact',
-      '/contact',
-      'Project enquiry in four short steps (service, project, scope, contact) or direct contact.',
-    ),
+    link('About', '/about', 'Background, education and career timeline.'),
+    link('FAQ', '/faqs', 'Answers on services, process, timelines and working together.'),
+    link('Contact', '/contact', 'Project enquiry in four short steps: service, project, scope, contact.'),
     '',
     '## Services',
     '',
@@ -42,7 +42,7 @@ export function llmsTxt() {
     '',
     '## Projects',
     '',
-    ...projects.map((p) => link(p.en.title, `/projects/${p.slug}`, p.en.tagline + '.')),
+    ...projects.map((p) => link(p.en.title, `/projects/${p.slug}`, sentence(p.en.tagline))),
     '',
   ].join('\n');
 }

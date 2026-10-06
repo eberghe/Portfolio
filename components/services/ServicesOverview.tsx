@@ -58,12 +58,12 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
   return (
     <>
       <JsonLd data={servicesItemListJsonLd(locale)} />
-      {/* Grüner Verlauf oben (AK-29); der negative Abstand legt ihn unter die Navigation */}
-      <header className="relative overflow-hidden">
+      {/* Grüner Verlauf oben (AK-29); der negative Abstand legt ihn unter die transparente Navigation (AK-36) */}
+      <header className="relative overflow-hidden -mt-[65px] pt-[65px]">
         <div
           data-gradient
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_75%_at_50%_0%,hsl(var(--primary)/0.30),transparent_72%),radial-gradient(ellipse_45%_55%_at_10%_5%,hsl(var(--primary)/0.22),transparent_70%),radial-gradient(ellipse_45%_55%_at_90%_0%,hsl(160_60%_65%/0.35),transparent_70%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.22),transparent_70%)]"
         />
         <div className={`relative ${container} pt-20 md:pt-28 pb-12 md:pb-20 text-center`} data-reveal>
           <p className={`${label} mb-5`}>{t.eyebrow}</p>

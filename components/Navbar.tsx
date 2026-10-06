@@ -117,9 +117,10 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
   // Unterseiten (z. B. /services/<slug>) markieren ihren Bereich: aria-current="true" statt "page"
   const inSection = (path: string) => path !== '/' && pathname.startsWith(`${localizedPath(path, locale)}/`);
   const current = (path: string) => (isActive(path) ? 'page' : inSection(path) ? 'true' : undefined);
-  // Startseite: oben transparent, damit der Hero-Verlauf bis an den Rand reicht (startseite.md AK-36).
-  // Nur mit JavaScript ([.js_&]), sonst bliebe sie beim Scrollen ohne Hintergrund.
-  const transparent = !notFound && realPath === localizedPath('/', locale) && atTop && !mobileOpen;
+  // Startseite und Leistungsübersicht: oben transparent, damit der Verlauf bis an den Rand reicht
+  // (startseite.md AK-36, leistungen.md AK-36). Nur mit JavaScript ([.js_&]), sonst bliebe sie beim Scrollen ohne Hintergrund.
+  const transparent =
+    !notFound && ['/', '/services'].some((p) => realPath === localizedPath(p, locale)) && atTop && !mobileOpen;
   const linkClass = (active: boolean) =>
     active
       ? 'bg-primary-light dark:bg-white/10 text-primary-text dark:text-white font-medium'

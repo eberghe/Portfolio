@@ -112,6 +112,9 @@ describe.each([
     const head = h1.closest('header')!;
     expect(head).toHaveTextContent(t.eyebrow);
     expect(head.querySelector('[data-gradient]')).toHaveAttribute('aria-hidden', 'true');
+    // AK-36: Kopf liegt unter der transparenten Navigation, ein ruhiger Verlauf
+    expect(head).toHaveClass('-mt-[65px]');
+    expect(head.querySelector('[data-gradient]')!.className.match(/radial-gradient/g)).toHaveLength(1);
     expect(container.querySelector('[data-gradient]')).not.toBeNull();
   });
 

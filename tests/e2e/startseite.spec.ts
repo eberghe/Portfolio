@@ -118,9 +118,11 @@ test.describe('AK-47: Hero-Animation', () => {
 
 test('AK-32/AK-34: Kacheln zentriert, Logos geladen', async ({ page }) => {
   await page.goto('/');
-  const aligns = await page.$$eval('#unternehmen ~ ul a', (els) => els.map((el) => getComputedStyle(el).textAlign));
+  const aligns = await page.$$eval('section[aria-labelledby="unternehmen"] ul a', (els) =>
+    els.map((el) => getComputedStyle(el).textAlign),
+  );
   expect(aligns.every((a) => a === 'center')).toBe(true);
-  const logos = page.locator('#unternehmen ~ ul img');
+  const logos = page.locator('section[aria-labelledby="unternehmen"] ul img');
   await expect(logos).toHaveCount(4);
   await expect
     .poll(() => logos.evaluateAll((imgs) => imgs.every((i) => (i as HTMLImageElement).naturalWidth > 0)))
@@ -131,7 +133,9 @@ test.describe('AK-34: Logos im Dunkelmodus weiß', () => {
   test.use({ colorScheme: 'dark' });
   test('Filter invertiert', async ({ page }) => {
     await page.goto('/');
-    const filters = await page.$$eval('#unternehmen ~ ul img', (els) => els.map((el) => getComputedStyle(el).filter));
+    const filters = await page.$$eval('section[aria-labelledby="unternehmen"] ul img', (els) =>
+      els.map((el) => getComputedStyle(el).filter),
+    );
     expect(filters.every((f) => f.includes('invert(1)'))).toBe(true);
   });
 });
@@ -235,7 +239,7 @@ test('AK-51: keine Linien um den Unternehmen-Abschnitt, Uhr nicht mehr dort', as
 
 test('AK-52: Unternehmens-Kacheln gleich groß', async ({ page }) => {
   await page.goto('/');
-  const sizes = await page.$$eval('#unternehmen ~ ul > li', (els) =>
+  const sizes = await page.$$eval('section[aria-labelledby="unternehmen"] ul > li', (els) =>
     els.map((el) => {
       const r = el.getBoundingClientRect();
       return [Math.round(r.width), Math.round(r.height)];
@@ -385,22 +389,17 @@ test.describe('AK-61: Linien füllen sich beim Scrollen', () => {
   test('mit Bewegung: Füllung wächst', async ({ page }) => {
     await page.goto('/');
     const fill = page.locator('section[aria-labelledby="ablauf"] [data-step-line] > span').first();
-    const scale = () => fill.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).d);
-    await page.locator('section[aria-labelledby="ablauf"] h2').scrollIntoViewIfNeeded();
-    await page
-      .locator('section[aria-labelledby="ablauf"] ol > li')
-      .first()
-      .evaluate((el) =>
-        window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.95),
-      );
-    await page.waitForTimeout(200);
-    const before = await scale();
-    await page
-      .locator('section[aria-labelledby="ablauf"] ol > li')
-      .first()
-      .evaluate((el) => window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.2));
-    await page.waitForTimeout(200);
-    expect(await scale()).toBeGreaterThan(before);
+    // Linie an eine Stelle im Fenster scrollen (Anteil der Fensterhöhe) und den Füllgrad lesen.
+    // Erneut scrollen bei jedem Versuch, falls sich das Layout beim Laden (Schrift, Bilder) noch verschiebt.
+    const at = (f: number) =>
+      fill.evaluate(async (el, f) => {
+        const line = el.parentElement!;
+        window.scrollTo(0, line.getBoundingClientRect().top + window.scrollY - window.innerHeight * f);
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        return new DOMMatrix(getComputedStyle(el).transform).d;
+      }, f);
+    await expect.poll(() => at(0.95)).toBe(0);
+    await expect.poll(() => at(0.1)).toBe(1);
   });
   test.describe('reduzierte Bewegung', () => {
     test.use({ reducedMotion: 'reduce' });
@@ -410,4 +409,30 @@ test.describe('AK-61: Linien füllen sich beim Scrollen', () => {
       expect(await fill.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).d)).toBe(1);
     });
   });
+});
+
+test('AK-62: Firmenleiste mit durchgehenden Linien bis zum Rand', async ({ page }, info) => {
+  await page.goto('/');
+  const ul = page.locator('section[aria-labelledby="unternehmen"] ul').first();
+  const band = ul.locator('xpath=..');
+  const width = await page.evaluate(() => document.documentElement.clientWidth);
+  expect(Math.round((await band.boundingBox())!.width)).toBe(width);
+  expect(await band.evaluate((el) => getComputedStyle(el).borderTopStyle)).toBe('solid');
+  expect(await band.evaluate((el) => getComputedStyle(el).borderBottomStyle)).toBe('solid');
+  const styles = await ul.locator('> li').evaluateAll((els) =>
+    els.flatMap((el) => {
+      const cs = getComputedStyle(el);
+      return [cs.borderRightStyle, cs.borderBottomStyle, cs.borderLeftStyle, cs.borderTopStyle];
+    }),
+  );
+  expect(styles).not.toContain('dashed');
+  if (info.project.name !== 'mobile-360') {
+    expect(await ul.evaluate((el) => getComputedStyle(el).borderLeftWidth)).toBe('1px');
+    expect(
+      await ul
+        .locator('> li')
+        .last()
+        .evaluate((el) => getComputedStyle(el).borderRightWidth),
+    ).toBe('1px');
+  }
 });

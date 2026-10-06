@@ -214,3 +214,9 @@ Ersetzt die Kartenreihe für den Ablauf (AK-3 bleibt: geordnete Liste mit vier S
 ### Blinder Kritiker (Ablauf, 2026-10-06)
 
 Behoben: Safari/VoiceOver verlor die Listen-Semantik der `ol` ohne Aufzählungszeichen (jetzt `role="list"`); Icon-Kreise im Dunkelmodus kaum sichtbar (kräftigere Fläche); graue, noch nicht gefüllte Linie kaum sichtbar (jetzt Vordergrund 15 %). Bewusst so: Die linke Spalte ist rund 300 px hoch und klebt auch auf niedrigen Bildschirmen, erst unter rund 420 px Höhe würde sie abgeschnitten.
+
+## Unternehmen mit durchgehenden Linien (Erik, 2026-10-06)
+
+Erik: „bitte auch bei den unternehmen für die ich gearbeitet hab die linien nicht gestrichelt sondern durchgängig und bis zum rand rechts und links. dann ist es schön durchgehend.“
+
+- AK-62: Die Kacheln der Firmenleiste haben durchgezogene statt gestrichelte Linien. Die waagerechten Linien über und unter der Leiste (unter 768 px auch die zwischen den zwei Reihen) reichen über die volle Bildschirmbreite, wie bei der Faktenleiste in „Über mich“ (AK-57); ab 768 px haben die äußeren Kacheln auch außen eine senkrechte Linie. Ersetzt „die gestrichelten Kachelränder bleiben“ aus AK-51 (der Abschnitt selbst hat weiterhin keinen eigenen Rand oben und unten).

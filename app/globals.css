@@ -425,3 +425,30 @@ html.lenis {
     transform: scaleY(1);
   }
 }
+
+/* Leistungs-Akkordeon (functions/seiten/startseite.md AK-65): zu nur mit JavaScript, animiert über grid-template-rows */
+html.js .service-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s 0.45s;
+}
+html.js .service-panel[data-open] {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+}
+html.js .service-panel > div {
+  min-height: 0;
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.js .service-panel,
+  html.js .service-panel[data-open] {
+    transition: none;
+  }
+}

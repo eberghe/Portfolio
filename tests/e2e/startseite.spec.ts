@@ -12,6 +12,30 @@ test.describe('ohne JavaScript', () => {
     await page.goto('/en');
     await expect(page.getByRole('heading', { level: 1, name: "Hey, I'm Erik, Product Designer" })).toBeVisible();
   });
+
+  test('AK-65: ohne JavaScript sind alle Leistungen offen', async ({ page }) => {
+    await page.goto('/');
+    const links = page.locator('section[aria-labelledby="angebot"] a[href^="/services/"]');
+    await expect(links).toHaveCount(7);
+    for (const link of await links.all()) await expect(link).toBeVisible();
+  });
+});
+
+test('AK-65: Akkordeon per Tastatur, geschlossene Felder unsichtbar', async ({ page }) => {
+  await page.goto('/');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  const section = page.locator('section[aria-labelledby="angebot"]');
+  const buttons = section.getByRole('button');
+  await expect(section.getByRole('link', { name: 'Mehr zu UX/UI Design' })).toBeVisible();
+  const second = buttons.nth(1);
+  const panel = page.locator(`#${await second.getAttribute('aria-controls')}`);
+  await expect(panel.locator('a')).toBeHidden();
+  await second.focus();
+  await page.keyboard.press('Enter');
+  await expect(second).toHaveAttribute('aria-expanded', 'true');
+  await expect(buttons.first()).toHaveAttribute('aria-expanded', 'false');
+  await expect(panel.getByRole('link')).toBeVisible();
+  await expect(section.getByRole('link', { name: 'Mehr zu UX/UI Design' })).toBeHidden();
 });
 
 test('AK-27/AK-30: Animation endet sichtbar, Uhrzeit ohne Hydration-Fehler', async ({ page }) => {

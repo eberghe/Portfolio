@@ -56,6 +56,8 @@ export const homeContent = {
     offerIntro:
       'Sieben Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Webflow-Website.',
     learnMore: 'Mehr erfahren',
+    offerEyebrow: 'Leistungen',
+    serviceMore: (title: string) => `Mehr zu ${title}`,
     toProject: 'Zum Projekt',
     aboutTitle: 'Über mich',
     // TODO(Erik): persönliche Notiz prüfen oder ersetzen (Issue #14)
@@ -121,6 +123,8 @@ export const homeContent = {
     offerIntro:
       'Seven services, one point of contact: from first user research and design to an accessible Webflow website.',
     learnMore: 'Learn more',
+    offerEyebrow: 'Services',
+    serviceMore: (title: string) => `More on ${title}`,
     toProject: 'View project',
     aboutTitle: 'About me',
     // TODO(Erik): review or replace the personal note (issue #14)

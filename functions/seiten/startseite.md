@@ -83,7 +83,7 @@ Erik wünscht sich die Startseite inhaltlich und in den Animationen nach dem Vor
 Reihenfolge: Hero → Werkzeug-Laufband → Faktenleiste → Leistungen als nummerierter Sticky-Stapel → Ablauf → Fallstudien → Persönliche Notiz → Abschluss-CTA.
 
 - AK-20: Unter dem Hero steht ein Abschnitt mit der h2 „Werkzeuge, mit denen ich arbeite“. Das Laufband ist dekorativ und hat einen Pause-Knopf; die Werkzeuge stehen zusätzlich als Liste für Screenreader.
-- AK-21: Die Leistungen sind nummeriert (01 bis 08). Jede Karte zeigt Nummer, Kategorie, Titel (h3), Kurztext, bis zu vier Leistungsmerkmale als Liste und einen Link „Mehr erfahren“. Der Link heißt wie die Leistung; der Kurztext ist seine Beschreibung (AK-12 bleibt). Die Liste ist ein Sticky-Stapel (`sticky-stack`, siehe `infrastruktur/animationen.md`). Links daneben bleibt ab 768 px die Abschnittsüberschrift mit einem Satz und dem Erstgespräch-Button stehen.
+- AK-21 (ersetzt durch AK-64 bis AK-66): Die Leistungen sind nummeriert (01 bis 08). Jede Karte zeigt Nummer, Kategorie, Titel (h3), Kurztext, bis zu vier Leistungsmerkmale als Liste und einen Link „Mehr erfahren“. Der Link heißt wie die Leistung; der Kurztext ist seine Beschreibung (AK-12 bleibt). Die Liste ist ein Sticky-Stapel (`sticky-stack`, siehe `infrastruktur/animationen.md`). Links daneben bleibt ab 768 px die Abschnittsüberschrift mit einem Satz und dem Erstgespräch-Button stehen.
 - AK-22: Projektkarten sind Fallstudien-Karten: großes Bild, Schlagworte als Liste (aus dem Projekttyp), Titel (h3), Kurztext und der sichtbare Hinweis „Fallstudie lesen“. Linkname bleibt der Titel (AK-12).
 - AK-23: Abschnitt „Über mich“ (h2) in Ich-Form mit Foto, kurzem Text und Link „Mehr über mich“ auf `/about`.
 - AK-24: Abschluss-CTA (h2 „Erzähl mir, was du vorhast“ / „Tell me what you're planning“) mit Link zum Kontakt und E-Mail-Adresse.
@@ -226,3 +226,17 @@ Erik: „bitte auch bei den unternehmen für die ich gearbeitet hab die linien n
 Erik: „auf mobile gefällt mir die hero section auf home nicht. da ist das element viel zu klein im verhältnis zum paragraph. kannst du das anpassen?“
 
 - AK-63: Unter 640 px ist die h1 im Hero mindestens 2,25-mal so groß wie der Absatz darunter (vorher rund 1,7-mal: 28 px zu 16 px). Dafür darf die erste Zeile umbrechen („Hey, ich bin“ / „[Bild] Erik“), so entstehen vier zentrierte Zeilen. Medien-Plätze wachsen mit der Schrift. Kein horizontales Scrollen ab 320 px (AK-9), keine Silbentrennung mitten im Wort. Ab 640 px bleibt alles wie bisher.
+
+## Leistungen als Akkordeon (Erik, 2026-10-06)
+
+Erik (mit Screenshot „Support for every stage“: zentrierte Überschrift, darunter nummerierte Zeilen „01 Brand Identity“ … mit Plus rechts; die offene Zeile hat einen Rahmen in Akzentfarbe, links ein großes Bild, rechts Text, Merkmalliste und Link): „jetzt bitte die leistungen auf der home seite so umbauen. bei bildern gerne erstmal placeholder drin.“
+
+Ersetzt AK-21 (Sticky-Stapel) auf der Startseite; AK-5 und AK-12 gelten weiter.
+
+- AK-64: Der Abschnitt „Was ich anbiete“ beginnt zentriert mit Kennzeichen „Leistungen“ (EN „Services“), h2 und Einleitungssatz. Darunter stehen alle sieben Leistungen als Akkordeon: je Zeile Nummer („01“ bis „07“, für Screenreader verborgen, die Liste gibt die Reihenfolge an) und Titel als Schalter in einer h3, rechts ein Plus (offen: Minus, dekorativ). Der Schalter hat `aria-expanded` und `aria-controls` auf sein Feld. Beim Laden ist die erste Leistung offen.
+- AK-65: Es ist immer höchstens eine Leistung offen: Öffnen einer anderen schließt die bisherige, erneutes Klicken schließt die offene. Geschlossene Felder sind unsichtbar und für Screenreader verborgen; das Auf- und Zuklappen ist animiert, bei reduzierter Bewegung sofort. Ohne JavaScript sind alle Felder offen, damit nichts verloren geht.
+- AK-66: Ein offenes Feld zeigt ab 768 px links ein großes Bild (vorerst ein dunkler Platzhalter mit dem Icon der Leistung, dekorativ, bis Erik Bilder schickt; im Dunkelmodus etwas heller als der Hintergrund) und rechts die Beschreibung, alle Leistungsmerkmale als Liste und den Link „Mehr zu <Leistung> →“ zur Leistungsseite; unter 768 px steht das Bild über dem Text. Die offene Zeile hat einen Rahmen in Akzentfarbe, die geschlossenen sind durch Linien getrennt. Kein eigener Erstgespräch-Button: Der Ablauf direkt darunter hat ihn (AK-59), so bleibt AK-46 erfüllt.
+
+### Blinder Kritiker (Leistungen, 2026-10-06)
+
+Behoben (mit Test): Nummer wurde siebenmal vorgelesen („null eins …“), jetzt nur sichtbar; Platzhalterbild im Dunkelmodus unsichtbar (gleiche Farbe wie der Hintergrund); zwei Erstgespräch-Buttons direkt hintereinander. Offen für Erik: Der englische Text zu UX/UI Design ist länger als der deutsche und sagt „pixel-perfect“; beide Fassungen angleichen.

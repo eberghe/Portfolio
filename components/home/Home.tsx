@@ -7,6 +7,7 @@ import JsonLd from '@/components/JsonLd';
 import CountUp from '@/components/motion/CountUp';
 import Magnetic from '@/components/motion/Magnetic';
 import ProjectRail from '@/components/home/ProjectRail';
+import ServiceAccordion from '@/components/home/ServiceAccordion';
 import { aboutPhoto } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
 import { projects } from '@/lib/content/projects';
@@ -22,9 +23,6 @@ import { homeJsonLd } from '@/lib/seo';
 const HOME_FAQS = ['leistungen', 'ablauf', 'dauer', 'remote'];
 /** Icons der Ablauf-Schritte (AK-60): Kennenlernen, Analyse & Angebot, Umsetzung, Launch & Betreuung */
 const PROCESS_ICONS = [MessagesSquare, Search, PenTool, Rocket];
-
-const cardHover =
-  'motion-safe:transition motion-safe:duration-200 motion-safe:hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_8px_30px_-12px_hsl(var(--primary)/0.15)]';
 
 export default function Home({ locale }: { locale: Locale }) {
   const t = homeContent[locale];
@@ -150,102 +148,33 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
       </section>
 
+      {/* Leistungen als Akkordeon (AK-64 bis AK-66) */}
       <section
         aria-labelledby="angebot"
-        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 pb-12 md:pb-16 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-12"
+        className="max-w-[1100px] mx-auto px-6 sm:px-8 md:px-12 pt-16 md:pt-24 pb-12 md:pb-16"
       >
-        <div className="lg:sticky lg:top-24 lg:self-start" data-reveal>
+        <div className="text-center max-w-[560px] mx-auto mb-10 md:mb-14" data-reveal>
+          <p className={`${eyebrow} mb-3`}>{t.offerEyebrow}</p>
           <h2 id="angebot" className={`${sectionTitle} mb-4`}>
             {t.offer}
           </h2>
-          <p className="text-[16px] md:text-[17px] leading-relaxed text-text2 mb-6 max-w-[520px]">{t.offerIntro}</p>
-          <Link
-            href={href('/contact')}
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-3 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
-          >
-            {t.contact}
-          </Link>
+          <p className="text-[16px] md:text-[17px] leading-relaxed text-text2">{t.offerIntro}</p>
         </div>
-        <ol className="sticky-stack grid gap-4" style={{ '--stack-n': services.length } as CSSProperties}>
-          {services.map((s, i) => {
+        <ServiceAccordion
+          items={services.map((s) => {
             const Icon = s.icon;
             const text = s[locale];
-            const accent = s.featured;
-            return (
-              <li
-                key={s.slug}
-                data-reveal
-                style={{ '--stack-i': i } as CSSProperties}
-                className={`group relative rounded-2xl p-6 md:p-8 border shadow-[0_-8px_30px_-20px_hsl(var(--foreground)/0.25)] ${cardHover} ${
-                  accent ? 'bg-primary text-primary-foreground border-primary' : 'bg-card border-border'
-                }`}
-              >
-                <div className="flex items-start justify-between gap-4 mb-5">
-                  <span
-                    aria-hidden="true"
-                    className={`text-[40px] md:text-[48px] font-bold leading-none tracking-tight ${
-                      accent ? 'text-primary-foreground' : 'text-primary-text'
-                    }`}
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      accent ? 'bg-primary-foreground/15' : 'bg-primary-light'
-                    }`}
-                  >
-                    <Icon size={18} className={accent ? 'text-primary-foreground' : 'text-primary-text'} />
-                  </span>
-                </div>
-                <p
-                  className={`text-[10px] font-medium tracking-wider uppercase mb-2 ${
-                    accent ? 'text-primary-foreground' : 'text-text3'
-                  }`}
-                >
-                  {text.label}
-                </p>
-                <h3 id={`leistung-${s.slug}`} className={`text-xl font-bold mb-2 ${accent ? '' : 'text-foreground'}`}>
-                  {text.title}
-                </h3>
-                <p
-                  id={`leistung-${s.slug}-text`}
-                  className={`text-[14px] leading-relaxed mb-4 ${accent ? 'text-primary-foreground' : 'text-text2'}`}
-                >
-                  {text.short}
-                </p>
-                <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 mb-5">
-                  {text.features.slice(0, 4).map((f) => (
-                    <li
-                      key={f}
-                      className={`flex gap-2 text-[13px] ${accent ? 'text-primary-foreground' : 'text-foreground'}`}
-                    >
-                      <span aria-hidden="true" className={accent ? '' : 'text-primary-text'}>
-                        ✓
-                      </span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href={href(`/services/${s.slug}`)}
-                  aria-labelledby={`leistung-${s.slug}`}
-                  aria-describedby={`leistung-${s.slug}-text`}
-                  className={`inline-flex items-center gap-1.5 text-[13px] font-medium after:absolute after:inset-0 after:rounded-2xl ${
-                    accent ? 'text-primary-foreground' : 'text-primary-text'
-                  }`}
-                >
-                  {t.learnMore}
-                  <ArrowRight
-                    size={14}
-                    aria-hidden="true"
-                    className="motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
-                  />
-                </Link>
-              </li>
-            );
+            return {
+              slug: s.slug,
+              href: href(`/services/${s.slug}`),
+              title: text.title,
+              description: text.description,
+              features: text.features,
+              more: t.serviceMore(text.title),
+              media: <Icon size={72} strokeWidth={1.25} className="opacity-90" />,
+            };
           })}
-        </ol>
+        />
       </section>
 
       {/* Ablauf als Timeline mit klebender linker Spalte (AK-59 bis AK-61) */}

@@ -104,3 +104,22 @@ Aus dem Aufbau in #16 fehlte Punkt 6 „Warum ich (Wertekarten, Sticky-Stapel)�
 ## Fotografie keine Leistung mehr (Erik 2026-10-05)
 
 - AK-28: Es gibt sieben Leistungen; Fotografie entfällt als Leistung. `/services/photography` (EN `/en/services/photography`) leitet dauerhaft auf die Projekte um, wo die Fotoserien bleiben. Übersicht, Meta-Description, Startseite, FAQ, Footer, Kontaktformular und llms.txt nennen Fotografie nicht mehr als Leistung. Fotoserien zeigen keine „Passende Leistung“.
+
+## Übersicht neu nach designme.agency/services (Erik, 2026-10-06)
+
+Erik (mit zwei Screenshots: „Our services“ mit großer zentrierter Überschrift und einer zweispaltigen, nummerierten Liste mit Pfeilen; darunter je Leistung ein Abschnitt „Brand identity“ mit Linie, links „When you need this“ + Link + „Related work“, rechts „What we deliver“ als nummerierte Liste): „please rework the services page … also green gradient again at the top, spring to sections, this direction for the sections below and then fullscreen image below“.
+
+Ersetzt die Kachelübersicht (AK-6 gilt sinngemäß weiter: Links heißen wie die Leistung).
+
+- AK-29: Kopf der Übersicht: grüner Verlauf oben (weiche Flächen in Akzentfarbe hinter dem Kopf, dekorativ), Kennzeichen „Was ich mache“ (EN „What I do“), große zentrierte h1 „Leistungen für Websites und digitale Produkte“ (EN „Services for websites and digital products“, AK-11 bleibt) und ein Satz darunter.
+- AK-30: Darunter alle sieben Leistungen als zweispaltige Liste (unter 768 px einspaltig), je Zeile Nummer („01“ bis „07“, für Screenreader verborgen), Titel und Pfeil, Zeilen durch Linien getrennt. Jede Zeile ist ein Sprunglink zum Abschnitt der Leistung auf derselben Seite (`#<slug>`); der Linkname ist der Titel. Der Sprung scrollt weich (bei reduzierter Bewegung sofort) und der Abschnitt landet nicht unter der Navigation.
+- AK-31: Je Leistung ein Abschnitt mit `id="<slug>"`: große h2 (Titel), darunter eine Linie, dann zwei Spalten (ab 768 px): links „Wann du das brauchst:“ (EN „When you need this:“) mit einem Satz aus Sicht des Kunden, der Link „Mehr zu <Leistung> →“ zur Detailseite und, falls vorhanden, „Passende Arbeit:“ (EN „Related work:“) mit bis zu drei Projektkacheln (Vorschaubild dekorativ, Linkname = Projekttitel); rechts „Das bekommst du:“ (EN „What you get:“) mit allen Leistungsmerkmalen als nummerierte Liste mit Linien.
+- AK-32: Nach jedem Leistungsabschnitt folgt ein Bild über die volle Bildschirmbreite (rund 70 % der Bildschirmhöhe, höchstens 720 px). Bis Erik Bilder schickt, ist es ein dekorativer Platzhalter mit grünem Verlauf und dem Icon der Leistung.
+- AK-33: Die Sätze „Wann du das brauchst“ stehen in `lib/content/services.ts` (`need`) in DE und EN, je mindestens 60 Zeichen. Entwürfe; Erik prüft sie.
+- AK-34: Keine axe-Verstöße, kein horizontales Scrollen (AK-7), JSON-LD `ItemList` bleibt (AK-12).
+- AK-35: Die Übersicht endet mit einem Abschluss: h2 „Nicht sicher, was passt?“ (EN „Not sure what fits?“), ein Satz und der Button „Kostenloses Erstgespräch“ zu `/contact`.
+
+### Blinder Kritiker (Übersicht neu, 2026-10-06)
+
+Behoben (mit Test): Seite endete ohne Aufforderung zum Kontakt (AK-35); englischer Bedarfssatz klang übersetzt. Offen für Erik: „Barrierefreiheit-Beratung“ korrekt wäre „Barrierefreiheitsberatung“ (betrifft Titel auf allen Seiten); Groß- und Kleinschreibung der englischen Leistungsnamen ist uneinheitlich („UX/UI Design“ gegenüber „Design systems“); der Footer sagt auch auf Deutsch „made with love in augsburg“. Bewusst so: Die Bildbänder stehen nach jeder Leistung, wie Erik es wollte.
+- AK-36 (Erik: „nav hat wieder weißen hintergrund und verlauf sieht nicht so gut aus“): Auf der Leistungsübersicht ist die Navigation oben transparent wie auf der Startseite (startseite.md AK-36), der Verlauf reicht bis an den oberen Rand. Der Verlauf ist ein einziger, ruhiger grüner Schein von oben mittig (wie früher im Home-Hero), ohne seitliche Flecken.

@@ -98,9 +98,9 @@ describe('Navbar transparent oben auf der Startseite', () => {
   };
   beforeEach(() => scrollTo(0));
 
-  it.each(['/', '/en'])('%s: oben transparent, nach dem Scrollen deckend', (path) => {
+  it.each(['/', '/en', '/services', '/en/services'])('%s: oben transparent, nach dem Scrollen deckend', (path) => {
     pathname = path;
-    render(<Navbar locale={path === '/en' ? 'en' : 'de'} />);
+    render(<Navbar locale={path.startsWith('/en') ? 'en' : 'de'} />);
     expect(header()).toHaveAttribute('data-transparent', 'true');
     scrollTo(40);
     expect(header()).not.toHaveAttribute('data-transparent');

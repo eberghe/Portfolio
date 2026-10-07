@@ -277,6 +277,8 @@ test('AK-31: Balken und aktive Station laufen synchron mit dem Scrollweg', async
   const n = await panels(page).count();
   const segments = page.locator('[data-journey] [data-journey-segment]');
   await expect(segments).toHaveCount(n);
+  // Gefüllte Teile sind weiß
+  expect(await segments.first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(255, 255, 255)');
   for (let i = 0; i < n; i++) {
     for (const frac of [0.1, 0.9]) {
       await page.evaluate(

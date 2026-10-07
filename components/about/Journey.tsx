@@ -335,7 +335,7 @@ export default function Journey({
                       ref={(el) => {
                         segments.current[i] = el;
                       }}
-                      className="block h-full bg-primary origin-left scale-x-0"
+                      className="block h-full bg-white origin-left scale-x-0"
                     />
                   </span>
                 ))}

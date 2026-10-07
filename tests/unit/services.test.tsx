@@ -452,7 +452,7 @@ describe('AK-39/AK-40: Webdesign & Webentwicklung', () => {
     for (const s of services) expect(s.related).not.toContain('webflow-development');
   });
   it.each(['de', 'en'] as const)('nennt Webflow, Framer und eigene Entwicklung (%s)', (locale) => {
-    const text = service![locale].description;
+    const text = service![locale].features.join(' ');
     for (const word of ['Webflow', 'Framer', 'TypeScript', 'Supabase', 'Vercel', 'Claude Code'])
       expect(text).toContain(word);
     const tools = detailOf('web-design-development').tools;
@@ -471,5 +471,36 @@ describe('AK-39/AK-40: Webdesign & Webentwicklung', () => {
     }
     const meta = `${overviewText[locale].metaTitle} ${overviewText[locale].metaDescription}`;
     expect(meta).not.toMatch(/Webflow/);
+  });
+});
+
+// Erik, 2026-10-07: kürzer, Entweder-oder, Bilder
+describe('AK-41: kurze Beschreibung, Werkzeuge als Entweder-oder', () => {
+  const service = services.find((s) => s.slug === 'web-design-development')!;
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    const t = service[locale];
+    expect(t.description.length).toBeLessThanOrEqual(120);
+    expect(t.description).not.toMatch(/Webflow|Framer|TypeScript|Supabase|Vercel|Claude/);
+    const [either, or] = locale === 'de' ? ['Entweder', 'Oder'] : ['Either', 'Or'];
+    const first = t.features.find((f) => f.startsWith(either))!;
+    const second = t.features.find((f) => f.startsWith(`${or} `))!;
+    expect(first).toMatch(/Webflow.*Framer/);
+    expect(first).not.toMatch(/TypeScript/);
+    for (const word of ['TypeScript', 'Supabase', 'Vercel', 'Claude Code']) expect(second).toContain(word);
+    expect(t.features.indexOf(second)).toBe(t.features.indexOf(first) + 1);
+  });
+});
+
+describe('AK-42: Bilder für Webdesign und Marke', () => {
+  it.each([
+    ['web-design-development', '/images/services/webdesign-webentwicklung.jpg'],
+    ['brand-logo-design', '/images/services/brand-logo-design.png'],
+  ])('%s', (slug, src) => {
+    const s = services.find((x) => x.slug === slug)!;
+    expect(s.image).toMatchObject({ src, width: 1600, height: 900 });
+    expect(s.image!.alt.length).toBeGreaterThan(40);
+    expect(s.image!.altEn.length).toBeGreaterThan(40);
+    render(<ServicesOverview locale="de" />);
+    expect(screen.getByRole('img', { name: s.image!.alt })).toBeInTheDocument();
   });
 });

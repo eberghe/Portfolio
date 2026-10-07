@@ -146,3 +146,14 @@ Erik: „Webflow Entwicklung abändern in Webdesign und Webentwicklung … weil 
 ### Blinder Kritiker (Webdesign & Webentwicklung, 2026-10-07)
 
 Behoben: UX/UI-FAQ nannte nur Webflow; Stuttgart-FAQ versprach „Hosting in der EU“, obwohl der eigene Weg Vercel und Supabase nutzt (jetzt: Server und Datenbank in einem Rechenzentrum in der EU) und mischte du und ihr; Relativsätze bezogen sich auf das falsche Wort (Stuttgart, Innsbruck); „No-Code-Werkzeuge“ im Plural; übersetzt klingendes Englisch bei den Plan-Kosten; Stuttgart nennt jetzt auch Framer. Offen für Erik: ob 2 bis 6 Wochen auch für Web-Apps mit Login und Datenbank gelten und ob eine eigene Inhaltsverwaltung bei Custom-Projekten immer dabei ist; Projektseite heißt weiter „UX/UI, Webflow & Fotografie“, weil die Bachelorarbeit wirklich Webflow ist.
+
+## Kürzer, Entweder-oder, Bilder für Web und Marke (Erik, 2026-10-07)
+
+Erik: „der text ist zu lang. kürzen und was nicht rein passt … drunter packen in ein bullet point“ und „webflow/framer und eigenentwicklung wirkt noch wie zwei schritte … das ist aber ja ein entweder oder“. Dazu schickte er Bilder für Website und Logo/Marke.
+
+- AK-41: Die Beschreibung von Webdesign & Webentwicklung ist ein kurzer Satz (höchstens 120 Zeichen) ohne Werkzeugnamen. Die Werkzeuge stehen in den Stichpunkten darunter, als Entweder-oder: ein Punkt „Entweder …“ für Webflow oder Framer, ein Punkt „Oder …“ für die eigene Entwicklung mit TypeScript, Supabase, Vercel und Claude Code (EN „Either …“ / „Or …“). Ersetzt für die Beschreibung die Werkzeugnennung aus AK-40.
+- AK-42: Webdesign & Webentwicklung und Brand- & Logo-Design haben echte Bilder (`public/images/services/webdesign-webentwicklung.jpg`, `brand-logo-design.png`, je 1600 × 900) mit beschreibendem Alt-Text in DE und EN, wie in AK-38.
+
+### Blinder Kritiker (kürzer und Bilder, 2026-10-07)
+
+Behoben: „Inhalte pflegst du danach selbst“ nur beim No-Code-Punkt klang, als ginge das bei eigener Entwicklung nicht; „CMS-Setup“ passte nur zu Webflow und Framer (jetzt „Inhaltsverwaltung“); das „oder“ zwischen Webflow und Framer steht in Klammern, damit es sich vom „Oder“-Punkt abhebt. Alt-Texte stimmen mit den Bildern überein.

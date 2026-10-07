@@ -76,18 +76,25 @@ export const services: Service[] = [
     slug: 'web-design-development',
     related: ['ux-ui-design', 'website-process-optimization', 'accessibility'],
     icon: Monitor,
-    // Nicht nur Webflow: je nach Bedarf Webflow, Framer oder eigene Entwicklung (leistungen.md AK-39, AK-40)
+    // Nicht nur Webflow: entweder Webflow/Framer oder eigene Entwicklung (leistungen.md AK-39 bis AK-41)
+    image: {
+      src: '/images/services/webdesign-webentwicklung.jpg',
+      width: 1600,
+      height: 900,
+      alt: 'Mehrere Ansichten einer Hochzeitswebsite für Kristin und Daniel in Dunkelblau und Creme: Startseite mit gezeichneter Landschaft, Anmeldeformular, Dresscode mit Farbpunkten, Ablauf des Tages, Unterkünfte und häufige Fragen.',
+      altEn:
+        'Several views of a wedding website for Kristin and Daniel in dark blue and cream: home page with a drawn landscape, RSVP form, dress code with colour dots, schedule of the day, accommodation and FAQ.',
+    },
     de: {
       tags: ['Webflow', 'Framer', 'TypeScript', 'CMS', 'SEO'],
-      description:
-        'Schnelle, gut gestaltete Websites mit dem Werkzeug, das zu deinem Vorhaben passt. Je nach Bedarf baue ich mit Webflow oder Framer als No-Code-Werkzeuge, oder ich entwickle die Seite selbst mit TypeScript, Supabase und Vercel, unterstützt von Claude Code. Immer responsive, barrierefrei und suchmaschinenfreundlich.',
+      description: 'Schnelle, gut gestaltete Websites, gebaut mit dem Werkzeug, das zu deinem Vorhaben passt.',
       features: [
+        'Entweder No-Code (Webflow oder Framer), wenn du Inhalte im Editor selbst pflegen willst',
+        'Oder eigene Entwicklung mit TypeScript, Supabase und Vercel, unterstützt von Claude Code, wenn deine Website mehr können muss',
         'Webdesign in Figma',
-        'Umsetzung in Webflow oder Framer',
-        'Eigene Entwicklung mit TypeScript, Supabase und Vercel',
-        'CMS-Setup & Content-Modellierung',
-        'Animationen & Performance',
-        'SEO & Launch-Support',
+        'Responsive, barrierefrei und suchmaschinenfreundlich',
+        'Inhaltsverwaltung & Animationen',
+        'Launch-Support',
       ],
       label: 'Web',
       title: 'Webdesign & Webentwicklung',
@@ -98,15 +105,14 @@ export const services: Service[] = [
     },
     en: {
       tags: ['Webflow', 'Framer', 'TypeScript', 'CMS', 'SEO'],
-      description:
-        'Fast, well-designed websites built with the tool that fits your project. Depending on what you need, I build with Webflow or Framer as no-code tools, or develop the site myself with TypeScript, Supabase and Vercel, supported by Claude Code. Always responsive, accessible and search-friendly.',
+      description: 'Fast, well-designed websites, built with the tool that fits your project.',
       features: [
+        'Either no-code (Webflow or Framer), when you want to edit content yourself in the editor',
+        'Or custom development with TypeScript, Supabase and Vercel, supported by Claude Code, when your website needs to do more',
         'Web design in Figma',
-        'Build in Webflow or Framer',
-        'Custom development with TypeScript, Supabase and Vercel',
-        'CMS setup & content modelling',
-        'Animations & performance',
-        'SEO & launch support',
+        'Responsive, accessible and search-friendly',
+        'Content management & animations',
+        'Launch support',
       ],
       label: 'Web',
       title: 'Web design & development',
@@ -238,6 +244,15 @@ export const services: Service[] = [
     slug: 'brand-logo-design',
     related: ['design-systems', 'web-design-development', 'ux-ui-design'],
     icon: PenTool,
+    // Bild von Erik (leistungen.md AK-42)
+    image: {
+      src: '/images/services/brand-logo-design.png',
+      width: 1600,
+      height: 900,
+      alt: 'Logo-Arbeiten auf Karten: Bildmarke und Wortbildmarke von Axium (The Body Clinic) in Blau, Siegel und Wortbildmarke von Fräulein Trau dich (Freie Traurednerin) mit gezeichneter Blume, Bildmarke und Wortbildmarke von Solidrive in Dunkelgrün sowie die Bildmarke von Steadypace in Violett.',
+      altEn:
+        'Logo work on cards: symbol and combination mark for Axium (The Body Clinic) in blue, seal and combination mark for Fräulein Trau dich (independent wedding officiant) with a drawn flower, symbol and combination mark for Solidrive in dark green, and the Steadypace symbol in violet.',
+    },
     de: {
       tags: ['Logo', 'Typografie', 'Styleguide', 'Branding'],
       description:

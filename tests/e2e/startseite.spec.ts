@@ -195,10 +195,15 @@ test.describe('AK-34: Logos im Dunkelmodus weiß', () => {
   test.use({ colorScheme: 'dark' });
   test('Filter invertiert', async ({ page }) => {
     await page.goto('/');
-    const filters = await page.$$eval('section[aria-labelledby="unternehmen"] ul img', (els) =>
-      els.map((el) => getComputedStyle(el).filter),
-    );
-    expect(filters.every((f) => f.includes('invert(1)'))).toBe(true);
+    // Dunkelmodus und Kacheln stehen erst nach dem Hydrieren endgültig; darum abwarten statt einmal messen
+    await expect
+      .poll(() =>
+        page.$$eval(
+          'section[aria-labelledby="unternehmen"] ul img',
+          (els) => els.length > 0 && els.every((el) => getComputedStyle(el).filter.includes('invert(1)')),
+        ),
+      )
+      .toBe(true);
   });
 });
 
@@ -621,10 +626,31 @@ test.describe('Firmen-Fenster (AK-75 bis AK-78)', () => {
     await page.mouse.wheel(0, 400);
     await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBeGreaterThan(100);
     expect(Math.abs((await close.boundingBox())!.y - closeY)).toBeLessThanOrEqual(1);
-    // Scrollleiste innerhalb der runden Ecken: Scrollbereich endet vor dem Rand des Fensters
+  });
+
+  test('AK-81: Scrollbereich füllt das Fenster, Scrollleiste ohne Spur', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 600 });
+    await openHydrated(page, '/');
+    await tiles(page).first().click();
+    const dialog = page.getByRole('dialog', { name: 'HERO Software' });
+    await expect(dialog).toBeVisible();
+    await page.waitForTimeout(500);
+    const scroller = dialog.locator('[data-dialog-scroll]');
     const d = (await dialog.boundingBox())!;
     const sc = (await scroller.boundingBox())!;
-    expect(d.y + d.height - (sc.y + sc.height)).toBeGreaterThanOrEqual(6);
+    // Kein Streifen zwischen Scrollbereich und Rahmen (nur der 1px-Rahmen)
+    expect(Math.abs(d.x + d.width - (sc.x + sc.width))).toBeLessThanOrEqual(1.5);
+    expect(Math.abs(sc.y - d.y)).toBeLessThanOrEqual(1.5);
+    expect(Math.abs(d.y + d.height - (sc.y + sc.height))).toBeLessThanOrEqual(1.5);
+    // Spur durchsichtig, Griff rund und mit Abstand zu den Ecken
+    const bar = await scroller.evaluate((el) => {
+      const track = getComputedStyle(el, '::-webkit-scrollbar-track');
+      const thumb = getComputedStyle(el, '::-webkit-scrollbar-thumb');
+      return { track: track.backgroundColor, margin: track.marginTop, radius: thumb.borderTopLeftRadius };
+    });
+    expect(bar.track).toBe('rgba(0, 0, 0, 0)');
+    expect(parseFloat(bar.margin)).toBeGreaterThanOrEqual(12);
+    expect(parseFloat(bar.radius)).toBeGreaterThan(0);
   });
 
   test('AK-75: Plus wird beim Tastaturfokus grün', async ({ page }) => {

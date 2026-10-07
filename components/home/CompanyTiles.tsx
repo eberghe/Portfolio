@@ -161,12 +161,12 @@ function CompanyDialog({ item, labels, onClose }: { item: CompanyTile; labels: C
       >
         <X size={20} aria-hidden="true" />
       </button>
-      {/* Nur dieser Bereich scrollt; data-lenis-prevent, weil Lenis bei gesperrter Seite sonst jedes Mausrad schluckt.
-          Abstand oben/unten/rechts hält die Scrollleiste innerhalb der runden Ecken (AK-80) */}
+      {/* Nur dieser Bereich scrollt; data-lenis-prevent, weil Lenis bei gesperrter Seite sonst jedes Mausrad schluckt (AK-80).
+          Er füllt das Fenster; die schlanke Scrollleiste ohne Spur kommt aus .company-dialog-scroll (AK-81) */}
       <div
         data-dialog-scroll
         data-lenis-prevent
-        className="max-h-[calc(100svh-2rem-1rem-2px)] my-2 mr-1 overflow-y-auto overflow-x-hidden overscroll-contain [scrollbar-width:thin]"
+        className="company-dialog-scroll max-h-[calc(100svh-2rem-2px)] overflow-y-auto overflow-x-hidden overscroll-contain"
       >
         <div className="px-5 py-4 sm:px-7 sm:py-6">
           <div className="flex items-center h-10 mb-6 pr-12">{item.logo}</div>

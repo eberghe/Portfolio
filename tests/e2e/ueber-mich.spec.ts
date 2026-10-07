@@ -277,6 +277,10 @@ test('AK-31: Balken und aktive Station laufen synchron mit dem Scrollweg', async
   const n = await panels(page).count();
   const segments = page.locator('[data-journey] [data-journey-segment]');
   await expect(segments).toHaveCount(n);
+  // Balkenteile gleiten weich statt zu springen
+  expect(
+    await segments.first().evaluate((el) => parseFloat(getComputedStyle(el).transitionDuration)),
+  ).toBeGreaterThanOrEqual(0.5);
   // Gefüllte Teile sind weiß
   expect(await segments.first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(255, 255, 255)');
   for (let i = 0; i < n; i++) {
@@ -377,3 +381,31 @@ for (const url of ['/about', '/about?animationstest']) {
     await expect.poll(async () => (await areaBox()).top).toBeGreaterThan(100);
   });
 }
+
+test('AK-32: Richtungswechsel direkt nach einer Geste mit Nachschwung springt zurück', async ({ page }) => {
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  const active = () =>
+    page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-journey] ol > li')).findIndex((li) => li.hasAttribute('data-active')),
+    );
+  await page.evaluate(() => {
+    const area = document.querySelector('[data-journey] ol')!.parentElement!.parentElement as HTMLElement;
+    scrollTo({ top: area.getBoundingClientRect().top + scrollY + 2, behavior: 'instant' });
+  });
+  await expect.poll(active).toBe(0);
+  const vp = page.viewportSize()!;
+  await page.mouse.move(vp.width / 2, vp.height / 2);
+  // Trackpad: Geste nach unten mit langem Nachschwung, dann ohne Pause nach oben
+  for (let k = 0; k < 50; k++) {
+    await page.mouse.wheel(0, Math.max(2, 60 - k));
+    await page.waitForTimeout(16);
+  }
+  await expect.poll(active).toBe(1);
+  for (let k = 0; k < 20; k++) {
+    await page.mouse.wheel(0, -40);
+    await page.waitForTimeout(16);
+  }
+  await expect.poll(active).toBe(0);
+});

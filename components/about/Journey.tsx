@@ -179,9 +179,15 @@ export default function Journey({
     // Stationen hineinläuft, zählt so nicht gleich als neuer Sprung
     let prevWheel = -Infinity;
     let lastWheel = -Infinity;
+    // Richtung des vorletzten und letzten Rad-Ereignisses: Ein Richtungswechsel ist immer eine neue Geste,
+    // auch wenn er ohne Pause in den Nachschwung der alten fällt (Erik: „upscroll funktioniert nicht“)
+    let prevDir = 0;
+    let lastDir = 0;
     const anyWheel = (e: WheelEvent) => {
       prevWheel = lastWheel;
       lastWheel = e.timeStamp;
+      prevDir = lastDir;
+      lastDir = Math.sign(Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY);
     };
     const pinnedNow = () => {
       const r = el.getBoundingClientRect();
@@ -191,7 +197,8 @@ export default function Journey({
     };
     // Richtung > 0 nach unten
     const step = (dir: number, now: number) => {
-      if (now - jumped < LOCK || now - prevWheel < QUIET) return;
+      if (now - jumped < LOCK) return;
+      if (now - prevWheel < QUIET && dir === prevDir) return;
       const current = Math.min(last, Math.floor(progress * count));
       const top = el.getBoundingClientRect().top + window.scrollY;
       jumped = now;
@@ -406,6 +413,8 @@ export default function Journey({
                         segments.current[i] = el;
                       }}
                       className="block h-full bg-white origin-left scale-x-0"
+                      // Gleitet im Takt des Bildwechsels statt zu springen (AK-31)
+                      style={{ transition: `transform 0.9s ${EASE}` }}
                     />
                   </span>
                 ))}

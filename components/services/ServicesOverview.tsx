@@ -13,9 +13,9 @@ import { servicesItemListJsonLd } from '@/lib/structured-data';
 
 export const overviewText = {
   de: {
-    metaTitle: 'Leistungen: UX/UI, Webflow, Barrierefreiheit, KI | Erik Bergheimer',
+    metaTitle: 'Leistungen: UX/UI, Webentwicklung, Barrierefreiheit, KI | Erik Bergheimer',
     metaDescription:
-      'UX/UI, Webflow, Barrierefreiheit, KI-Beratung, Website-Optimierung, Brand-Design und Design Systeme aus Augsburg.',
+      'UX/UI, Webdesign & Webentwicklung, Barrierefreiheit, KI-Beratung, Website-Optimierung, Brand-Design und Design Systeme aus Augsburg.',
     eyebrow: 'Was ich mache',
     title: 'Leistungen für Websites und digitale Produkte',
     intro: 'Viele Fähigkeiten, ein Ansprechpartner: von der ersten Idee bis zur fertigen, barrierefreien Umsetzung.',
@@ -31,9 +31,9 @@ export const overviewText = {
     contact: 'Kostenloses Erstgespräch',
   },
   en: {
-    metaTitle: 'Services: UX/UI, Webflow, accessibility, AI | Erik Bergheimer',
+    metaTitle: 'Services: UX/UI, web development, accessibility, AI | Erik Bergheimer',
     metaDescription:
-      'UX/UI, Webflow, accessibility, AI consulting, website optimisation, brand design and design systems from Augsburg.',
+      'UX/UI, web design & development, accessibility, AI consulting, website optimisation, brand design and design systems from Augsburg.',
     eyebrow: 'What I do',
     title: 'Services for websites and digital products',
     intro: 'Many skills, one point of contact: from the first idea to a finished, accessible build.',

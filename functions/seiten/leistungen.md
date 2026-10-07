@@ -12,7 +12,7 @@ Je Leistung eine eigene, rankingfähige Unterseite plus Übersicht. Grundlage f�
 
 ## Leistungen
 
-1. Webflow-Entwicklung (`webflow-development`, ersetzt `webflow-framer`)
+1. Webdesign & Webentwicklung (`web-design-development`, bis 2026-10-07 Webflow-Entwicklung `webflow-development`, ersetzt `webflow-framer`)
 2. Barrierefreiheit-Beratung (`accessibility`)
 3. KI-Beratung (`ai-consulting`, neu)
 4. Website- & Prozessoptimierung (`website-process-optimization`, ersetzt `business-development`)
@@ -135,3 +135,10 @@ Erik: „design systems in Design Systeme umändern und auf den seiten wo das bi
 ### Blinder Kritiker (Design Systeme, 2026-10-07)
 
 Behoben: Das Vollbild mit `object-cover` und 70svh schnitt auf dem Handy etwa zwei Drittel der Breite ab und auf breiten Bildschirmen die Überschriften. Das Bild steht jetzt ganz im Format 16:9. Ohne Einwände: Kein deutsches „Design Systems“ bleibt, und der Alt-Text ist sachlich und doppelt nicht die Überschrift. Hinweis: `local.ts` schreibt „Design-Systeme“ (Duden). Das bleibt so, weil Erik nur „Design Systems“ ersetzt haben wollte.
+
+## Webdesign & Webentwicklung statt Webflow-Entwicklung (Erik, 2026-10-07)
+
+Erik: „Webflow Entwicklung abändern in Webdesign und Webentwicklung … weil ich das nicht nur mit Webflow mache“. Je nach Bedarf setzt er Webflow, Framer (No-Code) oder eine eigene Entwicklung mit TypeScript, Supabase, Vercel und Claude Code ein. Fotos und Thumbnail liefert Erik später, bis dahin bleibt der Platzhalter.
+
+- AK-39: Die Leistung heißt „Webdesign & Webentwicklung“ (EN „Web design & development“) und hat den Slug `web-design-development`. `/services/webflow-development` und `/services/webflow-framer` leiten dauerhaft dorthin weiter (auch unter `/en`, ersetzt das Ziel aus AK-4).
+- AK-40: Beschreibung und Detailseite nennen die drei Wege: Webflow, Framer als No-Code-Werkzeug und eigene Entwicklung mit TypeScript, Supabase, Vercel und Claude Code, je nach Bedarf. Die Werkzeugliste der Detailseite enthält Webflow, Framer, TypeScript, Supabase, Vercel und Claude Code. Kein Leistungs- oder Städtetext stellt Webflow als einziges Werkzeug dar: „Webflow-Entwicklung“ und „Webflow development“ kommen auf keiner Leistungs-, Städte- oder Startseite mehr vor. Die Projekt-Seite zur Bachelorarbeit „Webflow vs. Shopify“ bleibt unverändert.

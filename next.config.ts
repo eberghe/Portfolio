@@ -1,8 +1,10 @@
 import type { NextConfig } from 'next';
 
 // Zusammengelegte Leistungen (functions/seiten/leistungen.md, AK-4)
+// Webflow-Entwicklung heißt seit 2026-10-07 Webdesign & Webentwicklung (leistungen.md AK-39)
 const mergedServices = [
-  ['webflow-framer', 'webflow-development'],
+  ['webflow-framer', 'web-design-development'],
+  ['webflow-development', 'web-design-development'],
   ['business-development', 'website-process-optimization'],
 ];
 

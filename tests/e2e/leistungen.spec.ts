@@ -27,9 +27,12 @@ test('AK-3: JSON-LD Service im HTML', async ({ request }) => {
 });
 
 for (const [from, to] of [
-  ['/services/webflow-framer', '/services/webflow-development'],
+  // AK-39: Webflow-Entwicklung heißt jetzt Webdesign & Webentwicklung
+  ['/services/webflow-framer', '/services/web-design-development'],
+  ['/services/webflow-development', '/services/web-design-development'],
+  ['/en/services/webflow-development', '/en/services/web-design-development'],
   ['/services/business-development', '/services/website-process-optimization'],
-  ['/en/services/webflow-framer', '/en/services/webflow-development'],
+  ['/en/services/webflow-framer', '/en/services/web-design-development'],
   ['/en/services/business-development', '/en/services/website-process-optimization'],
   // AK-28: Fotografie ist keine Leistung mehr, die Fotoserien stehen bei den Projekten
   ['/services/photography', '/projects'],

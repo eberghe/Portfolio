@@ -24,7 +24,7 @@ export interface ServicePackage {
 export interface ServiceDetailText {
   /** Überline über der h1 */
   eyebrow: string;
-  /** h1 mit Suchbegriff, z. B. „Webflow-Entwicklung in Augsburg“ */
+  /** h1 mit Suchbegriff, z. B. „Webdesign und Webentwicklung in Augsburg“ */
   headline: string;
   /** Ein Satz unter der h1 */
   lead: string;
@@ -284,38 +284,39 @@ export const serviceDetails: ServiceDetail[] = [
       ],
     },
   },
-  // TODO(Erik): prüfen, Dauer (2 bis 6 Wochen), Hosting/Webflow-Plan-Hinweis und ob Pflege/Wartung angeboten wird
+  // TODO(Erik): prüfen, Dauer (2 bis 6 Wochen, eigene Entwicklung eher länger), Hosting-Hinweis und ob Pflege/Wartung angeboten wird
+  // Nicht nur Webflow: Webflow, Framer oder eigene Entwicklung je nach Bedarf (leistungen.md AK-40)
   {
-    slug: 'webflow-development',
+    slug: 'web-design-development',
     project: 'webflow',
-    tools: ['Webflow', 'Figma', 'VS Code', 'Claude'],
+    tools: ['Figma', 'Webflow', 'Framer', 'TypeScript', 'Supabase', 'Vercel', 'Claude Code'],
     de: {
-      eyebrow: 'Webflow-Entwicklung',
-      headline: 'Webflow-Entwicklung in Augsburg: schnelle Websites, die du selbst pflegst',
-      lead: 'Am Ende hast du eine Website, die schnell lädt, auf jedem Gerät gut aussieht und die du ohne Agentur selbst aktualisierst.',
+      eyebrow: 'Webdesign & Webentwicklung',
+      headline: 'Webdesign und Webentwicklung in Augsburg: die passende Technik für deine Website',
+      lead: 'Am Ende hast du eine Website, die schnell lädt, auf jedem Gerät gut aussieht und genau so gebaut ist, wie dein Vorhaben es braucht.',
       whyFocus: {
-        title: 'Sauber gebaut, leicht zu pflegen',
-        text: 'Klare Klassen, saubere Struktur und ein CMS, das dein Team ohne mich bedienen kann.',
+        title: 'Das Werkzeug folgt dem Ziel',
+        text: 'Webflow oder Framer, wenn du Inhalte selbst pflegen willst. Eigene Entwicklung, wenn deine Website mehr können muss.',
       },
       processTitle: 'Vom Erstgespräch zur fertigen Website in 2 bis 6 Wochen',
       steps: [
         {
-          title: 'Erstgespräch und Struktur',
+          title: 'Erstgespräch und Technikwahl',
           duration: 'Woche 1',
-          text: 'Wir klären Ziele, Seiten und Inhalte. Daraus entsteht eine Sitemap und ein Plan, welche Inhalte du später selbst über das CMS pflegst.',
-          outputs: ['Sitemap', 'Content-Plan', 'Zeitplan'],
+          text: 'Wir klären Ziele, Seiten und Inhalte. Danach entscheiden wir gemeinsam, ob Webflow, Framer oder eine eigene Entwicklung am besten passt, und planen die Struktur.',
+          outputs: ['Sitemap', 'Technikempfehlung', 'Zeitplan'],
         },
         {
           title: 'Design',
           duration: 'Woche 1 bis 2',
-          text: 'Ich gestalte die Seiten in Figma oder übernehme ein bestehendes Design. Wir stimmen es ab, bevor der Aufbau in Webflow beginnt.',
+          text: 'Ich gestalte die Seiten in Figma oder übernehme ein bestehendes Design. Wir stimmen es ab, bevor der Aufbau beginnt.',
           outputs: ['Seitendesigns in Figma', 'Mobile Ansichten', 'Freigabe'],
         },
         {
-          title: 'Aufbau in Webflow',
+          title: 'Aufbau',
           duration: 'Woche 2 bis 4',
-          text: 'Ich baue die Website mit einem sauberen Klassensystem, richte das CMS ein und setze Interactions sparsam und gezielt ein.',
-          outputs: ['Responsive Website', 'CMS-Collections', 'Interactions'],
+          text: 'Ich baue die Website in Webflow oder Framer oder entwickle sie mit TypeScript, Supabase und Vercel, unterstützt von Claude Code. Inhalte, die du selbst pflegen willst, richte ich so ein, dass du ohne Code auskommst.',
+          outputs: ['Responsive Website', 'CMS oder Datenbank', 'Animationen'],
         },
         {
           title: 'Feinschliff und Tests',
@@ -327,7 +328,7 @@ export const serviceDetails: ServiceDetail[] = [
           title: 'Launch und Einweisung',
           duration: 'Woche 5 bis 6',
           text: 'Wir schalten die Website auf deiner Domain live. In einer kurzen Einweisung zeige ich dir, wie du Inhalte selbst änderst.',
-          outputs: ['Live-Schaltung', 'Weiterleitungen', 'Einweisung ins CMS'],
+          outputs: ['Live-Schaltung', 'Weiterleitungen', 'Einweisung'],
         },
       ],
       includedTitle: 'Eine Website ist mehr als schöne Seiten.',
@@ -337,12 +338,12 @@ export const serviceDetails: ServiceDetail[] = [
           text: 'Deine Website funktioniert auf Smartphone, Tablet und Desktop gleich gut.',
         },
         {
-          title: 'CMS-Einrichtung',
-          text: 'Blog, Projekte oder Team pflegst du selbst, ohne Code und ohne mich anrufen zu müssen.',
+          title: 'Inhalte selbst pflegen',
+          text: 'Blog, Projekte oder Team pflegst du selbst, im Editor von Webflow oder Framer oder in einer eigenen Verwaltung.',
         },
         {
-          title: 'Interactions mit Maß',
-          text: 'Animationen, die Inhalte unterstützen und die Ladezeit nicht ausbremsen.',
+          title: 'Animationen mit Maß',
+          text: 'Bewegung, die Inhalte unterstützt und die Ladezeit nicht ausbremst.',
         },
         {
           title: 'SEO-Grundlagen',
@@ -353,80 +354,80 @@ export const serviceDetails: ServiceDetail[] = [
       ],
       packages: [
         {
-          name: 'Landingpage',
-          for: 'Für eine einzelne Seite zu einem Angebot, einer Kampagne oder einem Event.',
-          items: [
-            'Kurzes Briefing',
-            'Design einer Seite',
-            'Responsive Umsetzung in Webflow',
-            'SEO-Grundeinstellungen',
-            'Live-Schaltung',
-          ],
-        },
-        {
-          name: 'Website',
-          for: 'Für eine vollständige Unternehmenswebsite mit mehreren Seiten und eigenem CMS.',
+          name: 'Website mit Webflow oder Framer',
+          for: 'Für Landingpages und Unternehmenswebsites, deren Inhalte du selbst pflegen willst.',
           items: [
             'Sitemap und Content-Plan',
             'Design aller Seitentypen',
-            'Aufbau in Webflow mit Klassensystem',
+            'Aufbau in Webflow oder Framer',
             'CMS für Blog, Projekte oder Team',
-            'Interactions und Animationen',
             'SEO, Performance und Barrierefreiheit',
             'Launch und Einweisung',
+          ],
+        },
+        {
+          name: 'Eigene Entwicklung',
+          for: 'Für Websites und Web-Apps mit Login, Datenbank oder Funktionen, die ein Baukasten nicht abdeckt.',
+          items: [
+            'Anforderungen und Technikkonzept',
+            'Design in Figma',
+            'Entwicklung mit TypeScript',
+            'Datenbank und Login mit Supabase',
+            'Hosting und Deployment auf Vercel',
+            'Launch und Übergabe',
           ],
         },
       ],
       faqs: [
         {
-          q: 'Was kostet eine Webflow-Website?',
-          a: 'Das hängt von der Zahl der Seiten, dem CMS und davon ab, ob ein Design schon steht. Nach dem kostenlosen Erstgespräch bekommst du ein konkretes Angebot. Dazu kommen die laufenden Kosten für den Webflow-Plan.',
+          q: 'Webflow, Framer oder eigene Entwicklung: Was passt zu mir?',
+          a: 'Webflow eignet sich für Websites mit viel Inhalt und CMS, Framer für schnelle, bildstarke Seiten. Brauchst du Login, eine Datenbank oder eigene Abläufe, entwickle ich die Seite mit TypeScript, Supabase und Vercel. Welcher Weg passt, klären wir im Erstgespräch.',
         },
         {
-          q: 'Warum Webflow und nicht WordPress?',
-          a: 'Um Sicherheitsupdates und Hosting kümmert sich Webflow, du musst keine Plugins pflegen. Du pflegst Inhalte direkt auf der Seite. WordPress ist sinnvoll, wenn du sehr spezielle Erweiterungen brauchst; das klären wir im Erstgespräch.',
+          q: 'Was kostet eine Website?',
+          a: 'Das hängt von der Zahl der Seiten, dem gewählten Weg und davon ab, ob ein Design schon steht. Nach dem kostenlosen Erstgespräch bekommst du ein konkretes Angebot. Bei Webflow und Framer kommen die laufenden Kosten für den Plan dazu.',
         },
         {
           q: 'Kann ich die Website danach selbst pflegen?',
-          a: 'Ja. Texte, Bilder und CMS-Inhalte wie Blogartikel änderst du im Webflow-Editor selbst. Ich zeige dir zum Launch, wie das geht.',
+          a: 'Ja. Bei Webflow und Framer änderst du Texte, Bilder und Beiträge im Editor. Bei einer eigenen Entwicklung richte ich eine Verwaltung für die Inhalte ein, die du regelmäßig änderst. Zum Launch zeige ich dir, wie das geht.',
         },
         {
           q: 'Was muss ich liefern?',
           a: 'Texte, Bilder, dein Logo und Zugang zu deiner Domain. Wenn Texte oder Bilder noch fehlen, planen wir das gemeinsam ein, damit der Launch nicht daran hängt.',
         },
         {
-          q: 'Kannst du meine bestehende Website zu Webflow umziehen?',
+          q: 'Kannst du meine bestehende Website umziehen?',
           a: 'Ja. Ich übernehme Inhalte, richte Weiterleitungen für alte URLs ein, damit deine Rankings möglichst erhalten bleiben, und nutze den Umzug, um Struktur und Design zu verbessern.',
         },
       ],
     },
     en: {
-      eyebrow: 'Webflow development',
-      headline: 'Webflow development in Augsburg: fast websites you can update yourself',
-      lead: 'You end up with a website that loads fast, looks good on every device and that you update yourself, without an agency.',
+      eyebrow: 'Web design & development',
+      headline: 'Web design and development in Augsburg: the right technology for your website',
+      lead: 'You end up with a website that loads fast, looks good on every device and is built exactly the way your project needs.',
       whyFocus: {
-        title: 'Built clean, easy to maintain',
-        text: 'Clear classes, a tidy structure and a CMS your team can run without me.',
+        title: 'The goal picks the tool',
+        text: 'Webflow or Framer when you want to edit content yourself. Custom development when your website needs to do more.',
       },
       processTitle: 'From intro call to finished website in 2 to 6 weeks',
       steps: [
         {
-          title: 'Intro call and structure',
+          title: 'Intro call and choice of technology',
           duration: 'Week 1',
-          text: 'We clarify goals, pages and content. The result is a sitemap and a plan for which content you will manage yourself in the CMS.',
-          outputs: ['Sitemap', 'Content plan', 'Timeline'],
+          text: 'We clarify goals, pages and content. Then we decide together whether Webflow, Framer or custom development fits best, and plan the structure.',
+          outputs: ['Sitemap', 'Technology recommendation', 'Timeline'],
         },
         {
           title: 'Design',
           duration: 'Weeks 1 to 2',
-          text: 'I design the pages in Figma or take over an existing design. We sign it off before the build in Webflow begins.',
+          text: 'I design the pages in Figma or take over an existing design. We sign it off before the build begins.',
           outputs: ['Page designs in Figma', 'Mobile views', 'Sign-off'],
         },
         {
-          title: 'Build in Webflow',
+          title: 'Build',
           duration: 'Weeks 2 to 4',
-          text: 'I build the site with a clean class system, set up the CMS and use interactions sparingly and with purpose.',
-          outputs: ['Responsive website', 'CMS collections', 'Interactions'],
+          text: 'I build the site in Webflow or Framer, or develop it with TypeScript, Supabase and Vercel, supported by Claude Code. Content you want to manage yourself is set up so you never need to touch code.',
+          outputs: ['Responsive website', 'CMS or database', 'Animations'],
         },
         {
           title: 'Polish and testing',
@@ -438,19 +439,19 @@ export const serviceDetails: ServiceDetail[] = [
           title: 'Launch and training',
           duration: 'Weeks 5 to 6',
           text: 'We go live on your domain. In a short session I show you how to change content yourself.',
-          outputs: ['Go-live', 'Redirects', 'CMS training'],
+          outputs: ['Go-live', 'Redirects', 'Training'],
         },
       ],
       includedTitle: 'A website is more than nice-looking pages.',
       included: [
         { title: 'Responsive build', text: 'Your website works equally well on phone, tablet and desktop.' },
         {
-          title: 'CMS setup',
-          text: 'You manage blog, projects or team pages yourself, without code and without calling me.',
+          title: 'Content you manage',
+          text: 'You manage blog, projects or team pages yourself, in the Webflow or Framer editor or in a custom admin.',
         },
         {
-          title: 'Purposeful interactions',
-          text: 'Animations that support the content and do not slow the page down.',
+          title: 'Purposeful animation',
+          text: 'Motion that supports the content and does not slow the page down.',
         },
         { title: 'SEO basics', text: 'Clean headings, meta data, sitemap and readable URLs from the start.' },
         { title: 'Performance', text: 'Optimised images and a lean build for short load times.' },
@@ -458,49 +459,49 @@ export const serviceDetails: ServiceDetail[] = [
       ],
       packages: [
         {
-          name: 'Landing page',
-          for: 'For a single page about an offer, a campaign or an event.',
-          items: [
-            'Short briefing',
-            'Design of one page',
-            'Responsive build in Webflow',
-            'Basic SEO settings',
-            'Go-live',
-          ],
-        },
-        {
-          name: 'Website',
-          for: 'For a complete company website with several pages and its own CMS.',
+          name: 'Website with Webflow or Framer',
+          for: 'For landing pages and company websites whose content you want to manage yourself.',
           items: [
             'Sitemap and content plan',
             'Design of all page types',
-            'Webflow build with class system',
+            'Build in Webflow or Framer',
             'CMS for blog, projects or team',
-            'Interactions and animations',
             'SEO, performance and accessibility',
             'Launch and training',
+          ],
+        },
+        {
+          name: 'Custom development',
+          for: 'For websites and web apps with login, a database or features no site builder covers.',
+          items: [
+            'Requirements and technical concept',
+            'Design in Figma',
+            'Development in TypeScript',
+            'Database and login with Supabase',
+            'Hosting and deployment on Vercel',
+            'Launch and handover',
           ],
         },
       ],
       faqs: [
         {
-          q: 'How much does a Webflow website cost?',
-          a: 'It depends on the number of pages, the CMS and whether a design already exists. After the free intro call you get a concrete quote. On top come the running costs of the Webflow plan.',
+          q: 'Webflow, Framer or custom development: which fits me?',
+          a: 'Webflow suits content-heavy sites with a CMS, Framer fast, image-led pages. If you need login, a database or your own workflows, I build the site with TypeScript, Supabase and Vercel. We work out the right path in the intro call.',
         },
         {
-          q: 'Why Webflow rather than WordPress?',
-          a: 'Webflow takes care of security updates and hosting, and there are no plugins for you to maintain. You edit content directly on the page. WordPress makes sense if you need very specific extensions; we clarify that in the intro call.',
+          q: 'How much does a website cost?',
+          a: 'It depends on the number of pages, the chosen path and whether a design already exists. After the free intro call you get a concrete quote. With Webflow and Framer the running plan costs come on top.',
         },
         {
           q: 'Can I update the website myself afterwards?',
-          a: 'Yes. You change text, images and CMS content such as blog posts yourself in the Webflow editor. I show you how at launch.',
+          a: 'Yes. With Webflow and Framer you change text, images and posts in the editor. With custom development I set up an admin for the content you change regularly. I show you how at launch.',
         },
         {
           q: 'What do I need to provide?',
           a: 'Copy, images, your logo and access to your domain. If copy or images are still missing, we plan for them together so the launch does not stall.',
         },
         {
-          q: 'Can you move my existing website to Webflow?',
+          q: 'Can you move my existing website?',
           a: 'Yes. I migrate the content, set up redirects for old URLs so your rankings are preserved as far as possible, and use the move to improve structure and design.',
         },
       ],
@@ -542,7 +543,7 @@ export const serviceDetails: ServiceDetail[] = [
         {
           title: 'Umsetzung',
           duration: 'Woche 3 bis 7',
-          text: 'Ich behebe die Probleme in Design und Webflow oder begleite dein Entwicklungsteam mit konkreten Lösungen und Design-Patterns.',
+          text: 'Ich behebe die Probleme in Design und Code oder begleite dein Entwicklungsteam mit konkreten Lösungen und Design-Patterns.',
           outputs: ['Angepasstes Design', 'Korrigierte Website', 'Barrierefreie Komponenten'],
         },
         {
@@ -593,7 +594,7 @@ export const serviceDetails: ServiceDetail[] = [
           for: 'Für alle, die ihre Website nicht nur prüfen, sondern auch deutlich barriereärmer machen wollen.',
           items: [
             'Alles aus dem BFSG-Check',
-            'Umsetzung in Design und Webflow',
+            'Umsetzung in Design und Code',
             'Begleitung deines Entwicklungsteams',
             'Barrierefreie Komponenten und Patterns',
             'Nachtest nach der Umsetzung',
@@ -620,7 +621,7 @@ export const serviceDetails: ServiceDetail[] = [
         },
         {
           q: 'Was brauchst du von mir?',
-          a: 'Den Link zur Website, gegebenenfalls einen Testzugang für Login oder Checkout und eine Ansprechperson. Für die Umsetzung brauche ich Zugang zu Webflow oder den Kontakt zu deinem Entwicklungsteam.',
+          a: 'Den Link zur Website, gegebenenfalls einen Testzugang für Login oder Checkout und eine Ansprechperson. Für die Umsetzung brauche ich Zugang zu deinem Webflow- oder Framer-Projekt, zum Code oder den Kontakt zu deinem Entwicklungsteam.',
         },
       ],
     },
@@ -655,7 +656,7 @@ export const serviceDetails: ServiceDetail[] = [
         {
           title: 'Implementation',
           duration: 'Weeks 3 to 7',
-          text: 'I fix the issues in design and Webflow, or support your development team with concrete solutions and design patterns.',
+          text: 'I fix the issues in design and code, or support your development team with concrete solutions and design patterns.',
           outputs: ['Updated design', 'Fixed website', 'Accessible components'],
         },
         {
@@ -706,7 +707,7 @@ export const serviceDetails: ServiceDetail[] = [
           for: 'For anyone who wants their website not only audited but made far more accessible.',
           items: [
             'Everything in the BFSG check',
-            'Implementation in design and Webflow',
+            'Implementation in design and code',
             'Support for your development team',
             'Accessible components and patterns',
             'Retest after implementation',
@@ -733,7 +734,7 @@ export const serviceDetails: ServiceDetail[] = [
         },
         {
           q: 'What do you need from me?',
-          a: 'The link to your website, a test account for login or checkout if needed, and a contact person. For implementation I need access to Webflow or contact with your development team.',
+          a: 'The link to your website, a test account for login or checkout if needed, and a contact person. For implementation I need access to your Webflow or Framer project, the code, or contact with your development team.',
         },
       ],
     },
@@ -1041,8 +1042,8 @@ export const serviceDetails: ServiceDetail[] = [
           a: 'Das hängt davon ab, ob du nur eine Analyse möchtest oder auch die Umsetzung. Nach dem kostenlosen Erstgespräch bekommst du ein konkretes Angebot mit klarem Umfang.',
         },
         {
-          q: 'Muss meine Website dafür in Webflow gebaut sein?',
-          a: 'Nein. Die Analyse funktioniert mit jeder Website. Die Umsetzung übernehme ich direkt in Webflow, bei anderen Systemen arbeite ich mit deinem Entwicklungsteam zusammen.',
+          q: 'Muss meine Website dafür mit einem bestimmten System gebaut sein?',
+          a: 'Nein. Die Analyse funktioniert mit jeder Website. Die Umsetzung übernehme ich direkt in Webflow, Framer oder im Code; bei anderen Systemen arbeite ich mit deinem Entwicklungsteam zusammen.',
         },
         {
           q: 'Was ist mit Prozessoptimierung gemeint?',
@@ -1139,8 +1140,8 @@ export const serviceDetails: ServiceDetail[] = [
           a: 'It depends on whether you want only an analysis or the implementation as well. After the free intro call you get a concrete quote with a clear scope.',
         },
         {
-          q: 'Does my website have to be built in Webflow?',
-          a: 'No. The analysis works for any website. I implement changes directly in Webflow; for other systems I work with your development team.',
+          q: 'Does my website have to be built with a particular system?',
+          a: 'No. The analysis works for any website. I implement changes directly in Webflow, Framer or the code; for other systems I work with your development team.',
         },
         {
           q: 'What do you mean by process optimisation?',

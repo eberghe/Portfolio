@@ -235,8 +235,8 @@ describe('AK-12: Übersicht', () => {
   it.each(['de', 'en'] as const)('Description nennt alle Leistungen (%s)', (locale) => {
     const d = overviewText[locale].metaDescription.toLowerCase();
     const words = {
-      de: ['ux/ui', 'webflow', 'barrierefreiheit', 'ki', 'optimierung', 'brand', 'design systeme'],
-      en: ['ux/ui', 'webflow', 'accessibility', 'ai', 'optimisation', 'brand', 'design systems'],
+      de: ['ux/ui', 'webdesign & webentwicklung', 'barrierefreiheit', 'ki', 'optimierung', 'brand', 'design systeme'],
+      en: ['ux/ui', 'web design & development', 'accessibility', 'ai', 'optimisation', 'brand', 'design systems'],
     }[locale];
     for (const w of words) expect(d).toContain(w);
     expect(d.length).toBeLessThanOrEqual(160);
@@ -292,7 +292,7 @@ describe('AK-17: englische Abschluss-Überschrift (Issue #4)', () => {
   it.each([
     ['ux-ui-design', 'Interested in UX/UI design?'],
     ['ai-consulting', 'Interested in AI consulting?'],
-    ['webflow-development', 'Interested in Webflow development?'],
+    ['web-design-development', 'Interested in web design & development?'],
     ['accessibility', 'Interested in accessibility consulting?'],
   ])('%s', (slug, name) => {
     const service = services.find((s) => s.slug === slug)!;
@@ -325,7 +325,7 @@ describe('Umbau AK-25: Inhalte je Leistung vollständig und in DE/EN gleich aufg
 });
 
 describe.each(['de', 'en'] as const)('Umbau Detailseite (%s)', (locale) => {
-  const service = services.find((s) => s.slug === 'webflow-development')!;
+  const service = services.find((s) => s.slug === 'web-design-development')!;
   const d = detailOf(service.slug)[locale];
   const t = {
     de: { process: d.processTitle, faq: 'Häufige Fragen', tools: 'Werkzeuge', packages: 'Pakete' },
@@ -439,5 +439,37 @@ describe('AK-37/AK-38: Design Systeme', () => {
     expect(alt.length).toBeGreaterThan(40);
     const img = screen.getByRole('img', { name: alt });
     expect(img.getAttribute('src')).toMatch(/design-systeme/);
+  });
+});
+
+// Erik, 2026-10-07: nicht nur Webflow
+describe('AK-39/AK-40: Webdesign & Webentwicklung', () => {
+  const service = services.find((s) => s.slug === 'web-design-development');
+  it('heißt Webdesign & Webentwicklung, alter Slug ist weg', () => {
+    expect(service?.de.title).toBe('Webdesign & Webentwicklung');
+    expect(service?.en.title).toBe('Web design & development');
+    expect(services.some((s) => s.slug === 'webflow-development')).toBe(false);
+    for (const s of services) expect(s.related).not.toContain('webflow-development');
+  });
+  it.each(['de', 'en'] as const)('nennt Webflow, Framer und eigene Entwicklung (%s)', (locale) => {
+    const text = service![locale].description;
+    for (const word of ['Webflow', 'Framer', 'TypeScript', 'Supabase', 'Vercel', 'Claude Code'])
+      expect(text).toContain(word);
+    const tools = detailOf('web-design-development').tools;
+    for (const tool of ['Webflow', 'Framer', 'TypeScript', 'Supabase', 'Vercel', 'Claude Code'])
+      expect(tools).toContain(tool);
+  });
+  it.each(['de', 'en'] as const)('kein „Webflow-Entwicklung“ auf Leistungsseiten (%s)', (locale) => {
+    const { container: overview } = render(<ServicesOverview locale={locale} />);
+    expect(overview.textContent).not.toMatch(/Webflow-Entwicklung|Webflow development/i);
+    for (const s of services) {
+      const { container, unmount } = render(<ServiceDetail service={s} locale={locale} />);
+      expect(container.textContent, s.slug).not.toMatch(
+        /Webflow-Entwicklung|Webflow development|Webflow-Website|Webflow website/i,
+      );
+      unmount();
+    }
+    const meta = `${overviewText[locale].metaTitle} ${overviewText[locale].metaDescription}`;
+    expect(meta).not.toMatch(/Webflow/);
   });
 });

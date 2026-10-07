@@ -101,7 +101,7 @@ describe('faq AK-3: FAQPage', () => {
 describe('faq AK-4: aktuelle Inhalte', () => {
   it.each(locales)('%s', (locale) => {
     const all = faqs.map((f) => f[locale].a).join(' ');
-    expect(all).not.toMatch(/Framer|Business Development/);
+    expect(all).not.toMatch(/Business Development/);
     expect(all).toContain('Augsburg');
   });
 });

@@ -11,11 +11,11 @@ export const faqs: Faq[] = [
     id: 'leistungen',
     de: {
       q: 'Welche Leistungen bietest du an?',
-      a: 'UX/UI-Design, Webflow-Entwicklung, Barrierefreiheit-Beratung (WCAG, BFSG und European Accessibility Act), KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design und Design Systeme. Alle Details findest du unter Leistungen.',
+      a: 'UX/UI-Design, Webdesign & Webentwicklung, Barrierefreiheit-Beratung (WCAG, BFSG und European Accessibility Act), KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design und Design Systeme. Alle Details findest du unter Leistungen.',
     },
     en: {
       q: 'What services do you offer?',
-      a: 'UX/UI design, Webflow development, accessibility consulting (WCAG, the German BFSG and the European Accessibility Act), AI consulting, website & process optimisation, brand & logo design and design systems. You will find all details under Services.',
+      a: 'UX/UI design, web design & development, accessibility consulting (WCAG, the German BFSG and the European Accessibility Act), AI consulting, website & process optimisation, brand & logo design and design systems. You will find all details under Services.',
     },
   },
   {
@@ -55,11 +55,11 @@ export const faqs: Faq[] = [
     id: 'tools',
     de: {
       q: 'Welche Tools nutzt du?',
-      a: 'Für Design Figma und Affinity, für Websites Webflow und VS Code, für Fotos Adobe Lightroom und Capture One. Mit KI arbeite ich mit Claude, Gemini, Lovable und Antigravity.',
+      a: 'Für Design Figma und Affinity, für Websites Webflow, Framer oder eigener Code mit VS Code, TypeScript, Supabase und Vercel, für Fotos Adobe Lightroom und Capture One. Mit KI arbeite ich mit Claude und Claude Code, Gemini, Lovable und Antigravity.',
     },
     en: {
       q: 'What tools do you use?',
-      a: 'Figma and Affinity for design, Webflow and VS Code for websites, Adobe Lightroom and Capture One for photos. For AI work I use Claude, Gemini, Lovable and Antigravity.',
+      a: 'Figma and Affinity for design, Webflow, Framer or custom code in VS Code with TypeScript, Supabase and Vercel for websites, Adobe Lightroom and Capture One for photos. For AI work I use Claude and Claude Code, Gemini, Lovable and Antigravity.',
     },
   },
   {

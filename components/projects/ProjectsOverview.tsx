@@ -60,7 +60,7 @@ export const projectsOverviewText = {
 /** Filterkategorie aus der passenden Leistung (AK-19) */
 const categoryOf: Record<string, 'ux' | 'web' | 'photo'> = {
   'ux-ui-design': 'ux',
-  'webflow-development': 'web',
+  'web-design-development': 'web',
   photography: 'photo',
 };
 

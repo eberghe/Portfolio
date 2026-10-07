@@ -12,8 +12,8 @@ export const absoluteUrl = (path: string, locale: Locale) => {
 };
 
 const jobTitle = {
-  de: 'UX/UI-Designer & Webflow-Entwickler',
-  en: 'UX/UI Designer & Webflow Developer',
+  de: 'UX/UI-Designer & Webentwickler',
+  en: 'UX/UI Designer & Web Developer',
 };
 
 /** Person-Objekt für JSON-LD mit fester @id, `jobTitle` in der Sprache der Seite (AK-7) */

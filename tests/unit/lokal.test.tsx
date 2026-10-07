@@ -190,3 +190,17 @@ describe('AK-12: eigene Kartentexte je Stadt', () => {
     expect(screen.getByText(p.de.serviceTexts![p.services[0]!]!)).toBeInTheDocument();
   });
 });
+
+describe.each(cases)('AK-13: Webdesign & Webentwicklung statt nur Webflow ($name)', ({ page, locale }) => {
+  it('verlinkt die neue Leistung und stellt Webflow nicht als einziges Werkzeug dar', () => {
+    expect(page.services).toContain('web-design-development');
+    const t = page[locale];
+    expect(`${t.metaTitle} ${t.metaDescription}`).not.toMatch(/Webflow/);
+    const { container } = render(<LocalLanding page={page} locale={locale} />);
+    const visible = container.cloneNode(true) as HTMLElement;
+    for (const script of visible.querySelectorAll('script')) script.remove();
+    expect(visible.textContent).not.toMatch(
+      /Webflow-Entwicklung|Webflow development|Webflow-Websites?|Webflow websites?/i,
+    );
+  });
+});

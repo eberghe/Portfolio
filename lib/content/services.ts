@@ -33,7 +33,7 @@ export interface Service extends Record<Locale, ServiceText> {
 export const services: Service[] = [
   {
     slug: 'ux-ui-design',
-    related: ['design-systems', 'accessibility', 'webflow-development'],
+    related: ['design-systems', 'accessibility', 'web-design-development'],
     icon: Layout,
     featured: true,
     de: {
@@ -73,47 +73,52 @@ export const services: Service[] = [
     },
   },
   {
-    slug: 'webflow-development',
+    slug: 'web-design-development',
     related: ['ux-ui-design', 'website-process-optimization', 'accessibility'],
     icon: Monitor,
+    // Nicht nur Webflow: je nach Bedarf Webflow, Framer oder eigene Entwicklung (leistungen.md AK-39, AK-40)
     de: {
-      tags: ['Webflow', 'CMS', 'Animationen', 'SEO'],
+      tags: ['Webflow', 'Framer', 'TypeScript', 'CMS', 'SEO'],
       description:
-        'Schnelle, animierte Websites ohne Code-Overhead. Ich baue responsive Seiten mit Webflow, inklusive CMS und Custom Interactions, barrierefrei und suchmaschinenfreundlich.',
+        'Schnelle, gut gestaltete Websites mit dem Werkzeug, das zu deinem Vorhaben passt. Je nach Bedarf baue ich mit Webflow oder Framer als No-Code-Werkzeug, oder ich entwickle die Seite selbst mit TypeScript, Supabase und Vercel, unterstützt von Claude Code. Immer responsive, barrierefrei und suchmaschinenfreundlich.',
       features: [
-        'Responsive Website-Entwicklung',
+        'Webdesign in Figma',
+        'Umsetzung in Webflow oder Framer',
+        'Eigene Entwicklung mit TypeScript, Supabase und Vercel',
         'CMS-Setup & Content-Modellierung',
-        'Interactions & Animationen',
-        'Performance-Optimierung',
+        'Animationen & Performance',
         'SEO & Launch-Support',
       ],
-      label: 'Webflow',
-      title: 'Webflow-Entwicklung',
+      label: 'Web',
+      title: 'Webdesign & Webentwicklung',
       // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
       need: 'Deine Website wirkt veraltet, lädt langsam oder jede kleine Änderung braucht eine Agentur. Du willst eine Seite, die gut aussieht und die dein Team selbst pflegen kann.',
-      short: 'Schnelle, professionelle Websites mit Webflow, inklusive CMS, Animationen und sauberer Struktur.',
+      short:
+        'Schnelle, professionelle Websites mit Webflow, Framer oder eigener Entwicklung, je nachdem, was dein Vorhaben braucht.',
     },
     en: {
-      tags: ['Webflow', 'CMS', 'Animations', 'SEO'],
+      tags: ['Webflow', 'Framer', 'TypeScript', 'CMS', 'SEO'],
       description:
-        'Fast, animated websites without code overhead. I build responsive sites in Webflow, including CMS and custom interactions, accessible and search-friendly.',
+        'Fast, well-designed websites built with the tool that fits your project. Depending on what you need, I build with Webflow or Framer as no-code tools, or develop the site myself with TypeScript, Supabase and Vercel, supported by Claude Code. Always responsive, accessible and search-friendly.',
       features: [
-        'Responsive website development',
+        'Web design in Figma',
+        'Build in Webflow or Framer',
+        'Custom development with TypeScript, Supabase and Vercel',
         'CMS setup & content modelling',
-        'Interactions & animations',
-        'Performance optimisation',
+        'Animations & performance',
         'SEO & launch support',
       ],
-      label: 'Webflow',
-      title: 'Webflow development',
+      label: 'Web',
+      title: 'Web design & development',
       // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
       need: 'Your website looks dated, loads slowly or every small change needs an agency. You want a site that looks good and that your team can update on its own.',
-      short: 'Fast, professional websites built in Webflow, including CMS, animations and a clean structure.',
+      short:
+        'Fast, professional websites built with Webflow, Framer or custom code, depending on what your project needs.',
     },
   },
   {
     slug: 'accessibility',
-    related: ['ux-ui-design', 'website-process-optimization', 'webflow-development'],
+    related: ['ux-ui-design', 'website-process-optimization', 'web-design-development'],
     icon: Accessibility,
     de: {
       tags: ['WCAG 2.2', 'BFSG', 'Audit', 'Screenreader'],
@@ -192,7 +197,7 @@ export const services: Service[] = [
   },
   {
     slug: 'website-process-optimization',
-    related: ['accessibility', 'ai-consulting', 'webflow-development'],
+    related: ['accessibility', 'ai-consulting', 'web-design-development'],
     icon: Workflow,
     de: {
       tags: ['Analyse', 'Performance', 'Conversion', 'Prozesse'],
@@ -231,7 +236,7 @@ export const services: Service[] = [
   },
   {
     slug: 'brand-logo-design',
-    related: ['design-systems', 'webflow-development', 'ux-ui-design'],
+    related: ['design-systems', 'web-design-development', 'ux-ui-design'],
     icon: PenTool,
     de: {
       tags: ['Logo', 'Typografie', 'Styleguide', 'Branding'],

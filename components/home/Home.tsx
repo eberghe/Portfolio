@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, MessagesSquare, PenTool, Rocket, Search } from 'lucide-react';
+import { ArrowRight, MessagesSquare, PenTool, Rocket, Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Fragment, type CSSProperties } from 'react';
@@ -7,6 +7,7 @@ import JsonLd from '@/components/JsonLd';
 import CountUp from '@/components/motion/CountUp';
 import Magnetic from '@/components/motion/Magnetic';
 import ProjectRail from '@/components/home/ProjectRail';
+import CompanyTiles from '@/components/home/CompanyTiles';
 import ServiceScroller from '@/components/home/ServiceScroller';
 import { aboutPhoto } from '@/lib/content/about';
 import { faqs } from '@/lib/content/faq';
@@ -104,47 +105,23 @@ export default function Home({ locale }: { locale: Locale }) {
         </div>
         {/* Durchgehende Linien über die volle Breite, außen senkrecht ab 768 px (AK-62) */}
         <div className="border-y border-border mb-10 md:mb-12">
-          <ul className="md:w-[calc(100%-6rem)] md:max-w-[calc(1280px-6rem)] mx-auto grid grid-cols-2 md:grid-cols-4 auto-rows-fr md:border-l border-border">
-            {t.companies.map((c, i) => (
-              <li
-                key={c.name}
-                data-reveal
-                style={stagger(i)}
-                className="border-border [&:nth-child(odd)]:border-r md:border-r [&:nth-child(-n+2)]:border-b md:[&:nth-child(-n+2)]:border-b-0"
-              >
-                <a
-                  href={c.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  // Sichtbarer Text in derselben Reihenfolge, mit Pausen und Hinweis auf den neuen Tab (AK-32)
-                  aria-label={[c.name, 'current' in c && c.current ? t.current : null, c.role]
-                    .filter(Boolean)
-                    .join(', ')
-                    .concat(` ${t.newTab}`)}
-                  className={`group relative flex flex-col items-center text-center gap-3 h-full min-h-[120px] md:min-h-[150px] px-4 pt-9 pb-6 md:pt-11 text-foreground motion-safe:transition-colors ${'current' in c && c.current ? 'bg-primary-light' : 'hover:bg-bg2'}`}
-                >
-                  {/* Feste Logo-Höhe: Logos und Rollen stehen in allen Kacheln auf einer Linie */}
-                  <span className="flex items-center justify-center h-10 lg:h-12">
-                    <CompanyLogo name={c.name} />
-                  </span>
-                  {'current' in c && c.current && (
-                    <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 text-[11px] font-medium text-primary-text">
-                      <span aria-hidden="true" className="w-[6px] h-[6px] bg-primary rounded-full" />
-                      {t.current}
-                    </span>
-                  )}
-                  <span className={`text-[12px] ${'current' in c && c.current ? 'text-foreground' : 'text-text2'}`}>
-                    {c.role}
-                  </span>
-                  <ArrowUpRight
-                    size={14}
-                    aria-hidden="true"
-                    className="absolute top-3 right-3 text-text3 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 motion-safe:transition-opacity"
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
+          {/* Kacheln öffnen ein Fenster mit Rolle, Zeitraum und Tätigkeit (AK-75 bis AK-78) */}
+          <CompanyTiles
+            items={t.companies.map((c) => ({
+              ...c,
+              current: 'current' in c && c.current,
+              website: t.companyWebsite(c.name),
+              logo: <CompanyLogo name={c.name} />,
+            }))}
+            labels={{
+              current: t.current,
+              newTab: t.newTab,
+              role: t.companyRole,
+              period: t.companyPeriod,
+              duties: t.companyDuties,
+              close: t.close,
+            }}
+          />
         </div>
       </section>
 

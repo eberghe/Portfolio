@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
-import { axe } from './helpers';
+import { expect, test, type Page } from '@playwright/test';
+import { axe, openHydrated } from './helpers';
 
 // functions/seiten/startseite.md
 
@@ -178,8 +178,9 @@ test.describe('AK-47: Hero-Animation', () => {
 });
 
 test('AK-32/AK-34: Kacheln zentriert, Logos geladen', async ({ page }) => {
-  await page.goto('/');
-  const aligns = await page.$$eval('section[aria-labelledby="unternehmen"] ul a', (els) =>
+  // Erst nach der Hydrierung messen: dann sind aus den Links Schalter geworden (AK-75)
+  await openHydrated(page, '/');
+  const aligns = await page.$$eval('section[aria-labelledby="unternehmen"] ul :is(a, button)', (els) =>
     els.map((el) => getComputedStyle(el).textAlign),
   );
   expect(aligns.every((a) => a === 'center')).toBe(true);
@@ -194,10 +195,15 @@ test.describe('AK-34: Logos im Dunkelmodus weiß', () => {
   test.use({ colorScheme: 'dark' });
   test('Filter invertiert', async ({ page }) => {
     await page.goto('/');
-    const filters = await page.$$eval('section[aria-labelledby="unternehmen"] ul img', (els) =>
-      els.map((el) => getComputedStyle(el).filter),
-    );
-    expect(filters.every((f) => f.includes('invert(1)'))).toBe(true);
+    // Dunkelmodus und Kacheln stehen erst nach dem Hydrieren endgültig; darum abwarten statt einmal messen
+    await expect
+      .poll(() =>
+        page.$$eval(
+          'section[aria-labelledby="unternehmen"] ul img',
+          (els) => els.length > 0 && els.every((el) => getComputedStyle(el).filter.includes('invert(1)')),
+        ),
+      )
+      .toBe(true);
   });
 });
 
@@ -534,4 +540,126 @@ test('AK-69: Foto in „Über mich“ groß', async ({ page }, info) => {
   const vw = page.viewportSize()!.width;
   if (info.project.name === 'desktop-1280') expect(width).toBeGreaterThanOrEqual(480);
   if (info.project.name === 'mobile-360') expect(width).toBeGreaterThanOrEqual(vw - 2 * 24 - 3); // minus 1 px Rahmen je Seite
+});
+
+test.describe('Firmen-Fenster (AK-75 bis AK-78)', () => {
+  const tiles = (page: Page) => page.locator('section[aria-labelledby="unternehmen"] ul button');
+
+  test('AK-75: ohne JavaScript bleiben die Kacheln Links', async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto('/');
+    const links = page.locator('section[aria-labelledby="unternehmen"] ul a[target="_blank"]');
+    await expect(links).toHaveCount(4);
+    await ctx.close();
+  });
+
+  test('AK-76/AK-77/AK-78: öffnen, Scroll gesperrt, Escape, X und Fläche daneben schließen', async ({ page }) => {
+    await openHydrated(page, '/');
+    const first = tiles(page).first();
+    await first.scrollIntoViewIfNeeded();
+    await first.click();
+    const dialog = page.getByRole('dialog', { name: 'HERO Software' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('link', { name: /Website von HERO Software/ })).toBeVisible();
+    // Seite scrollt nicht, Fokus im Fenster (erst messen, wenn das Hinscrollen zur Kachel fertig ist)
+    await page.waitForTimeout(800);
+    const y = await page.evaluate(() => scrollY);
+    await page.mouse.wheel(0, 800);
+    await page.waitForTimeout(400);
+    expect(await page.evaluate(() => scrollY)).toBe(y);
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflow)).toBe('hidden');
+    expect(await dialog.evaluate((d) => d.contains(document.activeElement))).toBe(true);
+    // Kein waagerechtes Scrollen im Fenster, Schließen-Knopf groß genug
+    expect(await dialog.evaluate((d) => d.scrollWidth - d.clientWidth)).toBeLessThanOrEqual(0);
+    const close = dialog.getByRole('button', { name: 'Schließen' });
+    const box = (await close.boundingBox())!;
+    expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+    expect(await axe(page, ['dialog'])).toEqual([]);
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(first).toBeFocused();
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
+
+    const second = tiles(page).nth(1);
+    await second.click();
+    await page.getByRole('dialog', { name: 'TEAM23' }).getByRole('button', { name: 'Schließen' }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(second).toBeFocused();
+
+    await second.click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.mouse.click(5, 5);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+
+  test('AK-77: per Tastatur geöffnet, Fokus sichtbar auf „Schließen“', async ({ page }) => {
+    await openHydrated(page, '/');
+    await tiles(page).first().focus();
+    await page.keyboard.press('Enter');
+    const close = page.getByRole('dialog').getByRole('button', { name: 'Schließen' });
+    await expect(close).toBeFocused();
+    expect(await close.evaluate((el) => getComputedStyle(el).outlineStyle)).toBe('solid');
+  });
+
+  test('AK-80: Inhalt scrollt mit sanftem Scrollen, X bleibt stehen, Seite springt nicht', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 600 });
+    await openHydrated(page, '/?animationstest');
+    await page.waitForTimeout(1800);
+    const tile = tiles(page).first();
+    await tile.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    const tileX = (await tile.boundingBox())!.x;
+    await tile.click();
+    const dialog = page.getByRole('dialog', { name: 'HERO Software' });
+    await expect(dialog).toBeVisible();
+    // Seite springt nicht seitlich, wenn ihre Scrollleiste verschwindet
+    expect(Math.abs((await tile.boundingBox())!.x - tileX)).toBeLessThanOrEqual(1);
+    const scroller = dialog.locator('[data-dialog-scroll]');
+    const close = dialog.getByRole('button', { name: 'Schließen' });
+    // Einblende-Animation abwarten, dann Lage des X merken
+    await page.waitForTimeout(500);
+    const closeY = (await close.boundingBox())!.y;
+    const box = (await scroller.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.wheel(0, 400);
+    await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBeGreaterThan(100);
+    expect(Math.abs((await close.boundingBox())!.y - closeY)).toBeLessThanOrEqual(1);
+  });
+
+  test('AK-81: Scrollbereich füllt das Fenster, Scrollleiste ohne Spur', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 600 });
+    await openHydrated(page, '/');
+    await tiles(page).first().click();
+    const dialog = page.getByRole('dialog', { name: 'HERO Software' });
+    await expect(dialog).toBeVisible();
+    await page.waitForTimeout(500);
+    const scroller = dialog.locator('[data-dialog-scroll]');
+    const d = (await dialog.boundingBox())!;
+    const sc = (await scroller.boundingBox())!;
+    // Kein Streifen zwischen Scrollbereich und Rahmen (nur der 1px-Rahmen)
+    expect(Math.abs(d.x + d.width - (sc.x + sc.width))).toBeLessThanOrEqual(1.5);
+    expect(Math.abs(sc.y - d.y)).toBeLessThanOrEqual(1.5);
+    expect(Math.abs(d.y + d.height - (sc.y + sc.height))).toBeLessThanOrEqual(1.5);
+    // Spur durchsichtig, Griff rund und mit Abstand zu den Ecken
+    const bar = await scroller.evaluate((el) => {
+      const track = getComputedStyle(el, '::-webkit-scrollbar-track');
+      const thumb = getComputedStyle(el, '::-webkit-scrollbar-thumb');
+      return { track: track.backgroundColor, margin: track.marginTop, radius: thumb.borderTopLeftRadius };
+    });
+    expect(bar.track).toBe('rgba(0, 0, 0, 0)');
+    expect(parseFloat(bar.margin)).toBeGreaterThanOrEqual(12);
+    expect(parseFloat(bar.radius)).toBeGreaterThan(0);
+  });
+
+  test('AK-75: Plus wird beim Tastaturfokus grün', async ({ page }) => {
+    await openHydrated(page, '/');
+    const plus = tiles(page).first().locator('[data-company-plus]');
+    const before = await plus.evaluate((el) => getComputedStyle(el).color);
+    await tiles(page).first().focus();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await expect.poll(() => plus.evaluate((el) => getComputedStyle(el).color)).not.toBe(before);
+  });
 });

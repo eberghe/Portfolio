@@ -94,19 +94,19 @@ test('AK-21: beim Wechsel der Darstellung bleibt die Station im Blick', async ({
   await page.goto('/about');
   await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
   await page.evaluate(() => {
-    const li = document.querySelectorAll('[data-journey] ol > li')[7] as HTMLElement;
+    const li = document.querySelectorAll('[data-journey] ol > li')[4] as HTMLElement;
     scrollTo({ top: li.getBoundingClientRect().top + scrollY, behavior: 'instant' });
   });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
   await page.waitForTimeout(400);
-  await expect(panels(page).nth(7)).toHaveAttribute('data-active', 'true');
-  expect(Math.abs((await box(page, 7)).y)).toBeLessThan(2);
+  await expect(panels(page).nth(4)).toHaveAttribute('data-active', 'true');
+  expect(Math.abs((await box(page, 4)).y)).toBeLessThan(2);
 
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await expect(page.locator('[data-journey]')).not.toHaveAttribute('data-pinned', 'true');
   await page.waitForTimeout(400);
-  const c = await box(page, 7);
+  const c = await box(page, 4);
   expect(c.y).toBeGreaterThan(-c.height / 2);
   expect(c.y).toBeLessThan(800 / 2);
 });

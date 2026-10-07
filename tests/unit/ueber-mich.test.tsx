@@ -48,7 +48,7 @@ describe('AK-5: Zeitleiste', () => {
     const ol = heading.closest('section')!.querySelector('ol')!;
     const items = within(ol).getAllByRole('listitem');
     expect(items).toHaveLength(timeline.length);
-    expect(timeline.length).toBe(15);
+    expect(timeline.length).toBe(6);
     for (const li of items) {
       expect(li.querySelector('time[datetime]')).not.toBeNull();
       expect(within(li).getByRole('heading', { level: 3 })).toBeTruthy();
@@ -87,14 +87,13 @@ describe('AK-10: Werkzeuge einheitlich', () => {
   });
 });
 
-describe('AK-11: Master abgeschlossen', () => {
-  it('Abschluss im September 2026, danach nur noch die neue Rolle (AK-13)', () => {
+describe('AK-11/AK-30: Master abgeschlossen', () => {
+  it('Master am MCI nennt den Abschluss, danach nur noch die aktuelle Rolle (AK-13)', () => {
     const master = timeline.at(-2)!;
-    expect(master.date).toBe('2026-09');
-    expect(master.de.title).toBe('Masterabschluss am MCI');
-    expect(master.en.title).toBe("Master's degree from MCI");
+    expect(master.date).toBe('2024-10');
+    expect(master.de.title).toBe('Master am MCI in Innsbruck');
+    expect(master.de.text).toMatch(/September 2026/);
     const last = timeline.at(-1)!;
-    expect(last.date).toBe('2026-09');
     expect(last.de.title).toBe('Business Development Manager bei HERO Software');
     expect(last.en.title).toBe('Business Development Manager at HERO Software');
   });
@@ -110,6 +109,27 @@ describe('AK-11: Master abgeschlossen', () => {
     const alumni = JSON.stringify(person('de').alumniOf);
     expect(alumni).toContain('Ingolstadt');
     expect(alumni).toContain('MCI');
+  });
+});
+
+describe('AK-30: sechs zusammengefasste Stationen', () => {
+  it('Titel, Daten und Fotos', () => {
+    expect(timeline.map((t) => [t.date, t.de.title])).toEqual([
+      ['2018-10', 'Work & Travel in Neuseeland'],
+      ['2019-10', 'B.Sc. User Experience Design'],
+      ['2021-10', 'UX/UI-Designer bei TEAM23'],
+      ['2024-02', 'Workation auf Bali, Indonesien'],
+      ['2024-10', 'Master am MCI in Innsbruck'],
+      ['2025-09', 'Business Development Manager bei HERO Software'],
+    ]);
+    for (const t of timeline) {
+      expect(t.image, t.de.title).toBeDefined();
+      for (const locale of ['de', 'en'] as const)
+        expect(t[locale].text.split(/(?<=[.!?])\s+/).length, t[locale].title).toBeLessThanOrEqual(3);
+    }
+    const all = timeline.map((t) => `${t.de.text} ${t.en.text}`).join(' ');
+    for (const word of ['Kiwi', 'Bachelor', 'Werkstudent', 'Vollzeit', 'Herocon']) expect(all).toContain(word);
+    expect(all).not.toMatch(/Amazon/);
   });
 });
 
@@ -175,23 +195,21 @@ describe.each(['de', 'en'] as const)('Umbau Über mich (%s)', (locale) => {
 });
 
 describe('AK-27: echte Stationsfotos', () => {
-  it('Bachelorabschluss, Werkstudent und Vollzeit bei TEAM23 haben Fotos mit Bildausschnitt', () => {
+  it('Bachelor, TEAM23 und HERO haben Fotos mit Bildausschnitt', () => {
     for (const title of [
-      'Bachelorabschluss',
-      'Werkstudent bei TEAM23',
-      'UX/UI-Designer bei TEAM23 (Vollzeit)',
+      'B.Sc. User Experience Design',
+      'UX/UI-Designer bei TEAM23',
       'Business Development Manager bei HERO Software',
     ]) {
       const entry = timeline.find((t) => t.de.title === title)!;
       expect(entry, title).toBeDefined();
       expect(entry.image?.position, title).toMatch(/%/);
     }
-    expect(timeline.find((t) => t.de.title === 'Bachelorabschluss')!.en.title).toBe("Bachelor's degree");
   });
 
   it('Bildausschnitt landet als object-position am Bild', () => {
     render(<About locale="de" />);
-    const entry = timeline.find((t) => t.de.title === 'Werkstudent bei TEAM23')!;
+    const entry = timeline.find((t) => t.de.title === 'UX/UI-Designer bei TEAM23')!;
     const img = screen.getByRole('img', { name: entry.image!.alt.de });
     expect(img.style.objectPosition).toBe(entry.image!.position);
   });

@@ -32,14 +32,6 @@ const img = (
   ...(position ? { position } : {}),
 });
 
-const team23 = img(
-  'team23',
-  1599,
-  2400,
-  'Erik im weißen TEAM23-Crew-Shirt mit Schlüsselband',
-  'Erik in a white TEAM23 crew shirt with a lanyard',
-);
-
 export const aboutContent = {
   de: {
     metaTitle: 'Über mich: Erik Bergheimer, UX/UI-Designer | Erik Bergheimer',
@@ -104,18 +96,8 @@ export const tools = [
   { name: 'VS Code', src: '/images/logos/vscode.png', width: 80, height: 80 },
 ];
 
+// Sechs zusammengefasste Stationen (functions/seiten/ueber-mich.md AK-30, Issue #35)
 export const timeline: TimelineItem[] = [
-  {
-    date: '2018-07',
-    de: {
-      title: 'Abitur & IKEA',
-      text: 'Nach dem Abitur in Königsbrunn war mein größter Traum, ins Ausland zu gehen. Bis zur Abreise arbeitete ich bei IKEA, um für dieses Abenteuer zu sparen.',
-    },
-    en: {
-      title: 'High school & IKEA',
-      text: 'After graduating from high school in Königsbrunn, Germany, my biggest dream was to go abroad. Until I left, I worked at IKEA to save up for this adventure.',
-    },
-  },
   {
     date: '2018-10',
     image: img(
@@ -127,123 +109,34 @@ export const timeline: TimelineItem[] = [
     ),
     de: {
       title: 'Work & Travel in Neuseeland',
-      text: 'Im Oktober 2018 begann meine Reise: sechs Monate Work and Travel in Neuseeland. Ganz alleine, ohne festen Plan, aber mit jeder Menge Aufregung und Vorfreude.',
+      text: 'Nach dem Abitur in Königsbrunn wollte ich unbedingt ins Ausland. Im Oktober 2018 ging es für sechs Monate nach Neuseeland, allein und ohne festen Plan. Fünf Wochen davon arbeitete ich auf einer Kiwi-Farm in Te Puke.',
     },
     en: {
       title: 'Work & Travel in New Zealand',
-      text: 'In October 2018, my journey began: six months of Work and Travel in New Zealand. All on my own, with no set plan, just a whole lot of excitement and anticipation.',
-    },
-  },
-  {
-    date: '2018-12',
-    image: img(
-      'kiwi',
-      1800,
-      2400,
-      'Reihen einer Kiwi-Plantage mit Rankgerüsten',
-      'Rows of a kiwi orchard with trellises',
-    ),
-    de: {
-      title: 'Kiwi-Farm in Te Puke',
-      text: 'Im Dezember begann mein erster Job in Te Puke, Neuseeland: fünf Wochen auf einer Kiwi-Plantage. Lange Tage körperlicher Arbeit an der frischen Luft prägten diese Zeit.',
-    },
-    en: {
-      title: 'Kiwi farm in Te Puke',
-      text: 'In December, I started my first job in Te Puke, New Zealand, working on a kiwi orchard for five weeks. Long days of physical work out in the fresh air shaped this time in a big way.',
-    },
-  },
-  {
-    date: '2019-06',
-    de: {
-      title: 'Amazon Deutschland',
-      text: 'Nach der Rückkehr nach Deutschland im April 2019 begann ich im Juni bei Amazon zu arbeiten, um vor dem möglichen Studienstart etwas Geld zu sparen.',
-    },
-    en: {
-      title: 'Amazon Germany',
-      text: 'After returning to Germany in April 2019, I started working at Amazon in June to save up some money before possibly starting my studies.',
-    },
-  },
-  {
-    date: '2019-07',
-    de: {
-      title: 'Beruflicher Persönlichkeitstest',
-      text: 'Unsicher, was ich studieren soll, machte ich einen professionellen Persönlichkeitstest. Das Ergebnis wies mich auf ein Studium im Bereich User Experience Design in Ingolstadt hin.',
-    },
-    en: {
-      title: 'Professional personality test',
-      text: "Unsure of what to study, I took a professional personality test. The result pointed me toward a Bachelor's degree in User Experience Design in Ingolstadt, Germany.",
+      text: 'After high school in Königsbrunn, Germany, I wanted nothing more than to go abroad. In October 2018 I left for six months in New Zealand, on my own and without a set plan. For five of those weeks I worked on a kiwi farm in Te Puke.',
     },
   },
   {
     date: '2019-10',
     image: img(
-      'ingolstadt',
-      1800,
-      2400,
-      'Das Neue Schloss in Ingolstadt im Abendlicht',
-      'The New Castle in Ingolstadt in the evening light',
-    ),
-    de: {
-      title: 'B.Sc. User Experience Design',
-      text: 'Nach dem Umzug nach Ingolstadt begann ich mein Studium im Bereich User Experience Design.',
-    },
-    en: {
-      title: 'B.Sc. User Experience Design',
-      text: 'After moving to Ingolstadt, I began my studies in User Experience Design.',
-    },
-  },
-  {
-    date: '2021-10',
-    image: team23,
-    de: {
-      title: 'Pflichtpraktikum bei TEAM23',
-      text: 'Für mein fünftes Semester war ein Pflichtpraktikum erforderlich, das ich bei TEAM23 in Augsburg absolvierte.',
-    },
-    en: {
-      title: 'Internship at TEAM23',
-      text: 'For my fifth semester, a mandatory internship was required, which I completed at TEAM23 in Augsburg, Germany.',
-    },
-  },
-  {
-    date: '2022-02',
-    image: img(
-      'team23-workshop',
-      1600,
-      2400,
-      'Erik lächelnd auf einer Bank bei einem Workshop im Freien, hinter ihm Plakate zu Kommunikation und Empathie',
-      'Erik smiling on a bench at an outdoor workshop, with posters on communication and empathy behind him',
-      '55% 30%',
-    ),
-    de: {
-      title: 'Werkstudent bei TEAM23',
-      text: 'Nach dem erfolgreichen Abschluss meines Praktikums begann ich im Februar 2022 als Werkstudent bei TEAM23.',
-    },
-    en: {
-      title: 'Working student at TEAM23',
-      text: 'After successfully completing my internship, I started working as a working student at TEAM23 in February 2022.',
-    },
-  },
-  {
-    date: '2023-08',
-    image: img(
       'bachelor',
       1500,
       2000,
       'Erik bekommt seine Bachelorurkunde in User Experience Design überreicht und schüttelt dabei die Hand',
-      'Erik receiving his Bachelor of Science certificate in User Experience Design with a handshake',
+      "Erik receiving his bachelor's degree certificate in User Experience Design with a handshake",
       '60% 15%',
     ),
     de: {
-      title: 'Bachelorabschluss',
-      text: 'Mit meiner Bachelorarbeit „Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce“ schloss ich mein Studium in User Experience Design an der TH Ingolstadt ab.',
+      title: 'B.Sc. User Experience Design',
+      text: 'Ein Persönlichkeitstest brachte mich auf User Experience Design. Im Oktober 2019 begann ich das Studium an der TH Ingolstadt. 2023 schloss ich es mit meiner Bachelorarbeit über die Grenzen von Low-/No-Code-Tools im E-Commerce ab.',
     },
     en: {
-      title: "Bachelor's degree",
-      text: 'With my thesis "Limitations and Problems of Low-/No-Code Tools in the Context of E-Commerce", I completed my degree in User Experience Design at TH Ingolstadt.',
+      title: 'B.Sc. User Experience Design',
+      text: "A personality test pointed me towards User Experience Design. In October 2019 I started my studies at TH Ingolstadt. In 2023 I graduated with a bachelor's thesis on the limits of low-/no-code tools in e-commerce.",
     },
   },
   {
-    date: '2023-09',
+    date: '2021-10',
     image: img(
       'team23-festival',
       1659,
@@ -253,12 +146,12 @@ export const timeline: TimelineItem[] = [
       '50% 28%',
     ),
     de: {
-      title: 'UX/UI-Designer bei TEAM23 (Vollzeit)',
-      text: 'Im September 2023 startete ich als UX/UI-Designer in Vollzeit bei TEAM23!',
+      title: 'UX/UI-Designer bei TEAM23',
+      text: 'Insgesamt vier Jahre war ich bei TEAM23 in Augsburg: 2021 als Pflichtpraktikant, danach als Werkstudent und ab September 2023 in Vollzeit als UX/UI-Designer.',
     },
     en: {
-      title: 'UX/UI designer at TEAM23 (full-time)',
-      text: 'In September 2023, I started working full-time as a UX/UI designer at TEAM23!',
+      title: 'UX/UI designer at TEAM23',
+      text: 'I spent four years at TEAM23 in Augsburg: as a mandatory intern in 2021, then as a working student and from September 2023 full-time as a UX/UI designer.',
     },
   },
   {
@@ -272,11 +165,11 @@ export const timeline: TimelineItem[] = [
     ),
     de: {
       title: 'Workation auf Bali, Indonesien',
-      text: 'Von Februar bis April 2024 machte ich eine Workation auf Bali. Sie zeigte mir, wie Remote-Arbeit gelingen kann, auch über Zeitzonen hinweg. In dieser Zeit lernte ich viel über mich selbst und wie ich in einer digitalen Organisation arbeite.',
+      text: 'Von Februar bis April 2024 arbeitete ich remote von Bali aus. Dort habe ich gelernt, wie Remote-Arbeit über Zeitzonen hinweg gelingt.',
     },
     en: {
       title: 'Workation in Bali, Indonesia',
-      text: 'From February to April 2024, I took a workation in Bali, Indonesia. It showed me how remote work can succeed, even across time zones. During this time, I learned a lot about myself and how I work within a digital organization.',
+      text: 'From February to April 2024 I worked remotely from Bali. There I learned how to make remote work across time zones.',
     },
   },
   {
@@ -289,45 +182,16 @@ export const timeline: TimelineItem[] = [
       'Erik with a backpack on a summit, looking over the Inn valley near Innsbruck',
     ),
     de: {
-      title: 'Umzug nach Innsbruck',
-      text: 'Im Oktober 2024 entschied ich mich, den nächsten Schritt in meiner Karriere zu machen und nach Innsbruck zu ziehen, um am MCI den Master in Management, Communication & IT (M.A.) zu beginnen.',
+      title: 'Master am MCI in Innsbruck',
+      text: 'Im Oktober 2024 zog ich für den Master in Management, Communication & IT (M.A.) am MCI nach Innsbruck. Im September 2026 schloss ich ihn ab.',
     },
     en: {
-      title: 'Move to Innsbruck',
-      text: "In October 2024, I decided to take the next step in my career and move to Innsbruck to start a Master's degree in Management, Communication & IT at the Management Center Innsbruck (MCI).",
+      title: "Master's at MCI in Innsbruck",
+      text: "In October 2024 I moved to Innsbruck for a Master's in Management, Communication & IT (M.A.) at the Management Center Innsbruck. I graduated in September 2026.",
     },
   },
   {
     date: '2025-09',
-    image: img(
-      'hero-software',
-      2400,
-      2400,
-      'Porträt von Erik im schwarzen HERO-Shirt vor weißem Hintergrund',
-      'Portrait of Erik in a black HERO shirt against a white background',
-    ),
-    de: {
-      title: 'Werkstudent Business Development bei HERO Software',
-      text: 'Nach vier lohnenden Jahren bei TEAM23 war es Zeit für eine neue Herausforderung und frische Perspektiven. Im September 2025 wechselte ich als Werkstudent ins Business Development bei HERO Software.',
-    },
-    en: {
-      title: 'Working student in business development at HERO Software',
-      text: 'After four rewarding years at TEAM23, I decided it was time for a new challenge and fresh perspectives. In September 2025 I joined HERO Software as a working student in Business Development.',
-    },
-  },
-  {
-    date: '2026-09',
-    de: {
-      title: 'Masterabschluss am MCI',
-      text: 'Im September 2026 schloss ich meinen Master in Management, Communication & IT (M.A.) am Management Center Innsbruck ab.',
-    },
-    en: {
-      title: "Master's degree from MCI",
-      text: "In September 2026, I completed my Master's degree in Management, Communication & IT (M.A.) at the Management Center Innsbruck.",
-    },
-  },
-  {
-    date: '2026-09',
     image: img(
       'herocon',
       1800,
@@ -338,11 +202,11 @@ export const timeline: TimelineItem[] = [
     ),
     de: {
       title: 'Business Development Manager bei HERO Software',
-      text: 'Nach dem Master blieb ich bei HERO Software und wechselte im September 2026 vom Werkstudenten zum Business Development Manager für die Herocon, die Konferenz von HERO Software.',
+      text: 'Im September 2025 kam ich als Werkstudent ins Business Development von HERO Software. Seit September 2026 bin ich dort Business Development Manager für die Herocon, die von HERO Software initiierte Konferenz.',
     },
     en: {
       title: 'Business Development Manager at HERO Software',
-      text: "After my Master's I stayed at HERO Software and moved from working student to Business Development Manager for Herocon, the conference started by HERO Software, in September 2026.",
+      text: 'In September 2025 I joined HERO Software as a working student in business development. Since September 2026 I have been Business Development Manager for Herocon, the conference started by HERO Software.',
     },
   },
 ];

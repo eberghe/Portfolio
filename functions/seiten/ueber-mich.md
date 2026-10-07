@@ -144,6 +144,8 @@ Erik (2026-10-06): „das ist zu viel, das scrollt keiner durch“; 2026-10-07: 
 
 - AK-31 (Erik, 2026-10-07: „der scroll bei über uns etappen ist nicht synchron mit den etappen“): Scrollweg, Fortschrittsbalken und aktive Station passen zusammen. Der Scrollweg ist in gleich lange Abschnitte geteilt, einen je Station (je etwa 0,9 Fensterhöhen, AK-23); aktiv ist die Station, in deren Abschnitt man gerade steht. Der Balken unten ist in genauso viele Teile gegliedert: Teile früherer Stationen sind voll, der Teil der aktiven Station füllt sich mit dem Scrollen in ihrem Abschnitt, spätere sind leer. Ersetzt in AK-22 „deren Hintergrund den größeren Teil des Bildschirms füllt“. Die Pfeile (AK-24) springen an den Anfang des Abschnitts. Die gefüllten Balkenteile sind weiß (Erik, 2026-10-07: „farbe bitte weiß des progress bars“), die leeren halbtransparent weiß.
 
+- AK-32 (Erik, 2026-10-07: „mit einem scroll muss es direkt zum nächsten punkt springen“): Solange die Stationen kleben und das Bild vollständig im Fenster steht, springt eine Scroll-Geste (Mausrad oder Trackpad; mobil ein Wisch) genau eine Station weiter bzw. zurück, an den Anfang ihres Abschnitts (AK-31). Eine Geste mit vielen Rad-Ereignissen oder Nachschwung zählt einmal: erst nach mindestens 0,7 s und einer kurzen Pause ohne Rad-Ereignis zählt die nächste. An der ersten Station nach oben und an der letzten nach unten verlässt die Geste die Stationen ohne toten Scrollweg. Gilt auch mit weichem Scrollen (Lenis); offenes Mobilmenü und reduzierte Bewegung (Tafeln untereinander) sind ausgenommen. Pfeile, Tastatur und Scrollleiste bleiben wie bisher.
+
 ### Blinder Kritiker (Stationen, 2026-10-07)
 
 Behoben: „insgesamt vier Jahre“ las sich wie vier Jahre Vollzeit bei TEAM23 (jetzt Gesamtdauer vorne); DE und EN zur Herocon angeglichen („von HERO Software initiiert“); holprige Formulierungen (Bali EN, MCI DE, „bachelor's thesis“). Offen für Erik: Das Herocon-Foto zeigt „Herocon 2027“, die Station beginnt 2025-09; passt das Foto?
@@ -151,3 +153,10 @@ Behoben: „insgesamt vier Jahre“ las sich wie vier Jahre Vollzeit bei TEAM23 
 ### Blinder Kritiker (Stationen synchron, 2026-10-07)
 
 Keine Einwände. Die Grenzen sind korrekt: Bei progress = 1 ist die letzte Station aktiv, und die Pfeile springen nach dem +1-px-Ausgleich in die richtige Station. Nach einer Größenänderung bleibt der Fortschritt erhalten. Die Balkenteile sind dekorativ und ohne Inhalt.
+
+### Blinder Kritiker (eine Geste = eine Station, 2026-10-07)
+
+Behoben:
+- Man blieb an beiden Ausgängen hängen. Die Sprünge nach draußen lagen innerhalb der 1-px-Toleranz von „klebt gerade“. Die Toleranz ist jetzt strenger, der Sprung geht 2 px hinaus, und der Test prüft eine zweite Geste in beide Richtungen.
+- Der Schwung von Lenis aus der Geste davor rollte über Stationen hinweg. Er wird jetzt beim ersten abgefangenen Rad-Ereignis angehalten.
+- Der Zwei-Finger-Zoom wurde blockiert. Er bleibt jetzt frei.

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { TimelineItem } from '@/lib/content/about';
 import type { Locale } from '@/lib/i18n';
+import { halt, jumpTo } from '@/lib/motion/lenis';
 
 // „Mein Weg“: bildschirmfüllende Stationen, die beim Scrollen kleben bleiben und animiert wechseln
 // (functions/seiten/ueber-mich.md AK-15 bis AK-23). Ohne JavaScript, unter 768 px und bei reduzierter Bewegung
@@ -163,22 +164,87 @@ export default function Journey({
       progress = kept;
       move();
     };
-    // Seitliches Wischen und waagerechtes Mausrad blättern ebenfalls
-    const wheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-      e.preventDefault();
-      window.scrollBy({ top: e.deltaX, behavior: 'instant' });
-    };
-    // Pfeile springen an den Anfang des Abschnitts der Station (AK-31); +1 px gegen Rundung an der Grenze
+    // Pfeile und Gesten springen an den Anfang des Abschnitts der Station (AK-31); +1 px gegen Rundung an der Grenze
     goTo.current = (index) => {
       const top = el.getBoundingClientRect().top + window.scrollY;
       const i = Math.min(last, Math.max(0, index));
-      window.scrollTo({ top: top + (i / count) * range() + (i > 0 ? 1 : 0), behavior: 'instant' });
+      jumpTo(top + (i / count) * range() + (i > 0 ? 1 : 0));
+    };
+    // Eine Scroll-Geste = eine Station (AK-32). Trackpads feuern je Geste viele Rad-Ereignisse mit Nachschwung:
+    // erst nach LOCK ms und einer Pause von QUIET ms zählt die nächste Geste.
+    const LOCK = 700;
+    const QUIET = 150;
+    let jumped = -Infinity;
+    // Zeit des vorletzten und letzten Rad-Ereignisses auf der ganzen Seite: eine Geste, die von oben in die
+    // Stationen hineinläuft, zählt so nicht gleich als neuer Sprung
+    let prevWheel = -Infinity;
+    let lastWheel = -Infinity;
+    const anyWheel = (e: WheelEvent) => {
+      prevWheel = lastWheel;
+      lastWheel = e.timeStamp;
+    };
+    const pinnedNow = () => {
+      const r = el.getBoundingClientRect();
+      return (
+        r.top <= 0.5 && r.bottom >= window.innerHeight - 0.5 && document.documentElement.style.overflow !== 'hidden'
+      );
+    };
+    // Richtung > 0 nach unten
+    const step = (dir: number, now: number) => {
+      if (now - jumped < LOCK || now - prevWheel < QUIET) return;
+      const current = Math.min(last, Math.floor(progress * count));
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      jumped = now;
+      if (dir > 0 && current === last) {
+        // Ohne toten Scrollweg hinaus: ans Ende der Stationen
+        jumpTo(top + range() + 2);
+        return;
+      }
+      if (dir < 0 && current === 0) {
+        jumpTo(top - 2);
+        return;
+      }
+      goTo.current(current + dir);
+    };
+    const wheel = (e: WheelEvent) => {
+      if (!pinnedNow()) return;
+      // Seitliches Wischen und waagerechtes Mausrad blättern ebenfalls
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (delta === 0) return;
+      // Lenis (auf window) soll das Ereignis nicht mehr sehen
+      e.preventDefault();
+      e.stopPropagation();
+      // Schwung von Lenis aus der Geste davor anhalten, sonst rollt die Seite über Stationen hinweg
+      halt();
+      step(Math.sign(delta), e.timeStamp);
+    };
+    // Mobil: ein Wisch = eine Station
+    let touchY: number | null = null;
+    const touchStart = (e: TouchEvent) => {
+      // Nur ein Finger: Zwei-Finger-Zoom bleibt frei
+      touchY = pinnedNow() && e.touches.length === 1 ? e.touches[0]!.clientY : null;
+    };
+    const touchMove = (e: TouchEvent) => {
+      if (e.touches.length > 1) touchY = null;
+      if (touchY !== null) e.preventDefault();
+    };
+    const touchEnd = (e: TouchEvent) => {
+      if (touchY === null) return;
+      const dy = touchY - e.changedTouches[0]!.clientY;
+      touchY = null;
+      if (Math.abs(dy) < 30) return;
+      prevWheel = -Infinity;
+      jumped = -Infinity;
+      step(Math.sign(dy), e.timeStamp);
     };
     const observer = new ResizeObserver(resize);
     observer.observe(sticky);
     window.addEventListener('scroll', move, { passive: true });
+    window.addEventListener('wheel', anyWheel, { passive: true, capture: true });
     sticky.addEventListener('wheel', wheel, { passive: false });
+    sticky.addEventListener('touchstart', touchStart, { passive: true });
+    sticky.addEventListener('touchmove', touchMove, { passive: false });
+    sticky.addEventListener('touchend', touchEnd);
     resize();
     if (keep !== null && last > 0) {
       progress = (keep + 0.5) / count;
@@ -193,7 +259,11 @@ export default function Journey({
       shown.current = null;
       observer.disconnect();
       window.removeEventListener('scroll', move);
+      window.removeEventListener('wheel', anyWheel, { capture: true });
       sticky.removeEventListener('wheel', wheel);
+      sticky.removeEventListener('touchstart', touchStart);
+      sticky.removeEventListener('touchmove', touchMove);
+      sticky.removeEventListener('touchend', touchEnd);
       el.style.height = '';
     };
   }, [pinned]);

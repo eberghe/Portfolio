@@ -167,6 +167,7 @@ Behoben:
   - Eine neue Geste beginnt bei einem Richtungswechsel, nach mehr als 350 ms Pause oder wenn das Tempo im Nachschwung wieder deutlich steigt, also bei einem neuen Wisch.
   - Eine Geste, die außerhalb der Stationen beginnt, bringt nur hinein, springt aber nicht weiter.
   - Rollt die Seite nach Rad oder Wisch mit Schwung hinein, fängt der Rand sie auf: von oben bei der ersten Station, von unten bei der letzten.
+  - Der Rand fängt 1 px innerhalb der Stationen auf. Genau auf der Kante galt die Seite wegen Rundung manchmal noch als draußen, pendelte und blieb auf langsamen Rechnern eine Station zu früh stehen (CI-Fehler, mit gedrosselter CPU nachgestellt).
   - „Nach oben“, Anker und die Scrollleiste laufen ungebremst durch.
 
 ### Blinder Kritiker (Gesten, 2026-10-07)

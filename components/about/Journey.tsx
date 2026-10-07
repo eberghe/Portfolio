@@ -258,7 +258,9 @@ export default function Journey({
       const byInput = performance.now() - lastInput < 800;
       if (inside && !wasInside && byInput && moved > 2 && moved < window.innerHeight / 2) {
         const top = el.getBoundingClientRect().top + window.scrollY;
-        jumpTo(window.scrollY > lastY ? top : top + range());
+        // 1 px nach innen: genau am Rand gilt die Seite wegen Rundung (Lenis, Bruchteile) oft noch als draußen,
+        // dann pendelt sie zwischen drinnen und draußen und bleibt eine Station zu früh stehen (CI, langsame Geräte)
+        jumpTo(window.scrollY > lastY ? top + 1 : top + range() - 1);
       }
       wasInside = inside;
       lastY = window.scrollY;

@@ -541,6 +541,9 @@ describe('AK-43: Leistungsbilder unbeschnitten', () => {
       expect(frame.className).not.toMatch(/aspect-\[2\/1\]|aspect-\[16\/10\]/);
       expect(s.image!.src).toMatch(/\.png$/);
     }
-    expect(container).toBeTruthy();
+    // Platzhalter bleiben flacher
+    const placeholders = container.querySelectorAll('[data-service-media][aria-hidden="true"]');
+    expect(placeholders.length).toBe(services.length - withImage.length);
+    for (const frame of placeholders) expect(frame.className).toContain('md:aspect-[2/1]');
   });
 });

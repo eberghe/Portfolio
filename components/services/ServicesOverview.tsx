@@ -195,14 +195,15 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
             {/* Vollbild unter jeder Leistung (AK-32); echtes Bild mit Alt-Text, sonst dekorativer Platzhalter (AK-38).
                 TODO(Erik): Bilder für die übrigen Leistungen */}
             {s.image ? (
-              // Ganzes Bild ohne Beschnitt: Breite Bänder und Hochformat würden sonst Bausteine abschneiden, die der Alt-Text nennt
+              // Ganzes Bild ohne Beschnitt: Breite Bänder und Hochformat würden sonst Bausteine abschneiden, die der Alt-Text nennt.
+              // Höchstens 960 px breit: Die Originale sind 1600 px, breiter würde es auf Retina unscharf (leistungen.md AK-43)
               <div data-fullbleed className="bg-bg2 border-y border-border px-4 sm:px-8 md:px-12 py-8 md:py-14">
-                <div className="relative max-w-page mx-auto aspect-[16/9] rounded-xl overflow-hidden">
+                <div className="relative max-w-[960px] mx-auto aspect-[16/9] rounded-xl overflow-hidden">
                   <Image
                     src={s.image.src}
                     alt={locale === 'de' ? s.image.alt : s.image.altEn}
                     fill
-                    sizes="(min-width: 1280px) 1280px, 100vw"
+                    sizes="(min-width: 1024px) 960px, calc(100vw - 32px)"
                     quality={90}
                     className="object-cover"
                   />

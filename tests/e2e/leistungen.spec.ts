@@ -114,7 +114,7 @@ for (const path of ['/services', '/']) {
 }
 
 // AK-43: auch Projekt-Thumbnails und Fotos in Qualität 90
-for (const path of ['/projects', '/about']) {
+for (const path of ['/projects', '/about', '/faqs']) {
   test(`AK-43: Fotos auf ${path} mit Qualität 90`, async ({ page }) => {
     await page.goto(path);
     const srcs = await page
@@ -126,3 +126,12 @@ for (const path of ['/projects', '/about']) {
     for (const src of photos) expect(src).toContain('q=90');
   });
 }
+
+// AK-43: In der Leistungsliste der Startseite hat der Rahmen echter Bilder das Seitenverhältnis des Bilds (nichts beschnitten)
+test('AK-43: Leistungsbilder auf der Startseite unbeschnitten', async ({ page }) => {
+  await page.goto('/');
+  const frames = page.locator('[data-service-media]:not([aria-hidden="true"])');
+  expect(await frames.count()).toBeGreaterThanOrEqual(3);
+  for (const box of await frames.evaluateAll((els) => els.map((el) => el.getBoundingClientRect())))
+    expect(Math.abs(box.width / box.height - 16 / 9)).toBeLessThan(0.02);
+});

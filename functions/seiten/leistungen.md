@@ -163,3 +163,7 @@ Behoben: „Inhalte pflegst du danach selbst“ nur beim No-Code-Punkt klang, al
 Erik: „thumbnails in schlechter quali … das format stimmt auch nicht ganz … das logos ding ist abgeschnitten … bitte alle thumbnails bessere quali“. Ursache: In der Leistungsliste der Startseite war der Rahmen ab 768 px 2:1, das 16:9-Bild wurde oben und unten beschnitten. Dazu kamen die Standardqualität 75 beim Umrechnen und eine JPG-Umwandlung des Website-Bilds.
 
 - AK-43: Echte Leistungsbilder stehen überall im Format 16:9 und unbeschnitten, auch in der Leistungsliste der Startseite (Platzhalter bleiben 16:10 und 2:1). Sie werden mit Qualität 90 ausgeliefert, und die Originale liegen verlustfrei als PNG vor. Qualität 90 gilt auch für alle anderen Fotos und Thumbnails (Projekte, Galerie, Startseite, Über mich).
+
+### Blinder Kritiker (Bildqualität, 2026-10-07)
+
+Behoben: FAQ-Foto noch mit Qualität 75; auf der Übersicht war das Bild bis 1280 px breit, das 1600-px-Original reicht auf Retina nur für etwa 800 px, deshalb steht es jetzt höchstens 960 px breit; Test misst das Seitenverhältnis der Rahmen im Browser und prüft, dass Platzhalter flacher bleiben. Offen für Erik: Für volle Schärfe auf großen Retina-Bildschirmen Bilder in 3200 × 1800 exportieren.

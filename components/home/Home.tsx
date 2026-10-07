@@ -160,7 +160,7 @@ export default function Home({ locale }: { locale: Locale }) {
                   src={s.image.src}
                   alt={locale === 'de' ? s.image.alt : s.image.altEn}
                   fill
-                  sizes="(min-width: 1280px) 760px, (min-width: 768px) 60vw, 100vw"
+                  sizes="(min-width: 1280px) 800px, (min-width: 768px) 60vw, 100vw"
                   quality={90}
                   className="object-cover"
                 />

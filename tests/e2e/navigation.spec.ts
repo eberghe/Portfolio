@@ -115,7 +115,11 @@ test.describe('mobil', () => {
   test('AK-18: Menü auf gescrollter Seite: Kopfzeile sichtbar, Position bleibt', async ({ page }) => {
     await page.goto('/about');
     await ready(page);
+    // Erst Schriften laden lassen: ein später Schriftwechsel ändert Höhen über der Leseposition, und die
+    // Scroll-Verankerung des Browsers verschiebt scrollY dann um ein paar Pixel (CI-Fehler 2026-10-07)
+    await page.evaluate(() => document.fonts.ready);
     await page.evaluate(() => scrollTo({ top: 2000, behavior: 'instant' }));
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const burger = page.getByRole('button', { name: 'Menü' });
     const before = await page.evaluate(() => scrollY);
     // dispatchEvent statt click: Playwright würde sonst selbst zum Knopf scrollen

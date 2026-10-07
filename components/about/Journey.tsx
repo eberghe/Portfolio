@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import type { TimelineItem } from '@/lib/content/about';
 import type { Locale } from '@/lib/i18n';
+import { halt, jumpTo } from '@/lib/motion/lenis';
 
 // „Mein Weg“: bildschirmfüllende Stationen, die beim Scrollen kleben bleiben und animiert wechseln
 // (functions/seiten/ueber-mich.md AK-15 bis AK-23). Ohne JavaScript, unter 768 px und bei reduzierter Bewegung
@@ -68,7 +69,8 @@ export default function Journey({
   const [active, setActive] = useState(0);
   const area = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLOListElement>(null);
-  const bar = useRef<HTMLSpanElement>(null);
+  // Ein Balkenteil je Station (AK-31)
+  const segments = useRef<(HTMLSpanElement | null)[]>([]);
   // Station, die beim Wechsel der Darstellung im Blick bleiben soll (AK-21)
   const pending = useRef<number | null>(null);
   // Station, die beim Kleben gerade aktiv und im Bild ist
@@ -128,10 +130,17 @@ export default function Journey({
     const last = list.children.length - 1;
     const sticky = list.parentElement!;
     const range = () => el.offsetHeight - window.innerHeight;
+    // Jede Station bekommt einen gleich langen Abschnitt des Scrollwegs; Balken und aktive Station folgen ihm (AK-31)
+    const count = last + 1;
     const apply = () => {
-      const index = Math.round(progress * last);
+      const index = Math.min(last, Math.floor(progress * count));
       setActive(index);
-      if (bar.current) bar.current.style.transform = `scaleX(${progress})`;
+      segments.current.forEach((seg, i) => {
+        if (!seg) return;
+        const fill = Math.min(1, Math.max(0, progress * count - i));
+        seg.style.transform = `scaleX(${fill})`;
+        seg.dataset.fill = String(fill);
+      });
       const inside = el.getBoundingClientRect().top < window.innerHeight && el.getBoundingClientRect().bottom > 0;
       shown.current = inside ? index : null;
     };
@@ -147,7 +156,7 @@ export default function Journey({
     const resize = () => {
       const kept = progress;
       const inside = el.getBoundingClientRect().top <= 0 && el.getBoundingClientRect().bottom >= window.innerHeight;
-      el.style.height = `${last * STEP * window.innerHeight + window.innerHeight}px`;
+      el.style.height = `${count * STEP * window.innerHeight + window.innerHeight}px`;
       if (inside) {
         const top = el.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({ top: top + kept * range(), behavior: 'instant' });
@@ -155,23 +164,97 @@ export default function Journey({
       progress = kept;
       move();
     };
-    // Seitliches Wischen und waagerechtes Mausrad blättern ebenfalls
-    const wheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-      e.preventDefault();
-      window.scrollBy({ top: e.deltaX, behavior: 'instant' });
-    };
+    // Pfeile und Gesten springen an den Anfang des Abschnitts der Station (AK-31); +1 px gegen Rundung an der Grenze
     goTo.current = (index) => {
       const top = el.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: top + (Math.min(last, Math.max(0, index)) / last) * range(), behavior: 'instant' });
+      const i = Math.min(last, Math.max(0, index));
+      jumpTo(top + (i / count) * range() + (i > 0 ? 1 : 0));
+    };
+    // Eine Scroll-Geste = eine Station (AK-32). Trackpads feuern je Geste viele Rad-Ereignisse mit Nachschwung:
+    // erst nach LOCK ms und einer Pause von QUIET ms zählt die nächste Geste.
+    const LOCK = 700;
+    const QUIET = 150;
+    let jumped = -Infinity;
+    // Zeit des vorletzten und letzten Rad-Ereignisses auf der ganzen Seite: eine Geste, die von oben in die
+    // Stationen hineinläuft, zählt so nicht gleich als neuer Sprung
+    let prevWheel = -Infinity;
+    let lastWheel = -Infinity;
+    // Richtung des vorletzten und letzten Rad-Ereignisses: Ein Richtungswechsel ist immer eine neue Geste,
+    // auch wenn er ohne Pause in den Nachschwung der alten fällt (Erik: „upscroll funktioniert nicht“)
+    let prevDir = 0;
+    let lastDir = 0;
+    const anyWheel = (e: WheelEvent) => {
+      prevWheel = lastWheel;
+      lastWheel = e.timeStamp;
+      prevDir = lastDir;
+      lastDir = Math.sign(Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY);
+    };
+    const pinnedNow = () => {
+      const r = el.getBoundingClientRect();
+      return (
+        r.top <= 0.5 && r.bottom >= window.innerHeight - 0.5 && document.documentElement.style.overflow !== 'hidden'
+      );
+    };
+    // Richtung > 0 nach unten
+    const step = (dir: number, now: number) => {
+      if (now - jumped < LOCK) return;
+      if (now - prevWheel < QUIET && dir === prevDir) return;
+      const current = Math.min(last, Math.floor(progress * count));
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      jumped = now;
+      if (dir > 0 && current === last) {
+        // Ohne toten Scrollweg hinaus: ans Ende der Stationen
+        jumpTo(top + range() + 2);
+        return;
+      }
+      if (dir < 0 && current === 0) {
+        jumpTo(top - 2);
+        return;
+      }
+      goTo.current(current + dir);
+    };
+    const wheel = (e: WheelEvent) => {
+      if (!pinnedNow()) return;
+      // Seitliches Wischen und waagerechtes Mausrad blättern ebenfalls
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (delta === 0) return;
+      // Lenis (auf window) soll das Ereignis nicht mehr sehen
+      e.preventDefault();
+      e.stopPropagation();
+      // Schwung von Lenis aus der Geste davor anhalten, sonst rollt die Seite über Stationen hinweg
+      halt();
+      step(Math.sign(delta), e.timeStamp);
+    };
+    // Mobil: ein Wisch = eine Station
+    let touchY: number | null = null;
+    const touchStart = (e: TouchEvent) => {
+      // Nur ein Finger: Zwei-Finger-Zoom bleibt frei
+      touchY = pinnedNow() && e.touches.length === 1 ? e.touches[0]!.clientY : null;
+    };
+    const touchMove = (e: TouchEvent) => {
+      if (e.touches.length > 1) touchY = null;
+      if (touchY !== null) e.preventDefault();
+    };
+    const touchEnd = (e: TouchEvent) => {
+      if (touchY === null) return;
+      const dy = touchY - e.changedTouches[0]!.clientY;
+      touchY = null;
+      if (Math.abs(dy) < 30) return;
+      prevWheel = -Infinity;
+      jumped = -Infinity;
+      step(Math.sign(dy), e.timeStamp);
     };
     const observer = new ResizeObserver(resize);
     observer.observe(sticky);
     window.addEventListener('scroll', move, { passive: true });
+    window.addEventListener('wheel', anyWheel, { passive: true, capture: true });
     sticky.addEventListener('wheel', wheel, { passive: false });
+    sticky.addEventListener('touchstart', touchStart, { passive: true });
+    sticky.addEventListener('touchmove', touchMove, { passive: false });
+    sticky.addEventListener('touchend', touchEnd);
     resize();
     if (keep !== null && last > 0) {
-      progress = keep / last;
+      progress = (keep + 0.5) / count;
       window.scrollTo({
         top: el.getBoundingClientRect().top + window.scrollY + progress * range(),
         behavior: 'instant',
@@ -183,7 +266,11 @@ export default function Journey({
       shown.current = null;
       observer.disconnect();
       window.removeEventListener('scroll', move);
+      window.removeEventListener('wheel', anyWheel, { capture: true });
       sticky.removeEventListener('wheel', wheel);
+      sticky.removeEventListener('touchstart', touchStart);
+      sticky.removeEventListener('touchmove', touchMove);
+      sticky.removeEventListener('touchend', touchEnd);
       el.style.height = '';
     };
   }, [pinned]);
@@ -315,8 +402,22 @@ export default function Journey({
               <span className="absolute right-6 sm:right-10 top-24 text-[13px] font-medium text-white/90 leading-none">
                 <Rolling value={String(active + 1).padStart(2, '0')} /> / {String(items.length).padStart(2, '0')}
               </span>
-              <span className="absolute left-0 right-0 bottom-0 h-1 bg-white/20">
-                <span ref={bar} className="block h-full bg-primary origin-left scale-x-0" />
+              {/* Fortschritt in Teilen, einer je Station (AK-31) */}
+              <span className="absolute left-0 right-0 bottom-0 h-1 flex gap-[3px]">
+                {items.map((item, i) => (
+                  <span key={item.date} className="flex-1 h-full bg-white/20">
+                    <span
+                      data-journey-segment
+                      data-fill="0"
+                      ref={(el) => {
+                        segments.current[i] = el;
+                      }}
+                      className="block h-full bg-white origin-left scale-x-0"
+                      // Gleitet im Takt des Bildwechsels statt zu springen (AK-31)
+                      style={{ transition: `transform 0.9s ${EASE}` }}
+                    />
+                  </span>
+                ))}
               </span>
             </div>
           )}

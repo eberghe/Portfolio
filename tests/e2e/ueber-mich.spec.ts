@@ -269,3 +269,143 @@ test('AK-28: mobil steht der Stationstext unten, Gesichter oben bleiben frei', a
   if (info.project.name === 'mobile-360') expect(h3.y).toBeGreaterThan(height / 2);
   else expect(h3.y).toBeLessThan(height / 2);
 });
+
+test('AK-31: Balken und aktive Station laufen synchron mit dem Scrollweg', async ({ page }) => {
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  const n = await panels(page).count();
+  const segments = page.locator('[data-journey] [data-journey-segment]');
+  await expect(segments).toHaveCount(n);
+  // Balkenteile gleiten weich statt zu springen
+  expect(
+    await segments.first().evaluate((el) => parseFloat(getComputedStyle(el).transitionDuration)),
+  ).toBeGreaterThanOrEqual(0.5);
+  // Gefüllte Teile sind weiß
+  expect(await segments.first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(255, 255, 255)');
+  for (let i = 0; i < n; i++) {
+    for (const frac of [0.1, 0.9]) {
+      await page.evaluate(
+        ([i, frac, n]) => {
+          const s = document.querySelector('[data-journey]') as HTMLElement;
+          const area = s.querySelector('ol')!.parentElement!.parentElement as HTMLElement;
+          const top = area.getBoundingClientRect().top + scrollY;
+          scrollTo({ top: top + ((i + frac) / n) * (area.offsetHeight - innerHeight), behavior: 'instant' });
+        },
+        [i, frac, n] as const,
+      );
+      await expect(panels(page).nth(i)).toHaveAttribute('data-active', 'true');
+      await expect
+        .poll(() => segments.evaluateAll((els) => els.map((el) => Number(el.getAttribute('data-fill')).toFixed(1))))
+        .toEqual(Array.from({ length: n }, (_, j) => (j < i ? 1 : j > i ? 0 : frac).toFixed(1)));
+    }
+  }
+});
+
+for (const url of ['/about', '/about?animationstest']) {
+  test(`AK-32: eine Scroll-Geste springt genau eine Station weiter (${url})`, async ({ page }) => {
+    await page.goto(url);
+    await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+    await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+    // Ladeanimation und Lenis-Start abwarten
+    await page.waitForTimeout(url.includes('animationstest') ? 1800 : 300);
+    const n = await panels(page).count();
+    const active = () =>
+      page.evaluate(() =>
+        Array.from(document.querySelectorAll('[data-journey] ol > li')).findIndex((li) =>
+          li.hasAttribute('data-active'),
+        ),
+      );
+    await page.evaluate(() => {
+      const area = document.querySelector('[data-journey] ol')!.parentElement!.parentElement as HTMLElement;
+      scrollTo({ top: area.getBoundingClientRect().top + scrollY + 2, behavior: 'instant' });
+    });
+    await expect.poll(active).toBe(0);
+    const vp = page.viewportSize()!;
+    await page.mouse.move(vp.width / 2, vp.height / 2);
+    // Eine Geste aus vielen kleinen Rad-Ereignissen (Trackpad) zählt einmal
+    for (let k = 0; k < 8; k++) {
+      await page.mouse.wheel(0, 40);
+      await page.waitForTimeout(16);
+    }
+    await expect.poll(active).toBe(1);
+    await page.waitForTimeout(400);
+    expect(await active()).toBe(1);
+    // Nach einer Pause springt die nächste Geste wieder genau eine Station
+    await page.waitForTimeout(600);
+    await page.mouse.wheel(0, 100);
+    await expect.poll(active).toBe(2);
+    await page.waitForTimeout(1000);
+    await page.mouse.wheel(0, -100);
+    await expect.poll(active).toBe(1);
+    // Zur letzten Station; die nächste Geste nach unten verlässt die Stationen
+    for (let i = 2; i < n; i++) {
+      await page.waitForTimeout(1000);
+      await page.mouse.wheel(0, 100);
+      await expect.poll(active).toBe(i);
+    }
+    const areaBox = () =>
+      page.evaluate(() => {
+        const r = (
+          document.querySelector('[data-journey] ol')!.parentElement!.parentElement as HTMLElement
+        ).getBoundingClientRect();
+        return { top: r.top, bottom: r.bottom, vh: innerHeight };
+      });
+    await page.waitForTimeout(1000);
+    await page.mouse.wheel(0, 100);
+    await expect
+      .poll(async () => {
+        const b = await areaBox();
+        return b.bottom < b.vh;
+      })
+      .toBe(true);
+    // Weitere Gesten scrollen normal weiter, man bleibt nicht hängen (Kritiker)
+    const out = (await areaBox()).bottom;
+    await page.waitForTimeout(1000);
+    await page.mouse.wheel(0, 300);
+    await expect.poll(async () => (await areaBox()).bottom).toBeLessThan(out - 100);
+
+    // Nach oben: an der ersten Station verlässt die Geste die Stationen ebenfalls
+    // Weiches Scrollen erst auslaufen lassen, sonst zieht Lenis die Seite zurück
+    await page.waitForTimeout(1500);
+    await page.evaluate(() => {
+      const area = document.querySelector('[data-journey] ol')!.parentElement!.parentElement as HTMLElement;
+      scrollTo({ top: area.getBoundingClientRect().top + scrollY + 2, behavior: 'instant' });
+    });
+    await expect.poll(active).toBe(0);
+    await page.waitForTimeout(1000);
+    await page.mouse.wheel(0, -100);
+    await expect.poll(async () => (await areaBox()).top).toBeGreaterThan(0);
+    await page.waitForTimeout(1000);
+    await page.mouse.wheel(0, -300);
+    await expect.poll(async () => (await areaBox()).top).toBeGreaterThan(100);
+  });
+}
+
+test('AK-32: Richtungswechsel direkt nach einer Geste mit Nachschwung springt zurück', async ({ page }) => {
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  const active = () =>
+    page.evaluate(() =>
+      Array.from(document.querySelectorAll('[data-journey] ol > li')).findIndex((li) => li.hasAttribute('data-active')),
+    );
+  await page.evaluate(() => {
+    const area = document.querySelector('[data-journey] ol')!.parentElement!.parentElement as HTMLElement;
+    scrollTo({ top: area.getBoundingClientRect().top + scrollY + 2, behavior: 'instant' });
+  });
+  await expect.poll(active).toBe(0);
+  const vp = page.viewportSize()!;
+  await page.mouse.move(vp.width / 2, vp.height / 2);
+  // Trackpad: Geste nach unten mit langem Nachschwung, dann ohne Pause nach oben
+  for (let k = 0; k < 50; k++) {
+    await page.mouse.wheel(0, Math.max(2, 60 - k));
+    await page.waitForTimeout(16);
+  }
+  await expect.poll(active).toBe(1);
+  for (let k = 0; k < 20; k++) {
+    await page.mouse.wheel(0, -40);
+    await page.waitForTimeout(16);
+  }
+  await expect.poll(active).toBe(0);
+});

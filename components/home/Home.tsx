@@ -160,7 +160,8 @@ export default function Home({ locale }: { locale: Locale }) {
                   src={s.image.src}
                   alt={locale === 'de' ? s.image.alt : s.image.altEn}
                   fill
-                  sizes="(min-width: 768px) 60vw, 100vw"
+                  sizes="(min-width: 1280px) 760px, (min-width: 768px) 60vw, 100vw"
+                  quality={90}
                   className="object-cover"
                 />
               ) : (
@@ -288,6 +289,7 @@ export default function Home({ locale }: { locale: Locale }) {
           <div data-reveal className="relative aspect-square w-full rounded-2xl overflow-hidden border border-border">
             <Image
               src={aboutPhoto.src}
+              quality={90}
               alt={t.aboutPhotoAlt}
               fill
               sizes="(min-width: 1280px) 600px, (min-width: 768px) 50vw, 100vw"
@@ -438,6 +440,7 @@ function HeroMedia({ index, className }: { index: number; className: string }) {
         {m?.src && (
           <Image
             src={m.src}
+            quality={90}
             alt=""
             fill
             sizes="200px"

@@ -85,6 +85,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
           >
             <Image
               src={p.thumbnail.src}
+              quality={90}
               alt=""
               fill
               sizes="(min-width: 1100px) 600px, (min-width: 768px) 58vw, 100vw"

@@ -125,10 +125,11 @@ export default function ServiceScroller({ items, navLabel }: { items: ServiceIte
               data-service-band
               className="bg-bg2 border-t border-border rounded-xl md:rounded-none p-4 sm:p-6 md:py-12 md:pl-12 lg:pl-20 md:pr-[var(--bleed)] mb-10 md:mb-0"
             >
+              {/* Echte Bilder ganz in 16:9, Platzhalter flacher (leistungen.md AK-43) */}
               <div
                 data-service-media
                 aria-hidden={s.photo ? undefined : true}
-                className="relative aspect-[16/10] md:aspect-[2/1] rounded-xl overflow-hidden bg-[#0b1219] dark:bg-white/[0.07] dark:ring-1 dark:ring-inset dark:ring-white/10 text-white flex items-center justify-center"
+                className={`relative ${s.photo ? 'aspect-[16/9]' : 'aspect-[16/10] md:aspect-[2/1]'} rounded-xl overflow-hidden bg-[#0b1219] dark:bg-white/[0.07] dark:ring-1 dark:ring-inset dark:ring-white/10 text-white flex items-center justify-center`}
               >
                 {s.media}
               </div>

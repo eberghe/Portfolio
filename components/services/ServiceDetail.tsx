@@ -208,6 +208,7 @@ export default function ServiceDetail({ service, locale }: { service: Service; l
             <span className="relative block aspect-[16/10] md:aspect-auto md:min-h-[300px] overflow-hidden bg-bg2">
               <Image
                 src={project.thumbnail.src}
+                quality={90}
                 alt=""
                 fill
                 sizes="(min-width: 768px) 520px, 100vw"

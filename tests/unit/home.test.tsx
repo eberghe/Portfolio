@@ -527,3 +527,20 @@ describe('AK-38 (leistungen.md): Bild Design Systeme auf der Startseite', () => 
     expect(img.getAttribute('src')).toMatch(/design-systeme/);
   });
 });
+
+// leistungen.md AK-43: echte Leistungsbilder unbeschnitten in 16:9 und mit Qualität 90
+describe('AK-43: Leistungsbilder unbeschnitten', () => {
+  it('Rahmen 16:9, verlustfreies Original (Qualität 90 prüft die E2E)', () => {
+    const { container } = render(<Home locale="de" />);
+    const withImage = services.filter((s) => s.image);
+    expect(withImage.length).toBeGreaterThanOrEqual(3);
+    for (const s of withImage) {
+      const img = screen.getByRole('img', { name: s.image!.alt });
+      const frame = img.closest('[data-service-media]')!;
+      expect(frame.className).toContain('aspect-[16/9]');
+      expect(frame.className).not.toMatch(/aspect-\[2\/1\]|aspect-\[16\/10\]/);
+      expect(s.image!.src).toMatch(/\.png$/);
+    }
+    expect(container).toBeTruthy();
+  });
+});

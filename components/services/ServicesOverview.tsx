@@ -154,6 +154,7 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                               <span className="relative block aspect-[4/3] overflow-hidden">
                                 <Image
                                   src={p.thumbnail.src}
+                                  quality={90}
                                   alt=""
                                   fill
                                   sizes="(min-width: 768px) 200px, 45vw"
@@ -202,6 +203,7 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                     alt={locale === 'de' ? s.image.alt : s.image.altEn}
                     fill
                     sizes="(min-width: 1280px) 1280px, 100vw"
+                    quality={90}
                     className="object-cover"
                   />
                 </div>

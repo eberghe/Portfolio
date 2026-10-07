@@ -157,3 +157,9 @@ Erik: „der text ist zu lang. kürzen und was nicht rein passt … drunter pack
 ### Blinder Kritiker (kürzer und Bilder, 2026-10-07)
 
 Behoben: „Inhalte pflegst du danach selbst“ nur beim No-Code-Punkt klang, als ginge das bei eigener Entwicklung nicht; „CMS-Setup“ passte nur zu Webflow und Framer (jetzt „Inhaltsverwaltung“); das „oder“ zwischen Webflow und Framer steht in Klammern, damit es sich vom „Oder“-Punkt abhebt. Alt-Texte stimmen mit den Bildern überein.
+
+## Bilder unbeschnitten und schärfer (Erik, 2026-10-07)
+
+Erik: „thumbnails in schlechter quali … das format stimmt auch nicht ganz … das logos ding ist abgeschnitten … bitte alle thumbnails bessere quali“. Ursache: In der Leistungsliste der Startseite war der Rahmen ab 768 px 2:1, das 16:9-Bild wurde oben und unten beschnitten. Dazu kamen die Standardqualität 75 beim Umrechnen und eine JPG-Umwandlung des Website-Bilds.
+
+- AK-43: Echte Leistungsbilder stehen überall im Format 16:9 und unbeschnitten, auch in der Leistungsliste der Startseite (Platzhalter bleiben 16:10 und 2:1). Sie werden mit Qualität 90 ausgeliefert, und die Originale liegen verlustfrei als PNG vor. Qualität 90 gilt auch für alle anderen Fotos und Thumbnails (Projekte, Galerie, Startseite, Über mich).

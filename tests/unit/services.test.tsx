@@ -493,7 +493,7 @@ describe('AK-41: kurze Beschreibung, Werkzeuge als Entweder-oder', () => {
 
 describe('AK-42: Bilder für Webdesign und Marke', () => {
   it.each([
-    ['web-design-development', '/images/services/webdesign-webentwicklung.jpg'],
+    ['web-design-development', '/images/services/webdesign-webentwicklung.png'],
     ['brand-logo-design', '/images/services/brand-logo-design.png'],
   ])('%s', (slug, src) => {
     const s = services.find((x) => x.slug === slug)!;

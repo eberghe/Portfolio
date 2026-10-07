@@ -78,7 +78,7 @@ export const services: Service[] = [
     icon: Monitor,
     // Nicht nur Webflow: entweder Webflow/Framer oder eigene Entwicklung (leistungen.md AK-39 bis AK-41)
     image: {
-      src: '/images/services/webdesign-webentwicklung.jpg',
+      src: '/images/services/webdesign-webentwicklung.png',
       width: 1600,
       height: 900,
       alt: 'Mehrere Ansichten einer Hochzeitswebsite für Kristin und Daniel in Dunkelblau und Creme: Startseite mit gezeichneter Landschaft, Anmeldeformular, Dresscode mit Farbpunkten, Ablauf des Tages, Unterkünfte und häufige Fragen.',

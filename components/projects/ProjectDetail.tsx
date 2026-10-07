@@ -108,6 +108,7 @@ export default function ProjectDetail({ project, locale }: { project: Project; l
       <div className="w-full rounded-2xl overflow-hidden mb-7 bg-bg2 motion-safe:animate-fade-in">
         <Image
           src={project.thumbnail.src}
+          quality={90}
           width={project.thumbnail.width}
           height={project.thumbnail.height}
           alt={project.thumbnail.alt[locale]}

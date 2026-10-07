@@ -206,7 +206,7 @@ export const localPages: LocalPage[] = [
         },
         {
           title: 'Eingespielt remote',
-          text: 'Geteilte Figma-Dateien, kurze Video-Calls und eine Vorschau-Adresse, die du jederzeit öffnen kannst: Du siehst den Fortschritt, wann es dir passt.',
+          text: 'Geteilte Figma-Dateien, kurze Video-Calls und einen Vorschau-Link, den du jederzeit öffnen kannst: Du siehst den Fortschritt, wann es dir passt.',
         },
         {
           title: 'Barrierefreiheit mitgedacht',
@@ -334,7 +334,7 @@ export const localPages: LocalPage[] = [
       ],
       serviceTexts: {
         'web-design-development':
-          'Websites aus wiederverwendbaren Komponenten, in Webflow oder als eigene Entwicklung, die eure IT nachvollziehen und euer Team selbst erweitern kann.',
+          'Websites aus wiederverwendbaren Komponenten, die eure IT nachvollziehen und euer Team selbst erweitern kann, gebaut in Webflow, Framer oder als eigene Entwicklung.',
         'ux-ui-design':
           'Interfaces für Produkte und Portale, abgestimmt mit Produktteam und Entwicklung statt im stillen Kämmerlein.',
         'design-systems':
@@ -375,7 +375,7 @@ export const localPages: LocalPage[] = [
         },
         {
           q: 'Ist eine Website mit Webflow oder Framer für ein Unternehmen aus Stuttgart sicher genug?',
-          a: 'Beide Plattformen übernehmen Hosting, SSL-Zertifikat und Updates, Plugins musst du nicht pflegen. Beim Datenschutz gilt: Sie hosten auf Infrastruktur in den USA und bieten einen Auftragsverarbeitungsvertrag an. Passt das nicht zu euren Anforderungen, entwickle ich die Website selbst und wir wählen Hosting und Datenbank in der EU. Was passt, prüfen wir gemeinsam; eine Rechtsberatung ersetzt das nicht.',
+          a: 'Beide Plattformen übernehmen Hosting, SSL-Zertifikat und Updates, Plugins müsst ihr nicht pflegen. Beim Datenschutz gilt: Sie hosten überwiegend auf US-Infrastruktur und bieten einen Auftragsverarbeitungsvertrag an. Passt das nicht zu euren Anforderungen, entwickle ich die Website selbst und wir legen Server und Datenbank in ein Rechenzentrum in der EU. Was passt, prüfen wir gemeinsam; eine Rechtsberatung ersetzt das nicht.',
         },
         {
           q: 'Achtest du bei Websites für Stuttgart auf Barrierefreiheit?',
@@ -405,7 +405,7 @@ export const localPages: LocalPage[] = [
       ],
       serviceTexts: {
         'web-design-development':
-          'Websites made of reusable components, in Webflow or custom-built, that your IT can follow and your team can extend on its own.',
+          'Websites made of reusable components that your IT can follow and your team can extend on its own, built in Webflow, Framer or custom code.',
         'ux-ui-design':
           'Interfaces for products and portals, worked out with your product team and developers rather than behind closed doors.',
         'design-systems':
@@ -446,7 +446,7 @@ export const localPages: LocalPage[] = [
         },
         {
           q: 'Is a Webflow or Framer website secure enough for a Stuttgart company?',
-          a: 'Both platforms handle hosting, the SSL certificate and updates, and there are no plugins to maintain. On data protection: they host on US-based infrastructure and offer a data processing agreement. If that does not fit your requirements, I develop the site myself and we choose EU hosting and an EU database. We check together what fits; this is not legal advice.',
+          a: 'Both platforms handle hosting, the SSL certificate and updates, and there are no plugins to maintain. On data protection: they host mostly on US infrastructure and offer a data processing agreement. If that does not fit your requirements, I develop the site myself and we place the server and database in an EU data centre. We check together what fits; this is not legal advice.',
         },
         {
           q: 'Do you consider accessibility for websites in Stuttgart?',
@@ -484,7 +484,7 @@ export const localPages: LocalPage[] = [
         'ux-ui-design':
           "Nutzerzentriertes Design, wie ich es am MCI vertieft und bei SIGHT'KICK für Gäste in Innsbruck angewendet habe.",
         'web-design-development':
-          'Schnelle Websites für Unternehmen in Tirol, mit Webflow, Framer oder eigenem Code, die du nach dem Launch selbst pflegst, auch ohne Agentur vor Ort.',
+          'Schnelle Websites für Unternehmen in Tirol, die du nach dem Launch selbst pflegst, auch ohne Agentur vor Ort. Gebaut mit Webflow, Framer oder eigenem Code.',
         accessibility:
           'Umsetzung nach WCAG, damit deine Website den Anforderungen des European Accessibility Act näherkommt, in Österreich geregelt im BaFG.',
         'ai-consulting':
@@ -555,7 +555,7 @@ export const localPages: LocalPage[] = [
         'ux-ui-design':
           "User-centred design as I deepened it at MCI and applied it in SIGHT'KICK for visitors to Innsbruck.",
         'web-design-development':
-          'Fast websites for businesses in Tyrol, built with Webflow, Framer or custom code, that you maintain yourself after launch, no local agency needed.',
+          'Fast websites for businesses in Tyrol that you maintain yourself after launch, no local agency needed. Built with Webflow, Framer or custom code.',
         accessibility:
           'Building to WCAG so your website moves closer to the European Accessibility Act requirements, which Austria regulates in the BaFG.',
         'ai-consulting':

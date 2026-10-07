@@ -80,7 +80,7 @@ export const services: Service[] = [
     de: {
       tags: ['Webflow', 'Framer', 'TypeScript', 'CMS', 'SEO'],
       description:
-        'Schnelle, gut gestaltete Websites mit dem Werkzeug, das zu deinem Vorhaben passt. Je nach Bedarf baue ich mit Webflow oder Framer als No-Code-Werkzeug, oder ich entwickle die Seite selbst mit TypeScript, Supabase und Vercel, unterstützt von Claude Code. Immer responsive, barrierefrei und suchmaschinenfreundlich.',
+        'Schnelle, gut gestaltete Websites mit dem Werkzeug, das zu deinem Vorhaben passt. Je nach Bedarf baue ich mit Webflow oder Framer als No-Code-Werkzeuge, oder ich entwickle die Seite selbst mit TypeScript, Supabase und Vercel, unterstützt von Claude Code. Immer responsive, barrierefrei und suchmaschinenfreundlich.',
       features: [
         'Webdesign in Figma',
         'Umsetzung in Webflow oder Framer',

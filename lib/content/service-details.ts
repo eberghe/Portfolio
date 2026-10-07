@@ -164,7 +164,7 @@ export const serviceDetails: ServiceDetail[] = [
         },
         {
           q: 'Setzt du das Design auch um?',
-          a: 'Ja, Websites setze ich direkt in Webflow um. Für Apps oder individuelle Software übergebe ich saubere Figma-Dateien an dein Entwicklungsteam und begleite die Umsetzung.',
+          a: 'Ja, Websites setze ich selbst um, in Webflow, Framer oder mit eigenem Code. Für Apps oder individuelle Software übergebe ich saubere Figma-Dateien an dein Entwicklungsteam und begleite die Umsetzung.',
         },
         {
           q: 'Arbeitest du vor Ort in Augsburg?',
@@ -275,7 +275,7 @@ export const serviceDetails: ServiceDetail[] = [
         },
         {
           q: 'Do you also build the design?',
-          a: 'Yes, I build websites directly in Webflow. For apps or custom software I hand over clean Figma files to your development team and support the build.',
+          a: 'Yes, I build websites myself, in Webflow, Framer or custom code. For apps or custom software I hand over clean Figma files to your development team and support the build.',
         },
         {
           q: 'Do you work on site in Augsburg?',
@@ -490,7 +490,7 @@ export const serviceDetails: ServiceDetail[] = [
         },
         {
           q: 'How much does a website cost?',
-          a: 'It depends on the number of pages, the chosen path and whether a design already exists. After the free intro call you get a concrete quote. With Webflow and Framer the running plan costs come on top.',
+          a: 'It depends on the number of pages, the chosen path and whether a design already exists. After the free intro call you get a concrete quote. With Webflow and Framer you also pay the ongoing plan fees.',
         },
         {
           q: 'Can I update the website myself afterwards?',

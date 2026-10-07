@@ -510,6 +510,9 @@ describe('AK-79: Inhalte der Firmen-Fenster', () => {
       locale === 'de' ? /April bis September 2019/ : /April to September 2019/,
     );
     expect(all('IKEA')).toMatch(/Småland/);
+    expect(companies.find((c) => c.name === 'IKEA')!.period).toMatch(
+      locale === 'de' ? /Juli bis September 2018/ : /July to September 2018/,
+    );
     expect(homeContent[locale].companyDuties).toBe(locale === 'de' ? 'Aufgaben' : 'What I did');
   });
 });

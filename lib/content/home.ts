@@ -68,7 +68,7 @@ export const homeContent = {
         name: 'IKEA',
         url: 'https://www.ikea.com/de/de/',
         role: 'Job vor dem Studium',
-        period: '2018',
+        period: 'Juli bis September 2018',
         summary: 'Nach dem Abitur arbeitete ich im Kundenservice, um für mein Work & Travel in Neuseeland zu sparen.',
         duties: ['Kundenservice und Fragen im Infocenter', 'Betreuung im Småland', 'Bestellungen zusammenstellen'],
       },
@@ -185,7 +185,7 @@ export const homeContent = {
         name: 'IKEA',
         url: 'https://www.ikea.com/de/de/',
         role: 'Job before university',
-        period: '2018',
+        period: 'July to September 2018',
         summary: 'After high school I worked in customer service to save up for my Work & Travel in New Zealand.',
         duties: [
           'Customer service and questions at the info desk',

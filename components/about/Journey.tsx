@@ -68,7 +68,8 @@ export default function Journey({
   const [active, setActive] = useState(0);
   const area = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLOListElement>(null);
-  const bar = useRef<HTMLSpanElement>(null);
+  // Ein Balkenteil je Station (AK-31)
+  const segments = useRef<(HTMLSpanElement | null)[]>([]);
   // Station, die beim Wechsel der Darstellung im Blick bleiben soll (AK-21)
   const pending = useRef<number | null>(null);
   // Station, die beim Kleben gerade aktiv und im Bild ist
@@ -128,10 +129,17 @@ export default function Journey({
     const last = list.children.length - 1;
     const sticky = list.parentElement!;
     const range = () => el.offsetHeight - window.innerHeight;
+    // Jede Station bekommt einen gleich langen Abschnitt des Scrollwegs; Balken und aktive Station folgen ihm (AK-31)
+    const count = last + 1;
     const apply = () => {
-      const index = Math.round(progress * last);
+      const index = Math.min(last, Math.floor(progress * count));
       setActive(index);
-      if (bar.current) bar.current.style.transform = `scaleX(${progress})`;
+      segments.current.forEach((seg, i) => {
+        if (!seg) return;
+        const fill = Math.min(1, Math.max(0, progress * count - i));
+        seg.style.transform = `scaleX(${fill})`;
+        seg.dataset.fill = String(fill);
+      });
       const inside = el.getBoundingClientRect().top < window.innerHeight && el.getBoundingClientRect().bottom > 0;
       shown.current = inside ? index : null;
     };
@@ -147,7 +155,7 @@ export default function Journey({
     const resize = () => {
       const kept = progress;
       const inside = el.getBoundingClientRect().top <= 0 && el.getBoundingClientRect().bottom >= window.innerHeight;
-      el.style.height = `${last * STEP * window.innerHeight + window.innerHeight}px`;
+      el.style.height = `${count * STEP * window.innerHeight + window.innerHeight}px`;
       if (inside) {
         const top = el.getBoundingClientRect().top + window.scrollY;
         window.scrollTo({ top: top + kept * range(), behavior: 'instant' });
@@ -161,9 +169,11 @@ export default function Journey({
       e.preventDefault();
       window.scrollBy({ top: e.deltaX, behavior: 'instant' });
     };
+    // Pfeile springen an den Anfang des Abschnitts der Station (AK-31); +1 px gegen Rundung an der Grenze
     goTo.current = (index) => {
       const top = el.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: top + (Math.min(last, Math.max(0, index)) / last) * range(), behavior: 'instant' });
+      const i = Math.min(last, Math.max(0, index));
+      window.scrollTo({ top: top + (i / count) * range() + (i > 0 ? 1 : 0), behavior: 'instant' });
     };
     const observer = new ResizeObserver(resize);
     observer.observe(sticky);
@@ -171,7 +181,7 @@ export default function Journey({
     sticky.addEventListener('wheel', wheel, { passive: false });
     resize();
     if (keep !== null && last > 0) {
-      progress = keep / last;
+      progress = (keep + 0.5) / count;
       window.scrollTo({
         top: el.getBoundingClientRect().top + window.scrollY + progress * range(),
         behavior: 'instant',
@@ -315,8 +325,20 @@ export default function Journey({
               <span className="absolute right-6 sm:right-10 top-24 text-[13px] font-medium text-white/90 leading-none">
                 <Rolling value={String(active + 1).padStart(2, '0')} /> / {String(items.length).padStart(2, '0')}
               </span>
-              <span className="absolute left-0 right-0 bottom-0 h-1 bg-white/20">
-                <span ref={bar} className="block h-full bg-primary origin-left scale-x-0" />
+              {/* Fortschritt in Teilen, einer je Station (AK-31) */}
+              <span className="absolute left-0 right-0 bottom-0 h-1 flex gap-[3px]">
+                {items.map((item, i) => (
+                  <span key={item.date} className="flex-1 h-full bg-white/20">
+                    <span
+                      data-journey-segment
+                      data-fill="0"
+                      ref={(el) => {
+                        segments.current[i] = el;
+                      }}
+                      className="block h-full bg-primary origin-left scale-x-0"
+                    />
+                  </span>
+                ))}
               </span>
             </div>
           )}

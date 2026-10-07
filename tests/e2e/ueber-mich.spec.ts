@@ -269,3 +269,29 @@ test('AK-28: mobil steht der Stationstext unten, Gesichter oben bleiben frei', a
   if (info.project.name === 'mobile-360') expect(h3.y).toBeGreaterThan(height / 2);
   else expect(h3.y).toBeLessThan(height / 2);
 });
+
+test('AK-31: Balken und aktive Station laufen synchron mit dem Scrollweg', async ({ page }) => {
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  const n = await panels(page).count();
+  const segments = page.locator('[data-journey] [data-journey-segment]');
+  await expect(segments).toHaveCount(n);
+  for (let i = 0; i < n; i++) {
+    for (const frac of [0.1, 0.9]) {
+      await page.evaluate(
+        ([i, frac, n]) => {
+          const s = document.querySelector('[data-journey]') as HTMLElement;
+          const area = s.querySelector('ol')!.parentElement!.parentElement as HTMLElement;
+          const top = area.getBoundingClientRect().top + scrollY;
+          scrollTo({ top: top + ((i + frac) / n) * (area.offsetHeight - innerHeight), behavior: 'instant' });
+        },
+        [i, frac, n] as const,
+      );
+      await expect(panels(page).nth(i)).toHaveAttribute('data-active', 'true');
+      await expect
+        .poll(() => segments.evaluateAll((els) => els.map((el) => Number(el.getAttribute('data-fill')).toFixed(1))))
+        .toEqual(Array.from({ length: n }, (_, j) => (j < i ? 1 : j > i ? 0 : frac).toFixed(1)));
+    }
+  }
+});

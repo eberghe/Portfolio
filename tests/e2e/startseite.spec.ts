@@ -598,6 +598,35 @@ test.describe('Firmen-Fenster (AK-75 bis AK-78)', () => {
     expect(await close.evaluate((el) => getComputedStyle(el).outlineStyle)).toBe('solid');
   });
 
+  test('AK-80: Inhalt scrollt mit sanftem Scrollen, X bleibt stehen, Seite springt nicht', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 600 });
+    await openHydrated(page, '/?animationstest');
+    await page.waitForTimeout(1800);
+    const tile = tiles(page).first();
+    await tile.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+    const tileX = (await tile.boundingBox())!.x;
+    await tile.click();
+    const dialog = page.getByRole('dialog', { name: 'HERO Software' });
+    await expect(dialog).toBeVisible();
+    // Seite springt nicht seitlich, wenn ihre Scrollleiste verschwindet
+    expect(Math.abs((await tile.boundingBox())!.x - tileX)).toBeLessThanOrEqual(1);
+    const scroller = dialog.locator('[data-dialog-scroll]');
+    const close = dialog.getByRole('button', { name: 'Schließen' });
+    // Einblende-Animation abwarten, dann Lage des X merken
+    await page.waitForTimeout(500);
+    const closeY = (await close.boundingBox())!.y;
+    const box = (await scroller.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.wheel(0, 400);
+    await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBeGreaterThan(100);
+    expect(Math.abs((await close.boundingBox())!.y - closeY)).toBeLessThanOrEqual(1);
+    // Scrollleiste innerhalb der runden Ecken: Scrollbereich endet vor dem Rand des Fensters
+    const d = (await dialog.boundingBox())!;
+    const sc = (await scroller.boundingBox())!;
+    expect(d.y + d.height - (sc.y + sc.height)).toBeGreaterThanOrEqual(6);
+  });
+
   test('AK-75: Plus wird beim Tastaturfokus grün', async ({ page }) => {
     await openHydrated(page, '/');
     const plus = tiles(page).first().locator('[data-company-plus]');

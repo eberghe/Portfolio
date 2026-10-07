@@ -125,10 +125,14 @@ function CompanyDialog({ item, labels, onClose }: { item: CompanyTile; labels: C
     const dialog = ref.current!;
     dialog.showModal();
     // Seite dahinter sperren; SmoothScroll hält Lenis an, solange <html> overflow: hidden hat (AK-78)
+    // Breite der verschwindenden Scrollleiste ausgleichen, damit die Seite nicht seitlich springt (AK-80)
     const html = document.documentElement;
+    const gap = window.innerWidth - html.clientWidth;
     html.style.overflow = 'hidden';
+    if (gap > 0) html.style.paddingRight = `${gap}px`;
     return () => {
       html.style.overflow = '';
+      html.style.paddingRight = '';
     };
   }, []);
 
@@ -146,48 +150,57 @@ function CompanyDialog({ item, labels, onClose }: { item: CompanyTile; labels: C
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="company-dialog m-auto w-[calc(100%-2rem)] max-w-[560px] max-h-[calc(100svh-2rem)] overflow-y-auto overflow-x-hidden rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
+      className="company-dialog m-auto w-[calc(100%-2rem)] max-w-[560px] max-h-[calc(100svh-2rem)] overflow-hidden rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
     >
-      <div className="relative p-6 sm:p-8">
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={labels.close}
-          className="absolute top-3 right-3 flex items-center justify-center w-11 h-11 rounded-full text-text2 hover:bg-bg2 hover:text-foreground motion-safe:transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
-        >
-          <X size={20} aria-hidden="true" />
-        </button>
-        <div className="flex items-center h-10 mb-6 pr-12">{item.logo}</div>
-        <h2 id={titleId} className="text-[26px] sm:text-[30px] font-bold leading-tight tracking-tight pr-12">
-          {item.name}
-        </h2>
-        <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-[15px]">
-          <dt className="text-text2">{labels.role}</dt>
-          <dd className="font-medium">{item.role}</dd>
-          <dt className="text-text2">{labels.period}</dt>
-          <dd className="font-medium">{item.period}</dd>
-        </dl>
-        <p className="mt-6 text-[16px] leading-relaxed">{item.summary}</p>
-        {item.duties.length > 0 && (
-          <>
-            <h3 className="mt-6 text-[15px] font-bold">{labels.duties}</h3>
-            <ul className="mt-2 grid gap-1.5 list-disc pl-5 marker:text-primary-text text-[15px] text-text2">
-              {item.duties.map((d) => (
-                <li key={d}>{d}</li>
-              ))}
-            </ul>
-          </>
-        )}
-        <a
-          href={item.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-8 inline-flex items-center gap-1.5 text-[14px] font-semibold text-primary-text"
-        >
-          {item.website}
-          <span className="sr-only"> {labels.newTab}</span>
-          <ArrowUpRight size={15} aria-hidden="true" />
-        </a>
+      {/* Das X liegt außerhalb des Scrollbereichs und bleibt stehen (AK-80) */}
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label={labels.close}
+        className="absolute z-10 top-3 right-3 flex items-center justify-center w-11 h-11 rounded-full bg-background text-text2 hover:bg-bg2 hover:text-foreground motion-safe:transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+      >
+        <X size={20} aria-hidden="true" />
+      </button>
+      {/* Nur dieser Bereich scrollt; data-lenis-prevent, weil Lenis bei gesperrter Seite sonst jedes Mausrad schluckt.
+          Abstand oben/unten/rechts hält die Scrollleiste innerhalb der runden Ecken (AK-80) */}
+      <div
+        data-dialog-scroll
+        data-lenis-prevent
+        className="max-h-[calc(100svh-2rem-1rem-2px)] my-2 mr-1 overflow-y-auto overflow-x-hidden overscroll-contain [scrollbar-width:thin]"
+      >
+        <div className="px-5 py-4 sm:px-7 sm:py-6">
+          <div className="flex items-center h-10 mb-6 pr-12">{item.logo}</div>
+          <h2 id={titleId} className="text-[26px] sm:text-[30px] font-bold leading-tight tracking-tight pr-12">
+            {item.name}
+          </h2>
+          <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-[15px]">
+            <dt className="text-text2">{labels.role}</dt>
+            <dd className="font-medium">{item.role}</dd>
+            <dt className="text-text2">{labels.period}</dt>
+            <dd className="font-medium">{item.period}</dd>
+          </dl>
+          <p className="mt-6 text-[16px] leading-relaxed">{item.summary}</p>
+          {item.duties.length > 0 && (
+            <>
+              <h3 className="mt-6 text-[15px] font-bold">{labels.duties}</h3>
+              <ul className="mt-2 grid gap-1.5 list-disc pl-5 marker:text-primary-text text-[15px] text-text2">
+                {item.duties.map((d) => (
+                  <li key={d}>{d}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          <a
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-flex items-center gap-1.5 text-[14px] font-semibold text-primary-text"
+          >
+            {item.website}
+            <span className="sr-only"> {labels.newTab}</span>
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </dialog>
   );

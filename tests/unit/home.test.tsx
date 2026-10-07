@@ -323,7 +323,9 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
       const item = section.querySelector(`#leistung-${s.slug}`)!;
       expect(item).toHaveTextContent(s[locale].description);
       expect(item.querySelectorAll('ul li')).toHaveLength(s[locale].features.length);
-      expect(item.querySelector('[data-service-media]')).toHaveAttribute('aria-hidden', 'true');
+      // Platzhalter dekorativ, echtes Bild mit Alt-Text (leistungen.md AK-38)
+      if (s.image) expect(item.querySelector('[data-service-media]')).not.toHaveAttribute('aria-hidden');
+      else expect(item.querySelector('[data-service-media]')).toHaveAttribute('aria-hidden', 'true');
       expect(within(item as HTMLElement).getByRole('link', { name: t.serviceMore(s[locale].title) })).toHaveAttribute(
         'href',
         `${prefix}/services/${s.slug}`,
@@ -514,5 +516,14 @@ describe('AK-79: Inhalte der Firmen-Fenster', () => {
       locale === 'de' ? /Juli bis September 2018/ : /July to September 2018/,
     );
     expect(homeContent[locale].companyDuties).toBe(locale === 'de' ? 'Aufgaben' : 'What I did');
+  });
+});
+
+describe('AK-38 (leistungen.md): Bild Design Systeme auf der Startseite', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    render(<Home locale={locale} />);
+    const ds = services.find((s) => s.slug === 'design-systems')!;
+    const img = screen.getByRole('img', { name: ds.image![locale === 'de' ? 'alt' : 'altEn'] });
+    expect(img.getAttribute('src')).toMatch(/design-systeme/);
   });
 });

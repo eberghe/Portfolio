@@ -11,7 +11,7 @@ export const faqs: Faq[] = [
     id: 'leistungen',
     de: {
       q: 'Welche Leistungen bietest du an?',
-      a: 'UX/UI-Design, Webflow-Entwicklung, Barrierefreiheit-Beratung (WCAG, BFSG und European Accessibility Act), KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design und Design Systems. Alle Details findest du unter Leistungen.',
+      a: 'UX/UI-Design, Webflow-Entwicklung, Barrierefreiheit-Beratung (WCAG, BFSG und European Accessibility Act), KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design und Design Systeme. Alle Details findest du unter Leistungen.',
     },
     en: {
       q: 'What services do you offer?',

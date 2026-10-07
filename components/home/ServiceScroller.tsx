@@ -13,8 +13,10 @@ export interface ServiceItem {
   description: string;
   features: string[];
   more: string;
-  /** Dekoratives Bild; vorerst Platzhalter mit Icon. TODO(Erik): echte Bilder je Leistung */
+  /** Bild der Leistung; ohne echtes Bild ein dekorativer Platzhalter mit Icon. TODO(Erik): Bilder für die übrigen Leistungen */
   media: ReactNode;
+  /** true, wenn `media` ein echtes Bild mit Alt-Text ist (leistungen.md AK-38) */
+  photo?: boolean;
 }
 
 export default function ServiceScroller({ items, navLabel }: { items: ServiceItem[]; navLabel: string }) {
@@ -119,8 +121,8 @@ export default function ServiceScroller({ items, navLabel }: { items: ServiceIte
             <div className="bg-bg2 border-t border-border rounded-xl md:rounded-none p-4 sm:p-6 md:py-12 md:pl-12 lg:pl-20 md:pr-0 mb-10 md:mb-0">
               <div
                 data-service-media
-                aria-hidden="true"
-                className="aspect-[16/10] md:aspect-[2/1] rounded-xl overflow-hidden bg-[#0b1219] dark:bg-white/[0.07] dark:ring-1 dark:ring-inset dark:ring-white/10 text-white flex items-center justify-center"
+                aria-hidden={s.photo ? undefined : true}
+                className="relative aspect-[16/10] md:aspect-[2/1] rounded-xl overflow-hidden bg-[#0b1219] dark:bg-white/[0.07] dark:ring-1 dark:ring-inset dark:ring-white/10 text-white flex items-center justify-center"
               >
                 {s.media}
               </div>

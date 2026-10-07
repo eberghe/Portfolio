@@ -26,6 +26,8 @@ export interface Service extends Record<Locale, ServiceText> {
   featured?: boolean;
   /** Slugs der passenden Leistungen (2 bis 3), AK-9 */
   related: string[];
+  /** Echtes Bild statt Platzhalter (AK-38); `alt` deutsch, `altEn` englisch */
+  image?: { src: string; width: number; height: number; alt: string; altEn: string };
 }
 
 export const services: Service[] = [
@@ -270,10 +272,18 @@ export const services: Service[] = [
     slug: 'design-systems',
     related: ['ux-ui-design', 'brand-logo-design', 'accessibility'],
     icon: Grid3x3,
+    image: {
+      src: '/images/services/design-systeme.png',
+      width: 1600,
+      height: 900,
+      alt: 'Ausschnitt aus einem Design System: Farbpalette mit Primärgrün, Typografie in Mona Sans, Buttons und Tags, ein Formularfeld mit Fehlermeldung, eine Projektkarte, eine Karte im Dunkelmodus, eine Leistungskarte und ein FAQ-Akkordeon.',
+      altEn:
+        'Excerpt from a design system: colour palette with primary green, Mona Sans typography, buttons and tags, a form field with an error message, a project card, a dark mode card, a service card and an FAQ accordion.',
+    },
     de: {
       tags: ['Design-Tokens', 'Komponenten', 'Figma', 'Dokumentation'],
       description:
-        'Ich baue Design Systems, die Teams schneller und konsistenter arbeiten lassen, mit Token-Architektur, Komponenten und klarer Doku.',
+        'Ich baue Design Systeme, die Teams schneller und konsistenter arbeiten lassen, mit Token-Architektur, Komponenten und klarer Doku.',
       features: [
         'Design-Token-Architektur',
         'Komponentenbibliothek (Figma)',
@@ -281,8 +291,8 @@ export const services: Service[] = [
         'Theming & Dunkelmodus',
         'Design-Dev-Übergabe',
       ],
-      label: 'Design Systems',
-      title: 'Design Systems',
+      label: 'Design Systeme',
+      title: 'Design Systeme',
       // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
       need: 'Dein Team baut dieselben Komponenten immer wieder neu, Screens sehen überall etwas anders aus und Übergaben an die Entwicklung kosten zu viel Zeit.',
       short: 'Konsistenz, die mitwächst: Design-Tokens, Komponenten und Doku, mit denen dein Team schneller gestaltet.',

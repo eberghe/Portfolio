@@ -154,7 +154,18 @@ export default function Home({ locale }: { locale: Locale }) {
               description: text.description,
               features: text.features,
               more: t.serviceMore(text.title),
-              media: <Icon size={72} strokeWidth={1.25} className="opacity-90" />,
+              photo: Boolean(s.image),
+              media: s.image ? (
+                <Image
+                  src={s.image.src}
+                  alt={locale === 'de' ? s.image.alt : s.image.altEn}
+                  fill
+                  sizes="(min-width: 768px) 60vw, 100vw"
+                  className="object-cover"
+                />
+              ) : (
+                <Icon size={72} strokeWidth={1.25} className="opacity-90" />
+              ),
             };
           })}
         />

@@ -122,4 +122,16 @@ Ersetzt die Kachelübersicht (AK-6 gilt sinngemäß weiter: Links heißen wie di
 ### Blinder Kritiker (Übersicht neu, 2026-10-06)
 
 Behoben (mit Test): Seite endete ohne Aufforderung zum Kontakt (AK-35); englischer Bedarfssatz klang übersetzt. Offen für Erik: „Barrierefreiheit-Beratung“ korrekt wäre „Barrierefreiheitsberatung“ (betrifft Titel auf allen Seiten); Groß- und Kleinschreibung der englischen Leistungsnamen ist uneinheitlich („UX/UI Design“ gegenüber „Design systems“); der Footer sagt auch auf Deutsch „made with love in augsburg“. Bewusst so: Die Bildbänder stehen nach jeder Leistung, wie Erik es wollte.
+
 - AK-36 (Erik: „nav hat wieder weißen hintergrund und verlauf sieht nicht so gut aus“): Auf der Leistungsübersicht ist die Navigation oben transparent wie auf der Startseite (startseite.md AK-36), der Verlauf reicht bis an den oberen Rand. Der Verlauf ist ein einziger, ruhiger grüner Schein von oben mittig (wie früher im Home-Hero), ohne seitliche Flecken.
+
+## Design Systeme: Name und Bild (Erik, 2026-10-07)
+
+Erik: „design systems in Design Systeme umändern und auf den seiten wo das bild vorkommt das hier verwenden, mit alt text ausstatten“ (Bild: Ausschnitt eines Design-Systems mit Farben, Typografie, Buttons, Formular, Projektkarte, Dunkelmodus, Leistungskarte und FAQ).
+
+- AK-37: Auf deutschen Seiten heißt die Leistung „Design Systeme“ (Titel, Label, Fließtexte, Meta-Description, Detailseite, FAQ). „Design Systems“ kommt in deutschen Texten nicht mehr vor. Englisch bleibt „Design systems“. Ersetzt das Suchwort aus AK-8 für Deutsch.
+- AK-38: Die Leistung Design Systeme hat ein echtes Bild (`public/images/services/design-systeme.png`, 1600 × 900) statt des Platzhalters. Es erscheint überall, wo bisher der Platzhalter der Leistung stand: im Vollbild unter der Leistung auf der Übersicht (AK-32) und in der Leistungsliste der Startseite (startseite.md AK-74). Es hat einen beschreibenden Alt-Text in DE und EN, der die gezeigten Bausteine nennt. Leistungen ohne Bild behalten ihren dekorativen Platzhalter. Auf der Übersicht steht das Bild ganz und unbeschnitten (16:9, höchstens Seitenbreite) auf einem hellen Band, damit alle im Alt-Text genannten Bausteine sichtbar bleiben (Kritiker: Vollbild mit 70svh schnitt mobil zwei Drittel ab).
+
+### Blinder Kritiker (Design Systeme, 2026-10-07)
+
+Behoben: Das Vollbild mit `object-cover` und 70svh schnitt auf dem Handy etwa zwei Drittel der Breite ab und auf breiten Bildschirmen die Überschriften. Das Bild steht jetzt ganz im Format 16:9. Ohne Einwände: Kein deutsches „Design Systems“ bleibt, und der Alt-Text ist sachlich und doppelt nicht die Überschrift. Hinweis: `local.ts` schreibt „Design-Systeme“ (Duden). Das bleibt so, weil Erik nur „Design Systems“ ersetzt haben wollte.

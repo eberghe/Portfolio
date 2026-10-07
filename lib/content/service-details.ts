@@ -1368,8 +1368,8 @@ export const serviceDetails: ServiceDetail[] = [
     project: null,
     tools: ['Figma', 'VS Code', 'Webflow', 'Claude'],
     de: {
-      eyebrow: 'Design Systems',
-      headline: 'Design Systems in Augsburg: konsistent gestalten, schneller entwickeln',
+      eyebrow: 'Design Systeme',
+      headline: 'Design Systeme in Augsburg: konsistent gestalten, schneller entwickeln',
       lead: 'Für Produktteams, die weniger Zeit mit Abstimmung und Einzellösungen verbringen und neue Seiten schneller und einheitlicher bauen wollen.',
       whyFocus: {
         title: 'Aus der Praxis gebaut',

@@ -6,6 +6,7 @@ import { breadcrumbJsonLd, serviceJsonLd, servicesItemListJsonLd } from '@/lib/s
 import { overviewText } from '@/components/services/ServicesOverview';
 import { services } from '@/lib/content/services';
 import { serviceDetails } from '@/lib/content/service-details';
+import { faqs } from '@/lib/content/faq';
 
 const detailOf = (slug: string) => serviceDetails.find((d) => d.slug === slug)!;
 
@@ -147,7 +148,9 @@ describe.each([
       );
       const image = section.nextElementSibling as HTMLElement;
       expect(image).toHaveAttribute('data-fullbleed');
-      expect(image).toHaveAttribute('aria-hidden', 'true');
+      // Platzhalter sind dekorativ, echte Bilder haben Alt-Text (AK-38)
+      if (s.image) expect(image).not.toHaveAttribute('aria-hidden');
+      else expect(image).toHaveAttribute('aria-hidden', 'true');
     }
     // Passende Arbeit nur, wenn es Projekte zur Leistung gibt
     const ux = container.querySelector('section#ux-ui-design') as HTMLElement;
@@ -232,7 +235,7 @@ describe('AK-12: Übersicht', () => {
   it.each(['de', 'en'] as const)('Description nennt alle Leistungen (%s)', (locale) => {
     const d = overviewText[locale].metaDescription.toLowerCase();
     const words = {
-      de: ['ux/ui', 'webflow', 'barrierefreiheit', 'ki', 'optimierung', 'brand', 'design systems'],
+      de: ['ux/ui', 'webflow', 'barrierefreiheit', 'ki', 'optimierung', 'brand', 'design systeme'],
       en: ['ux/ui', 'webflow', 'accessibility', 'ai', 'optimisation', 'brand', 'design systems'],
     }[locale];
     for (const w of words) expect(d).toContain(w);
@@ -415,5 +418,26 @@ describe('AK-27: Warum mit mir', () => {
       });
       expect(new Set(firsts).size).toBe(services.length);
     }
+  });
+});
+
+describe('AK-37/AK-38: Design Systeme', () => {
+  const ds = services.find((s) => s.slug === 'design-systems')!;
+  const detail = detailOf('design-systems');
+
+  it('AK-37: deutscher Name „Design Systeme“, nirgends „Design Systems“ auf Deutsch', () => {
+    expect(ds.de.title).toBe('Design Systeme');
+    expect(ds.de.label).toBe('Design Systeme');
+    expect(ds.en.title).toBe('Design systems');
+    const german = JSON.stringify([services.map((s) => s.de), detail.de, overviewText.de, faqs.map((f) => f.de)]);
+    expect(german).not.toMatch(/Design Systems/);
+  });
+
+  it.each(['de', 'en'] as const)('AK-38: Bild mit Alt-Text auf der Übersicht (%s)', (locale) => {
+    render(<ServicesOverview locale={locale} />);
+    const alt = ds.image![locale === 'de' ? 'alt' : 'altEn'];
+    expect(alt.length).toBeGreaterThan(40);
+    const img = screen.getByRole('img', { name: alt });
+    expect(img.getAttribute('src')).toMatch(/design-systeme/);
   });
 });

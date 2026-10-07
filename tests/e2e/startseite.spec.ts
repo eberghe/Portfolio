@@ -663,3 +663,30 @@ test.describe('Firmen-Fenster (AK-75 bis AK-78)', () => {
     await expect.poll(() => plus.evaluate((el) => getComputedStyle(el).color)).not.toBe(before);
   });
 });
+
+test('AK-82: Bildbänder und Linien der Leistungen reichen bis zum rechten Rand, Bild und Text nicht', async ({
+  page,
+}, info) => {
+  test.skip(info.project.name !== 'desktop-1280', 'ab 768 px');
+  for (const width of [1280, 1600]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/');
+    const section = page.locator('section[aria-labelledby="angebot"]');
+    const grid = (await section.locator('[data-services-grid]').boundingBox())!;
+    const article = section.locator('article[id^="leistung-"]').first();
+    const vw = await page.evaluate(() => document.documentElement.clientWidth);
+    // Band und Linie (Artikel) bis an den Rand
+    const box = (await article.boundingBox())!;
+    expect(box.x + box.width).toBeGreaterThanOrEqual(vw - 1);
+    const band = (await article.locator('[data-service-band]').boundingBox())!;
+    expect(band.x + band.width).toBeGreaterThanOrEqual(vw - 1);
+    // Bild und Text enden an der Containerkante
+    const media = (await article.locator('[data-service-media]').boundingBox())!;
+    expect(Math.abs(media.x + media.width - (grid.x + grid.width))).toBeLessThanOrEqual(1);
+    const text = (await article.locator('[data-service-text]').boundingBox())!;
+    expect(text.x + text.width).toBeLessThanOrEqual(grid.x + grid.width + 1);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(
+      0,
+    );
+  }
+});

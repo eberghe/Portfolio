@@ -41,42 +41,45 @@ export default function ServiceScroller({ items, navLabel }: { items: ServiceIte
   }, []);
 
   return (
-    <div data-services-grid className="md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,2.6fr)] border-t border-border">
-      <div
-        data-services-rail
-        data-no-reveal
-        className="hidden md:block md:sticky md:top-24 md:self-start pt-14 md:pr-8"
-      >
-        <nav aria-label={navLabel}>
-          <ol role="list" className="grid gap-1">
-            {items.map((s, i) => {
-              const on = active === i;
-              return (
-                <li key={s.slug}>
-                  <a
-                    href={`#leistung-${s.slug}`}
-                    aria-current={on ? 'location' : undefined}
-                    onClick={() => setActive(i)}
-                    className={`relative block py-2 pl-6 text-[18px] lg:text-[22px] font-medium leading-snug tracking-tight rounded-sm motion-safe:transition-colors motion-safe:duration-300 hover:text-foreground ${
-                      on ? 'text-foreground' : 'text-text2'
-                    }`}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={`absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-primary motion-safe:transition-opacity motion-safe:duration-300 ${
-                        on ? 'opacity-100' : 'opacity-0'
+    // Ab md reicht der rechte Bereich (Bänder und Linien) bis an den Fensterrand; --bleed ist der Abstand von der
+    // Containerkante zum Rand. Bild und Text holen ihn als Innenabstand zurück und bleiben gleich groß (AK-82).
+    <div
+      data-services-grid
+      className="md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,2.6fr)] border-t md:border-t-0 border-border [--bleed:max(3rem,calc((100vw-1280px)/2+3rem))]"
+    >
+      <div className="hidden md:block md:border-t border-border">
+        <div data-services-rail data-no-reveal className="md:sticky md:top-24 pt-14 md:pr-8">
+          <nav aria-label={navLabel}>
+            <ol role="list" className="grid gap-1">
+              {items.map((s, i) => {
+                const on = active === i;
+                return (
+                  <li key={s.slug}>
+                    <a
+                      href={`#leistung-${s.slug}`}
+                      aria-current={on ? 'location' : undefined}
+                      onClick={() => setActive(i)}
+                      className={`relative block py-2 pl-6 text-[18px] lg:text-[22px] font-medium leading-snug tracking-tight rounded-sm motion-safe:transition-colors motion-safe:duration-300 hover:text-foreground ${
+                        on ? 'text-foreground' : 'text-text2'
                       }`}
-                    />
-                    {s.title}
-                  </a>
-                </li>
-              );
-            })}
-          </ol>
-        </nav>
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`absolute left-0 top-1.5 bottom-1.5 w-[2px] rounded-full bg-primary motion-safe:transition-opacity motion-safe:duration-300 ${
+                          on ? 'opacity-100' : 'opacity-0'
+                        }`}
+                      />
+                      {s.title}
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
+        </div>
       </div>
 
-      <div className="md:border-l border-border">
+      <div className="md:border-l md:border-t border-border md:-mr-[var(--bleed)]">
         {items.map((s, i) => (
           <article
             key={s.slug}
@@ -87,7 +90,7 @@ export default function ServiceScroller({ items, navLabel }: { items: ServiceIte
             }}
             className="scroll-mt-24 border-b border-border last:border-b-0"
           >
-            <div className="pt-10 md:pt-14 pb-10 md:pb-12 md:pl-12 lg:pl-20">
+            <div data-service-text className="pt-10 md:pt-14 pb-10 md:pb-12 md:pl-12 lg:pl-20 md:mr-[var(--bleed)]">
               <div className="max-w-[720px] text-[22px] sm:text-[26px] lg:text-[32px] font-semibold leading-[1.22] tracking-[-0.02em] text-pretty">
                 <h3 id={`leistung-${s.slug}-titel`} className="inline font-bold text-foreground">
                   {s.title}
@@ -118,7 +121,10 @@ export default function ServiceScroller({ items, navLabel }: { items: ServiceIte
                 />
               </Link>
             </div>
-            <div className="bg-bg2 border-t border-border rounded-xl md:rounded-none p-4 sm:p-6 md:py-12 md:pl-12 lg:pl-20 md:pr-0 mb-10 md:mb-0">
+            <div
+              data-service-band
+              className="bg-bg2 border-t border-border rounded-xl md:rounded-none p-4 sm:p-6 md:py-12 md:pl-12 lg:pl-20 md:pr-[var(--bleed)] mb-10 md:mb-0"
+            >
               <div
                 data-service-media
                 aria-hidden={s.photo ? undefined : true}

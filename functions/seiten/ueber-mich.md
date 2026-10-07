@@ -161,3 +161,14 @@ Behoben:
 - Man blieb an beiden Ausgängen hängen. Die Sprünge nach draußen lagen innerhalb der 1-px-Toleranz von „klebt gerade“. Die Toleranz ist jetzt strenger, der Sprung geht 2 px hinaus, und der Test prüft eine zweite Geste in beide Richtungen.
 - Der Schwung von Lenis aus der Geste davor rollte über Stationen hinweg. Er wird jetzt beim ersten abgefangenen Rad-Ereignis angehalten.
 - Der Zwei-Finger-Zoom wurde blockiert. Er bleibt jetzt frei.
+
+- AK-33 (Erik, 2026-10-07: „upscroll auf über uns ist immer noch sehr buggy und geht nicht. die letzte station is auch sehr buggy mit dem kontakt bereich danach“): Mit einem echten Trackpad wurden Stationen übersprungen. Der Browser fasst Rad-Ereignisse bei Last zusammen, sodass mitten in einer Geste Lücken über 150 ms entstanden, die als neue Geste galten. Hineinrollen mit Schwung zählte gleich als nächster Sprung. Jetzt gilt:
+  - Je Geste höchstens ein Sprung.
+  - Eine neue Geste beginnt bei einem Richtungswechsel, nach mehr als 350 ms Pause oder wenn das Tempo im Nachschwung wieder deutlich steigt, also bei einem neuen Wisch.
+  - Eine Geste, die außerhalb der Stationen beginnt, bringt nur hinein, springt aber nicht weiter.
+  - Rollt die Seite nach Rad oder Wisch mit Schwung hinein, fängt der Rand sie auf: von oben bei der ersten Station, von unten bei der letzten.
+  - „Nach oben“, Anker und die Scrollleiste laufen ungebremst durch.
+
+### Blinder Kritiker (Gesten, 2026-10-07)
+
+Behoben: Das Auffangen am Rand bremste auch „Nach oben“ und Anker mit weichem Scrollen an den Stationen aus. Es greift jetzt nur innerhalb von 0,8 s nach einer Rad- oder Wisch-Eingabe, mit Test.

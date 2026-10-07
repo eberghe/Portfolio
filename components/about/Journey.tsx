@@ -170,24 +170,46 @@ export default function Journey({
       const i = Math.min(last, Math.max(0, index));
       jumpTo(top + (i / count) * range() + (i > 0 ? 1 : 0));
     };
-    // Eine Scroll-Geste = eine Station (AK-32). Trackpads feuern je Geste viele Rad-Ereignisse mit Nachschwung:
-    // erst nach LOCK ms und einer Pause von QUIET ms zählt die nächste Geste.
-    const LOCK = 700;
-    const QUIET = 150;
+    // Eine Scroll-Geste = eine Station (AK-32). Trackpads feuern je Geste viele Rad-Ereignisse mit Nachschwung, und
+    // bei Last fasst der Browser Ereignisse zusammen (Lücken > 150 ms mitten in der Geste). Deshalb zählt nicht die
+    // Pause allein: Eine neue Geste beginnt bei Richtungswechsel, nach langer Pause oder wenn die Geschwindigkeit
+    // wieder deutlich ansteigt (der Nachschwung wird nur langsamer). Je Geste höchstens ein Sprung.
+    const LOCK = 650;
+    const PAUSE = 350;
+    let gesture = 0;
+    let usedGesture = -1;
     let jumped = -Infinity;
-    // Zeit des vorletzten und letzten Rad-Ereignisses auf der ganzen Seite: eine Geste, die von oben in die
-    // Stationen hineinläuft, zählt so nicht gleich als neuer Sprung
-    let prevWheel = -Infinity;
-    let lastWheel = -Infinity;
-    // Richtung des vorletzten und letzten Rad-Ereignisses: Ein Richtungswechsel ist immer eine neue Geste,
-    // auch wenn er ohne Pause in den Nachschwung der alten fällt (Erik: „upscroll funktioniert nicht“)
-    let prevDir = 0;
+    let lastT = -Infinity;
     let lastDir = 0;
+    let speeds: number[] = [];
+    // Zeit der letzten Rad- oder Wisch-Eingabe (performance.now)
+    let lastInput = -Infinity;
+    // Höchsttempo der laufenden Geste und ob sie schon im Nachschwung (unter halbem Höchsttempo) ist
+    let peak = 0;
+    let decayed = false;
     const anyWheel = (e: WheelEvent) => {
-      prevWheel = lastWheel;
-      lastWheel = e.timeStamp;
-      prevDir = lastDir;
-      lastDir = Math.sign(Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY);
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (delta === 0) return;
+      lastInput = performance.now();
+      const gap = e.timeStamp - lastT;
+      const dir = Math.sign(delta);
+      // Geschwindigkeit statt Weg: zusammengefasste Ereignisse nach einer Lücke haben mehr Weg, aber kein höheres Tempo
+      const speed = Math.abs(delta) / Math.min(PAUSE, Math.max(8, gap));
+      // Steigt das Tempo erst im Nachschwung wieder an, hat ein neuer Wisch begonnen; das Anlaufen zählt nicht
+      const rising = decayed && speeds.length >= 3 && speed > Math.max(...speeds) * 1.5 && Math.abs(delta) >= 4;
+      if (gap > PAUSE || dir !== lastDir || rising) {
+        gesture++;
+        peak = 0;
+        decayed = false;
+        speeds = [];
+      }
+      speeds = [...speeds.slice(-3), speed];
+      peak = Math.max(peak, speed);
+      if (speed < peak / 2) decayed = true;
+      lastT = e.timeStamp;
+      lastDir = dir;
+      // Geste hat außerhalb der Stationen begonnen: sie bringt nur hinein, springt aber nicht weiter
+      if (!pinnedNow()) usedGesture = gesture;
     };
     const pinnedNow = () => {
       const r = el.getBoundingClientRect();
@@ -196,12 +218,9 @@ export default function Journey({
       );
     };
     // Richtung > 0 nach unten
-    const step = (dir: number, now: number) => {
-      if (now - jumped < LOCK) return;
-      if (now - prevWheel < QUIET && dir === prevDir) return;
+    const step = (dir: number) => {
       const current = Math.min(last, Math.floor(progress * count));
       const top = el.getBoundingClientRect().top + window.scrollY;
-      jumped = now;
       if (dir > 0 && current === last) {
         // Ohne toten Scrollweg hinaus: ans Ende der Stationen
         jumpTo(top + range() + 2);
@@ -215,7 +234,6 @@ export default function Journey({
     };
     const wheel = (e: WheelEvent) => {
       if (!pinnedNow()) return;
-      // Seitliches Wischen und waagerechtes Mausrad blättern ebenfalls
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       if (delta === 0) return;
       // Lenis (auf window) soll das Ereignis nicht mehr sehen
@@ -223,11 +241,32 @@ export default function Journey({
       e.stopPropagation();
       // Schwung von Lenis aus der Geste davor anhalten, sonst rollt die Seite über Stationen hinweg
       halt();
-      step(Math.sign(delta), e.timeStamp);
+      if (gesture === usedGesture || e.timeStamp - jumped < LOCK) return;
+      usedGesture = gesture;
+      jumped = e.timeStamp;
+      step(Math.sign(delta));
+    };
+    // Rollt die Seite mit Schwung in die Stationen hinein (ohne Rad-Ereignis, z. B. Lenis oder nativer Nachschwung),
+    // fängt der Rand sie auf: oben bei der ersten, unten bei der letzten Station (Erik: „letzte Station buggy“)
+    let wasInside = pinnedNow();
+    let lastY = window.scrollY;
+    const catchEntry = () => {
+      const inside = pinnedNow();
+      // Nur beim Hineinrollen in kleinen Schritten; ein Sprung per Anker, Taste oder scrollTo bleibt, wo er landet
+      const moved = Math.abs(window.scrollY - lastY);
+      // Nur nach Rad oder Wisch: „Nach oben“, Anker und gezogene Scrollleiste laufen ungebremst durch (Kritiker)
+      const byInput = performance.now() - lastInput < 800;
+      if (inside && !wasInside && byInput && moved > 2 && moved < window.innerHeight / 2) {
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        jumpTo(window.scrollY > lastY ? top : top + range());
+      }
+      wasInside = inside;
+      lastY = window.scrollY;
     };
     // Mobil: ein Wisch = eine Station
     let touchY: number | null = null;
     const touchStart = (e: TouchEvent) => {
+      lastInput = performance.now();
       // Nur ein Finger: Zwei-Finger-Zoom bleibt frei
       touchY = pinnedNow() && e.touches.length === 1 ? e.touches[0]!.clientY : null;
     };
@@ -236,17 +275,17 @@ export default function Journey({
       if (touchY !== null) e.preventDefault();
     };
     const touchEnd = (e: TouchEvent) => {
+      lastInput = performance.now();
       if (touchY === null) return;
       const dy = touchY - e.changedTouches[0]!.clientY;
       touchY = null;
       if (Math.abs(dy) < 30) return;
-      prevWheel = -Infinity;
-      jumped = -Infinity;
-      step(Math.sign(dy), e.timeStamp);
+      step(Math.sign(dy));
     };
     const observer = new ResizeObserver(resize);
     observer.observe(sticky);
     window.addEventListener('scroll', move, { passive: true });
+    window.addEventListener('scroll', catchEntry, { passive: true });
     window.addEventListener('wheel', anyWheel, { passive: true, capture: true });
     sticky.addEventListener('wheel', wheel, { passive: false });
     sticky.addEventListener('touchstart', touchStart, { passive: true });
@@ -266,6 +305,7 @@ export default function Journey({
       shown.current = null;
       observer.disconnect();
       window.removeEventListener('scroll', move);
+      window.removeEventListener('scroll', catchEntry);
       window.removeEventListener('wheel', anyWheel, { capture: true });
       sticky.removeEventListener('wheel', wheel);
       sticky.removeEventListener('touchstart', touchStart);

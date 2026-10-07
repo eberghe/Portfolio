@@ -97,3 +97,22 @@ Offen, bewusst später:
 Erik: „ort und uhrzeit im footer ganz links unten in die ecke. bitte“
 
 - AK-24: Ab 768 px steht die Ortszeit (AK-23) ganz unten links in der Ecke des Footers, auf derselben Höhe wie „Zurück nach oben“ rechts unten (gleicher Abstand zum Rand). Unter 768 px steht sie als letzte Zeile ganz unten links.
+
+## Footer strukturierter (Erik, 2026-10-07)
+
+Erik: „den footer bitte so umbauen das ist strukturierter. den screenshot bitte als vorlage nutzen. nicht als design vorlage.“ (Vorlage: Spalten mit Überschriften, darunter eine Leiste mit Copyright und Satz.)
+
+- AK-25: Der Footer ist in beschriftete Spalten gegliedert. Ab 1024 px stehen sie nebeneinander, darunter je zwei Spalten und unter 640 px untereinander:
+  - Marke: Logo und ein kurzer Satz, wer Erik ist und wo er arbeitet („Design Engineer aus Königsbrunn bei Augsburg.“).
+  - „Kontakt“: E-Mail-Adresse sichtbar ausgeschrieben, LinkedIn, Instagram und „Kostenloses Erstgespräch“.
+  - „Leistungen“ (AK-19).
+  - „Webdesign nach Stadt“.
+  - „Seiten“: Projekte, Leistungen, Über mich, Kontakt, FAQs, Impressum, Datenschutz. Das ist die Footer-Navigation `#footer-nav` aus AK-22.
+- Unten trennt eine Linie die Leiste ab. Links steht die Ortszeit (AK-23, AK-24), in der Mitte „© 2026 Erik Bergheimer“ und „made with 🤍 in augsburg“, rechts „Nach oben“.
+- Spaltenüberschriften sind klein, in Versalien und white/60. Links sind white/80, beim Überfahren weiß, und mobil 44 px hoch.
+- Farben und Schrift bleiben wie bisher. Die Vorlage gibt nur den Aufbau vor, nicht das Design.
+- Social-Links sind Textlinks mit sichtbarem Namen statt Icons.
+
+### Blinder Kritiker (Footer-Spalten, 2026-10-07)
+
+Ohne Einwände sind Kontrast (white/80 und white/60 auf #0b1219), 44-px-Ziele mobil, `lang` und Landmarks. Offen als Hinweis: Die Spaltenüberschriften sind `<p>` wie bisher und keine Überschriften. Die Seiten-Navigation heißt weiter „Fußzeile“ (AK-1, AK-22).

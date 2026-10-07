@@ -425,3 +425,27 @@ html.lenis {
     transform: scaleY(1);
   }
 }
+
+/* Firmen-Fenster (functions/seiten/startseite.md AK-78): sanft einblenden, bei reduzierter Bewegung sofort */
+.company-dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .company-dialog[open] {
+    animation: company-dialog-in 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .company-dialog[open]::backdrop {
+    animation: company-backdrop-in 0.25s ease-out;
+  }
+}
+@keyframes company-dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+@keyframes company-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}

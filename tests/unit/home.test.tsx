@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import Home from '@/components/home/Home';
 import { heroMedia, homeContent } from '@/lib/content/home';
@@ -110,28 +110,28 @@ describe.each([
     expect(within(hero).queryAllByRole('link')).toHaveLength(0);
   });
 
-  it('AK-28/AK-29: Unternehmen als Links, HERO Software hervorgehoben', () => {
+  it('AK-75/AK-29: Firmenkacheln öffnen ein Fenster, HERO Software hervorgehoben', () => {
     render(<Home locale={locale} />);
     const h2 = screen.getByRole('heading', {
       level: 2,
       name: locale === 'de' ? 'Unternehmen, für die ich gearbeitet habe' : "Companies I've worked for",
     });
     const section = h2.closest('section')!;
-    const links = within(section).getAllByRole('link');
-    expect(links.map((l) => l.getAttribute('href'))).toEqual(homeContent[locale].companies.map((c) => c.url));
-    for (const l of links) {
-      expect(l).toHaveAttribute('target', '_blank');
-      expect(l).toHaveAttribute('rel', expect.stringContaining('noopener'));
+    expect(within(section).queryAllByRole('link')).toHaveLength(0);
+    const buttons = within(section).getAllByRole('button');
+    expect(buttons).toHaveLength(4);
+    for (const b of buttons) {
+      expect(b).toHaveAttribute('aria-haspopup', 'dialog');
+      expect(b.querySelector('[data-company-plus]')).toHaveAttribute('aria-hidden', 'true');
     }
-    const hero = within(section).getByRole('link', { name: /HERO Software/ });
-    // AK-32: Teile des Linknamens mit Pausen, jeder Eintrag mit ehrlicher Rolle
-    expect(hero).toHaveAccessibleName(
+    // AK-32: Teile des Namens mit Pausen, jeder Eintrag mit ehrlicher Rolle, kein Hinweis auf neuen Tab mehr
+    expect(buttons[0]).toHaveAccessibleName(
       locale === 'de'
-        ? 'HERO Software, Aktuell, Business Development Manager (öffnet in neuem Tab)'
-        : 'HERO Software, Current, Business Development Manager (opens in a new tab)',
+        ? 'HERO Software, Aktuell, Business Development Manager'
+        : 'HERO Software, Current, Business Development Manager',
     );
     // AK-34: echte Logos als einfarbige SVG-Dateien, dekorativ
-    const logos = links.map((l) => l.querySelector('img')!);
+    const logos = buttons.map((b) => b.querySelector('img')!);
     expect(logos.map((img) => img.getAttribute('src'))).toEqual([
       '/logos/hero.svg',
       '/logos/team23.svg',
@@ -144,6 +144,26 @@ describe.each([
     }
     for (const c of homeContent[locale].companies) expect(c.role).toBeTruthy();
     expect(homeContent[locale].companies.map((c) => c.name)).toEqual(['HERO Software', 'TEAM23', 'Amazon', 'IKEA']);
+  });
+
+  it('AK-76/AK-77: Fenster mit Rolle, Zeitraum, Text und Website-Link, X schließt', () => {
+    render(<Home locale={locale} />);
+    const tc = homeContent[locale];
+    tc.companies.forEach((c, i) => {
+      const section = screen.getByRole('heading', { level: 2, name: tc.companiesTitle }).closest('section')!;
+      fireEvent.click(within(section).getAllByRole('button')[i]!);
+      const dialog = screen.getByRole('dialog', { name: c.name });
+      expect(dialog).toHaveAttribute('aria-modal', 'true');
+      expect(dialog).toHaveTextContent(c.role);
+      expect(dialog).toHaveTextContent(c.period);
+      expect(dialog).toHaveTextContent(c.summary);
+      for (const d of c.duties) expect(dialog).toHaveTextContent(d);
+      const site = within(dialog).getByRole('link', { name: new RegExp(tc.companyWebsite(c.name)) });
+      expect(site).toHaveAttribute('href', c.url);
+      expect(site).toHaveAttribute('target', '_blank');
+      fireEvent.click(within(dialog).getByRole('button', { name: tc.close }));
+      expect(screen.queryByRole('dialog')).toBeNull();
+    });
   });
 
   it('AK-51: keine Uhrzeile mehr auf der Startseite (jetzt im Footer)', () => {

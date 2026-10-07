@@ -274,3 +274,18 @@ Ersetzt das Akkordeon (AK-64 Liste, AK-65, AK-66, AK-68). Kopf aus AK-64 (Kennze
 ### Blinder Kritiker (Leistungen mit Liste, 2026-10-06)
 
 Behoben (mit Test): Jede Beschreibung wurde zweimal vorgelesen (der Link „Mehr zu …“ verwies per `aria-describedby` auf den Absatz direkt davor); `aria-current` ist jetzt `location`; die Platzhalterbilder sind ab 768 px flacher (2:1 statt 16:10), damit der Abschnitt nicht aus leeren Flächen besteht. Offen: Unter 768 px gibt es bewusst keine Liste (AK-74); echte Bilder je Leistung fehlen noch (Erik hat noch keine).
+
+## Firmen öffnen ein Fenster statt eines Links (Erik, 2026-10-07)
+
+Erik: „bei den Firmen, die ich auf Home verlinkt habe … nicht auf die Firma verlinken, sondern on klick ein Modal öffnen, das durch ein X auch wieder schließbar ist. Wenn das Modal geöffnet ist, auch Scroll disablen, per Escape schließbar etc. … Dort dann bitte darstellen, was ich in dieser Station gemacht habe, was meine Verantwortungen waren und wie lange ich dort tätig war.“ Icon: Plus (Erik, Entscheidung 2026-10-07).
+
+Ersetzt den Link aus AK-28 und den Linknamen-Zusatz „(öffnet in neuem Tab)“ aus AK-32. Logos (AK-34), Rollen und Hervorhebung von HERO (AK-29) bleiben.
+
+- AK-75: Jede Firmenkachel ist mit JavaScript ein Schalter (`aria-haspopup="dialog"`) mit dem Namen „<Firma>, [Aktuell,] <Rolle>“ und zeigt oben rechts ein Plus im Kreis (dekorativ), das beim Überfahren und beim Tastaturfokus in Akzentfarbe wechselt. Ohne JavaScript bleibt die Kachel ein Link zur Firmenwebsite in neuem Tab.
+- AK-76: Ein Klick (oder Enter/Leertaste) öffnet ein modales Fenster (`<dialog>` mit `showModal`): Überschrift mit dem Firmennamen, Rolle, Zeitraum, was Erik dort gemacht hat, seine Verantwortungen als Liste (nur, wenn vorhanden) und ein Link „Website von <Firma>“ (neuer Tab). Texte in DE und EN; bis Erik die Inhalte schickt, stehen nur gesicherte Angaben aus „Über mich“ drin (TODO Erik).
+- AK-77: Geschlossen wird das Fenster mit dem X-Knopf („Schließen“/„Close“, mindestens 44 × 44 px), mit Escape und mit Klick auf die abgedunkelte Fläche daneben. Danach steht der Fokus wieder auf der Kachel, die das Fenster geöffnet hat.
+- AK-78: Solange das Fenster offen ist, scrollt die Seite dahinter nicht (auch nicht per Mausrad mit sanftem Scrollen), der Fokus bleibt im Fenster, der Rest der Seite ist für Screenreader unerreichbar. Das Fenster passt ab 320 px ohne waagerechtes Scrollen in den Bildschirm; ist der Inhalt höher, scrollt nur das Fenster. Einblenden ist animiert, bei reduzierter Bewegung sofort.
+
+### Blinder Kritiker (Firmen-Fenster, 2026-10-07)
+
+Behoben (mit Test): „Schließen“ hatte beim Tastaturfokus keinen sichtbaren Rahmen; HERO-Text nennt jetzt beide Daten (Werkstudent seit 2025-09, Manager seit 2026-09), damit er nicht dem Zeitraum widerspricht. Bewusst so gelassen: Tab verlässt das native `<dialog>` kurz Richtung Browser-Leiste (Standardverhalten, kein Fehler).

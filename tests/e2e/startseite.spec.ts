@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
-import { axe } from './helpers';
+import { expect, test, type Page } from '@playwright/test';
+import { axe, openHydrated } from './helpers';
 
 // functions/seiten/startseite.md
 
@@ -178,8 +178,9 @@ test.describe('AK-47: Hero-Animation', () => {
 });
 
 test('AK-32/AK-34: Kacheln zentriert, Logos geladen', async ({ page }) => {
-  await page.goto('/');
-  const aligns = await page.$$eval('section[aria-labelledby="unternehmen"] ul a', (els) =>
+  // Erst nach der Hydrierung messen: dann sind aus den Links Schalter geworden (AK-75)
+  await openHydrated(page, '/');
+  const aligns = await page.$$eval('section[aria-labelledby="unternehmen"] ul :is(a, button)', (els) =>
     els.map((el) => getComputedStyle(el).textAlign),
   );
   expect(aligns.every((a) => a === 'center')).toBe(true);
@@ -534,4 +535,76 @@ test('AK-69: Foto in „Über mich“ groß', async ({ page }, info) => {
   const vw = page.viewportSize()!.width;
   if (info.project.name === 'desktop-1280') expect(width).toBeGreaterThanOrEqual(480);
   if (info.project.name === 'mobile-360') expect(width).toBeGreaterThanOrEqual(vw - 2 * 24 - 3); // minus 1 px Rahmen je Seite
+});
+
+test.describe('Firmen-Fenster (AK-75 bis AK-78)', () => {
+  const tiles = (page: Page) => page.locator('section[aria-labelledby="unternehmen"] ul button');
+
+  test('AK-75: ohne JavaScript bleiben die Kacheln Links', async ({ browser }) => {
+    const ctx = await browser.newContext({ javaScriptEnabled: false });
+    const page = await ctx.newPage();
+    await page.goto('/');
+    const links = page.locator('section[aria-labelledby="unternehmen"] ul a[target="_blank"]');
+    await expect(links).toHaveCount(4);
+    await ctx.close();
+  });
+
+  test('AK-76/AK-77/AK-78: öffnen, Scroll gesperrt, Escape, X und Fläche daneben schließen', async ({ page }) => {
+    await openHydrated(page, '/');
+    const first = tiles(page).first();
+    await first.scrollIntoViewIfNeeded();
+    await first.click();
+    const dialog = page.getByRole('dialog', { name: 'HERO Software' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('link', { name: /Website von HERO Software/ })).toBeVisible();
+    // Seite scrollt nicht, Fokus im Fenster (erst messen, wenn das Hinscrollen zur Kachel fertig ist)
+    await page.waitForTimeout(800);
+    const y = await page.evaluate(() => scrollY);
+    await page.mouse.wheel(0, 800);
+    await page.waitForTimeout(400);
+    expect(await page.evaluate(() => scrollY)).toBe(y);
+    expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflow)).toBe('hidden');
+    expect(await dialog.evaluate((d) => d.contains(document.activeElement))).toBe(true);
+    // Kein waagerechtes Scrollen im Fenster, Schließen-Knopf groß genug
+    expect(await dialog.evaluate((d) => d.scrollWidth - d.clientWidth)).toBeLessThanOrEqual(0);
+    const close = dialog.getByRole('button', { name: 'Schließen' });
+    const box = (await close.boundingBox())!;
+    expect(Math.min(box.width, box.height)).toBeGreaterThanOrEqual(44);
+    expect(await axe(page, ['dialog'])).toEqual([]);
+
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(first).toBeFocused();
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
+
+    const second = tiles(page).nth(1);
+    await second.click();
+    await page.getByRole('dialog', { name: 'TEAM23' }).getByRole('button', { name: 'Schließen' }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(second).toBeFocused();
+
+    await second.click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+    await page.mouse.click(5, 5);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+
+  test('AK-77: per Tastatur geöffnet, Fokus sichtbar auf „Schließen“', async ({ page }) => {
+    await openHydrated(page, '/');
+    await tiles(page).first().focus();
+    await page.keyboard.press('Enter');
+    const close = page.getByRole('dialog').getByRole('button', { name: 'Schließen' });
+    await expect(close).toBeFocused();
+    expect(await close.evaluate((el) => getComputedStyle(el).outlineStyle)).toBe('solid');
+  });
+
+  test('AK-75: Plus wird beim Tastaturfokus grün', async ({ page }) => {
+    await openHydrated(page, '/');
+    const plus = tiles(page).first().locator('[data-company-plus]');
+    const before = await plus.evaluate((el) => getComputedStyle(el).color);
+    await tiles(page).first().focus();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await expect.poll(() => plus.evaluate((el) => getComputedStyle(el).color)).not.toBe(before);
+  });
 });

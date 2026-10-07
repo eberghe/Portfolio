@@ -489,3 +489,27 @@ describe.each([
     expect(steps[0]!.querySelector('[data-step-line]')).not.toBeNull();
   });
 });
+
+describe('AK-79: Inhalte der Firmen-Fenster', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    const companies = homeContent[locale].companies;
+    for (const c of companies) {
+      expect(c.duties.length, c.name).toBeGreaterThanOrEqual(3);
+      expect(c.summary.split(/(?<=[.!?])\s+/).length, c.name).toBeLessThanOrEqual(3);
+      expect([c.summary, ...c.duties].join(' '), c.name).not.toMatch(/[–—]/);
+    }
+    const all = (name: string) => {
+      const c = companies.find((x) => x.name === name)!;
+      return [c.summary, ...c.duties].join(' ');
+    };
+    expect(all('HERO Software')).toMatch(/Conkret/);
+    expect(all('HERO Software')).toMatch(/CRM/);
+    expect(all('TEAM23')).toMatch(/Figma/);
+    expect(all('TEAM23')).toMatch(/Indonesi/);
+    expect(companies.find((c) => c.name === 'Amazon')!.period).toMatch(
+      locale === 'de' ? /April bis September 2019/ : /April to September 2019/,
+    );
+    expect(all('IKEA')).toMatch(/Småland/);
+    expect(homeContent[locale].companyDuties).toBe(locale === 'de' ? 'Aufgaben' : 'What I did');
+  });
+});

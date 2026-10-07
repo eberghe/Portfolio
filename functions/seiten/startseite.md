@@ -289,3 +289,9 @@ Ersetzt den Link aus AK-28 und den Linknamen-Zusatz „(öffnet in neuem Tab)“
 ### Blinder Kritiker (Firmen-Fenster, 2026-10-07)
 
 Behoben (mit Test): „Schließen“ hatte beim Tastaturfokus keinen sichtbaren Rahmen; HERO-Text nennt jetzt beide Daten (Werkstudent seit 2025-09, Manager seit 2026-09), damit er nicht dem Zeitraum widerspricht. Bewusst so gelassen: Tab verlässt das native `<dialog>` kurz Richtung Browser-Leiste (Standardverhalten, kein Fehler).
+
+## Inhalte der Firmen-Fenster (Erik, 2026-10-07)
+
+Erik hat Beschreibungen zu HERO Software, TEAM23, Amazon und IKEA geschickt („reicht dir das?“).
+
+- AK-79: Jedes Firmen-Fenster zeigt Eriks Inhalte: eine kurze Beschreibung (höchstens drei Sätze) und darunter die Aufgaben als Liste (mindestens drei Punkte), Überschrift „Aufgaben“ (EN „What I did“). HERO: Website, Event-App und Merchshop der HEROCON, Conkret Podcast, Notion und Wikis, CRM und digitale Kanäle, Customer Experience, KI und Automation. TEAM23: Webflow und Design-Systeme in Figma, Kunden und Projekte, Mentoring, Forecasting und Controlling, Tools und Lizenzen; die Workation in Indonesien gehört dazu. Amazon: Versandmitarbeiter, April bis September 2019. IKEA: Kundenservice, Småland, Bestellungen, Infocenter. Keine Gedankenstriche, gleiche Fakten in DE und EN.

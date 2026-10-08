@@ -29,16 +29,9 @@ export function terminTitel(de: string | null, en: string | null, locale: Locale
   return (locale === 'en' ? (en ?? de) : de) ?? kundenText[locale].meetingFallback;
 }
 
-/** „Do., 15. Okt. 2026, 10:00–11:00 MESZ“ in der angegebenen Zeitzone (AK-3) */
-export function zeitraum(beginn: string, ende: string, locale: Locale, timeZone = SERVER_ZEITZONE) {
+/** „10:00–11:00 MESZ“ in der angegebenen Zeitzone */
+export function uhrzeit(beginn: string, ende: string, locale: Locale, timeZone = SERVER_ZEITZONE) {
   const lang = locale === 'en' ? 'en-GB' : 'de-DE';
-  const tag = new Intl.DateTimeFormat(lang, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone,
-  }).format(new Date(beginn));
   const zeit = (iso: string) =>
     new Intl.DateTimeFormat(lang, {
       hour: '2-digit',
@@ -46,16 +39,30 @@ export function zeitraum(beginn: string, ende: string, locale: Locale, timeZone 
       timeZone,
       timeZoneName: 'short',
     }).formatToParts(new Date(iso));
-  const von = zeit(beginn);
-  const bis = zeit(ende);
   const uhr = (parts: Intl.DateTimeFormatPart[]) =>
     parts
       .filter((p) => p.type === 'hour' || p.type === 'minute' || (p.type === 'literal' && p.value === ':'))
       .map((p) => p.value)
       .join('');
+  const bis = zeit(ende);
   const zone = bis.find((p) => p.type === 'timeZoneName')?.value ?? '';
-  return `${tag}, ${uhr(von)}–${uhr(bis)} ${zone}`.trim();
+  return `${uhr(zeit(beginn))}–${uhr(bis)} ${zone}`.trim();
 }
+
+/** „Do., 15. Okt. 2026, 10:00–11:00 MESZ“ in der angegebenen Zeitzone (AK-3) */
+export function zeitraum(beginn: string, ende: string, locale: Locale, timeZone = SERVER_ZEITZONE) {
+  const tag = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'de-DE', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone,
+  }).format(new Date(beginn));
+  return `${tag}, ${uhrzeit(beginn, ende, locale, timeZone)}`;
+}
+
+const berlinDatum = (iso: string) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone: SERVER_ZEITZONE }).format(new Date(iso));
 
 const escape = (v: string) =>
   v.replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
@@ -115,7 +122,8 @@ export async function kalenderAntwort(
     headers: {
       ...headers,
       'Content-Type': 'text/calendar; charset=utf-8',
-      'Content-Disposition': `attachment; filename="${locale === 'en' ? 'meeting' : 'termin'}.ics"`,
+      // Kritiker Termine 5: Datum im Dateinamen
+      'Content-Disposition': `attachment; filename="${locale === 'en' ? 'meeting' : 'termin'}-${berlinDatum(row.beginn)}.ics"`,
     },
   });
 }

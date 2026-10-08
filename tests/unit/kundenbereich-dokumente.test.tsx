@@ -96,10 +96,10 @@ describe('Ansicht', () => {
       name: 'Vertrag Relaunch, PDF, 1,2 MB, Version 2, 8. Okt. 2026, Aktuell',
     });
     expect(vertrag).toHaveAttribute('href', '/kunden/dokumente/d-v2');
-    expect(within(section).getByRole('img', { name: 'Logo: Logo hell' })).toHaveAttribute(
-      'src',
-      '/kunden/dokumente/d-logo?vorschau=1',
-    );
+    // Kritiker Dokumente 4: Vorschau ohne doppelten Alternativtext, der Link trägt den Namen
+    const vorschau = section.querySelector('img[src="/kunden/dokumente/d-logo?vorschau=1"]');
+    expect(vorschau).toHaveAttribute('alt', '');
+    expect(vorschau!.closest('a')).toHaveAccessibleName(/^Logo hell, SVG/);
   });
 
   it('AK-6: englisch und ohne Dokumente', () => {

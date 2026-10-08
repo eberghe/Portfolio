@@ -63,6 +63,16 @@ describe('Termine aufbereiten', () => {
     expect(projektAnsicht({ ...PROJEKT, termine: [] }, 'de', NOW).naechsterTermin).toBeNull();
   });
 
+  it('Kritiker 1: immer deutsche Zeit, abweichende Ortszeit dahinter', async () => {
+    const { default: TerminZeit } = await import('@/components/kundenbereich/TerminZeit');
+    const spy = vi
+      .spyOn(Intl.DateTimeFormat.prototype, 'resolvedOptions')
+      .mockReturnValue({ timeZone: 'Europe/London' } as Intl.ResolvedDateTimeFormatOptions);
+    const { container } = render(<TerminZeit beginn="2026-10-15T08:00:00Z" ende="2026-10-15T09:00:00Z" locale="de" />);
+    spy.mockRestore();
+    expect(container.textContent).toBe('Do., 15. Okt. 2026, 10:00–11:00 MESZ (bei dir 09:00–10:00 GMT+1)');
+  });
+
   it('AK-3/AK-7: Zeitraum mit Zeitzonenkürzel, deutsch und englisch', () => {
     expect(zeitraum('2026-10-15T08:00:00Z', '2026-10-15T09:00:00Z', 'de', 'Europe/Berlin')).toBe(
       'Do., 15. Okt. 2026, 10:00–11:00 MESZ',
@@ -90,6 +100,36 @@ describe('Ansicht', () => {
       '/kunden/termine/laeuft?sprache=de',
     );
     expect(within(section).getAllByRole('listitem')).toHaveLength(3);
+  });
+
+  it('Kritiker 2: Termin steht im DOM vor Ablauf und Dokumenten', () => {
+    render(
+      <Projektuebersicht
+        locale="de"
+        profil={ANNA}
+        projekte={[
+          {
+            ...PROJEKT,
+            projektschritte: [
+              {
+                id: 's1',
+                reihenfolge: 1,
+                titel_de: 'A',
+                titel_en: null,
+                beschreibung_de: null,
+                beschreibung_en: null,
+                status: 'aktiv',
+                faellig_am: null,
+                verantwortlich: 'erik',
+              },
+            ],
+          },
+        ]}
+      />,
+    );
+    const titles = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent);
+    expect(titles.indexOf('Nächster Termin')).toBeLessThan(titles.indexOf('Ablauf'));
+    expect(titles.indexOf('Ablauf')).toBeLessThan(titles.indexOf('Dokumente'));
   });
 
   it('AK-4: ohne Meet-Link kein Button, ohne Termin Hinweis', () => {
@@ -179,7 +219,7 @@ describe('Kalenderdatei', () => {
     expect(api.termin).toHaveBeenLastCalledWith('tok', 't1');
     expect(ok.status).toBe(200);
     expect(ok.headers.get('content-type')).toMatch(/^text\/calendar/);
-    expect(ok.headers.get('content-disposition')).toMatch(/^attachment; filename=".+\.ics"$/);
+    expect(ok.headers.get('content-disposition')).toBe('attachment; filename="meeting-2026-10-15.ics"');
     expect(ok.headers.get('cache-control')).toBe('private, no-store');
     expect(await ok.text()).toContain('SUMMARY:Termin t1 (Relaunch)');
   });

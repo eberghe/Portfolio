@@ -55,7 +55,7 @@ test('dokumente.md AK-3/AK-5: Dokumente mit Angaben, Download über signierten L
   await expect(
     docs.getByRole('link', { name: 'Vertrag Relaunch, PDF, 182 KB, Version 2, 8. Okt. 2026, Aktuell' }),
   ).toBeVisible();
-  const logo = docs.getByRole('img', { name: 'Logo: Logo dunkel' });
+  const logo = docs.locator('img[src*="d-logo"]');
   await expect(logo).toBeVisible();
   expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
   expect(await page.content()).not.toContain('token=');

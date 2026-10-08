@@ -112,9 +112,10 @@ function Projekt({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: Ret
   return (
     <article
       aria-labelledby="projekt-titel"
-      className="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-x-16 gap-y-10"
+      className="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:grid-rows-[auto_1fr] gap-x-16 gap-y-10"
     >
-      <div className="min-w-0">
+      {/* Kritiker Termine 2: Reihenfolge im DOM = Projekt, Termin und nächste Schritte, dann Ablauf und Dokumente */}
+      <div className="min-w-0 lg:col-start-1 lg:row-start-1">
         {p.kunde && <p className="text-[14px] font-semibold text-primary-text mb-2">{p.kunde}</p>}
         <h2
           id="projekt-titel"
@@ -129,36 +130,14 @@ function Projekt({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: Ret
         {p.beschreibung && (
           <p
             lang={p.beschreibungLang}
-            className="text-[15px] md:text-[16px] text-text2 leading-relaxed mb-10 max-w-[640px] whitespace-pre-line"
+            className="text-[15px] md:text-[16px] text-text2 leading-relaxed max-w-[640px] whitespace-pre-line"
           >
             {p.beschreibung}
           </p>
         )}
-
-        {p.schritte.length > 0 && (
-          <section aria-labelledby="ablauf-titel">
-            <h3 id="ablauf-titel" className={sectionTitle}>
-              {t.process}
-            </h3>
-            <ol role="list" aria-labelledby="ablauf-titel">
-              {p.schritte.map((s, i) => (
-                <Step
-                  key={s.id}
-                  t={t}
-                  locale={locale}
-                  schritt={s}
-                  current={s.id === p.aktuell}
-                  last={i === p.schritte.length - 1}
-                />
-              ))}
-            </ol>
-          </section>
-        )}
-
-        <Documents t={t} locale={locale} dokumente={p.dokumente} />
       </div>
 
-      <div className="min-w-0 flex flex-col gap-10 lg:pt-1">
+      <div className="min-w-0 flex flex-col gap-10 lg:pt-1 lg:col-start-2 lg:row-start-1 lg:row-span-2">
         <Meeting t={t} locale={locale} next={p.naechsterTermin} later={p.weitereTermine} />
         <section aria-labelledby="naechste-titel" className="sm:border sm:border-border sm:rounded-2xl sm:p-6">
           <h3 id="naechste-titel" className={sectionTitle}>
@@ -204,6 +183,31 @@ function Projekt({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: Ret
             </ul>
           </section>
         )}
+      </div>
+      <div className="min-w-0 lg:col-start-1 lg:row-start-2">
+        {p.schritte.length > 0 && (
+          <section aria-labelledby="ablauf-titel">
+            <h3 id="ablauf-titel" className={sectionTitle}>
+              {t.process}
+            </h3>
+            <ol role="list" aria-labelledby="ablauf-titel">
+              {p.schritte.map((s, i) => (
+                <Step
+                  key={s.id}
+                  t={t}
+                  locale={locale}
+                  schritt={s}
+                  current={s.id === p.aktuell}
+                  last={i === p.schritte.length - 1}
+                />
+              ))}
+            </ol>
+          </section>
+        )}
+
+        <div className={p.schritte.length > 0 ? 'mt-12' : ''}>
+          <Documents t={t} locale={locale} dokumente={p.dokumente} />
+        </div>
       </div>
     </article>
   );
@@ -329,7 +333,7 @@ function Meeting({ t, locale, next, later }: { t: T; locale: Locale; next: Termi
 function Documents({ t, locale, dokumente }: { t: T; locale: Locale; dokumente: DokumentRow[] }) {
   const gruppen = dokumentGruppen(dokumente);
   return (
-    <section aria-labelledby="dokumente-titel" className="mt-12">
+    <section aria-labelledby="dokumente-titel">
       <h3 id="dokumente-titel" className={sectionTitle}>
         {t.documents}
       </h3>
@@ -361,7 +365,8 @@ function Documents({ t, locale, dokumente }: { t: T; locale: Locale; dokumente: 
                         // eslint-disable-next-line @next/next/no-img-element -- privates Bild über die Download-Route
                         <img
                           src={`/kunden/dokumente/${encodeURIComponent(d.id)}?vorschau=1`}
-                          alt={t.logoAlt(d.titel)}
+                          // Kritiker Dokumente 4: Name kommt aus dem aria-label des Links
+                          alt=""
                           width={48}
                           height={48}
                           className="w-12 h-12 shrink-0 object-contain rounded-md border border-border bg-white p-1"

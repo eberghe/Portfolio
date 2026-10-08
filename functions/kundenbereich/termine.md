@@ -17,7 +17,7 @@ Der Ansprechpartner sieht in der Projektübersicht das nächste Meeting mit Datu
 2. Vergangene Termine (Ende vor jetzt) werden ausgeblendet. Der früheste kommende ist der „Nächste Termin“, bis zu drei weitere stehen darunter als „Danach“.
 3. Abschnitt **Nächster Termin** (h3) in der rechten Spalte über „Nächste Schritte“:
    - Thema (Titel in der Sprache der Seite, Rückfall Deutsch, sonst „Projekttermin“ / „Project meeting“).
-   - Datum und Uhrzeit als `<time datetime="…">`, z. B. „Do., 15. Okt. 2026, 10:00–11:00 MESZ“. Der Server zeigt deutsche Zeit (Europe/Berlin) mit Zeitzonenkürzel; im Browser wird auf dessen Zeitzone umgestellt, falls sie abweicht.
+   - Datum und Uhrzeit als `<time datetime="…">` immer in deutscher Zeit (Europe/Berlin) mit Zeitzonenkürzel, z. B. „Do., 15. Okt. 2026, 10:00–11:00 MESZ“. Weicht die Zeitzone des Browsers ab, steht die Ortszeit dahinter: „(bei dir 09:00–10:00 GMT+1)“.
    - Button „Google Meet beitreten“ (primär, neuer Tab, angesagter Hinweis), nur wenn ein Meet-Link hinterlegt ist.
    - Button „In Kalender übernehmen“ lädt eine `.ics`-Datei.
 4. Kein kommender Termin: „Gerade ist kein Termin geplant.“ Der Abschnitt bleibt stehen, damit man weiß, wo Termine erscheinen.
@@ -54,3 +54,19 @@ Tabelle `termine` aus `datenmodell.md`, keine neue Migration. Später optional: 
 
 - `tests/unit/kundenbereich-termine.test.tsx`: Aufbereitung, Ansicht, Kalenderdatei, Route (AK-1 bis AK-7)
 - `tests/e2e/kundenbereich-projekte.spec.ts`: Termin in der angemeldeten Ansicht, Kalenderdatei, axe (AK-3, AK-6, AK-8)
+
+## Befunde Blinder Kritiker (2026-10-08, zusammen mit Dokumente)
+
+Geprüft: Anna DE/EN bei 360/768/1280 px, hell und dunkel; axe 0 Verstöße in 12 Kombinationen, kein horizontales Scrollen, `.ics` lädt als Download, Fokus sichtbar.
+
+Behoben (mit Test):
+
+- Uhrzeit stand nur in der Zeitzone des Browsers (im Test UTC); jetzt immer deutsche Zeit, abweichende Ortszeit dahinter.
+- Auf dem Handy stand der nächste Termin unter allen Dokumenten, auf dem Desktop kam er in der Tab-Reihenfolge erst nach ihnen; jetzt folgen im DOM auf das Projekt Termin, nächste Schritte und Links, dann Ablauf und Dokumente (Desktop-Layout unverändert).
+- Dateiname der Kalenderdatei enthält das Datum (`termin-2026-10-15.ics`).
+- Logo-Vorschau hatte einen doppelten Alternativtext (siehe `dokumente.md`).
+
+Bewusst offen (niedrig):
+
+- Fehlende englische Termintitel und Dokumenttitel sind Daten; Termintitel bekommen beim Rückfall `lang="de"`, Dokumenttitel sind einsprachig.
+- „In Kalender übernehmen“ nennt das Format nicht; Kalender-Apps öffnen die Datei direkt.

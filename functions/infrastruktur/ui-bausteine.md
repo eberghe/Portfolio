@@ -54,3 +54,11 @@ Keine.
 ## Offene Fragen
 
 - Die übrigen Komponenten mit eigenem grünen Button-Stil (Navigation, Startseite, Leistungen, Projekte, FAQ, Über mich, Städteseiten) haben teils andere Größen und Formen (z. B. runde Pillen). Sie werden schrittweise umgestellt, sobald sie ohnehin angefasst werden, damit sich die Optik nicht unbemerkt ändert.
+
+## Befunde Blinder Kritiker (2026-10-08)
+
+Kontaktseite DE/EN bei 360 und 1280 px: keine Befunde hoch oder mittel, axe 0 Verstöße in allen 7 Zuständen, alle Buttons inkl. Ausweichweg 44 px hoch. Niedrig, bewusst offen gelassen (vorher schon so, nicht Teil der Bausteine):
+
+- Links in der Fehlerliste sind Fließtext-Links unter 24 px Höhe (nach WCAG 2.5.8 als Inline-Links erlaubt).
+- Im Ausweichweg stehen Mail- und Kopieren-Button auf dem Handy untereinander in unterschiedlicher Breite.
+- Die Gruppe „Schritt 1 von 4: Leistung“ nennt kein „(Pflicht)“, der Hinweis darunter sagt aber, dass mindestens eine Leistung nötig ist.

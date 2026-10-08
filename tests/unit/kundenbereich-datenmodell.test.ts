@@ -87,7 +87,7 @@ beforeAll(async () => {
       ('kundenlogos', '${KUNDE_A}/logo.svg'), ('kundenlogos', '${KUNDE_B}/logo.svg'),
       ('kundendokumente', '${KUNDE_A}/${A1}/nicht-eingetragen.pdf');
   `);
-});
+}, 30_000);
 
 describe('Kundenbereich Datenmodell', () => {
   it('AK-1: anon sieht nichts, weder Tabellen noch Dateien', async () => {

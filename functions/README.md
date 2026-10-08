@@ -39,6 +39,7 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 ## Kundenbereich (Epic #49)
 
 - [Datenmodell und Zugriffsregeln](kundenbereich/datenmodell.md)
+- [Login per Magic Link](kundenbereich/login.md)
 
 ## Qualität
 

@@ -11,6 +11,8 @@ const enSlugs: Record<string, string> = {
   '/webdesign-stuttgart': '/web-design-stuttgart',
   '/webdesign-innsbruck': '/web-design-innsbruck',
   '/webdesign-kempten': '/web-design-kempten',
+  '/kunden': '/clients',
+  '/kunden/anmelden': '/clients/sign-in',
 };
 const deSlugs = Object.fromEntries(Object.entries(enSlugs).map(([de, en]) => [en, de]));
 

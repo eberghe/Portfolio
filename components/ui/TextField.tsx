@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode, TextareaHTMLAttributes } from 'react';
+import type { InputHTMLAttributes, ReactNode, Ref, TextareaHTMLAttributes } from 'react';
 
 // Gemeinsames Textfeld mit Label, Hinweis und Fehler, siehe functions/infrastruktur/ui-bausteine.md
 
@@ -18,8 +18,13 @@ type Own = {
   className?: string;
   inputClassName?: string;
 };
-type InputProps = Own & Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'className'> & { multiline?: false };
-type AreaProps = Own & Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'id' | 'className'> & { multiline: true };
+type InputProps = Own &
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'className'> & { multiline?: false; ref?: Ref<HTMLInputElement> };
+type AreaProps = Own &
+  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'id' | 'className'> & {
+    multiline: true;
+    ref?: Ref<HTMLTextAreaElement>;
+  };
 
 export default function TextField(props: InputProps | AreaProps) {
   const { id, label, marker, hint, error, after, className, inputClassName, multiline, ...rest } = props;

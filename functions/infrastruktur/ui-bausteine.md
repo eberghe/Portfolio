@@ -22,7 +22,7 @@ Entwicklung: neue Formulare (Login, Admin) bauen aus denselben Teilen. Besucher:
 - AK-1: Das Label des Textfelds ist mit der Eingabe verknüpft (`getByLabelText` findet sie), der Zusatz steht im Label.
 - AK-2: Hinweis und Fehler sind per `aria-describedby` an der Eingabe angehängt (Hinweis zuerst); ohne beides fehlt das Attribut.
 - AK-3: Bei Fehler ist `aria-invalid="true"` gesetzt und der Rahmen nutzt `border-error`, sonst `border-border`; ohne Fehler kein `aria-invalid`.
-- AK-4: `multiline` rendert ein `textarea`, sonst ein `input`; weitere Attribute (`type`, `autoComplete`, `defaultValue` …) werden durchgereicht.
+- AK-4: `multiline` rendert ein `textarea`, sonst ein `input`; weitere Attribute (`type`, `autoComplete`, `defaultValue`, `ref` …) werden durchgereicht.
 - AK-5: Der Button ist ohne `href` ein `<button type="button">` (überschreibbar mit `type="submit"`), mit `href` ein Link; beide mindestens 44 px hoch (`min-h-11`).
 - AK-6: Variante `primary` nutzt `bg-primary text-primary-foreground hover:bg-primary-hover` (Hover-Kontrast, design-tokens.md AK-5), `secondary` einen Rahmen; `aria-disabled` dimmt den Button (`aria-disabled:opacity-60`).
 - AK-7: Der Anfrage-Assistent nutzt `Button` und `TextField`; die Datei enthält keine eigenen Klassen-Strings für Eingaben und Buttons mehr. Alle bisherigen Tests der Kontaktseite bleiben grün.

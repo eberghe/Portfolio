@@ -1,6 +1,7 @@
 import type { Locale } from '@/lib/i18n';
 import type { Konto, LoginDeps } from './login';
 import { PROJEKT_SELECT, type ProjektRow } from './projekte';
+import type { TerminRow } from './termine';
 import type { Tokens } from './session';
 
 // Zugriff auf Supabase (Auth, REST) und Resend für den Kundenbereich. Nur auf dem Server verwenden.
@@ -167,6 +168,21 @@ export function authApi(env: Env) {
       if (!res.ok) return null;
       const [p] = (await res.json()) as Profil[];
       return p ?? null;
+    },
+    /** Ein Termin mit Projekttitel, sofern der Nutzer ihn sehen darf; sonst null (termine.md AK-6) */
+    termin: async (access: string, id: string): Promise<TerminRow | null> => {
+      const q = new URLSearchParams({
+        select: 'id,beginn,ende,titel_de,titel_en,meet_url,kundenprojekte(titel)',
+        id: `eq.${id}`,
+      });
+      try {
+        const res = await fetch(`${url}/rest/v1/termine?${q}`, { headers: headers(access), cache: 'no-store' });
+        if (!res.ok) return null;
+        const [row] = (await res.json()) as TerminRow[];
+        return row ?? null;
+      } catch {
+        return null;
+      }
     },
     /** Projekte mit dem Token des Nutzers, damit die Zugriffsregeln greifen; null bei Fehler (projektuebersicht.md AK-1) */
     projekte: async (access: string): Promise<ProjektRow[] | null> => {

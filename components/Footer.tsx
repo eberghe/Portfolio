@@ -78,6 +78,10 @@ export default function Footer({ locale }: { locale: Locale }) {
               ))}
             </ul>
           </nav>
+          {/* Kritiker Kundenbereich 2026-10-08: neuer Tab wird angesagt wie bei den übrigen externen Links */}
+          <span id="footer-neuer-tab" hidden>
+            {locale === 'en' ? '(opens in a new tab)' : '(öffnet in neuem Tab)'}
+          </span>
           <ul className="flex gap-1 md:gap-4">
             {socials.map(({ icon: Icon, label, href: url }) => (
               <li key={label}>
@@ -85,7 +89,9 @@ export default function Footer({ locale }: { locale: Locale }) {
                   href={url}
                   aria-label={label}
                   className="flex items-center justify-center min-w-11 min-h-11 md:min-w-6 md:min-h-6 text-white/60 hover:text-white transition-colors"
-                  {...(url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  {...(url.startsWith('http')
+                    ? { target: '_blank', rel: 'noopener noreferrer', 'aria-describedby': 'footer-neuer-tab' }
+                    : {})}
                 >
                   <Icon size={18} aria-hidden="true" />
                 </a>

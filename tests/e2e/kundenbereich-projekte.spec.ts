@@ -29,6 +29,25 @@ test('AK-3/AK-4: Projekt mit Ablauf und nächsten Schritten', async ({ page }) =
   await expect(page.getByRole('navigation', { name: 'Deine Projekte' })).toHaveCount(0);
 });
 
+test('termine.md AK-3/AK-6: nächster Termin mit Meet-Link und Kalenderdatei', async ({ page }) => {
+  await login(page, 'anna');
+  await openHydrated(page, '/kunden');
+  const termin = page.getByRole('region', { name: 'Nächster Termin' });
+  await expect(termin.getByText('Design-Review')).toBeVisible();
+  await expect(termin.locator('time').first()).toHaveAttribute('datetime', /T08:00:00/);
+  await expect(termin.getByRole('link', { name: /Google Meet beitreten/ })).toHaveAttribute('target', '_blank');
+  await expect(termin.getByText('Erstgespräch')).toHaveCount(0);
+  await expect(termin.getByRole('listitem')).toHaveCount(1);
+
+  const res = await page.request.get('/kunden/termine/t-review?sprache=de');
+  expect(res.status()).toBe(200);
+  expect(res.headers()['content-type']).toMatch(/^text\/calendar/);
+  expect(await res.text()).toContain('SUMMARY:Design-Review (Relaunch der Website)');
+  expect((await page.request.get('/kunden/termine/fremd')).status()).toBe(404);
+  await page.context().clearCookies();
+  expect((await page.request.get('/kunden/termine/t-review')).status()).toBe(401);
+});
+
 test('AK-6: Admin wechselt zwischen Projekten', async ({ page }) => {
   await login(page, 'erik');
   await openHydrated(page, '/kunden');

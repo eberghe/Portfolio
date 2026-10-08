@@ -17,6 +17,39 @@ const schritt = (n, titel_de, status, extra = {}) => ({
   ...extra,
 });
 
+// Termine relativ zum Start, damit sie immer in der Zukunft liegen
+const inTagen = (d, h) => {
+  const t = new Date(Date.now() + d * 86400000);
+  t.setUTCHours(h, 0, 0, 0);
+  return t.toISOString();
+};
+const termine = [
+  {
+    id: 't-review',
+    beginn: inTagen(2, 8),
+    ende: inTagen(2, 9),
+    titel_de: 'Design-Review',
+    titel_en: 'Design review',
+    meet_url: 'https://meet.google.com/abc-defg-hij',
+  },
+  {
+    id: 't-texte',
+    beginn: inTagen(9, 13),
+    ende: inTagen(9, 14),
+    titel_de: 'Texte besprechen',
+    titel_en: null,
+    meet_url: null,
+  },
+  {
+    id: 't-alt',
+    beginn: inTagen(-3, 8),
+    ende: inTagen(-3, 9),
+    titel_de: 'Erstgespräch',
+    titel_en: null,
+    meet_url: null,
+  },
+];
+
 const relaunch = {
   id: 'p-relaunch',
   titel: 'Relaunch der Website',
@@ -27,6 +60,7 @@ const relaunch = {
   website_url: 'https://kunde.example',
   staging_url: 'https://staging.kunde.example',
   kunden: { name: 'Bäckerei Beispiel' },
+  termine,
   projektschritte: [
     schritt(1, 'Erstgespräch', 'erledigt', { titel_en: 'Kick-off call' }),
     schritt(2, 'Analyse der bestehenden Website', 'erledigt', { titel_en: 'Audit of the current website' }),
@@ -50,6 +84,9 @@ const logo = {
   titel: 'Neues Logo',
   status: 'angebot',
   phase: null,
+  beschreibung_de: 'Wortmarke und Bildmarke für die Bäckerei, mit Farben und Schrift.',
+  beschreibung_en: null,
+  termine: [],
   website_url: null,
   staging_url: null,
   projektschritte: [],
@@ -84,5 +121,11 @@ createServer((req, res) => {
   if (path === '/auth/v1/user') return send(200, { id: 'x' });
   if (path === '/rest/v1/rpc/kundenbereich_profil') return send(200, [u.profil]);
   if (path === '/rest/v1/kundenprojekte') return send(200, u.projekte);
+  if (path === '/rest/v1/termine') {
+    const id = new URL(req.url ?? '/', 'http://x').searchParams.get('id')?.replace(/^eq\./, '');
+    const projekt = u.projekte.find((p) => p.termine.some((t) => t.id === id));
+    const t = projekt?.termine.find((t) => t.id === id);
+    return send(200, t ? [{ ...t, kundenprojekte: { titel: projekt.titel } }] : []);
+  }
   return send(404, { message: 'not found' });
 }).listen(port);

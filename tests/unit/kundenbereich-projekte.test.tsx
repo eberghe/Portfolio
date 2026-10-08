@@ -38,6 +38,7 @@ const PROJEKT: ProjektRow = {
   website_url: 'https://kunde.example',
   staging_url: null,
   kunden: { name: 'Kunde A' },
+  termine: [],
   // absichtlich unsortiert
   projektschritte: [
     schritt(3, 'offen', { verantwortlich: 'kunde', faellig_am: '2026-10-15', titel_en: null }),
@@ -202,5 +203,36 @@ describe('Projektübersicht', () => {
       'From you',
     );
     expect(screen.getByRole('link', { name: /Website.*\(opens in a new tab\)/ })).toBeInTheDocument();
+  });
+});
+
+describe('Befunde Blinder Kritiker', () => {
+  it('Kritiker 1: ohne geplante Schritte nicht „Alles erledigt.“', () => {
+    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[ZWEITES]} />);
+    expect(screen.queryByText('Alles erledigt.')).toBeNull();
+    expect(screen.getByText(/Die Schritte plane ich gerade/)).toBeInTheDocument();
+  });
+
+  it('Kritiker 2: deutscher Ersatztext auf der englischen Seite mit lang="de"', () => {
+    const { container } = render(<Projektuebersicht locale="en" profil={ANNA} projekte={[PROJEKT]} />);
+    expect(screen.getByText('Neue Website mit Webflow.')).toHaveAttribute('lang', 'de');
+    const deutsch = [...container.querySelectorAll('[lang="de"]')].map((el) => el.textContent);
+    expect(deutsch).toContain('Schritt 3');
+    expect(deutsch).not.toContain('Step 1');
+  });
+
+  it('Kritiker 3: Leer-Zustand mit Kontaktweg', () => {
+    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[]} />);
+    expect(screen.getByRole('link', { name: 'Fragen? Schreib mir' })).toHaveAttribute(
+      'href',
+      'mailto:erb1209@outlook.de',
+    );
+  });
+
+  it('Kritiker 5: gewähltes Projekt zusätzlich mit Symbol', () => {
+    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[ZWEITES, PROJEKT]} auswahl="p1" />);
+    const links = within(screen.getByRole('navigation', { name: 'Deine Projekte' })).getAllByRole('link');
+    expect(links[1]!.querySelector('svg')).not.toBeNull();
+    expect(links[0]!.querySelector('svg')).toBeNull();
   });
 });

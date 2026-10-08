@@ -166,6 +166,9 @@ describe('Footer', () => {
       'href',
       'https://www.linkedin.com/in/erik-bergheimer/',
     );
+    // Kritiker Kundenbereich: neuer Tab wird angesagt (functions/kundenbereich/projektuebersicht.md)
+    expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAccessibleDescription('(öffnet in neuem Tab)');
+    expect(screen.getByRole('link', { name: 'E-Mail' })).not.toHaveAttribute('aria-describedby');
   });
 
   it('AK-8: Links folgen der Sprache', () => {

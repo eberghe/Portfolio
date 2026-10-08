@@ -64,3 +64,19 @@ Liest `kundenprojekte` mit `kunden(name)` und `projektschritte` aus `datenmodell
 ## Offene Fragen
 
 - Erik pflegt Schritte zunächst in Supabase Studio; Vorlagen für typische Abläufe kommen mit der Admin-Ansicht (#53).
+
+## Befunde Blinder Kritiker (2026-10-08)
+
+Geprüft: Anna (DE/EN), Erik mit zwei Projekten, Nutzer ohne Projekt, je 360/768/1280 px, hell und dunkel. axe 0 Verstöße in 30 Läufen, kein horizontales Scrollen (auch 320 px), Überschriften h1 → h2 → h3, Tab-Reihenfolge und Fokus in Ordnung.
+
+Behoben (mit Test):
+- Projekt ohne Schritte zeigte „Alles erledigt.“; jetzt „Die Schritte plane ich gerade …“.
+- Deutscher Ersatztext auf der englischen Seite hatte kein `lang="de"` (WCAG 3.1.2); Beschreibung, Schritt- und Termintitel tragen es jetzt, wenn der deutsche Text einspringt. Titel und Phase des Projekts gibt es nur einsprachig, sie bleiben ohne `lang`.
+- Leer-Zustand ohne nächsten Schritt; jetzt in einer Karte mit „Fragen? Schreib mir“ (Mail).
+- Gewähltes Projekt in der Projektwahl nur über Farbe erkennbar; jetzt zusätzlich mit Haken.
+- Social-Links im Footer öffneten einen neuen Tab ohne Hinweis; jetzt per `aria-describedby` angesagt (seitenweit).
+
+Bewusst offen (niedrig):
+- `aria-current="step"` sei nicht vorhanden: ist gesetzt (Unit- und E2E-Test), der Accessibility-Snapshot von Playwright zeigt es bei Listenpunkten nur nicht an.
+- Der laufende Schritt steht auch unter „Nächste Schritte“: gewollt, er ist das, woran gerade gearbeitet wird.
+- „Abmelden“ sitzt unten bündig mit der Begrüßung; „Nach oben“ im Footer ist 20 px hoch, mit Abstand zulässig (2.5.8) und seitenweit.

@@ -1,11 +1,14 @@
-import { Check, Circle, CircleDot, ExternalLink, LogOut } from 'lucide-react';
+import { CalendarPlus, Check, Circle, CircleDot, ExternalLink, LogOut, Mail, Video } from 'lucide-react';
 import Link from 'next/link';
 import { logout } from '@/app/actions/kundenbereich';
 import Button, { buttonClass } from '@/components/ui/Button';
 import { localizedPath, type Locale } from '@/lib/i18n';
 import { datum, projektAnsicht, waehleProjekt, type ProjektRow, type Schritt } from '@/lib/kundenbereich/projekte';
 import type { Profil } from '@/lib/kundenbereich/supabase';
+import type { Termin } from '@/lib/kundenbereich/termine';
 import { kundenText } from '@/lib/kundenbereich/text';
+import { EMAIL } from '@/lib/site';
+import TerminZeit from './TerminZeit';
 
 // Startseite des Kundenbereichs nach dem Login (functions/kundenbereich/projektuebersicht.md)
 
@@ -69,6 +72,8 @@ export default function Projektuebersicht({
                         : 'border-border text-text2 hover:text-foreground'
                     }`}
                   >
+                    {/* Kritiker 5: gewähltes Projekt nicht nur über Farbe erkennbar */}
+                    {current && <Check size={15} aria-hidden="true" className="mr-1.5 text-primary-text" />}
                     {p.titel}
                   </Link>
                 </li>
@@ -83,7 +88,13 @@ export default function Projektuebersicht({
           {t.loadError}
         </p>
       ) : !gewaehlt ? (
-        <p className="text-[15px] text-text2 leading-relaxed max-w-[560px]">{t.noProjects}</p>
+        <div className="max-w-[560px] sm:border sm:border-border sm:rounded-2xl sm:p-8">
+          <p className="text-[16px] text-text2 leading-relaxed mb-6">{t.noProjects}</p>
+          <a href={`mailto:${EMAIL}`} className={buttonClass('secondary')}>
+            <Mail size={15} aria-hidden="true" />
+            {t.noProjectsContact}
+          </a>
+        </div>
       ) : (
         <Projekt t={t} locale={locale} projekt={projektAnsicht(gewaehlt, locale)} />
       )}
@@ -115,7 +126,10 @@ function Projekt({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: Ret
           {p.phase && <span>{t.phase(p.phase)}</span>}
         </p>
         {p.beschreibung && (
-          <p className="text-[15px] md:text-[16px] text-text2 leading-relaxed mb-10 max-w-[640px] whitespace-pre-line">
+          <p
+            lang={p.beschreibungLang}
+            className="text-[15px] md:text-[16px] text-text2 leading-relaxed mb-10 max-w-[640px] whitespace-pre-line"
+          >
             {p.beschreibung}
           </p>
         )}
@@ -142,17 +156,21 @@ function Projekt({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: Ret
       </div>
 
       <div className="min-w-0 flex flex-col gap-10 lg:pt-1">
+        <Meeting t={t} locale={locale} next={p.naechsterTermin} later={p.weitereTermine} />
         <section aria-labelledby="naechste-titel" className="sm:border sm:border-border sm:rounded-2xl sm:p-6">
           <h3 id="naechste-titel" className={sectionTitle}>
             {t.nextSteps}
           </h3>
           {p.naechste.length === 0 ? (
-            <p className="text-[15px] text-text2">{t.allDone}</p>
+            // Kritiker 1: ohne geplante Schritte nicht „Alles erledigt.“
+            <p className="text-[15px] text-text2">{p.schritte.length === 0 ? t.noSteps : t.allDone}</p>
           ) : (
             <ul role="list" aria-labelledby="naechste-titel" className="flex flex-col gap-4">
               {p.naechste.map((s) => (
                 <li key={s.id} className="flex flex-col gap-1">
-                  <span className="text-[15px] font-medium text-foreground">{s.titel}</span>
+                  <span lang={s.titelLang} className="text-[15px] font-medium text-foreground">
+                    {s.titel}
+                  </span>
                   <span className="flex flex-wrap gap-x-3 text-[13px] text-text2">
                     <span className={s.verantwortlich === 'kunde' ? 'font-semibold text-primary-text' : ''}>
                       {s.verantwortlich === 'kunde' ? t.fromClient : t.fromErik}
@@ -226,15 +244,80 @@ function Step({
         )}
       </div>
       <div className={`pt-2 ${last ? '' : 'pb-6'}`}>
-        <p className={`text-[16px] leading-snug font-bold ${done ? 'text-text2' : 'text-foreground'}`}>{s.titel}</p>
+        <p
+          lang={s.titelLang}
+          className={`text-[16px] leading-snug font-bold ${done ? 'text-text2' : 'text-foreground'}`}
+        >
+          {s.titel}
+        </p>
         <p className="flex flex-wrap gap-x-3 text-[13px] text-text2 mt-1">
           <span className={current ? 'font-semibold text-primary-text' : ''}>{t.stepStatus[s.status]}</span>
           {s.faelligAm && !done && <span>{t.due(datum(s.faelligAm, locale))}</span>}
         </p>
         {s.beschreibung && (
-          <p className="text-[14px] text-text2 leading-relaxed mt-2 whitespace-pre-line">{s.beschreibung}</p>
+          <p lang={s.beschreibungLang} className="text-[14px] text-text2 leading-relaxed mt-2 whitespace-pre-line">
+            {s.beschreibung}
+          </p>
         )}
       </div>
     </li>
+  );
+}
+
+/** Nächster Termin mit Meet-Link und Kalenderdatei (functions/kundenbereich/termine.md) */
+function Meeting({ t, locale, next, later }: { t: T; locale: Locale; next: Termin | null; later: Termin[] }) {
+  return (
+    <section aria-labelledby="termin-titel" className="sm:border sm:border-border sm:rounded-2xl sm:p-6">
+      <h3 id="termin-titel" className={sectionTitle}>
+        {t.nextMeeting}
+      </h3>
+      {!next ? (
+        <p className="text-[15px] text-text2">{t.noMeeting}</p>
+      ) : (
+        <>
+          <p lang={next.titelLang} className="text-[18px] font-bold leading-snug text-foreground mb-1">
+            {next.titel}
+          </p>
+          <p className="text-[14px] text-text2 mb-5">
+            <TerminZeit beginn={next.beginn} ende={next.ende} locale={locale} />
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {next.meetUrl && (
+              <a href={next.meetUrl} className={buttonClass('primary')} target="_blank" rel="noopener noreferrer">
+                <Video size={15} aria-hidden="true" />
+                {t.joinMeet}
+                <span className="sr-only">{t.newTab}</span>
+              </a>
+            )}
+            <a
+              href={`/kunden/termine/${encodeURIComponent(next.id)}?sprache=${locale}`}
+              className={buttonClass('secondary')}
+            >
+              <CalendarPlus size={15} aria-hidden="true" />
+              {t.addToCalendar}
+            </a>
+          </div>
+          {later.length > 0 && (
+            <>
+              <h4 id="termine-danach" className="text-[13px] font-semibold text-text2 mt-6 mb-2">
+                {t.laterMeetings}
+              </h4>
+              <ul role="list" aria-labelledby="termine-danach" className="flex flex-col gap-2 text-[14px]">
+                {later.map((m) => (
+                  <li key={m.id} className="flex flex-col">
+                    <span lang={m.titelLang} className="font-medium text-foreground">
+                      {m.titel}
+                    </span>
+                    <span className="text-text2">
+                      <TerminZeit beginn={m.beginn} ende={m.ende} locale={locale} />
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </>
+      )}
+    </section>
   );
 }

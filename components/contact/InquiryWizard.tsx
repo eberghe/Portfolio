@@ -10,6 +10,8 @@ import { inquiryLines } from '@/lib/contact/mailto';
 import type { InquiryState } from '@/lib/contact/state';
 import { fields, serviceValues, steps, validateInquiry, type Field, type FieldErrors } from '@/lib/contact/validate';
 import { localizedPath, type Locale } from '@/lib/i18n';
+import Button, { buttonClass } from '@/components/ui/Button';
+import TextField, { labelClass } from '@/components/ui/TextField';
 
 // Anfrage-Assistent in vier Schritten, siehe functions/kontakt/anfrage-assistent.md.
 // Alle Felder bleiben im DOM (ausgeblendete Schritte mit `hidden`), damit Eingaben beim Blättern erhalten bleiben
@@ -24,14 +26,9 @@ const firstError = (errors: FieldErrors) => fields.find((f) => errors[f]);
 // Ohne JavaScript: alle Schritte zeigen, Blättern ausblenden
 const noScriptCss = '[data-schritt][hidden]{display:block!important}[data-nur-js]{display:none!important}';
 
-const inputClass =
-  'w-full bg-bg2 border rounded-lg px-3 py-2.5 text-[13px] text-foreground placeholder:text-text2 focus:border-primary transition-colors font-sans';
-const labelClass = 'text-[11px] font-medium tracking-wide uppercase text-text3 mb-1.5 block';
 const summaryHeadingClass = labelClass.replace('font-medium', 'font-bold');
 const choiceClass =
   'flex items-center gap-2 sm:gap-3 min-h-11 px-2.5 sm:px-3 py-2 rounded-lg border border-border bg-bg2 text-[13px] leading-tight hyphens-auto text-foreground cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary-light motion-safe:transition-colors hover:border-primary/50';
-const buttonClass =
-  'inline-flex items-center justify-center gap-2 min-h-11 px-5 py-2.5 rounded-lg text-[13px] font-medium transition-opacity max-sm:flex-1';
 
 type Focus = { target: 'step' | 'summary' | 'notice' | 'thanks'; n: number };
 
@@ -166,6 +163,7 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
     'aria-invalid': errors[f] ? true : undefined,
     'aria-describedby': [hint, errors[f] ? errorId(f) : null].filter(Boolean).join(' ') || undefined,
   });
+  const fieldMessage = (f: Field) => (errors[f] ? message(f) : undefined);
   const fieldError = (f: Field) =>
     errors[f] ? (
       <p id={errorId(f)} className="text-[12px] text-error mt-1.5">
@@ -271,15 +269,12 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
           {state.status === 'fallback' && (
             <>
               <p className="text-[13px] text-text2 mb-3">{t.fallbackText}</p>
-              <a
-                href={state.mailto}
-                className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg text-[13px] font-medium hover:bg-primary-hover transition-colors"
-              >
+              <a href={state.mailto} className={buttonClass('primary')}>
                 <Mail size={15} aria-hidden="true" />
                 {t.fallbackLink}
               </a>
-              <button
-                type="button"
+              <Button
+                variant="secondary"
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(state.text);
@@ -288,11 +283,11 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
                     setCopied('fail');
                   }
                 }}
-                className="inline-flex items-center gap-2 min-h-11 ml-0 mt-2 sm:mt-0 sm:ml-2 border border-border text-foreground px-4 py-2.5 rounded-lg text-[13px] font-medium hover:border-primary transition-colors"
+                className="mt-2 sm:mt-0 sm:ml-2"
               >
                 <Copy size={15} aria-hidden="true" />
                 {t.copy}
-              </button>
+              </Button>
               <p aria-live="polite" className="text-[12px] text-text2 mt-2">
                 {copied === 'ok' ? t.copied : copied === 'fail' ? t.copyFailed : ''}
               </p>
@@ -368,43 +363,38 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
       {stepFieldset(
         1,
         <>
-          <label htmlFor={id('beschreibung')} className={labelClass}>
-            {label(t.description, true)}
-          </label>
-          <p id="anfrage-beschreibung-hinweis" className="text-[12px] text-text2 mb-2">
-            {t.descriptionHint}
-          </p>
-          <textarea
+          <TextField
             id={id('beschreibung')}
             name="beschreibung"
+            label={t.description}
+            marker={t.required}
+            hint={t.descriptionHint}
+            error={fieldMessage('beschreibung')}
+            multiline
             rows={6}
             maxLength={3000}
             defaultValue={text('beschreibung')}
             onChange={(e) => setLength(e.currentTarget.value.length)}
-            className={`${inputClass} resize-y min-h-[140px] ${errors.beschreibung ? 'border-error' : 'border-border'}`}
-            {...describe('beschreibung', 'anfrage-beschreibung-hinweis')}
+            inputClassName="resize-y min-h-[140px]"
+            after={
+              <p aria-live="polite" className="text-[12px] text-text2 mt-1.5 empty:hidden">
+                {length >= 2500 ? t.counter(length) : ''}
+              </p>
+            }
           />
-          <p aria-live="polite" className="text-[12px] text-text2 mt-1.5 empty:hidden">
-            {length >= 2500 ? t.counter(length) : ''}
-          </p>
-          {fieldError('beschreibung')}
-          <label htmlFor={id('website')} className={`${labelClass} mt-5`}>
-            {label(t.website, false)}
-          </label>
-          <p id="anfrage-website-hinweis" className="text-[12px] text-text2 mb-2">
-            {t.websiteHint}
-          </p>
-          <input
+          <TextField
             id={id('website')}
             name="website"
+            label={t.website}
+            marker={t.optional}
+            hint={t.websiteHint}
+            error={fieldMessage('website')}
             type="url"
             inputMode="url"
             autoComplete="url"
             defaultValue={text('website')}
-            className={`${inputClass} ${errors.website ? 'border-error' : 'border-border'}`}
-            {...describe('website', 'anfrage-website-hinweis')}
+            className="mt-5"
           />
-          {fieldError('website')}
         </>,
       )}
 
@@ -426,21 +416,18 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
               ['telefon', t.phone, 'tel', 'tel', false],
             ] as const
           ).map(([f, title, type, auto, required]) => (
-            <div key={f} className="mb-4">
-              <label htmlFor={id(f)} className={labelClass}>
-                {label(title, required)}
-              </label>
-              <input
-                id={id(f)}
-                name={f}
-                type={type}
-                autoComplete={auto}
-                defaultValue={text(f)}
-                className={`${inputClass} ${errors[f] ? 'border-error' : 'border-border'}`}
-                {...describe(f)}
-              />
-              {fieldError(f)}
-            </div>
+            <TextField
+              key={f}
+              id={id(f)}
+              name={f}
+              label={title}
+              marker={required ? t.required : t.optional}
+              error={fieldMessage(f)}
+              type={type}
+              autoComplete={auto}
+              defaultValue={text(f)}
+              className="mb-4"
+            />
           ))}
           <div className="mt-5">
             <label className="flex items-start gap-3 text-[13px] text-text2 leading-relaxed cursor-pointer">
@@ -485,39 +472,27 @@ export default function InquiryWizard({ locale }: { locale: Locale }) {
         className="flex gap-2.5 max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-6 max-sm:px-6 max-sm:py-3 max-sm:bg-background/95 max-sm:backdrop-blur-md max-sm:border-t max-sm:border-border"
       >
         {step > 0 && (
-          <button
-            type="button"
-            data-nur-js
-            onClick={() => goTo(step - 1)}
-            className={`${buttonClass} border border-border text-text2 hover:text-foreground`}
-          >
+          <Button variant="secondary" data-nur-js onClick={() => goTo(step - 1)} className="max-sm:flex-1">
             <ArrowLeft size={14} aria-hidden="true" />
             {t.back}
-          </button>
+          </Button>
         )}
         {step < LAST && (
-          <button
-            type="submit"
-            data-nur-js
-            className={`${buttonClass} bg-primary text-primary-foreground hover:bg-primary-hover`}
-          >
+          <Button type="submit" data-nur-js className="max-sm:flex-1">
             {t.next}
             <ArrowRight size={14} aria-hidden="true" />
-          </button>
+          </Button>
         )}
-        <button
+        <Button
           type="submit"
           data-schritt
           hidden={step !== LAST}
           aria-disabled={pending || undefined}
-          className={`${buttonClass} aria-disabled:opacity-60 ${
-            state.status === 'fallback'
-              ? 'border border-border text-text2 hover:text-foreground'
-              : 'bg-primary text-primary-foreground hover:bg-primary-hover'
-          }`}
+          variant={state.status === 'fallback' ? 'secondary' : 'primary'}
+          className="max-sm:flex-1"
         >
           {pending ? t.sending : state.status === 'fallback' ? t.retry : t.submit}
-        </button>
+        </Button>
       </div>
     </form>
   );

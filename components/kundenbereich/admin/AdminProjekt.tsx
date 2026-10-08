@@ -1,4 +1,4 @@
-import { Download } from 'lucide-react';
+import { ChevronRight, Download } from 'lucide-react';
 import Link from 'next/link';
 import {
   dokumentEntfernen,
@@ -22,6 +22,7 @@ import {
   SCHRITT_STATUS_OPTIONEN,
   VERANTWORTLICH_OPTIONEN,
 } from '@/lib/kundenbereich/admin/texte';
+import { datum } from '@/lib/kundenbereich/projekte';
 import { terminTitel, zeitraum } from '@/lib/kundenbereich/termine';
 import ActionButton from './ActionButton';
 import AdminForm, { type Feld } from './AdminForm';
@@ -31,6 +32,19 @@ import UploadForm from './UploadForm';
 // Ein Projekt: Daten, Ansprechpartner, Ablauf, Termine, Dokumente (functions/kundenbereich/admin.md Verhalten 4)
 
 type Schritt = ProjektDetail['projektschritte'][number];
+type Dok = ProjektDetail['dokumente'][number];
+
+/** Dokumente nach Art und Titel, neueste Version zuerst */
+function dokumentStapel(dokumente: Dok[]) {
+  const map = new Map<string, { key: string; art: Dok['art']; titel: string; versionen: Dok[] }>();
+  for (const d of dokumente) {
+    const key = `${d.art}:${d.titel.trim().toLowerCase()}`;
+    const g = map.get(key) ?? { key, art: d.art, titel: d.titel, versionen: [] };
+    g.versionen.push(d);
+    map.set(key, g);
+  }
+  return [...map.values()].map((g) => ({ ...g, versionen: g.versionen.sort((a, b) => b.version - a.version) }));
+}
 
 const schrittFelder = (s?: Schritt, reihenfolge = 1): Feld[] => [
   {
@@ -82,6 +96,25 @@ export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt
         </Link>
       }
     >
+      {/* Kritiker Verwaltung 1: Sprungmarken, Schritte eingeklappt */}
+      <nav aria-label="Auf dieser Seite" className="mb-8">
+        <ul role="list" className="flex flex-wrap gap-2">
+          {[
+            ['#projekt-titel', 'Projekt'],
+            ['#projekt-ap-titel', 'Ansprechpartner'],
+            ['#ablauf-titel', 'Ablauf'],
+            ['#termine-titel', 'Termine'],
+            ['#dokumente-titel', 'Dokumente'],
+          ].map(([href, label]) => (
+            <li key={href}>
+              <a href={href} className={buttonClass('secondary', 'min-h-11')}>
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
       <section>
         <AdminForm
           id="projekt"
@@ -152,7 +185,9 @@ export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt
           />
         ) : (
           <>
-            <h2 className="text-[20px] font-bold mb-2">Ansprechpartner im Projekt</h2>
+            <h2 id="projekt-ap-titel" className="text-[20px] font-bold mb-2">
+              Ansprechpartner im Projekt
+            </h2>
             <p className="text-[15px] text-text2">
               Der Kunde hat noch keine Ansprechpartner.{' '}
               {kunde && (
@@ -173,30 +208,50 @@ export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt
           Ablauf
         </h2>
         {p.projektschritte.length === 0 && <p className="text-[15px] text-text2 mb-6">Noch keine Schritte.</p>}
-        <div className="flex flex-col gap-8 mb-10">
+        <ol role="list" className="flex flex-col gap-3 mb-10">
           {p.projektschritte.map((s) => (
-            <div key={s.id} className="border border-border rounded-2xl p-4 sm:p-6">
-              <AdminForm
-                id={`schritt-${s.id}`}
-                title={`${s.reihenfolge}. ${s.titel_de}`}
-                titleLevel={3}
-                action={schrittSpeichern}
-                submitLabel="Schritt speichern"
-                hidden={{ id: s.id }}
-                felder={schrittFelder(s)}
-              />
-              <div className="flex flex-wrap gap-2 mt-3">
-                <ActionButton
-                  action={schrittEntfernen}
-                  hidden={{ id: s.id }}
-                  label="Entfernen"
-                  name={`Entfernen: Schritt ${s.titel_de}`}
-                  confirm={`Schritt „${s.titel_de}“ entfernen?`}
-                />
-              </div>
-            </div>
+            <li key={s.id}>
+              <details className="group border border-border rounded-2xl">
+                <summary className="flex flex-wrap items-center gap-x-3 gap-y-1 min-h-11 px-4 py-3 cursor-pointer list-none">
+                  <ChevronRight
+                    size={16}
+                    aria-hidden="true"
+                    className="shrink-0 transition-transform group-open:rotate-90"
+                  />
+                  <span className="font-bold text-[15px] break-words min-w-0">
+                    {s.reihenfolge}. {s.titel_de}
+                  </span>
+                  <span className="text-[13px] text-text2">
+                    {optionLabel(SCHRITT_STATUS_OPTIONEN, s.status)} ·{' '}
+                    {optionLabel(VERANTWORTLICH_OPTIONEN, s.verantwortlich)}
+                    {s.faellig_am && ` · fällig ${datum(s.faellig_am, 'de')}`}
+                  </span>
+                </summary>
+                <div className="px-4 pb-4 sm:px-6 sm:pb-6 pt-2">
+                  <AdminForm
+                    id={`schritt-${s.id}`}
+                    title={`Schritt bearbeiten: ${s.titel_de}`}
+                    titleLevel={3}
+                    action={schrittSpeichern}
+                    submitLabel="Schritt speichern"
+                    submitName={`Schritt speichern: ${s.titel_de}`}
+                    hidden={{ id: s.id }}
+                    felder={schrittFelder(s)}
+                  />
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <ActionButton
+                      action={schrittEntfernen}
+                      hidden={{ id: s.id }}
+                      label="Entfernen"
+                      name={`Entfernen: Schritt ${s.titel_de}`}
+                      confirm={`Schritt „${s.titel_de}“ entfernen?`}
+                    />
+                  </div>
+                </div>
+              </details>
+            </li>
           ))}
-        </div>
+        </ol>
         <AdminForm
           id="schritt-neu"
           title="Schritt hinzufügen"
@@ -216,7 +271,7 @@ export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt
         {p.termine.length === 0 ? (
           <p className="text-[15px] text-text2 mb-6">Noch keine Termine.</p>
         ) : (
-          <ul role="list" className="border-t border-border mb-8">
+          <ul role="list" className="border-b border-border mb-8">
             {p.termine.map((t) => {
               const titel = terminTitel(t.titel_de, t.titel_en, 'de');
               const vergangen = Date.parse(t.ende) < now.getTime();
@@ -268,32 +323,41 @@ export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt
         {p.dokumente.length === 0 ? (
           <p className="text-[15px] text-text2 mb-6">Noch keine Dokumente.</p>
         ) : (
-          <ul role="list" className="border-t border-border mb-8">
-            {p.dokumente.map((d) => (
-              <li key={d.id} className={listItem}>
-                <div className="min-w-0 flex-1 basis-60">
-                  <h3 className="text-[16px] font-bold break-words">{d.titel}</h3>
-                  <p className="text-[13px] text-text2">
-                    {optionLabel(DOKUMENT_ART_OPTIONEN, d.art)} · {dateiInfo(d, 'de')}
-                  </p>
+          <ul role="list" className="border-b border-border mb-8">
+            {/* Kritiker Verwaltung 3: Versionen eines Dokuments unter einem Titel */}
+            {dokumentStapel(p.dokumente).map((g) => (
+              <li key={g.key} className={listItem}>
+                <div className="min-w-0 basis-full">
+                  <h3 className="text-[16px] font-bold break-words">{g.titel}</h3>
+                  <p className="text-[13px] text-text2">{optionLabel(DOKUMENT_ART_OPTIONEN, g.art)}</p>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <a
-                    href={`/kunden/dokumente/${d.id}`}
-                    className={buttonClass('secondary')}
-                    aria-label={`Herunterladen: ${d.titel}, Version ${d.version}`}
-                  >
-                    Herunterladen
-                    <Download size={14} aria-hidden="true" />
-                  </a>
-                  <ActionButton
-                    action={dokumentEntfernen}
-                    hidden={{ id: d.id }}
-                    label="Entfernen"
-                    name={`Entfernen: ${d.titel}, Version ${d.version}`}
-                    confirm={`„${d.titel}“ (Version ${d.version}) mit Datei entfernen?`}
-                  />
-                </div>
+                <ul role="list" className="basis-full flex flex-col gap-3">
+                  {g.versionen.map((d, i) => (
+                    <li key={d.id} className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                      <span className="text-[13px] text-text2 min-w-0 flex-1 basis-48">
+                        {i === 0 && <span className="font-semibold text-foreground">Aktuell: </span>}
+                        {dateiInfo(d, 'de')}
+                      </span>
+                      <span className="flex flex-wrap gap-2">
+                        <a
+                          href={`/kunden/dokumente/${d.id}`}
+                          className={buttonClass('secondary')}
+                          aria-label={`Herunterladen: ${d.titel}, Version ${d.version}`}
+                        >
+                          Herunterladen
+                          <Download size={14} aria-hidden="true" />
+                        </a>
+                        <ActionButton
+                          action={dokumentEntfernen}
+                          hidden={{ id: d.id }}
+                          label="Entfernen"
+                          name={`Entfernen: ${d.titel}, Version ${d.version}`}
+                          confirm={`„${d.titel}“ (Version ${d.version}) mit Datei entfernen?`}
+                        />
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </li>
             ))}
           </ul>

@@ -1,6 +1,6 @@
 # Kundenbereich: Verwaltung durch Erik (Admin-Ansicht)
 
-Status: In Arbeit
+Status: Umgesetzt (nur Preview)
 
 ## Zweck
 
@@ -81,3 +81,21 @@ Tabellen und Buckets aus `datenmodell.md`, keine neue Migration.
 
 - `tests/unit/kundenbereich-admin.test.ts(x)`: Prüfungen, Zeitumrechnung, Pfade, REST- und Storage-Aufrufe, Schutz der Aktionen, Ansichten
 - `tests/e2e/kundenbereich-admin.spec.ts`: 404 für Nicht-Admins, Seiten, Anlegen eines Kunden, axe, Mobile
+
+## Befunde Blinder Kritiker (2026-10-08)
+
+Geprüft: Erik in der Verwaltung bei 360/768/1280 px, hell und dunkel; axe 0 Verstöße, kein horizontales Scrollen, Fokus sichtbar.
+
+Behoben (mit Test):
+
+- Projektseite war sehr lang; Schritte sind jetzt eingeklappt (`<details>`), oben eine Sprungnavigation „Auf dieser Seite“.
+- Mehrere Buttons hießen gleich („Speichern“); jetzt eindeutig, z. B. „Schritt speichern: Konzept“.
+- Dokumentversionen standen ungeordnet; jetzt nach Art und Titel gruppiert, neueste zuerst.
+- Auswahlfelder hatten keinen sichtbaren Fokusrahmen (`select:focus-visible` in `app/globals.css`).
+- Brotkrumen endeten nicht mit der aktuellen Seite; jetzt mit `aria-current="page"`.
+- Doppelte Trennlinie in Listen, gestapelte Buttons auf dem Handy, zu kleine Checkboxen (jetzt 24 px).
+- Feld mit Fehler war ohne Fokus nicht rot umrandet (e2e prüft die Randfarbe).
+
+Bewusst offen:
+
+- Gemeldete Browser-Fehlerblasen: Die Formulare tragen `novalidate`, Fehler zeigt nur die eigene Meldung; nachgeprüft, keine Änderung.

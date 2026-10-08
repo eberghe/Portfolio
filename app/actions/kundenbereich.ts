@@ -2,8 +2,10 @@
 
 import { createHmac } from 'node:crypto';
 import { cookies, headers } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { localizedPath, type Locale } from '@/lib/i18n';
+import { logoFreigabe as freigabe, type FreigabeState } from '@/lib/kundenbereich/freigabe';
 import { confirmPath, requestLink, type LoginState } from '@/lib/kundenbereich/login';
 import { ACCESS, REFRESH, sessionCookies } from '@/lib/kundenbereich/session';
 import { authApi, loginDeps } from '@/lib/kundenbereich/supabase';
@@ -50,4 +52,11 @@ export async function logout(fd: FormData) {
   store.delete(ACCESS);
   store.delete(REFRESH);
   redirect(localizedPath('/kunden', locale));
+}
+
+/** Logo-Freigabe im eigenen Namen (functions/kundenbereich/logo-freigabe.md) */
+export async function logoFreigabe(_prev: FreigabeState, fd: FormData): Promise<FreigabeState> {
+  const state = await freigabe(fd, { access: (await cookies()).get(ACCESS)?.value, api: authApi(process.env) });
+  if (state.status === 'ok') revalidatePath('/kunden', 'layout');
+  return state;
 }

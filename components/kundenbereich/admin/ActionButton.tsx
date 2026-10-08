@@ -33,16 +33,22 @@ export default function ActionButton({
     startTransition(() => dispatch(fd));
   };
   return (
-    <form onSubmit={submit} className="contents">
+    <form onSubmit={submit} noValidate className="contents">
       {Object.entries(hidden).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />
       ))}
       <Button type="submit" variant={variant} aria-label={name} aria-disabled={pending || undefined}>
         {label}
       </Button>
-      <div className="basis-full">
-        <Meldung state={state} />
-      </div>
+      {/* Kritiker Verwaltung 9: Meldung bricht die Button-Zeile nur um, wenn es eine gibt */}
+      <p aria-live="polite" className="sr-only">
+        {state.status !== 'idle' ? state.message : ''}
+      </p>
+      {state.status !== 'idle' && state.message && (
+        <div aria-hidden="true" className="basis-full">
+          <Meldung state={state} live={false} />
+        </div>
+      )}
     </form>
   );
 }

@@ -34,10 +34,15 @@ test('Verhalten 1-4: Erik kommt von der Übersicht zum Kunden und zum Projekt', 
   await expect(page.getByRole('heading', { level: 1, name: 'Bäckerei Beispiel' })).toBeVisible();
   const logo = page.getByRole('img', { name: 'Aktuelles Logo von Bäckerei Beispiel' });
   await expect(logo).toBeVisible();
-  expect(await logo.evaluate((img: HTMLImageElement) => img.naturalWidth > 0)).toBe(true);
+  await expect.poll(() => logo.evaluate((img: HTMLImageElement) => img.naturalWidth > 0)).toBe(true);
   await page.getByRole('link', { name: 'Relaunch der Website' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Relaunch der Website' })).toBeVisible();
   await expect(page.getByRole('checkbox', { name: /Anna/ })).toBeChecked();
+  // Kritiker Verwaltung 1: Schritte eingeklappt, Sprungmarke zu den Terminen
+  await page.getByRole('navigation', { name: 'Auf dieser Seite' }).getByRole('link', { name: 'Termine' }).click();
+  await expect(page.getByRole('heading', { level: 2, name: 'Termine' })).toBeInViewport();
+  const hoehe = await page.evaluate(() => document.documentElement.scrollHeight);
+  expect(hoehe).toBeLessThan(7000);
 });
 
 test('AK-3: Kunde anlegen mit Prüfung und Weiterleitung', async ({ page }) => {
@@ -49,6 +54,17 @@ test('AK-3: Kunde anlegen mit Prüfung und Weiterleitung', async ({ page }) => {
   await expect(form.getByLabel(/^Name/)).toHaveAttribute('aria-invalid', 'true');
   await expect(form.getByLabel(/^Name/)).toBeFocused();
   await expect(form.getByLabel(/^Website/)).toHaveValue('kunde.example');
+  // Kritiker Verwaltung 6: Feld mit Fehler ist auch ohne Fokus rot umrandet
+  await form.getByLabel(/^Website/).blur();
+  const website = form.getByLabel(/^Website/);
+  await expect
+    .poll(() =>
+      website.evaluate(
+        (el) =>
+          getComputedStyle(el).borderColor === getComputedStyle(el.parentElement!.querySelector('.text-error')!).color,
+      ),
+    )
+    .toBe(true);
   const name = `Testkunde ${test.info().project.name}`;
   await form.getByLabel(/^Name/).fill(name);
   await form.getByLabel(/^Website/).fill('https://test.example');

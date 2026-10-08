@@ -161,6 +161,8 @@ const adminProjekt = () => ({
   projekt_ansprechpartner: [{ ansprechpartner_id: 'a-anna' }],
 });
 
+const annaFreigabe = { stand: 'offen', letzte: [] };
+
 const users = {
   anna: { profil: { art: 'kunde', name: 'Anna', sprache: 'de' }, projekte: [relaunch] },
   erik: { profil: { art: 'admin', name: 'Erik', sprache: 'de' }, projekte: [logo, relaunch] },
@@ -238,6 +240,30 @@ createServer((req, res) => {
   if (u.profil.art === 'admin' && req.method === 'POST' && path.startsWith('/storage/v1/object/sign/kundenlogos/'))
     return send(200, { signedURL: `/object/sign/kundenlogos/${K1}/logo.svg?token=signiert` });
   if (path === '/rest/v1/kundenprojekte') return send(200, u.projekte);
+  // Logo-Freigabe (logo-freigabe.md): nur Anna ist Ansprechpartnerin
+  if (path === '/rest/v1/ansprechpartner' && u === users.anna)
+    return send(200, [
+      {
+        id: 'a-anna',
+        kunde_id: K1,
+        kunden: { name: 'Bäckerei Beispiel', logo_freigabe: annaFreigabe.stand, logo_freigaben: annaFreigabe.letzte },
+      },
+    ]);
+  if (path === '/rest/v1/ansprechpartner') return send(200, []);
+  if (path === '/rest/v1/logo_freigaben' && req.method === 'POST') {
+    let body = '';
+    req.on('data', (c) => (body += c));
+    req.on('end', () => {
+      const row = JSON.parse(body);
+      if (u !== users.anna || row.ansprechpartner_id !== 'a-anna' || row.kunde_id !== K1) return send(403, {});
+      annaFreigabe.stand = row.entscheidung;
+      annaFreigabe.letzte = [
+        { entscheidung: row.entscheidung, am: new Date().toISOString(), ansprechpartner: { name: 'Anna' } },
+      ];
+      send(201);
+    });
+    return;
+  }
   if (path === '/rest/v1/dokumente') {
     const id = new URL(req.url ?? '/', 'http://x').searchParams.get('id')?.replace(/^eq\./, '');
     const d = u.projekte.flatMap((p) => p.dokumente).find((d) => d.id === id);

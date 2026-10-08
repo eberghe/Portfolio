@@ -2,6 +2,7 @@ import type { Locale } from '@/lib/i18n';
 import type { Konto, LoginDeps } from './login';
 import { PROJEKT_SELECT, type ProjektRow } from './projekte';
 import type { DokumentDownload } from './dokumente';
+import type { FreigabeApi, MeinKunde } from './freigabe';
 import type { TerminRow } from './termine';
 import type { Tokens } from './session';
 
@@ -9,6 +10,7 @@ import type { Tokens } from './session';
 // Siehe functions/kundenbereich/login.md
 
 type Env = Record<string, string | undefined>;
+const MIN = 60 * 1000;
 
 function config(env: Env) {
   const url = (env.SUPABASE_URL ?? env.NEXT_PUBLIC_SUPABASE_URL)?.replace(/\/$/, '');
@@ -69,6 +71,13 @@ export function loginDeps(env: Env): LoginDeps | null {
       };
     },
     async logAttempt(emailHash, ipHash) {
+      // Alte Versuche aufräumen: Prüfwerte bleiben höchstens 24 Stunden (logo-freigabe.md AK-6)
+      const vorTag = new Date(Date.now() - 24 * 60 * MIN).toISOString();
+      await fetch(`${url}/rest/v1/anmeldeversuche?created_at=lt.${encodeURIComponent(vorTag)}`, {
+        method: 'DELETE',
+        headers: { ...admin, Prefer: 'return=minimal' },
+        cache: 'no-store',
+      }).catch(() => {});
       const res = await post(
         '/rest/v1/anmeldeversuche',
         { email_hash: emailHash, ip_hash: ipHash },
@@ -185,6 +194,56 @@ export function authApi(env: Env) {
         return null;
       }
     },
+    /** Ansprechpartner des angemeldeten Nutzers mit Kunde und letzter Logo-Entscheidung (logo-freigabe.md) */
+    meinKunde: async (access: string): Promise<MeinKunde | null> => {
+      try {
+        const user = await fetch(`${url}/auth/v1/user`, { headers: headers(access), cache: 'no-store' });
+        if (!user.ok) return null;
+        const { id } = (await user.json()) as { id: string };
+        const q = new URLSearchParams({
+          select: 'id,kunde_id,kunden(name,logo_freigabe,logo_freigaben(entscheidung,am,ansprechpartner(name)))',
+          user_id: `eq.${id}`,
+          'kunden.logo_freigaben.order': 'am.desc',
+          'kunden.logo_freigaben.limit': '1',
+        });
+        const res = await fetch(`${url}/rest/v1/ansprechpartner?${q}`, { headers: headers(access), cache: 'no-store' });
+        if (!res.ok) return null;
+        type Row = {
+          id: string;
+          kunde_id: string;
+          kunden: {
+            name: string;
+            logo_freigabe: MeinKunde['freigabe'];
+            logo_freigaben: {
+              entscheidung: 'erteilt' | 'widerrufen';
+              am: string;
+              ansprechpartner: { name: string } | null;
+            }[];
+          } | null;
+        };
+        const [r] = (await res.json()) as Row[];
+        if (!r?.kunden) return null;
+        const l = r.kunden.logo_freigaben[0];
+        return {
+          ansprechpartnerId: r.id,
+          kundeId: r.kunde_id,
+          kunde: r.kunden.name,
+          freigabe: r.kunden.logo_freigabe,
+          letzte: l ? { entscheidung: l.entscheidung, am: l.am, name: l.ansprechpartner?.name ?? '' } : null,
+        };
+      } catch {
+        return null;
+      }
+    },
+    freigeben: (async (access, row) => {
+      const res = await fetch(`${url}/rest/v1/logo_freigaben`, {
+        method: 'POST',
+        headers: { ...headers(access), Prefer: 'return=minimal' },
+        body: JSON.stringify(row),
+        cache: 'no-store',
+      });
+      if (!res.ok) throw new Error(`Logo-Freigabe: Supabase ${res.status}`);
+    }) satisfies FreigabeApi['freigeben'],
     /** Speicherpfad eines Dokuments, sofern der Nutzer es sehen darf (dokumente.md AK-5) */
     dokument: async (access: string, id: string): Promise<DokumentDownload | null> => {
       const q = new URLSearchParams({ select: 'id,storage_pfad,dateiname', id: `eq.${id}` });

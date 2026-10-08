@@ -138,6 +138,7 @@ html {
 
   input:focus-visible,
   textarea:focus-visible,
+  select:focus-visible,
   [tabindex='-1']:focus-visible {
     outline: 2px solid hsl(var(--foreground));
     outline-offset: 2px;
@@ -147,7 +148,8 @@ html {
   .dark button:focus-visible,
   .dark summary:focus-visible,
   .dark input:focus-visible,
-  .dark textarea:focus-visible {
+  .dark textarea:focus-visible,
+  .dark select:focus-visible {
     outline-color: white;
   }
 

@@ -17,7 +17,7 @@ export default function AdminUebersicht({ kunden }: { kunden: KundeZeile[] }) {
         {kunden.length === 0 ? (
           <p className="text-[15px] text-text2">Noch keine Kunden angelegt.</p>
         ) : (
-          <ul role="list" className="border-t border-border">
+          <ul role="list">
             {kunden.map((k) => {
               const projekte = k.kundenprojekte[0]?.count ?? 0;
               const ap = k.ansprechpartner[0]?.count ?? 0;

@@ -20,6 +20,8 @@ import { dateiInfo, dokumentGruppen, type DokumentRow } from '@/lib/kundenbereic
 import type { Termin } from '@/lib/kundenbereich/termine';
 import { kundenText } from '@/lib/kundenbereich/text';
 import { EMAIL } from '@/lib/site';
+import type { MeinKunde } from '@/lib/kundenbereich/freigabe';
+import LogoFreigabe from './LogoFreigabe';
 import TerminZeit from './TerminZeit';
 
 // Startseite des Kundenbereichs nach dem Login (functions/kundenbereich/projektuebersicht.md)
@@ -35,9 +37,12 @@ export default function Projektuebersicht({
   profil,
   projekte,
   auswahl,
+  logo = null,
 }: {
   locale: Locale;
   profil: Profil;
+  /** Kunde des Ansprechpartners für die Logo-Freigabe; null für Admins */
+  logo?: MeinKunde | null;
   /** null: Laden fehlgeschlagen (AK-7) */
   projekte: ProjektRow[] | null;
   auswahl?: string;
@@ -117,13 +122,24 @@ export default function Projektuebersicht({
           </a>
         </div>
       ) : (
-        <Projekt t={t} locale={locale} projekt={projektAnsicht(gewaehlt, locale)} />
+        <Projekt t={t} locale={locale} projekt={projektAnsicht(gewaehlt, locale)} logo={logo} />
       )}
+      {(!projekte || !gewaehlt) && logo && <LogoFreigabe locale={locale} mk={logo} className="max-w-[560px] mt-10" />}
     </div>
   );
 }
 
-function Projekt({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: ReturnType<typeof projektAnsicht> }) {
+function Projekt({
+  t,
+  locale,
+  projekt: p,
+  logo,
+}: {
+  t: T;
+  locale: Locale;
+  projekt: ReturnType<typeof projektAnsicht>;
+  logo: MeinKunde | null;
+}) {
   const links = [
     p.websiteUrl && { href: p.websiteUrl, label: t.website },
     p.stagingUrl && { href: p.stagingUrl, label: t.staging },
@@ -203,6 +219,7 @@ function Projekt({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: Ret
             </ul>
           </section>
         )}
+        {logo && <LogoFreigabe locale={locale} mk={logo} />}
       </div>
       <div className="min-w-0 lg:col-start-1 lg:row-start-2">
         {p.schritte.length > 0 && (

@@ -26,9 +26,9 @@ export interface Feld {
   half?: boolean;
 }
 
-export function Meldung({ state }: { state: AdminState }) {
+export function Meldung({ state, live = true }: { state: AdminState; live?: boolean }) {
   return (
-    <div aria-live="polite" className="empty:hidden">
+    <div aria-live={live ? 'polite' : undefined} className="empty:hidden">
       {state.status === 'ok' && state.message && (
         <p className="border border-primary-border bg-primary-light rounded-lg px-3 py-2 text-[13px] text-foreground mb-4">
           {state.message}
@@ -47,6 +47,7 @@ export default function AdminForm({
   title,
   titleLevel = 2,
   submitLabel,
+  submitName,
   hidden = {},
   felder,
   reset = false,
@@ -57,6 +58,8 @@ export default function AdminForm({
   title?: string;
   titleLevel?: 2 | 3;
   submitLabel: string;
+  /** Zugänglicher Name, wenn mehrere gleiche Buttons auf der Seite stehen; beginnt mit dem sichtbaren Text */
+  submitName?: string;
   hidden?: Record<string, string>;
   felder: Feld[];
   /** Felder nach Erfolg leeren (Hinzufügen-Formulare) */
@@ -133,7 +136,7 @@ export default function AdminForm({
                         name={f.name}
                         value={o.value}
                         defaultChecked={f.checked?.includes(o.value)}
-                        className="w-5 h-5 accent-[hsl(var(--primary))]"
+                        className="w-6 h-6 accent-[hsl(var(--primary))]"
                       />
                       {o.label}
                     </label>
@@ -154,13 +157,13 @@ export default function AdminForm({
               autoComplete={f.autoComplete ?? 'off'}
               className={span}
               {...(f.type === 'textarea'
-                ? { multiline: true as const, rows: 4 }
+                ? { multiline: true as const, rows: 3 }
                 : { type: f.type ?? 'text', required: f.required })}
             />
           );
         })}
       </div>
-      <Button type="submit" aria-disabled={pending || undefined}>
+      <Button type="submit" aria-label={submitName} aria-disabled={pending || undefined}>
         {submitLabel}
       </Button>
     </form>

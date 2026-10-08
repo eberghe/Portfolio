@@ -91,7 +91,7 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
         {k.ansprechpartner.length === 0 ? (
           <p className="text-[15px] text-text2 mb-6">Noch keine Ansprechpartner.</p>
         ) : (
-          <ul role="list" className="border-t border-border mb-8">
+          <ul role="list" className="border-b border-border mb-8">
             {k.ansprechpartner.map((a) => (
               <li key={a.id} className={listItem}>
                 <div className="min-w-0 flex-1 basis-60">
@@ -154,7 +154,7 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
         {k.kundenprojekte.length === 0 ? (
           <p className="text-[15px] text-text2 mb-6">Noch keine Projekte.</p>
         ) : (
-          <ul role="list" className="border-t border-border mb-8">
+          <ul role="list" className="border-b border-border mb-8">
             {k.kundenprojekte.map((p) => (
               <li key={p.id} className={listItem}>
                 <Link

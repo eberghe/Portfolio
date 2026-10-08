@@ -65,5 +65,9 @@ export default async function KundenPage({ locale, auswahl }: { locale: Locale; 
     );
 
   // Projektübersicht nach dem Login (functions/kundenbereich/projektuebersicht.md)
-  return <Projektuebersicht locale={locale} profil={profil} projekte={await api.projekte(access)} auswahl={auswahl} />;
+  const [projekte, logo] = await Promise.all([
+    api.projekte(access),
+    profil.art === 'kunde' ? api.meinKunde(access) : null,
+  ]);
+  return <Projektuebersicht locale={locale} profil={profil} projekte={projekte} auswahl={auswahl} logo={logo} />;
 }

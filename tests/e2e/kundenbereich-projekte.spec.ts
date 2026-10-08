@@ -70,6 +70,28 @@ test('dokumente.md AK-3/AK-5: Dokumente mit Angaben, Download über signierten L
   expect((await page.request.get('/kunden/dokumente/d-vertrag-2', { maxRedirects: 0 })).status()).toBe(401);
 });
 
+test('logo-freigabe.md AK-1/AK-2: Anna gibt das Logo frei und widerruft', async ({ page }) => {
+  test.skip(test.info().project.name !== 'desktop-1280', 'Zustand im nachgebildeten Supabase ist gemeinsam');
+  await login(page, 'anna');
+  await openHydrated(page, '/kunden');
+  const s = page.getByRole('region', { name: 'Logo auf meiner Website' });
+  await expect(s).toContainText('Darf ich das Logo von Bäckerei Beispiel');
+  await expect(s).toContainText('Noch nicht freigegeben');
+  await s.getByRole('button', { name: 'Ja, Logo freigeben' }).click();
+  await expect(s).toContainText('Danke! Ich darf das Logo jetzt zeigen.');
+  await expect(s).toContainText(/Freigegeben am .* von Anna/);
+  await s.getByRole('button', { name: 'Freigabe widerrufen' }).click();
+  await expect(s).toContainText(/Widerrufen am .* von Anna/);
+  await expect(s.getByRole('button', { name: 'Ja, Logo freigeben' })).toBeVisible();
+});
+
+test('logo-freigabe.md AK-1: Admins sehen die Logo-Freigabe nicht', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, '/kunden');
+  await expect(page.getByRole('heading', { level: 2 }).first()).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Logo auf meiner Website' })).toHaveCount(0);
+});
+
 test('AK-6: Admin wechselt zwischen Projekten', async ({ page }) => {
   await login(page, 'erik');
   await openHydrated(page, '/kunden');

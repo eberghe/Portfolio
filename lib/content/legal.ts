@@ -107,7 +107,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
         {
           title: 'Cookies & Browser-Speicher',
           paragraphs: [
-            'Diese Website setzt keine Cookies und nutzt keine Analyse- oder Tracking-Werkzeuge. Wenn du den Dunkelmodus umschaltest, wird deine Wahl im localStorage deines Browsers gespeichert, damit sie beim nächsten Besuch erhalten bleibt. Diese Angabe verlässt dein Gerät nicht; du kannst sie jederzeit in deinem Browser löschen.',
+            'Außerhalb des Kundenbereichs setzt diese Website keine Cookies und nutzt keine Analyse- oder Tracking-Werkzeuge. Zu den Cookies des Kundenbereichs siehe unten. Wenn du den Dunkelmodus umschaltest, wird deine Wahl im localStorage deines Browsers gespeichert, damit sie beim nächsten Besuch erhalten bleibt. Diese Angabe verlässt dein Gerät nicht; du kannst sie jederzeit in deinem Browser löschen.',
           ],
         },
         {
@@ -128,6 +128,17 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
             'Wenn du das Anfrageformular auf der Kontaktseite nutzt, speichere ich deine Angaben (gewählte Leistungen, Beschreibung, Website, Zeitrahmen, Budget, Name, E-Mail, optional Telefon) sowie den Zeitpunkt deiner Einwilligung, um deine Anfrage zu beantworten. Rechtsgrundlage: Art. 6 Abs. 1 lit. a und b DSGVO. Du kannst deine Einwilligung jederzeit per E-Mail an {email} widerrufen.',
             'Die Daten liegen bei Supabase Inc. auf Servern in der EU (Frankfurt). Zum Schutz vor Missbrauch speichere ich statt deiner IP-Adresse nur einen verschlüsselten Prüfwert, mit dem sich wiederholte Anfragen begrenzen lassen. Über jede neue Anfrage werde ich per E-Mail über den Dienst Resend (Resend Inc., USA, EU-US Data Privacy Framework) benachrichtigt. Über denselben Dienst bekommst du eine kurze Bestätigung an deine E-Mail-Adresse.',
             'Die Angaben werden gelöscht, sobald die Anfrage erledigt ist und keine Aufbewahrungspflichten bestehen.',
+          ],
+        },
+        {
+          title: 'Kundenbereich',
+          paragraphs: [
+            'Für Kundinnen und Kunden gibt es einen geschützten Kundenbereich. Dort sehen die Ansprechpartner, die ich für ein Projekt eintrage, den Stand des Projekts, Termine, Verträge, Rechnungen und Dateien.',
+            'Dafür verarbeite ich: Name, E-Mail-Adresse, optional Rolle und Telefonnummer, die bevorzugte Sprache, die Inhalte des Projekts (Schritte, Termine mit Meet-Link, Dokumente) sowie die Anmeldungen. Rechtsgrundlage ist die Durchführung des Vertrags bzw. vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO).',
+            'Die Anmeldung läuft ohne Passwort über einen Link per E-Mail. Die E-Mail verschicke ich über Resend (Resend Inc., USA, EU-US Data Privacy Framework). Zum Schutz vor Missbrauch speichere ich bei jeder Anforderung nur verschlüsselte Prüfwerte von E-Mail-Adresse und IP-Adresse; sie werden nach 24 Stunden gelöscht (Art. 6 Abs. 1 lit. f DSGVO).',
+            'Nach der Anmeldung setzt die Website zwei technisch notwendige Cookies: kb_zugang (Zugang, 1 Stunde) und kb_erneuern (verlängert die Anmeldung, 30 Tage). Sie sind für den geschützten Bereich unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG). Beim Abmelden werden beide gelöscht.',
+            'Ansprechpartner können im Kundenbereich erlauben, dass ich das Logo ihres Unternehmens auf dieser Website als Referenz zeige. Dafür speichere ich, wer wann zugestimmt oder widerrufen hat. Rechtsgrundlage ist die Einwilligung (Art. 6 Abs. 1 lit. a DSGVO); sie lässt sich jederzeit im Kundenbereich widerrufen.',
+            'Alle Daten des Kundenbereichs, auch die Dateien, liegen bei Supabase Inc. auf Servern in der EU (Frankfurt). Ich speichere sie bis zum Ende der Zusammenarbeit; Verträge und Rechnungen bewahre ich so lange auf, wie es die gesetzlichen Aufbewahrungsfristen verlangen (bis zu zehn Jahre).',
           ],
         },
         {
@@ -171,7 +182,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
         {
           title: 'Cookies & browser storage',
           paragraphs: [
-            'This website sets no cookies and uses no analytics or tracking tools. If you switch dark mode, your choice is stored in your browser’s localStorage so it is kept on your next visit. This setting never leaves your device; you can delete it in your browser at any time.',
+            'Outside the client area, this website sets no cookies and uses no analytics or tracking tools. For the client area cookies, see below. If you switch dark mode, your choice is stored in your browser’s localStorage so it is kept on your next visit. This setting never leaves your device; you can delete it in your browser at any time.',
           ],
         },
         {
@@ -192,6 +203,17 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
             'If you use the enquiry form on the contact page, I store your details (selected services, description, website, timeframe, budget, name, email, optional phone) and the time of your consent in order to answer your enquiry. Legal basis: Art. 6 (1) (a) and (b) GDPR. You can withdraw your consent at any time by emailing {email}.',
             'The data is stored with Supabase Inc. on servers in the EU (Frankfurt). To prevent abuse, I store only an encrypted check value instead of your IP address, which allows repeated enquiries to be limited. I am notified of each new enquiry by email via the service Resend (Resend Inc., USA, EU-US Data Privacy Framework). Through the same service, you receive a short confirmation at your email address.',
             'The details are deleted once the enquiry is completed and no retention obligations apply.',
+          ],
+        },
+        {
+          title: 'Client area',
+          paragraphs: [
+            'There is a protected client area for clients. The contacts I add to a project see its status, meetings, contracts, invoices and files there.',
+            'For this I process: name, email address, optionally role and phone number, preferred language, the project content (steps, meetings with a Meet link, documents) and sign-ins. Legal basis: performance of a contract or pre-contractual measures (Art. 6 (1) (b) GDPR).',
+            'Signing in works without a password via a link sent by email. I send these emails via Resend (Resend Inc., USA, EU-US Data Privacy Framework). To prevent abuse, I store only encrypted check values of the email address and IP address for each request; they are deleted after 24 hours (Art. 6 (1) (f) GDPR).',
+            'After you sign in, the website sets two strictly necessary cookies: kb_zugang (access, 1 hour) and kb_erneuern (keeps you signed in, 30 days). They are strictly necessary for the protected area (Section 25 (2) no. 2 TDDDG). Signing out deletes both.',
+            'Contacts can allow me in the client area to show their company logo on this website as a reference. I store who agreed or revoked and when. Legal basis: consent (Art. 6 (1) (a) GDPR); it can be revoked in the client area at any time.',
+            'All client area data, including files, is stored with Supabase Inc. on servers in the EU (Frankfurt). I keep it until our collaboration ends; contracts and invoices are kept for as long as statutory retention periods require (up to ten years).',
           ],
         },
         {

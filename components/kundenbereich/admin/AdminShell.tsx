@@ -3,7 +3,8 @@ import Link from 'next/link';
 // Rahmen der Verwaltungsseiten: Pfadnavigation, Titel, Abschnitte (functions/kundenbereich/admin.md)
 
 export const adminSection = 'border-t border-border pt-8 mt-10';
-export const listItem = 'flex flex-wrap items-center gap-x-4 gap-y-2 py-4 border-b border-border';
+// Trennlinie oben je Eintrag; die nächste Abschnittslinie schließt die Liste ab (Kritiker Verwaltung 8)
+export const listItem = 'flex flex-wrap items-center gap-x-4 gap-y-2 py-4 border-t border-border';
 
 export default function AdminShell({
   title,
@@ -32,6 +33,13 @@ export default function AdminShell({
               <span aria-hidden="true">/</span>
             </li>
           ))}
+          {/* Kritiker Verwaltung 7: aktuelle Seite am Ende */}
+          <li
+            aria-current="page"
+            className="flex items-center min-h-11 text-foreground font-medium break-words min-w-0"
+          >
+            {title}
+          </li>
         </ol>
       </nav>
       <div className="flex flex-wrap items-end justify-between gap-4 mb-8">

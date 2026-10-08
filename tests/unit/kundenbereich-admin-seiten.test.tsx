@@ -189,18 +189,49 @@ describe('Verwaltung', () => {
     expect(screen.getByRole('link', { name: 'So sieht es der Kunde' })).toHaveAttribute('href', `/kunden?projekt=${P}`);
     expect(screen.getByRole('checkbox', { name: 'Anna (anna@b.example)' })).toBeChecked();
     expect(screen.getByRole('checkbox', { name: 'Ben (ben@b.example)' })).not.toBeChecked();
-    expect(screen.getByRole('form', { name: '4. Design' })).toBeInTheDocument();
+    expect(screen.getByText('4. Design').closest('summary')).not.toBeNull();
+    expect(screen.getByRole('form', { name: 'Schritt bearbeiten: Design', hidden: true })).toBeInTheDocument();
     const neu = screen.getByRole('form', { name: 'Schritt hinzufügen' });
     expect(within(neu).getByLabelText(/^Reihenfolge/)).toHaveValue(5);
-    expect(screen.getByRole('button', { name: 'Entfernen: Schritt Design' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Entfernen: Schritt Design', hidden: true })).toBeInTheDocument();
     expect(screen.getByText('Do., 15. Okt. 2026, 10:00–11:00 MESZ')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Herunterladen: Vertrag, Version 2' })).toHaveAttribute(
       'href',
       '/kunden/dokumente/d1',
     );
-    expect(screen.getByText(/Vertrag · PDF, 182 KB, Version 2/)).toBeInTheDocument();
+    expect(screen.getByText(/PDF, 182 KB, Version 2/)).toBeInTheDocument();
     const upload = screen.getByRole('form', { name: 'Dokument hochladen' });
     expect(within(upload).getByLabelText('Art')).toBeInTheDocument();
+  });
+
+  it('Befunde Blinder Kritiker zur Verwaltung', () => {
+    const doks = [
+      PROJEKT.dokumente[0]!,
+      { ...PROJEKT.dokumente[0]!, id: 'd0', version: 1, dateiname: 'v1.pdf', storage_pfad: `${K}/${P}/v1.pdf` },
+    ];
+    const { container } = render(<AdminProjekt projekt={{ ...PROJEKT, dokumente: doks }} />);
+    // 1: Sprungmarken und eingeklappte Schritte
+    const nav = screen.getByRole('navigation', { name: 'Auf dieser Seite' });
+    expect(
+      within(nav)
+        .getAllByRole('link')
+        .map((l) => l.getAttribute('href')),
+    ).toEqual(['#projekt-titel', '#projekt-ap-titel', '#ablauf-titel', '#termine-titel', '#dokumente-titel']);
+    for (const href of ['projekt-titel', 'projekt-ap-titel', 'ablauf-titel', 'termine-titel', 'dokumente-titel'])
+      expect(container.querySelector(`#${href}`), href).not.toBeNull();
+    expect(container.querySelectorAll('details:not([open])')).toHaveLength(2);
+    // 2: eindeutige Namen der Speichern-Buttons
+    expect(screen.getByRole('button', { name: 'Schritt speichern: Analyse', hidden: true })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Schritt speichern: Design', hidden: true })).toBeInTheDocument();
+    // 3: Versionen unter einem Titel
+    expect(screen.getAllByRole('heading', { level: 3, name: 'Vertrag' })).toHaveLength(1);
+    expect(screen.getByText(/Aktuell:/).parentElement).toHaveTextContent('Version 2');
+    // 5: keine Browser-Blasen statt eigener Meldungen
+    for (const f of container.querySelectorAll('form')) expect(f).toHaveAttribute('novalidate');
+    // 7: Pfad endet mit der aktuellen Seite
+    expect(
+      within(screen.getByRole('navigation', { name: 'Pfad' })).getByText('Relaunch', { selector: 'li' }),
+    ).toHaveAttribute('aria-current', 'page');
   });
 
   it('Formular: Fehler am Feld mit Fokus, Eingaben bleiben; nach Erfolg Meldung und leere Felder', async () => {

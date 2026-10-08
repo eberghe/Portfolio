@@ -52,6 +52,8 @@ test('AK-7: Bestätigungsseite löst erst per Klick ein, ungültig zeigt Link zu
   await page.getByRole('button', { name: 'Jetzt anmelden' }).click();
   await expect(page).toHaveURL(/\/kunden\/anmelden\?ungueltig=1$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Dieser Link funktioniert nicht mehr' })).toBeVisible();
+  // Kritiker 2: Fokus auf dem neuen Titel, damit der Wechsel angesagt wird
+  await expect(page.getByRole('heading', { level: 1, name: 'Dieser Link funktioniert nicht mehr' })).toBeFocused();
   await page.getByRole('link', { name: 'Neuen Link anfordern' }).click();
   await expect(page).toHaveURL(/\/kunden$/);
   expect((await page.context().cookies()).filter((c) => c.name.startsWith('kb_'))).toEqual([]);

@@ -11,20 +11,14 @@ export default function ConfirmPage({ locale, code, invalid }: { locale: Locale;
   const t = kundenText[locale];
   if (invalid || !code)
     return (
-      <KundenShell title={t.invalidTitle}>
-        <h2 id="kunden-karte" className="sr-only">
-          {t.invalidTitle}
-        </h2>
+      <KundenShell title={t.invalidTitle} focusTitle>
         <p className="text-[14px] text-text2 leading-relaxed mb-6">{t.invalidText}</p>
         <Button href={localizedPath('/kunden', locale)}>{t.backToLogin}</Button>
       </KundenShell>
     );
 
   return (
-    <KundenShell title={t.confirmTitle}>
-      <h2 id="kunden-karte" className="sr-only">
-        {t.confirmTitle}
-      </h2>
+    <KundenShell title={t.confirmTitle} focusTitle>
       <p className="text-[14px] text-text2 leading-relaxed mb-6">{t.confirmText}</p>
       <form action={confirmLogin}>
         <input type="hidden" name="sprache" value={locale} />

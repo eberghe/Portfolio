@@ -36,6 +36,15 @@ describe('Kundenbereich Seiten', () => {
     expect(screen.queryByRole('button')).toBeNull();
   });
 
+  it('Kritiker 1: Titel der Bestätigungsseiten wird nur einmal angesagt', () => {
+    const { unmount } = render(<ConfirmPage locale="de" code="abc" invalid={false} />);
+    expect(screen.getAllByRole('heading', { name: 'Anmeldung bestätigen' })).toHaveLength(1);
+    expect(screen.getByRole('region', { name: 'Anmeldung bestätigen' })).toBeInTheDocument();
+    unmount();
+    render(<ConfirmPage locale="de" code="" invalid />);
+    expect(screen.getAllByRole('heading', { name: 'Dieser Link funktioniert nicht mehr' })).toHaveLength(1);
+  });
+
   it('AK-8: angemeldet mit Namen und Abmelden, Admin gekennzeichnet', () => {
     const { unmount } = render(<Welcome locale="de" profil={{ art: 'kunde', name: 'Anna', sprache: 'de' }} />);
     expect(screen.getByRole('heading', { level: 2, name: 'Hallo, Anna' })).toBeInTheDocument();

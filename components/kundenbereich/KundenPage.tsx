@@ -6,6 +6,7 @@ import type { Locale } from '@/lib/i18n';
 import { ACCESS } from '@/lib/kundenbereich/session';
 import { authApi, type Profil } from '@/lib/kundenbereich/supabase';
 import { kundenText } from '@/lib/kundenbereich/text';
+import FocusTitle from './FocusTitle';
 import LoginForm from './LoginForm';
 
 // Einstieg in den Kundenbereich: Anmeldung oder Begrüßung (functions/kundenbereich/login.md AK-1, AK-8)
@@ -23,13 +24,31 @@ export async function currentProfil(): Promise<Profil | null> {
   );
 }
 
-export function KundenShell({ title, intro, children }: { title: string; intro?: string; children: React.ReactNode }) {
+export function KundenShell({
+  title,
+  intro,
+  focusTitle = false,
+  children,
+}: {
+  title: string;
+  intro?: string;
+  /** Titel benennt die Karte und bekommt den Fokus (Bestätigungsseiten) */
+  focusTitle?: boolean;
+  children: React.ReactNode;
+}) {
+  const titleClass = 'text-[32px] md:text-[48px] leading-[1.1] font-bold tracking-tight mb-3 md:mb-4 text-balance';
   return (
     <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-8 md:py-16 grid grid-cols-1 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-x-10 lg:gap-x-16 gap-y-6 md:items-start">
       <div>
-        <h1 className="text-[32px] md:text-[48px] leading-[1.1] font-bold tracking-tight mb-3 md:mb-4 text-balance">
-          {title}
-        </h1>
+        {focusTitle ? (
+          <span id="kunden-karte" className="contents">
+            <FocusTitle key={title} className={titleClass}>
+              {title}
+            </FocusTitle>
+          </span>
+        ) : (
+          <h1 className={titleClass}>{title}</h1>
+        )}
         {intro && <p className="text-[15px] md:text-[16px] text-text2 leading-relaxed md:max-w-[420px]">{intro}</p>}
       </div>
       <section aria-labelledby="kunden-karte" className={card}>

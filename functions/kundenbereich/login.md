@@ -82,3 +82,13 @@ Neue Tabelle `anmeldeversuche` und die Funktionen `kundenbereich_konto(email)` (
 ## Offene Fragen
 
 - Link zum Kundenbereich im Footer? Annahme: erst, wenn Erik den Bereich freigibt.
+
+## Befunde Blinder Kritiker (2026-10-08)
+
+Geprüft: `/kunden`, `/en/clients`, Bestätigungs- und Abgelaufen-Seite bei 360/1280 px, hell und dunkel. axe 0 Verstöße in 20 Kombinationen, `noindex`, `lang` korrekt, Formular, Fehler, Live-Meldung und Tastatur in Ordnung, Optik wie `/contact`.
+
+Behoben (mit Test): Titel der Bestätigungsseiten wurde doppelt angesagt (h1 und verstecktes h2); nach „Jetzt anmelden“ mit ungültigem Code lag der Fokus auf `body`, jetzt auf der neuen h1.
+
+Bewusst offen (niedrig):
+- Die Meldung nach dem Absenden bekommt den Fokus ohne sichtbaren Rahmen; sie ist nicht bedienbar, der Rahmen würde nur irritieren.
+- Eingabefeld 42 px und Kopfzeilen-Buttons 36 px hoch: WCAG 2.2 AA verlangt 24 px, erfüllt. Gilt seitenweit, betrifft das Designsystem und wird nicht nur hier geändert.

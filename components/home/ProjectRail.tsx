@@ -151,6 +151,7 @@ export default function ProjectRail({
                   >
                     <Image
                       src={p.image.src}
+                      quality={90}
                       alt=""
                       fill
                       sizes="(min-width: 768px) 46vw, 82vw"

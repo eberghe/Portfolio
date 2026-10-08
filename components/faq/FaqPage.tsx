@@ -58,7 +58,7 @@ export default function FaqPage({ locale }: { locale: Locale }) {
           className="lg:order-1 lg:sticky lg:top-24 lg:self-start rounded-2xl border border-border bg-bg2 p-6 md:p-8"
         >
           <div className="relative w-16 h-16 rounded-full overflow-hidden mb-5 border border-border">
-            <Image src={aboutPhoto.src} alt={t.photoAlt} fill sizes="64px" className="object-cover" />
+            <Image src={aboutPhoto.src} alt={t.photoAlt} fill sizes="64px" quality={90} className="object-cover" />
           </div>
           <h2 id="faq-frage" className="text-[20px] font-bold mb-2">
             {t.more}

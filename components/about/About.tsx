@@ -59,6 +59,7 @@ export default function About({ locale }: { locale: Locale }) {
         >
           <Image
             src={aboutPhoto.src}
+            quality={90}
             alt={t.photoAlt}
             fill
             priority

@@ -60,7 +60,7 @@ export const projectsOverviewText = {
 /** Filterkategorie aus der passenden Leistung (AK-19) */
 const categoryOf: Record<string, 'ux' | 'web' | 'photo'> = {
   'ux-ui-design': 'ux',
-  'webflow-development': 'web',
+  'web-design-development': 'web',
   photography: 'photo',
 };
 
@@ -85,6 +85,7 @@ export default function ProjectsOverview({ locale }: { locale: Locale }) {
           >
             <Image
               src={p.thumbnail.src}
+              quality={90}
               alt=""
               fill
               sizes="(min-width: 1100px) 600px, (min-width: 768px) 58vw, 100vw"

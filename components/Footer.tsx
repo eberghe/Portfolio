@@ -1,14 +1,12 @@
 'use client';
 
-import { ArrowUp, Mail } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { localPages } from '@/lib/content/local';
 import { services } from '@/lib/content/services';
 import { localizedPath, messages, type Locale } from '@/lib/i18n';
 import { EMAIL, INSTAGRAM, LINKEDIN } from '@/lib/site';
-import Instagram from './icons/Instagram';
-import Linkedin from './icons/Linkedin';
 import LocalClock from './LocalClock';
 import Logo from './Logo';
 
@@ -20,11 +18,12 @@ const NAV_ITEMS = [
   { path: '/faqs', key: 'faqs' },
 ] as const;
 
-// Leistungs- und Stadtlinks: mobil 44 px Tippfläche, aktuelle Seite sichtbar markiert (AK-19, AK-20)
-const groupLink =
-  'inline-flex items-center min-h-11 md:min-h-6 text-[13px] text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4';
+// Footer in beschrifteten Spalten (functions/seiten/navigation-und-footer.md AK-25). Texte mindestens white/60
+// (7,2:1 auf #0b1219); Links mobil 44 px hoch (AK-13, AK-19), aktuelle Seite sichtbar markiert (AK-20).
+const linkClass =
+  'inline-flex items-center min-h-11 md:min-h-7 text-[14px] text-white/80 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4';
+const headingClass = 'text-[12px] font-bold tracking-widest uppercase text-white/60 mb-3 md:mb-4';
 
-// Footer-Texte mindestens white/60 (7,2:1 auf #0b1219), siehe functions/seiten/navigation-und-footer.md
 /** „made with 🤍 in augsburg“: Herz für Screenreader als „love“ */
 function MadeWith({ text }: { text: string }) {
   const [before, after] = text.split('🤍');
@@ -46,83 +45,69 @@ export default function Footer({ locale }: { locale: Locale }) {
   const current = (path: string) => (pathname === href(path) ? ('page' as const) : undefined);
   const year = 2026;
 
-  const socials = [
-    { icon: Instagram, label: 'Instagram', href: INSTAGRAM },
-    { icon: Linkedin, label: 'LinkedIn', href: LINKEDIN },
-    { icon: Mail, label: t.email, href: `mailto:${EMAIL}` },
+  const pages = [
+    ...NAV_ITEMS.map((item) => ({ path: item.path, label: nav[item.key] })),
+    { path: '/impressum', label: t.imprint },
+    { path: '/datenschutz', label: t.privacy },
   ];
 
   return (
-    <footer className="relative py-20 md:py-28 bg-[#0b1219] dark:border-t dark:border-white/10">
-      <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 flex flex-col gap-10 md:gap-20">
-        <div className="flex flex-wrap items-center justify-between gap-y-6">
-          <Link
-            href={href('/')}
-            aria-label={`Erik Bergheimer – ${nav.home}`}
-            className="py-3 hover:scale-95 transition-transform duration-200 w-fit shrink-0 text-white"
-          >
-            <Logo className="h-3 sm:h-3.5 w-auto" />
-          </Link>
-          <nav aria-label={t.label} className="hidden md:block">
-            <ul className="flex items-center gap-8">
-              {NAV_ITEMS.map((item) => (
-                <li key={item.path}>
-                  <Link
-                    href={href(item.path)}
-                    aria-current={current(item.path)}
-                    className="inline-block py-1 text-[13px] text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4"
-                  >
-                    {nav[item.key]}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <ul className="flex gap-1 md:gap-4">
-            {socials.map(({ icon: Icon, label, href: url }) => (
-              <li key={label}>
-                <a
-                  href={url}
-                  aria-label={label}
-                  className="flex items-center justify-center min-w-11 min-h-11 md:min-w-6 md:min-h-6 text-white/60 hover:text-white transition-colors"
-                  {...(url.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
-                  <Icon size={18} aria-hidden="true" />
+    <footer className="relative pt-20 md:pt-28 pb-8 bg-[#0b1219] dark:border-t dark:border-white/10">
+      <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 flex flex-col gap-14 md:gap-20">
+        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,1fr))]">
+          {/* Marke */}
+          <div className="sm:col-span-2 lg:col-span-1">
+            <Link
+              href={href('/')}
+              aria-label={`Erik Bergheimer – ${nav.home}`}
+              className="inline-block py-3 hover:scale-95 transition-transform duration-200 text-white"
+            >
+              <Logo className="h-3 sm:h-3.5 w-auto" />
+            </Link>
+            <p className="mt-4 text-[14px] leading-relaxed text-white/60 max-w-[260px]">{t.tagline}</p>
+          </div>
+
+          {/* Kontakt */}
+          <div>
+            <p data-footer-heading className={headingClass}>
+              {t.contact}
+            </p>
+            <ul>
+              <li>
+                <a href={`mailto:${EMAIL}`} className={linkClass}>
+                  {EMAIL}
                 </a>
               </li>
-            ))}
-          </ul>
-        </div>
-
-        <nav id="footer-nav" aria-label={t.label} className="md:hidden scroll-mt-24">
-          <ul className="flex flex-col gap-2">
-            {NAV_ITEMS.map((item) => (
-              <li key={item.path}>
-                <Link
-                  href={href(item.path)}
-                  aria-current={current(item.path)}
-                  className="inline-flex items-center min-h-11 text-base text-white/60 hover:text-white transition-colors aria-[current=page]:text-white aria-[current=page]:underline underline-offset-4"
-                >
-                  {nav[item.key]}
+              <li>
+                <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <Link href={href('/contact')} aria-current={current('/contact')} className={linkClass}>
+                  {t.firstCall}
                 </Link>
               </li>
-            ))}
-          </ul>
-        </nav>
+            </ul>
+          </div>
 
-        {/* Leistungen und Städte nebeneinander (AK-19) */}
-        <div className="grid md:grid-cols-2 gap-10">
+          {/* Leistungen (AK-19) */}
           <nav aria-labelledby="footer-leistungen">
-            <p id="footer-leistungen" className="text-[12px] font-bold tracking-widest uppercase text-white/60 mb-3">
+            <p id="footer-leistungen" data-footer-heading className={headingClass}>
               {t.services}
             </p>
-            <ul className="flex flex-wrap gap-x-6 md:gap-y-1">
+            <ul>
               {services.map((s) => (
                 <li key={s.slug}>
                   <Link
                     href={href(`/services/${s.slug}`)}
                     aria-current={current(`/services/${s.slug}`)}
-                    className={groupLink}
+                    className={linkClass}
                   >
                     {s[locale].title}
                   </Link>
@@ -130,15 +115,33 @@ export default function Footer({ locale }: { locale: Locale }) {
               ))}
             </ul>
           </nav>
+
+          {/* Städte */}
           <nav aria-labelledby="footer-regionen">
-            <p id="footer-regionen" className="text-[12px] font-bold tracking-widest uppercase text-white/60 mb-3">
+            <p id="footer-regionen" data-footer-heading className={headingClass}>
               {t.regions}
             </p>
-            <ul className="flex flex-wrap gap-x-6 md:gap-y-1">
+            <ul>
               {localPages.map((p) => (
                 <li key={p.path}>
-                  <Link href={href(p.path)} aria-current={current(p.path)} className={groupLink}>
+                  <Link href={href(p.path)} aria-current={current(p.path)} className={linkClass}>
                     {p[locale].footerLink}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Seiten: auch Ziel des „Menü“-Links ohne JavaScript (AK-22) */}
+          <nav id="footer-nav" aria-label={t.label} className="scroll-mt-24">
+            <p data-footer-heading className={headingClass}>
+              {t.pages}
+            </p>
+            <ul>
+              {pages.map((p) => (
+                <li key={p.path}>
+                  <Link href={href(p.path)} aria-current={current(p.path)} className={linkClass}>
+                    {p.label}
                   </Link>
                 </li>
               ))}
@@ -146,72 +149,29 @@ export default function Footer({ locale }: { locale: Locale }) {
           </nav>
         </div>
 
-        <div className="border-t border-white/10 pt-8 flex flex-col gap-3">
-          <div className="hidden md:flex items-center w-full">
-            <div className="flex items-center gap-4">
-              <Link
-                href={href('/impressum')}
-                className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
-              >
-                {t.imprint}
-              </Link>
-              <Link
-                href={href('/datenschutz')}
-                className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
-              >
-                {t.privacy}
-              </Link>
-            </div>
-            <p lang="en" className="text-[12px] text-white/60 flex-1 text-center">
-              <MadeWith text={t.madeWith} />
-            </p>
-            <p className="text-[12px] text-white/60">© {year}, Erik Bergheimer</p>
-          </div>
-
-          <div className="flex flex-col gap-3 md:hidden">
-            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 w-full">
-              <Link
-                href={href('/impressum')}
-                className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
-              >
-                {t.imprint}
-              </Link>
-              <Link
-                href={href('/datenschutz')}
-                className="inline-block py-1 text-[12px] text-white/60 hover:text-white transition-colors"
-              >
-                {t.privacy}
-              </Link>
-              <p className="text-[12px] text-white/60">© {year}, Erik Bergheimer</p>
-            </div>
-            <div className="flex items-center justify-between w-full mt-6">
-              <p lang="en" className="text-[12px] text-white/60">
-                <MadeWith text={t.madeWith} />
-              </p>
-              <a
-                href="#seitenanfang"
-                aria-label={t.backToTop}
-                className="flex items-center justify-center min-w-11 min-h-11 md:min-w-6 md:min-h-6 text-white/60 hover:text-white transition-colors"
-              >
-                <ArrowUp size={16} aria-hidden="true" />
-              </a>
-            </div>
-          </div>
-
-          {/* Ortszeit in Augsburg (AK-23), ab 768 px unten links in der Ecke gegenüber „Nach oben“ (AK-24) */}
-          <div className="md:absolute md:bottom-8 md:left-12">
+        {/* Leiste: Ortszeit links (AK-24), Copyright und Satz, „Nach oben“ rechts */}
+        <div className="border-t border-white/10 pt-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="order-3 md:order-1">
             <LocalClock locale={locale} label={t.clockLabel} />
           </div>
+          <p className="order-1 md:order-2 text-[12px] text-white/60">
+            © {year} Erik Bergheimer
+            <span aria-hidden="true" className="mx-2">
+              ·
+            </span>
+            <span lang="en">
+              <MadeWith text={t.madeWith} />
+            </span>
+          </p>
+          <a
+            href="#seitenanfang"
+            className="order-2 md:order-3 inline-flex items-center gap-2 min-h-11 w-fit text-[13px] text-white/60 hover:text-white transition-colors"
+          >
+            <span>{t.backToTop}</span>
+            <ArrowUp size={16} aria-hidden="true" />
+          </a>
         </div>
       </div>
-
-      <a
-        href="#seitenanfang"
-        className="hidden md:flex absolute bottom-8 right-8 md:right-12 items-center gap-2 text-[13px] text-white/60 hover:text-white transition-colors"
-      >
-        <span>{t.backToTop}</span>
-        <ArrowUp size={16} aria-hidden="true" />
-      </a>
     </footer>
   );
 }

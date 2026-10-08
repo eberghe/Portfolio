@@ -29,7 +29,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
         {
           title: 'Angaben gemäß § 5 DDG',
           paragraphs: [
-            'Erik Bergheimer\nUX/UI-Designer & Webflow-Entwickler\nWeißdornstraße 5\n86343 Königsbrunn\nDeutschland',
+            'Erik Bergheimer\nUX/UI-Designer & Webentwickler\nWeißdornstraße 5\n86343 Königsbrunn\nDeutschland',
           ],
         },
         { title: 'Kontakt', paragraphs: ['E-Mail: {email}\nWebsite: https://erik-bergheimer.de'] },
@@ -59,9 +59,7 @@ export const legal: Record<LegalKind, Record<Locale, LegalText>> = {
       sections: [
         {
           title: 'Information pursuant to Section 5 DDG',
-          paragraphs: [
-            'Erik Bergheimer\nUX/UI Designer & Webflow Developer\nWeißdornstraße 5\n86343 Königsbrunn\nGermany',
-          ],
+          paragraphs: ['Erik Bergheimer\nUX/UI Designer & Web Developer\nWeißdornstraße 5\n86343 Königsbrunn\nGermany'],
         },
         { title: 'Contact', paragraphs: ['Email: {email}\nWebsite: https://erik-bergheimer.de'] },
         { title: 'Responsible for content', paragraphs: ['Erik Bergheimer (address as above)'] },

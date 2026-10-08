@@ -24,7 +24,7 @@ Sechs Fragen (Leistungen, remote, Projektablauf, Tools, Dauer, Verfügbarkeit) a
 - AK-1: Seite in DE und EN, genau eine h1, eigene Title/Description.
 - AK-2: Jede Frage ist ein `summary` in einem `details`; die Antwort steht im HTML (ohne JavaScript).
 - AK-3: JSON-LD `FAQPage` enthält alle Fragen und Antworten der Seitensprache.
-- AK-4: Antworten nennen nur aktuelle Leistungen (kein „Framer", kein „Business Development") und Augsburg.
+- AK-4: Antworten nennen nur aktuelle Leistungen (kein „Business Development") und Augsburg. Framer ist seit 2026-10-07 wieder ein Werkzeug der Leistung Webdesign & Webentwicklung (leistungen.md AK-40).
 - AK-6: Fragen (`summary`) zeigen beim Fokus denselben 2-px-Rahmen wie Links und Buttons.
 - AK-7 (Issue #3): Eine Frage „Wo bist du ansässig?“ / „Where are you based?“ steht an zweiter Stelle und beantwortet direkt: Königsbrunn bei Augsburg, vor Ort in Augsburg und Umgebung, sonst remote in ganz Deutschland. Sie ist Teil des FAQPage-JSON-LD.
 - AK-5: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel); Fragen per Tastatur auf- und zuklappbar.

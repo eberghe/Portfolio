@@ -27,9 +27,12 @@ test('AK-3: JSON-LD Service im HTML', async ({ request }) => {
 });
 
 for (const [from, to] of [
-  ['/services/webflow-framer', '/services/webflow-development'],
+  // AK-39: Webflow-Entwicklung heißt jetzt Webdesign & Webentwicklung
+  ['/services/webflow-framer', '/services/web-design-development'],
+  ['/services/webflow-development', '/services/web-design-development'],
+  ['/en/services/webflow-development', '/en/services/web-design-development'],
   ['/services/business-development', '/services/website-process-optimization'],
-  ['/en/services/webflow-framer', '/en/services/webflow-development'],
+  ['/en/services/webflow-framer', '/en/services/web-design-development'],
   ['/en/services/business-development', '/en/services/website-process-optimization'],
   // AK-28: Fotografie ist keine Leistung mehr, die Fotoserien stehen bei den Projekten
   ['/services/photography', '/projects'],
@@ -94,4 +97,41 @@ test('AK-32: Vollbild über die ganze Breite', async ({ page }) => {
   const vw = page.viewportSize()!.width;
   expect(Math.round(box.width)).toBe(vw);
   expect(box.height).toBeGreaterThanOrEqual(240);
+});
+
+// AK-43: echte Leistungsbilder in Qualität 90, auf Übersicht und Startseite
+for (const path of ['/services', '/']) {
+  test(`AK-43: Leistungsbilder auf ${path} mit Qualität 90`, async ({ page }) => {
+    await page.goto(path);
+    const imgs = page.locator('img[src*="%2Fimages%2Fservices%2F"]');
+    await expect(imgs.first()).toBeAttached();
+    const srcs = await imgs.evaluateAll((els) =>
+      els.map((el) => (el as HTMLImageElement).currentSrc || el.getAttribute('src')!),
+    );
+    expect(srcs.length).toBeGreaterThanOrEqual(3);
+    for (const src of srcs) expect(src).toContain('q=90');
+  });
+}
+
+// AK-43: auch Projekt-Thumbnails und Fotos in Qualität 90
+for (const path of ['/projects', '/about', '/faqs']) {
+  test(`AK-43: Fotos auf ${path} mit Qualität 90`, async ({ page }) => {
+    await page.goto(path);
+    const srcs = await page
+      .locator('img[src*="/_next/image"]')
+      .evaluateAll((els) => els.map((el) => el.getAttribute('src')!));
+    // Werkzeug-Logos sind kleine Marken in 128 px, die bleiben bei der Standardqualität
+    const photos = srcs.filter((src) => !src.includes('%2Fimages%2Flogos%2F'));
+    expect(photos.length).toBeGreaterThan(0);
+    for (const src of photos) expect(src).toContain('q=90');
+  });
+}
+
+// AK-43: In der Leistungsliste der Startseite hat der Rahmen echter Bilder das Seitenverhältnis des Bilds (nichts beschnitten)
+test('AK-43: Leistungsbilder auf der Startseite unbeschnitten', async ({ page }) => {
+  await page.goto('/');
+  const frames = page.locator('[data-service-media]:not([aria-hidden="true"])');
+  expect(await frames.count()).toBeGreaterThanOrEqual(3);
+  for (const box of await frames.evaluateAll((els) => els.map((el) => el.getBoundingClientRect())))
+    expect(Math.abs(box.width / box.height - 16 / 9)).toBeLessThan(0.02);
 });

@@ -12,7 +12,7 @@ Je Leistung eine eigene, rankingfähige Unterseite plus Übersicht. Grundlage f�
 
 ## Leistungen
 
-1. Webflow-Entwicklung (`webflow-development`, ersetzt `webflow-framer`)
+1. Webdesign & Webentwicklung (`web-design-development`, bis 2026-10-07 Webflow-Entwicklung `webflow-development`, ersetzt `webflow-framer`)
 2. Barrierefreiheit-Beratung (`accessibility`)
 3. KI-Beratung (`ai-consulting`, neu)
 4. Website- & Prozessoptimierung (`website-process-optimization`, ersetzt `business-development`)
@@ -122,4 +122,48 @@ Ersetzt die Kachelübersicht (AK-6 gilt sinngemäß weiter: Links heißen wie di
 ### Blinder Kritiker (Übersicht neu, 2026-10-06)
 
 Behoben (mit Test): Seite endete ohne Aufforderung zum Kontakt (AK-35); englischer Bedarfssatz klang übersetzt. Offen für Erik: „Barrierefreiheit-Beratung“ korrekt wäre „Barrierefreiheitsberatung“ (betrifft Titel auf allen Seiten); Groß- und Kleinschreibung der englischen Leistungsnamen ist uneinheitlich („UX/UI Design“ gegenüber „Design systems“); der Footer sagt auch auf Deutsch „made with love in augsburg“. Bewusst so: Die Bildbänder stehen nach jeder Leistung, wie Erik es wollte.
+
 - AK-36 (Erik: „nav hat wieder weißen hintergrund und verlauf sieht nicht so gut aus“): Auf der Leistungsübersicht ist die Navigation oben transparent wie auf der Startseite (startseite.md AK-36), der Verlauf reicht bis an den oberen Rand. Der Verlauf ist ein einziger, ruhiger grüner Schein von oben mittig (wie früher im Home-Hero), ohne seitliche Flecken.
+
+## Design Systeme: Name und Bild (Erik, 2026-10-07)
+
+Erik: „design systems in Design Systeme umändern und auf den seiten wo das bild vorkommt das hier verwenden, mit alt text ausstatten“ (Bild: Ausschnitt eines Design-Systems mit Farben, Typografie, Buttons, Formular, Projektkarte, Dunkelmodus, Leistungskarte und FAQ).
+
+- AK-37: Auf deutschen Seiten heißt die Leistung „Design Systeme“ (Titel, Label, Fließtexte, Meta-Description, Detailseite, FAQ). „Design Systems“ kommt in deutschen Texten nicht mehr vor. Englisch bleibt „Design systems“. Ersetzt das Suchwort aus AK-8 für Deutsch.
+- AK-38: Die Leistung Design Systeme hat ein echtes Bild (`public/images/services/design-systeme.png`, 1600 × 900) statt des Platzhalters. Es erscheint überall, wo bisher der Platzhalter der Leistung stand: im Vollbild unter der Leistung auf der Übersicht (AK-32) und in der Leistungsliste der Startseite (startseite.md AK-74). Es hat einen beschreibenden Alt-Text in DE und EN, der die gezeigten Bausteine nennt. Leistungen ohne Bild behalten ihren dekorativen Platzhalter. Auf der Übersicht steht das Bild ganz und unbeschnitten (16:9, höchstens Seitenbreite) auf einem hellen Band, damit alle im Alt-Text genannten Bausteine sichtbar bleiben (Kritiker: Vollbild mit 70svh schnitt mobil zwei Drittel ab).
+
+### Blinder Kritiker (Design Systeme, 2026-10-07)
+
+Behoben: Das Vollbild mit `object-cover` und 70svh schnitt auf dem Handy etwa zwei Drittel der Breite ab und auf breiten Bildschirmen die Überschriften. Das Bild steht jetzt ganz im Format 16:9. Ohne Einwände: Kein deutsches „Design Systems“ bleibt, und der Alt-Text ist sachlich und doppelt nicht die Überschrift. Hinweis: `local.ts` schreibt „Design-Systeme“ (Duden). Das bleibt so, weil Erik nur „Design Systems“ ersetzt haben wollte.
+
+## Webdesign & Webentwicklung statt Webflow-Entwicklung (Erik, 2026-10-07)
+
+Erik: „Webflow Entwicklung abändern in Webdesign und Webentwicklung … weil ich das nicht nur mit Webflow mache“. Je nach Bedarf setzt er Webflow, Framer (No-Code) oder eine eigene Entwicklung mit TypeScript, Supabase, Vercel und Claude Code ein. Fotos und Thumbnail liefert Erik später, bis dahin bleibt der Platzhalter.
+
+- AK-39: Die Leistung heißt „Webdesign & Webentwicklung“ (EN „Web design & development“) und hat den Slug `web-design-development`. `/services/webflow-development` und `/services/webflow-framer` leiten dauerhaft dorthin weiter (auch unter `/en`, ersetzt das Ziel aus AK-4).
+- AK-40: Beschreibung und Detailseite nennen die drei Wege: Webflow, Framer als No-Code-Werkzeug und eigene Entwicklung mit TypeScript, Supabase, Vercel und Claude Code, je nach Bedarf. Die Werkzeugliste der Detailseite enthält Webflow, Framer, TypeScript, Supabase, Vercel und Claude Code. Kein Leistungs- oder Städtetext stellt Webflow als einziges Werkzeug dar: „Webflow-Entwicklung“ und „Webflow development“ kommen auf keiner Leistungs-, Städte- oder Startseite mehr vor. Die Projekt-Seite zur Bachelorarbeit „Webflow vs. Shopify“ bleibt unverändert.
+
+### Blinder Kritiker (Webdesign & Webentwicklung, 2026-10-07)
+
+Behoben: UX/UI-FAQ nannte nur Webflow; Stuttgart-FAQ versprach „Hosting in der EU“, obwohl der eigene Weg Vercel und Supabase nutzt (jetzt: Server und Datenbank in einem Rechenzentrum in der EU) und mischte du und ihr; Relativsätze bezogen sich auf das falsche Wort (Stuttgart, Innsbruck); „No-Code-Werkzeuge“ im Plural; übersetzt klingendes Englisch bei den Plan-Kosten; Stuttgart nennt jetzt auch Framer. Offen für Erik: ob 2 bis 6 Wochen auch für Web-Apps mit Login und Datenbank gelten und ob eine eigene Inhaltsverwaltung bei Custom-Projekten immer dabei ist; Projektseite heißt weiter „UX/UI, Webflow & Fotografie“, weil die Bachelorarbeit wirklich Webflow ist.
+
+## Kürzer, Entweder-oder, Bilder für Web und Marke (Erik, 2026-10-07)
+
+Erik: „der text ist zu lang. kürzen und was nicht rein passt … drunter packen in ein bullet point“ und „webflow/framer und eigenentwicklung wirkt noch wie zwei schritte … das ist aber ja ein entweder oder“. Dazu schickte er Bilder für Website und Logo/Marke.
+
+- AK-41: Die Beschreibung von Webdesign & Webentwicklung ist ein kurzer Satz (höchstens 120 Zeichen) ohne Werkzeugnamen. Die Werkzeuge stehen in den Stichpunkten darunter, als Entweder-oder: ein Punkt „Entweder …“ für Webflow oder Framer, ein Punkt „Oder …“ für die eigene Entwicklung mit TypeScript, Supabase, Vercel und Claude Code (EN „Either …“ / „Or …“). Ersetzt für die Beschreibung die Werkzeugnennung aus AK-40.
+- AK-42: Webdesign & Webentwicklung und Brand- & Logo-Design haben echte Bilder (`public/images/services/webdesign-webentwicklung.jpg`, `brand-logo-design.png`, je 1600 × 900) mit beschreibendem Alt-Text in DE und EN, wie in AK-38.
+
+### Blinder Kritiker (kürzer und Bilder, 2026-10-07)
+
+Behoben: „Inhalte pflegst du danach selbst“ nur beim No-Code-Punkt klang, als ginge das bei eigener Entwicklung nicht; „CMS-Setup“ passte nur zu Webflow und Framer (jetzt „Inhaltsverwaltung“); das „oder“ zwischen Webflow und Framer steht in Klammern, damit es sich vom „Oder“-Punkt abhebt. Alt-Texte stimmen mit den Bildern überein.
+
+## Bilder unbeschnitten und schärfer (Erik, 2026-10-07)
+
+Erik: „thumbnails in schlechter quali … das format stimmt auch nicht ganz … das logos ding ist abgeschnitten … bitte alle thumbnails bessere quali“. Ursache: In der Leistungsliste der Startseite war der Rahmen ab 768 px 2:1, das 16:9-Bild wurde oben und unten beschnitten. Dazu kamen die Standardqualität 75 beim Umrechnen und eine JPG-Umwandlung des Website-Bilds.
+
+- AK-43: Echte Leistungsbilder stehen überall im Format 16:9 und unbeschnitten, auch in der Leistungsliste der Startseite (Platzhalter bleiben 16:10 und 2:1). Sie werden mit Qualität 90 ausgeliefert, und die Originale liegen verlustfrei als PNG vor. Qualität 90 gilt auch für alle anderen Fotos und Thumbnails (Projekte, Galerie, Startseite, Über mich).
+
+### Blinder Kritiker (Bildqualität, 2026-10-07)
+
+Behoben: FAQ-Foto noch mit Qualität 75; auf der Übersicht war das Bild bis 1280 px breit, das 1600-px-Original reicht auf Retina nur für etwa 800 px, deshalb steht es jetzt höchstens 960 px breit; Test misst das Seitenverhältnis der Rahmen im Browser und prüft, dass Platzhalter flacher bleiben. Offen für Erik: Für volle Schärfe auf großen Retina-Bildschirmen Bilder in 3200 × 1800 exportieren.

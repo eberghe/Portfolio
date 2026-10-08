@@ -6,6 +6,7 @@ import { breadcrumbJsonLd, serviceJsonLd, servicesItemListJsonLd } from '@/lib/s
 import { overviewText } from '@/components/services/ServicesOverview';
 import { services } from '@/lib/content/services';
 import { serviceDetails } from '@/lib/content/service-details';
+import { faqs } from '@/lib/content/faq';
 
 const detailOf = (slug: string) => serviceDetails.find((d) => d.slug === slug)!;
 
@@ -147,7 +148,9 @@ describe.each([
       );
       const image = section.nextElementSibling as HTMLElement;
       expect(image).toHaveAttribute('data-fullbleed');
-      expect(image).toHaveAttribute('aria-hidden', 'true');
+      // Platzhalter sind dekorativ, echte Bilder haben Alt-Text (AK-38)
+      if (s.image) expect(image).not.toHaveAttribute('aria-hidden');
+      else expect(image).toHaveAttribute('aria-hidden', 'true');
     }
     // Passende Arbeit nur, wenn es Projekte zur Leistung gibt
     const ux = container.querySelector('section#ux-ui-design') as HTMLElement;
@@ -232,8 +235,8 @@ describe('AK-12: Übersicht', () => {
   it.each(['de', 'en'] as const)('Description nennt alle Leistungen (%s)', (locale) => {
     const d = overviewText[locale].metaDescription.toLowerCase();
     const words = {
-      de: ['ux/ui', 'webflow', 'barrierefreiheit', 'ki', 'optimierung', 'brand', 'design systems'],
-      en: ['ux/ui', 'webflow', 'accessibility', 'ai', 'optimisation', 'brand', 'design systems'],
+      de: ['ux/ui', 'webdesign & webentwicklung', 'barrierefreiheit', 'ki', 'optimierung', 'brand', 'design systeme'],
+      en: ['ux/ui', 'web design & development', 'accessibility', 'ai', 'optimisation', 'brand', 'design systems'],
     }[locale];
     for (const w of words) expect(d).toContain(w);
     expect(d.length).toBeLessThanOrEqual(160);
@@ -289,7 +292,7 @@ describe('AK-17: englische Abschluss-Überschrift (Issue #4)', () => {
   it.each([
     ['ux-ui-design', 'Interested in UX/UI design?'],
     ['ai-consulting', 'Interested in AI consulting?'],
-    ['webflow-development', 'Interested in Webflow development?'],
+    ['web-design-development', 'Interested in web design & development?'],
     ['accessibility', 'Interested in accessibility consulting?'],
   ])('%s', (slug, name) => {
     const service = services.find((s) => s.slug === slug)!;
@@ -322,7 +325,7 @@ describe('Umbau AK-25: Inhalte je Leistung vollständig und in DE/EN gleich aufg
 });
 
 describe.each(['de', 'en'] as const)('Umbau Detailseite (%s)', (locale) => {
-  const service = services.find((s) => s.slug === 'webflow-development')!;
+  const service = services.find((s) => s.slug === 'web-design-development')!;
   const d = detailOf(service.slug)[locale];
   const t = {
     de: { process: d.processTitle, faq: 'Häufige Fragen', tools: 'Werkzeuge', packages: 'Pakete' },
@@ -415,5 +418,89 @@ describe('AK-27: Warum mit mir', () => {
       });
       expect(new Set(firsts).size).toBe(services.length);
     }
+  });
+});
+
+describe('AK-37/AK-38: Design Systeme', () => {
+  const ds = services.find((s) => s.slug === 'design-systems')!;
+  const detail = detailOf('design-systems');
+
+  it('AK-37: deutscher Name „Design Systeme“, nirgends „Design Systems“ auf Deutsch', () => {
+    expect(ds.de.title).toBe('Design Systeme');
+    expect(ds.de.label).toBe('Design Systeme');
+    expect(ds.en.title).toBe('Design systems');
+    const german = JSON.stringify([services.map((s) => s.de), detail.de, overviewText.de, faqs.map((f) => f.de)]);
+    expect(german).not.toMatch(/Design Systems/);
+  });
+
+  it.each(['de', 'en'] as const)('AK-38: Bild mit Alt-Text auf der Übersicht (%s)', (locale) => {
+    render(<ServicesOverview locale={locale} />);
+    const alt = ds.image![locale === 'de' ? 'alt' : 'altEn'];
+    expect(alt.length).toBeGreaterThan(40);
+    const img = screen.getByRole('img', { name: alt });
+    expect(img.getAttribute('src')).toMatch(/design-systeme/);
+  });
+});
+
+// Erik, 2026-10-07: nicht nur Webflow
+describe('AK-39/AK-40: Webdesign & Webentwicklung', () => {
+  const service = services.find((s) => s.slug === 'web-design-development');
+  it('heißt Webdesign & Webentwicklung, alter Slug ist weg', () => {
+    expect(service?.de.title).toBe('Webdesign & Webentwicklung');
+    expect(service?.en.title).toBe('Web design & development');
+    expect(services.some((s) => s.slug === 'webflow-development')).toBe(false);
+    for (const s of services) expect(s.related).not.toContain('webflow-development');
+  });
+  it.each(['de', 'en'] as const)('nennt Webflow, Framer und eigene Entwicklung (%s)', (locale) => {
+    const text = service![locale].features.join(' ');
+    for (const word of ['Webflow', 'Framer', 'TypeScript', 'Supabase', 'Vercel', 'Claude Code'])
+      expect(text).toContain(word);
+    const tools = detailOf('web-design-development').tools;
+    for (const tool of ['Webflow', 'Framer', 'TypeScript', 'Supabase', 'Vercel', 'Claude Code'])
+      expect(tools).toContain(tool);
+  });
+  it.each(['de', 'en'] as const)('kein „Webflow-Entwicklung“ auf Leistungsseiten (%s)', (locale) => {
+    const { container: overview } = render(<ServicesOverview locale={locale} />);
+    expect(overview.textContent).not.toMatch(/Webflow-Entwicklung|Webflow development/i);
+    for (const s of services) {
+      const { container, unmount } = render(<ServiceDetail service={s} locale={locale} />);
+      expect(container.textContent, s.slug).not.toMatch(
+        /Webflow-Entwicklung|Webflow development|Webflow-Website|Webflow website/i,
+      );
+      unmount();
+    }
+    const meta = `${overviewText[locale].metaTitle} ${overviewText[locale].metaDescription}`;
+    expect(meta).not.toMatch(/Webflow/);
+  });
+});
+
+// Erik, 2026-10-07: kürzer, Entweder-oder, Bilder
+describe('AK-41: kurze Beschreibung, Werkzeuge als Entweder-oder', () => {
+  const service = services.find((s) => s.slug === 'web-design-development')!;
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    const t = service[locale];
+    expect(t.description.length).toBeLessThanOrEqual(120);
+    expect(t.description).not.toMatch(/Webflow|Framer|TypeScript|Supabase|Vercel|Claude/);
+    const [either, or] = locale === 'de' ? ['Entweder', 'Oder'] : ['Either', 'Or'];
+    const first = t.features.find((f) => f.startsWith(either))!;
+    const second = t.features.find((f) => f.startsWith(`${or} `))!;
+    expect(first).toMatch(/Webflow.*Framer/);
+    expect(first).not.toMatch(/TypeScript/);
+    for (const word of ['TypeScript', 'Supabase', 'Vercel', 'Claude Code']) expect(second).toContain(word);
+    expect(t.features.indexOf(second)).toBe(t.features.indexOf(first) + 1);
+  });
+});
+
+describe('AK-42: Bilder für Webdesign und Marke', () => {
+  it.each([
+    ['web-design-development', '/images/services/webdesign-webentwicklung.png'],
+    ['brand-logo-design', '/images/services/brand-logo-design.png'],
+  ])('%s', (slug, src) => {
+    const s = services.find((x) => x.slug === slug)!;
+    expect(s.image).toMatchObject({ src, width: 1600, height: 900 });
+    expect(s.image!.alt.length).toBeGreaterThan(40);
+    expect(s.image!.altEn.length).toBeGreaterThan(40);
+    render(<ServicesOverview locale="de" />);
+    expect(screen.getByRole('img', { name: s.image!.alt })).toBeInTheDocument();
   });
 });

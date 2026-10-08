@@ -200,11 +200,11 @@ describe('AK-16: Titelbild', () => {
 });
 
 describe('AK-17: passende Leistung', () => {
-  it('Webflow vs. Shopify verlinkt Webflow-Entwicklung', () => {
+  it('Webflow vs. Shopify verlinkt Webdesign & Webentwicklung (leistungen.md AK-39)', () => {
     render(<ProjectDetail project={find('webflow')} locale="de" />);
-    expect(screen.getByRole('link', { name: /Webflow-Entwicklung/ })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Webdesign & Webentwicklung/ })).toHaveAttribute(
       'href',
-      '/services/webflow-development',
+      '/services/web-design-development',
     );
   });
 

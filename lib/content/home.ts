@@ -4,9 +4,9 @@ import { projects } from '@/lib/content/projects';
 // Texte der Startseite, siehe functions/seiten/startseite.md
 export const homeContent = {
   de: {
-    metaTitle: 'Erik Bergheimer: UX/UI-Design & Webflow aus Augsburg',
+    metaTitle: 'Erik Bergheimer: UX/UI-Design & Webentwicklung aus Augsburg',
     metaDescription:
-      'UX/UI-Design, Webflow-Websites, Barrierefreiheit und KI-Beratung aus Augsburg, vor Ort oder remote. Kostenloses Erstgespräch.',
+      'UX/UI-Design, Webdesign & Webentwicklung, Barrierefreiheit und KI-Beratung aus Augsburg, vor Ort oder remote. Kostenloses Erstgespräch.',
     // Typografischer Hero (functions/seiten/startseite.md AK-43 bis AK-46, Wörter AK-70)
     hero: {
       lines: ['Hey, ich bin', 'Erik', 'Design', 'Engineer'],
@@ -102,7 +102,7 @@ export const homeContent = {
     references: 'Referenzen',
     viewAll: 'Alle Projekte ansehen',
     offerIntro:
-      'Sieben Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Webflow-Website.',
+      'Sieben Leistungen, ein Ansprechpartner: von der ersten Nutzerforschung über das Design bis zur barrierefreien Website.',
     learnMore: 'Mehr erfahren',
     offerEyebrow: 'Leistungen',
     offerNav: 'Leistungen auf dieser Seite',
@@ -111,7 +111,7 @@ export const homeContent = {
     aboutTitle: 'Über mich',
     // TODO(Erik): persönliche Notiz prüfen oder ersetzen (Issue #14)
     aboutText: [
-      'Ich bin Erik, UX/UI-Designer und Webflow-Entwickler aus Augsburg. Ich arbeite direkt mit dir, ohne Agentur-Umwege: Du sprichst mit der Person, die auch gestaltet und baut.',
+      'Ich bin Erik, UX/UI-Designer und Webentwickler aus Augsburg. Ich arbeite direkt mit dir, ohne Agentur-Umwege: Du sprichst mit der Person, die auch gestaltet und baut.',
       'Mir ist wichtig, dass Websites für alle funktionieren. Deshalb denke ich Barrierefreiheit, Ladezeit und Auffindbarkeit von Anfang an mit, und setze KI dort ein, wo sie dir wirklich Arbeit abnimmt.',
     ],
     aboutMore: 'Mehr über mich',
@@ -124,9 +124,9 @@ export const homeContent = {
     ctaMail: 'Oder schreib direkt an',
   },
   en: {
-    metaTitle: 'Erik Bergheimer: UX/UI design & Webflow, Augsburg',
+    metaTitle: 'Erik Bergheimer: UX/UI design & web development, Augsburg',
     metaDescription:
-      'UX/UI design, Webflow websites, accessibility and AI consulting from Augsburg, on site or remote. Book a free intro call.',
+      'UX/UI design, web design & development, accessibility and AI consulting from Augsburg, on site or remote. Book a free intro call.',
     hero: {
       lines: ["Hey, I'm", 'Erik', 'Design', 'Engineer'],
       note: 'Passionate about football, mountain sports & cooking',
@@ -219,8 +219,7 @@ export const homeContent = {
     projects: 'A selection of my projects.',
     references: 'References',
     viewAll: 'View all projects',
-    offerIntro:
-      'Seven services, one point of contact: from first user research and design to an accessible Webflow website.',
+    offerIntro: 'Seven services, one point of contact: from first user research and design to an accessible website.',
     learnMore: 'Learn more',
     offerEyebrow: 'Services',
     offerNav: 'Services on this page',
@@ -229,7 +228,7 @@ export const homeContent = {
     aboutTitle: 'About me',
     // TODO(Erik): review or replace the personal note (issue #14)
     aboutText: [
-      "I'm Erik, a UX/UI designer and Webflow developer based in Augsburg. You work with me directly, no agency layers: the person you talk to is the person who designs and builds.",
+      "I'm Erik, a UX/UI designer and web developer based in Augsburg. You work with me directly, no agency layers: the person you talk to is the person who designs and builds.",
       'I care about websites that work for everyone. That is why accessibility, speed and findability are part of every project from day one, and why I use AI where it genuinely saves you work.',
     ],
     aboutMore: 'More about me',

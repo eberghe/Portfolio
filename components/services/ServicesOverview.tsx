@@ -13,9 +13,9 @@ import { servicesItemListJsonLd } from '@/lib/structured-data';
 
 export const overviewText = {
   de: {
-    metaTitle: 'Leistungen: UX/UI, Webflow, Barrierefreiheit, KI | Erik Bergheimer',
+    metaTitle: 'Leistungen: UX/UI, Webentwicklung, Barrierefreiheit, KI | Erik Bergheimer',
     metaDescription:
-      'UX/UI, Webflow, Barrierefreiheit, KI-Beratung, Website-Optimierung, Brand-Design und Design Systems aus Augsburg.',
+      'UX/UI, Webdesign & Webentwicklung, Barrierefreiheit, KI-Beratung, Website-Optimierung, Brand-Design und Design Systeme aus Augsburg.',
     eyebrow: 'Was ich mache',
     title: 'Leistungen für Websites und digitale Produkte',
     intro: 'Viele Fähigkeiten, ein Ansprechpartner: von der ersten Idee bis zur fertigen, barrierefreien Umsetzung.',
@@ -31,9 +31,9 @@ export const overviewText = {
     contact: 'Kostenloses Erstgespräch',
   },
   en: {
-    metaTitle: 'Services: UX/UI, Webflow, accessibility, AI | Erik Bergheimer',
+    metaTitle: 'Services: UX/UI, web development, accessibility, AI | Erik Bergheimer',
     metaDescription:
-      'UX/UI, Webflow, accessibility, AI consulting, website optimisation, brand design and design systems from Augsburg.',
+      'UX/UI, web design & development, accessibility, AI consulting, website optimisation, brand design and design systems from Augsburg.',
     eyebrow: 'What I do',
     title: 'Services for websites and digital products',
     intro: 'Many skills, one point of contact: from the first idea to a finished, accessible build.',
@@ -154,6 +154,7 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                               <span className="relative block aspect-[4/3] overflow-hidden">
                                 <Image
                                   src={p.thumbnail.src}
+                                  quality={90}
                                   alt=""
                                   fill
                                   sizes="(min-width: 768px) 200px, 45vw"
@@ -191,15 +192,33 @@ export default function ServicesOverview({ locale }: { locale: Locale }) {
                 </div>
               </div>
             </section>
-            {/* Vollbild unter jeder Leistung (AK-32). TODO(Erik): echte Bilder je Leistung */}
-            <div
-              data-fullbleed
-              aria-hidden="true"
-              className="relative h-[70svh] max-h-[720px] min-h-[280px] overflow-hidden bg-[#0b1219] flex items-center justify-center"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_30%_20%,hsl(var(--primary)/0.55),transparent_70%),radial-gradient(ellipse_60%_60%_at_85%_90%,hsl(160_60%_45%/0.35),transparent_70%)]" />
-              <Icon className="relative w-20 h-20 md:w-28 md:h-28 text-white/85" strokeWidth={1} />
-            </div>
+            {/* Vollbild unter jeder Leistung (AK-32); echtes Bild mit Alt-Text, sonst dekorativer Platzhalter (AK-38).
+                TODO(Erik): Bilder für die übrigen Leistungen */}
+            {s.image ? (
+              // Ganzes Bild ohne Beschnitt: Breite Bänder und Hochformat würden sonst Bausteine abschneiden, die der Alt-Text nennt.
+              // Höchstens 960 px breit: Die Originale sind 1600 px, breiter würde es auf Retina unscharf (leistungen.md AK-43)
+              <div data-fullbleed className="bg-bg2 border-y border-border px-4 sm:px-8 md:px-12 py-8 md:py-14">
+                <div className="relative max-w-[960px] mx-auto aspect-[16/9] rounded-xl overflow-hidden">
+                  <Image
+                    src={s.image.src}
+                    alt={locale === 'de' ? s.image.alt : s.image.altEn}
+                    fill
+                    sizes="(min-width: 1024px) 960px, calc(100vw - 32px)"
+                    quality={90}
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div
+                data-fullbleed
+                aria-hidden="true"
+                className="relative h-[70svh] max-h-[720px] min-h-[280px] overflow-hidden bg-[#0b1219] flex items-center justify-center"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_70%_at_30%_20%,hsl(var(--primary)/0.55),transparent_70%),radial-gradient(ellipse_60%_60%_at_85%_90%,hsl(160_60%_45%/0.35),transparent_70%)]" />
+                <Icon className="relative w-20 h-20 md:w-28 md:h-28 text-white/85" strokeWidth={1} />
+              </div>
+            )}
           </Fragment>
         );
       })}

@@ -62,6 +62,10 @@ const de = {
     backToTop: 'Nach oben',
     clockLabel: 'Ortszeit in Augsburg',
     email: 'E-Mail',
+    tagline: 'Design Engineer aus Königsbrunn bei Augsburg.',
+    contact: 'Kontakt',
+    pages: 'Seiten',
+    firstCall: 'Kostenloses Erstgespräch',
   },
 };
 
@@ -91,6 +95,10 @@ const en: Messages = {
     backToTop: 'Back to top',
     clockLabel: 'Local time in Augsburg',
     email: 'Email',
+    tagline: 'Design engineer from Königsbrunn near Augsburg.',
+    contact: 'Contact',
+    pages: 'Pages',
+    firstCall: 'Free intro call',
   },
 };
 

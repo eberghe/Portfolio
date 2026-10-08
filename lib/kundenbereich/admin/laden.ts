@@ -1,6 +1,7 @@
 import type { DokumentRow } from '../dokumente';
 import type { ProjektRow, ProjektStatus } from '../projekte';
 import type { AdminApi } from './aktionen';
+import type { AssistentKunde } from './assistent';
 import type { Anfrage, DashboardDaten, DashboardProjekt, DashboardTermin, Umsatz } from './dashboard';
 
 // Daten der Verwaltung, gelesen mit Eriks Token (functions/kundenbereich/admin.md)
@@ -109,4 +110,20 @@ export async function dashboardDaten(api: AdminApi, now = new Date()): Promise<D
     kundenListe(api),
   ]);
   return { projekte, termine, anfragen, kunden };
+}
+
+/** Kunden mit Ansprechpartnern für den Assistenten (projekt-assistent.md) */
+export const assistentKunden = (api: AdminApi) =>
+  api.get<AssistentKunde>('kunden', {
+    select: 'id,name,ansprechpartner(id,name,email)',
+    order: 'name.asc',
+    'ansprechpartner.order': 'name.asc',
+  });
+
+export async function anfrage(api: AdminApi, id: string) {
+  const [a] = await api.get<Anfrage>('anfragen', {
+    select: 'id,created_at,name,email,telefon,website,leistungen,zeitrahmen,budget,beschreibung,status,sprache',
+    id: `eq.${id}`,
+  });
+  return a ?? null;
 }

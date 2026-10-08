@@ -104,3 +104,6 @@ export async function umsatzSpeichern(_: S, fd: FormData) {
 export async function anfrageStatus(_: S, fd: FormData) {
   return go(A.anfrageStatus, fd);
 }
+export async function projektMitAssistent(_: S, fd: FormData) {
+  return go(A.projektMitAssistent, fd);
+}

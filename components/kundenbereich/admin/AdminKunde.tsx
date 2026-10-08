@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import {
   ansprechpartnerEinladen,
@@ -6,8 +7,8 @@ import {
   kundeSpeichern,
   logoUebernehmen,
   logoVorbereiten,
-  projektAnlegen,
 } from '@/app/actions/kundenbereich-admin';
+import { buttonClass } from '@/components/ui/Button';
 import type { KundeDetail } from '@/lib/kundenbereich/admin/laden';
 import { freigabeText, optionLabel, PROJEKT_STATUS_OPTIONEN, SPRACH_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
 import { datum } from '@/lib/kundenbereich/projekte';
@@ -168,15 +169,11 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
             ))}
           </ul>
         )}
-        <AdminForm
-          id="projekt-neu"
-          title="Projekt anlegen"
-          titleLevel={3}
-          action={projektAnlegen}
-          submitLabel="Projekt anlegen"
-          hidden={{ kunde_id: k.id }}
-          felder={[{ name: 'titel', label: 'Titel', required: true }]}
-        />
+        {/* Projekte entstehen im Assistenten (projekt-assistent.md) */}
+        <Link href={`/kunden/admin/projekte/neu?kunde=${k.id}`} className={buttonClass('primary')}>
+          <Plus size={15} aria-hidden="true" />
+          Neues Projekt
+        </Link>
       </section>
     </AdminShell>
   );

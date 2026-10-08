@@ -1,4 +1,5 @@
 import { AdminFehler, type adminApi } from './api';
+import { assistentDaten, normalisieren } from './assistent';
 import { ANFRAGE_STATUS, type AnfrageStatus } from './dashboard';
 import {
   ansprechpartnerDaten,
@@ -26,7 +27,12 @@ export type AdminApi = NonNullable<ReturnType<typeof adminApi>>;
 export type AdminState =
   | { status: 'idle' }
   | { status: 'ok'; message: string; redirect?: string; upload?: { url: string; pfad: string } }
-  | { status: 'error'; message?: string; errors?: Record<string, string> };
+  | {
+      status: 'error';
+      message?: string;
+      errors?: Record<string, string>;
+      /** Assistent: Schritt mit Fehler */ schritt?: number;
+    };
 
 export type Einladung = 'sent' | 'limit' | 'unknown' | 'unavailable';
 
@@ -233,6 +239,42 @@ export const umsatzSpeichern = (fd: FormData, ctx: AdminCtx) =>
     if (!r.ok) return fehler(r.errors);
     await api.upsert('projekt_umsatz', { projekt_id: pid, ...r.data });
     return ok();
+  });
+
+/** Projekt aus dem Assistenten in einer Transaktion anlegen (projekt-assistent.md Verhalten 5 und 6) */
+export const projektMitAssistent = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    let raw: unknown;
+    try {
+      raw = JSON.parse(str(fd, 'daten'));
+    } catch {
+      raw = null;
+    }
+    const daten = normalisieren(raw);
+    if (!daten) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    const r = assistentDaten(daten);
+    if (!r.ok) return { ...fehler(r.errors), schritt: r.schritt };
+    // vergebene E-Mails vorher prüfen, damit der Fehler am richtigen Feld steht
+    const vergeben: Record<string, string> = {};
+    for (const [i, a] of r.payload.ansprechpartner_neu.entries()) {
+      const da = await api.get('ansprechpartner', { select: 'id', email: `eq.${String(a.email)}` });
+      if (da.length) vergeben[`ap.${i}.email`] = ADMIN_TEXT.emailVergeben;
+    }
+    if (Object.keys(vergeben).length) return { ...fehler(vergeben), schritt: 2 };
+    let pid: string;
+    try {
+      pid = await api.rpc<string>('projekt_anlegen', { daten: r.payload });
+    } catch (e) {
+      if (e instanceof AdminFehler && e.code === '23505')
+        return { status: 'error', message: ADMIN_TEXT.emailVergeben, schritt: 2 };
+      throw e;
+    }
+    let ziel = `/kunden/admin/projekte/${pid}?angelegt=1`;
+    if (r.einladen.length) {
+      const ergebnisse = await Promise.all(r.einladen.map((m) => (ctx.einladen ? ctx.einladen(m) : 'unavailable')));
+      ziel += `&eingeladen=${ergebnisse.filter((x) => x === 'sent').length}&von=${r.einladen.length}`;
+    }
+    return ok('Projekt angelegt.', { redirect: ziel });
   });
 
 // Anfragen ------------------------------------------------------------------------------------------

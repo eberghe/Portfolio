@@ -35,7 +35,7 @@ Erik legt ein neues Projekt in einem geführten Ablauf an statt auf mehreren Sei
       - Der erste Schritt startet als „aktiv“, alle anderen als „offen“. Ein leerer Ablauf ist erlaubt.
    5. **Termin:** das Kontrollkästchen „Ersten Termin eintragen“. Ist es an, gibt es die Felder Datum, Beginn, Ende (deutsche Zeit), Thema Deutsch und Englisch und Meet-Link.
    6. **Prüfen:** eine Zusammenfassung je Abschnitt mit „Bearbeiten: <Abschnitt>“, das zum jeweiligen Schritt springt. Darunter der Button „Projekt anlegen“.
-4. „Weiter“ prüft den aktuellen Schritt mit denselben Regeln wie der Server. Fehler stehen am Feld, eine Fehlerliste steht über dem Schritt, und der Fokus springt auf die Liste. „Zurück“ prüft nicht. Eingaben bleiben beim Blättern erhalten, weil alle Schritte im DOM bleiben.
+4. „Weiter“ prüft den aktuellen Schritt mit denselben Regeln wie der Server. Fehler stehen am Feld, eine Fehlerliste steht über dem Schritt, und der Fokus springt auf die Liste. „Zurück“ prüft nicht. Eingaben bleiben beim Blättern erhalten: Der Assistent hält alle Eingaben im Zustand und zeigt nur den aktuellen Schritt.
 5. „Projekt anlegen“ schickt alle Daten in einem Aufruf an den Server:
    - Der Server prüft erneut. Bei Fehlern springt der Assistent zum ersten Schritt mit Fehler.
    - Dann legt der Server alles in einer Datenbank-Transaktion an, über die Funktion `projekt_anlegen`: Kunde (falls neu), Projekt, Umsatz, neue Ansprechpartner, Zuordnung, Schritte und Termin. Schlägt ein Teil fehl, wird nichts angelegt.

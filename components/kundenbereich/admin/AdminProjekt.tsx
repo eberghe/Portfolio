@@ -85,7 +85,16 @@ const betragText = (v: string | number | null | undefined) =>
     ? ''
     : new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2, useGrouping: true }).format(Number(v));
 
-export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt: ProjektDetail; now?: Date }) {
+export default function AdminProjekt({
+  projekt: p,
+  now = new Date(),
+  hinweis,
+}: {
+  projekt: ProjektDetail;
+  now?: Date;
+  /** Meldung nach dem Assistenten, z. B. „Projekt angelegt.“ */
+  hinweis?: string;
+}) {
   const kunde = p.kunden;
   const naechste = Math.max(0, ...p.projektschritte.map((s) => s.reihenfolge)) + 1;
   const zugeordnet = p.projekt_ansprechpartner.map((a) => a.ansprechpartner_id);
@@ -103,6 +112,14 @@ export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt
         </Link>
       }
     >
+      {hinweis && (
+        <p
+          role="status"
+          className="border border-primary-border bg-primary-light rounded-lg px-3 py-2 text-[14px] text-foreground mb-6"
+        >
+          {hinweis}
+        </p>
+      )}
       {/* Kritiker Verwaltung 1: Sprungmarken, Schritte eingeklappt */}
       <nav aria-label="Auf dieser Seite" className="mb-8">
         <ul role="list" className="flex flex-wrap gap-2">

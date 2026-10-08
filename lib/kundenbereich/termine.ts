@@ -61,6 +61,18 @@ export function zeitraum(beginn: string, ende: string, locale: Locale, timeZone 
   return `${tag}, ${uhrzeit(beginn, ende, locale, timeZone)}`;
 }
 
+/** „Do., 15. Okt., 10:00“ für die Kachel (kunden-dashboard.md) */
+export function kurzTermin(beginn: string, locale: Locale, timeZone = SERVER_ZEITZONE) {
+  return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'de-DE', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone,
+  }).format(new Date(beginn));
+}
+
 const berlinDatum = (iso: string) =>
   new Intl.DateTimeFormat('en-CA', { timeZone: SERVER_ZEITZONE }).format(new Date(iso));
 

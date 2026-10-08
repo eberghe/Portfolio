@@ -37,7 +37,10 @@ export function splitLocale(pathname: string): { locale: Locale; path: string } 
 
 /** Dieselbe Seite in einer anderen Sprache. */
 export function alternatePath(pathname: string, target: Locale): string {
-  return localizedPath(splitLocale(pathname).path, target);
+  const { path } = splitLocale(pathname);
+  // Verwaltung des Kundenbereichs gibt es nur deutsch (functions/kundenbereich/admin.md)
+  if (target === 'en' && path.startsWith('/kunden/admin')) return localizedPath('/kunden', target);
+  return localizedPath(path, target);
 }
 
 const de = {

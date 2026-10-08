@@ -87,12 +87,5 @@ export default function UmsatzDiagramm({ jahre }: { jahre: Jahr[] }) {
   );
 }
 
-/** „16 T€“, „1,2 Mio. €“ für die Beschriftung über der Säule */
-function kurz(n: number) {
-  return new Intl.NumberFormat('de-DE', {
-    notation: 'compact',
-    maximumFractionDigits: 1,
-    style: 'currency',
-    currency: 'EUR',
-  }).format(n);
-}
+/** Kritiker Dashboard 11: gleiche Schreibweise wie Tabelle und Kacheln */
+const kurz = euro;

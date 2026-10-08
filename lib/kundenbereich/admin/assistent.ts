@@ -118,8 +118,14 @@ export function vorbelegung({
   kunden: AssistentKunde[];
 }): AssistentDaten {
   const d = leererAssistent();
-  if (kundeId && kunden.some((k) => k.id === kundeId))
-    d.kunde = { modus: 'bestehend', id: kundeId, name: '', website_url: '' };
+  // Kritiker Assistent 12: mit bestehenden Kunden startet „Bestehender Kunde“, gegen Dubletten
+  if (kunden.length > 0)
+    d.kunde = {
+      modus: 'bestehend',
+      id: kunden.some((k) => k.id === kundeId) ? kundeId! : '',
+      name: '',
+      website_url: '',
+    };
   if (anfrage) {
     d.anfrage_id = anfrage.id;
     d.kunde = { modus: 'neu', id: '', name: anfrage.name, website_url: mitHttps(anfrage.website) };

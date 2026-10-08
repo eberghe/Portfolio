@@ -1,6 +1,6 @@
 # Kundenbereich: Projekt anlegen in Schritten
 
-Status: In Arbeit
+Status: Umgesetzt (Preview, nicht live)
 
 ## Zweck
 
@@ -90,3 +90,17 @@ Migration `20261008200000_dashboard.sql`: Funktion `public.projekt_anlegen(daten
 - `tests/unit/kundenbereich-assistent.test.tsx`: Prüfung, Vorbelegung, Ablauf-Liste, Aktion, Ansicht (AK-2 bis AK-6, AK-8)
 - `tests/unit/kundenbereich-datenmodell.test.ts`: `projekt_anlegen` (AK-1, AK-7)
 - `tests/e2e/kundenbereich-admin.spec.ts`: Assistent im Browser, axe (AK-9)
+
+## Blinder Kritiker (2026-10-08)
+
+Behoben (mit Test):
+
+- 5: Nach „Bearbeiten: …“ führt „Zurück zur Prüfung“ direkt zu Schritt 6, nach Prüfung des Schritts.
+- 7: Einträge im Ablauf heißen „Ablaufschritt“, Button „Ablaufschritt hinzufügen“.
+- 8: Prüfen zeigt beschriftete Werte (Titel, Status, Auftragswert, Wahrscheinlichkeit, Abrechnung) und je Ablaufschritt „(Erik)“ oder „(Kunde)“.
+- 9/20: Entfernen eines Ablaufschritts leert alte Fehler; der Fokus geht auf das nächste, beim letzten auf das vorige Titelfeld.
+- 12: Gibt es Kunden, startet der Assistent mit „Bestehender Kunde“.
+- 13: Pflichtfelder beim Hinzufügen heißen „(Pflicht beim Hinzufügen)“; das Kontrollkästchen „Anmeldelink …“ erklärt, dass nur neue Ansprechpartner den Link bekommen.
+- 14: Der Fehler „mindestens ein Ansprechpartner“ führt zum ersten Kontrollkästchen; die Gruppe verweist per `aria-describedby` auf den Fehler.
+
+Offen: #67 (leeres Datum, Zeitzonen-Hinweis, Seitentitel je Schritt, https ergänzen).

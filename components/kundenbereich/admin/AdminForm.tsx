@@ -101,7 +101,8 @@ export default function AdminForm({
       ))}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mb-5">
         {felder.map((f) => {
-          const fid = `${id}-${f.name}`;
+          // Kritiker Dashboard 3: eigener Präfix, damit Feld-IDs nicht mit der Überschrift kollidieren
+          const fid = `${id}-feld-${f.name}`;
           const marker = f.required ? '(Pflicht)' : undefined;
           const span = f.half ? '' : 'sm:col-span-2';
           if (f.type === 'select')

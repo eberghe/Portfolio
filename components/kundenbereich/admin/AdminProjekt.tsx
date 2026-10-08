@@ -27,6 +27,7 @@ import { datum } from '@/lib/kundenbereich/projekte';
 import { terminTitel, zeitraum } from '@/lib/kundenbereich/termine';
 import ActionButton from './ActionButton';
 import AdminForm, { type Feld } from './AdminForm';
+import FokusHinweis from './FokusHinweis';
 import AdminShell, { adminSection, listItem } from './AdminShell';
 import UploadForm from './UploadForm';
 
@@ -112,14 +113,7 @@ export default function AdminProjekt({
         </Link>
       }
     >
-      {hinweis && (
-        <p
-          role="status"
-          className="border border-primary-border bg-primary-light rounded-lg px-3 py-2 text-[14px] text-foreground mb-6"
-        >
-          {hinweis}
-        </p>
-      )}
+      {hinweis && <FokusHinweis>{hinweis}</FokusHinweis>}
       {/* Kritiker Verwaltung 1: Sprungmarken, Schritte eingeklappt */}
       <nav aria-label="Auf dieser Seite" className="mb-8">
         <ul role="list" className="flex flex-wrap gap-2">

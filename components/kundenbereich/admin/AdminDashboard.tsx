@@ -321,9 +321,10 @@ function AnfrageListe({ anfragen }: { anfragen: Anfrage[] }) {
             <h3 className="text-[15px] font-bold break-words min-w-0">{a.name}</h3>
             <span className="text-[13px] text-text2">{datum(a.created_at.slice(0, 10), 'de')}</span>
           </div>
-          <p className="text-[13px] text-text2">{a.leistungen.map(leistung).join(', ')}</p>
+          {/* Kritiker Dashboard 10: Werte beschriftet */}
+          <p className="text-[13px] text-text2">Leistungen: {a.leistungen.map(leistung).join(', ')}</p>
           <p className="flex flex-wrap gap-x-3 text-[13px] text-text2">
-            <span>{ct.timeframes[a.zeitrahmen as keyof typeof ct.timeframes] ?? a.zeitrahmen}</span>
+            <span>Zeitrahmen: {ct.timeframes[a.zeitrahmen as keyof typeof ct.timeframes] ?? a.zeitrahmen}</span>
             <span>Budget: {ct.budgets[a.budget as keyof typeof ct.budgets] ?? a.budget}</span>
           </p>
           <p className="flex flex-wrap gap-x-4 text-[13px]">

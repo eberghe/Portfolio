@@ -1,6 +1,6 @@
 # Kundenbereich: Dashboard der Verwaltung
 
-Status: In Arbeit
+Status: Umgesetzt (Preview, nicht live)
 
 ## Zweck
 
@@ -95,3 +95,16 @@ Migration `20261008200000_dashboard.sql` (rein additiv):
 - `tests/unit/kundenbereich-dashboard.test.tsx`: Prognose, Kennzahlen, Prüfungen, Aktionen, Ansicht (AK-1 bis AK-7)
 - `tests/unit/kundenbereich-datenmodell.test.ts`: Regeln für `projekt_umsatz` und `anfragen` (AK-8)
 - `tests/e2e/kundenbereich-admin.spec.ts`: Dashboard im Browser, axe (AK-9)
+
+## Blinder Kritiker (2026-10-08)
+
+Behoben (mit Test):
+
+- 1: Projektlinks führen zur Projektseite (E2E prüft den Link).
+- 2: „English“ führt auf Verwaltungsseiten zu `/en/clients` statt zu 404 (`alternatePath`).
+- 3: Formularfelder haben eigene IDs (`<form>-feld-<name>`), keine Kollision mit der Überschrift; das Titelfeld hat wieder einen Namen.
+- 4: Meldung nach dem Anlegen („Projekt angelegt.“) bekommt den Fokus.
+- 10: Anfragen zeigen „Leistungen:“ und „Zeitrahmen:“, das Status-Feld heißt „Status: <Name>“.
+- 11: Beschriftungen im Diagramm wie Tabelle und Kacheln („12.000 €“).
+
+Offen: #67 (https ergänzen, deutsche 404 in der Verwaltung), #68 (Footer-Text).

@@ -1,6 +1,6 @@
 # Kundenbereich: Kundensicht als Dashboard
 
-Status: In Arbeit
+Status: Umgesetzt (Preview, nicht live)
 
 ## Zweck
 
@@ -21,7 +21,7 @@ Die Projektübersicht für Kundinnen und Kunden wird ein Dashboard. Oben stehen 
 3. Darunter die **Karten**, alle mit Rahmen, gerundet und mit gleichem Innenabstand:
    - in der rechten Spalte Termin, Nächste Schritte, Links und Logo-Freigabe
    - in der linken Spalte Ablauf und Dokumente
-   Die Reihenfolge im DOM bleibt: Kacheln, Termin, Nächste Schritte, Links, Logo, Ablauf, Dokumente (`termine.md`, Kritiker 2).
+     Die Reihenfolge im DOM bleibt: Kacheln, Termin, Nächste Schritte, Links, Logo, Ablauf, Dokumente (`termine.md`, Kritiker 2).
 4. EN: alle neuen Texte englisch („Progress“, „3 of 7“, „steps done“, „Next meeting“, „Your turn“, „All with Erik“, „Documents“).
 
 ## Akzeptanzkriterien
@@ -60,3 +60,13 @@ Keine neuen Daten.
 
 - `tests/unit/kundenbereich-projekte.test.tsx`: Kennzahlen und Kacheln (AK-1 bis AK-5)
 - `tests/e2e/kundenbereich-projekte.spec.ts`: axe, Layout (AK-6)
+
+## Blinder Kritiker (2026-10-08)
+
+Behoben (mit Test):
+
+- 6: Sichtbare Reihenfolge entspricht der DOM-Reihenfolge: links Termin, nächste Schritte, Links, Logo; rechts Ablauf und Dokumente.
+- 16: „2 von 6 Schritten erledigt“.
+- 17 (teilweise): Logo-Freigabe als Karte wie die anderen Abschnitte.
+
+Offen: #65 (Fokus nach Logo-Freigabe, Überschrift), #66 (englische Texte).

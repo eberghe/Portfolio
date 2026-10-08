@@ -306,4 +306,15 @@ describe('Ansicht', () => {
     expect(prognose.querySelector('svg')).toBeNull();
     expect(screen.getByRole('region', { name: 'Nächste Termine' })).toHaveTextContent('Keine Termine geplant.');
   });
+
+  it('Kritiker Dashboard 10/11: Anfragen beschriftet, Diagramm wie die Tabelle formatiert', () => {
+    const { container } = render(<AdminDashboard daten={DATEN} now={NOW} />);
+    const anfragen = screen.getByRole('region', { name: 'Anfragen' });
+    expect(anfragen).toHaveTextContent('Leistungen:');
+    expect(anfragen).toHaveTextContent('Zeitrahmen:');
+    expect(within(anfragen).getByRole('combobox', { name: 'Status: Max Muster' })).toBeInTheDocument();
+    const beschriftung = [...container.querySelectorAll('svg text')].map((t) => t.textContent ?? '');
+    expect(beschriftung.length).toBeGreaterThan(0);
+    for (const t of beschriftung.filter((x) => x.includes('€'))) expect(t).not.toMatch(/,0|T€|Mio/);
+  });
 });

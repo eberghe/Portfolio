@@ -223,6 +223,13 @@ describe('Verwaltung', () => {
     expect(screen.getByRole('navigation', { name: 'Auf dieser Seite' })).toHaveTextContent('Umsatz');
   });
 
+  it('Kritiker Dashboard 4: Meldung nach dem Anlegen bekommt den Fokus', async () => {
+    render(<AdminProjekt projekt={PROJEKT} hinweis="Projekt angelegt." />);
+    const meldung = screen.getByRole('status');
+    expect(meldung).toHaveTextContent('Projekt angelegt.');
+    await waitFor(() => expect(meldung).toHaveFocus());
+  });
+
   it('Befunde Blinder Kritiker zur Verwaltung', () => {
     const doks = [
       PROJEKT.dokumente[0]!,
@@ -254,6 +261,12 @@ describe('Verwaltung', () => {
     expect(screen.getByText(/Aktuell:/).parentElement).toHaveTextContent('Version 2');
     // 5: keine Browser-Blasen statt eigener Meldungen
     for (const f of container.querySelectorAll('form')) expect(f).toHaveAttribute('novalidate');
+    // Kritiker Dashboard 3: IDs eindeutig, Titel-Feld hat einen Namen
+    const ids = [...container.querySelectorAll('[id]')].map((e) => e.id);
+    expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
+    expect(within(screen.getByRole('form', { name: 'Projekt' })).getByRole('textbox', { name: /^Titel/ })).toHaveValue(
+      'Relaunch',
+    );
     // 7: Pfad endet mit der aktuellen Seite
     expect(
       within(screen.getByRole('navigation', { name: 'Pfad' })).getByText('Relaunch', { selector: 'li' }),

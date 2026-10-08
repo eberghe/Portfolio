@@ -29,6 +29,19 @@ test('AK-3/AK-4: Projekt mit Ablauf und nächsten Schritten', async ({ page }) =
   await expect(page.getByRole('navigation', { name: 'Deine Projekte' })).toHaveCount(0);
 });
 
+test('kunden-dashboard.md AK-2/AK-3: Kacheln springen zu den Abschnitten', async ({ page }) => {
+  await login(page, 'anna');
+  await openHydrated(page, '/kunden');
+  const kacheln = page.getByRole('list', { name: 'Auf einen Blick' });
+  await expect(kacheln.getByRole('listitem')).toHaveCount(4);
+  await expect(kacheln.getByRole('progressbar', { name: 'Projektfortschritt' })).toHaveAttribute('aria-valuenow', '2');
+  await expect(kacheln).toContainText('2 von 6 Schritten erledigt');
+  await kacheln.getByRole('link', { name: /1 Schritt/ }).click();
+  await expect(page.getByRole('heading', { level: 3, name: 'Nächste Schritte' })).toBeInViewport();
+  await kacheln.getByRole('link', { name: 'Zu den Dokumenten' }).click();
+  await expect(page.getByRole('heading', { level: 3, name: 'Dokumente' })).toBeInViewport();
+});
+
 test('termine.md AK-3/AK-6: nächster Termin mit Meet-Link und Kalenderdatei', async ({ page }) => {
   await login(page, 'anna');
   await openHydrated(page, '/kunden');

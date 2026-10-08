@@ -163,6 +163,35 @@ const adminProjekt = () => ({
 
 const annaFreigabe = { stand: 'offen', letzte: [] };
 
+// Dashboard der Verwaltung (admin-dashboard.md): Umsatz je Projekt, Anfragen, neu angelegte Projekte
+const umsatz = {
+  'p-relaunch': { auftragswert_netto: '12000', wahrscheinlichkeit: 100, abrechnung_am: '2026-11-30' },
+  'p-logo': { auftragswert_netto: '3000', wahrscheinlichkeit: 50, abrechnung_am: '2027-02-15' },
+};
+const anfragen = [
+  {
+    id: '30000000-0000-4000-8000-00000000000c',
+    created_at: '2026-10-07T09:00:00Z',
+    name: 'Clara Muster',
+    email: 'clara@muster.example',
+    telefon: null,
+    website: 'https://muster.example',
+    leistungen: ['webflow'],
+    zeitrahmen: 'flexibel',
+    budget: 'offen',
+    beschreibung: 'Wir brauchen eine neue Website.',
+    status: 'neu',
+    sprache: 'de',
+  },
+];
+const neueProjekte = new Map();
+const lies = (req) =>
+  new Promise((resolve) => {
+    let body = '';
+    req.on('data', (c) => (body += c));
+    req.on('end', () => resolve(body ? JSON.parse(body) : null));
+  });
+
 const users = {
   anna: { profil: { art: 'kunde', name: 'Anna', sprache: 'de' }, projekte: [relaunch] },
   erik: { profil: { art: 'admin', name: 'Erik', sprache: 'de' }, projekte: [logo, relaunch] },
@@ -226,6 +255,11 @@ createServer((req, res) => {
         200,
         kunden.filter((k) => k.id === idParam),
       );
+    if ((params.get('select') ?? '').includes('ansprechpartner(id'))
+      return send(
+        200,
+        kunden.map((k) => ({ id: k.id, name: k.name, ansprechpartner: k.ansprechpartner })),
+      );
     return send(
       200,
       kunden.map((k) => ({
@@ -236,7 +270,61 @@ createServer((req, res) => {
     );
   }
   if (u.profil.art === 'admin' && path === '/rest/v1/kundenprojekte' && idParam)
-    return send(200, idParam === P1 ? [adminProjekt()] : []);
+    return send(200, idParam === P1 ? [adminProjekt()] : neueProjekte.has(idParam) ? [neueProjekte.get(idParam)] : []);
+  if (
+    u.profil.art === 'admin' &&
+    path === '/rest/v1/kundenprojekte' &&
+    (params.get('select') ?? '').includes('projekt_umsatz')
+  )
+    return send(
+      200,
+      u.projekte.map((p) => ({
+        ...p,
+        // Kritiker Dashboard 1: dieselbe ID wie in der Verwaltung, sonst führt der Link ins Leere
+        id: p.id === relaunch.id ? P1 : p.id,
+        kunden: { id: K1, name: kunden[0].name },
+        projekt_umsatz: umsatz[p.id] ?? null,
+      })),
+    );
+  if (u.profil.art === 'admin' && path === '/rest/v1/termine' && !idParam)
+    return send(
+      200,
+      relaunch.termine
+        .filter((t) => Date.parse(t.ende) > Date.now())
+        .map((t) => ({ ...t, kundenprojekte: { id: P1, titel: relaunch.titel, kunden: { name: kunden[0].name } } })),
+    );
+  if (u.profil.art === 'admin' && path === '/rest/v1/anfragen') {
+    if (req.method === 'PATCH')
+      return void lies(req).then((row) => {
+        const a = anfragen.find((x) => x.id === idParam);
+        if (a) a.status = row.status;
+        send(200, a ? [a] : []);
+      });
+    return send(200, idParam ? anfragen.filter((a) => a.id === idParam) : anfragen);
+  }
+  if (u.profil.art === 'admin' && path === '/rest/v1/projekt_umsatz') return send(201);
+  if (u.profil.art === 'admin' && path === '/rest/v1/rpc/projekt_anlegen')
+    return void lies(req).then(({ daten }) => {
+      const id = `20000000-0000-4000-8000-${String(neueProjekte.size + 100).padStart(12, '0')}`;
+      const kunde = daten.kunde_id ? kunden.find((k) => k.id === daten.kunde_id) : null;
+      neueProjekte.set(id, {
+        ...adminProjekt(),
+        ...daten.projekt,
+        id,
+        kunde_id: kunde?.id ?? K1,
+        kunden: {
+          id: kunde?.id ?? K1,
+          name: kunde?.name ?? daten.kunde?.name,
+          ansprechpartner: kunde?.ansprechpartner ?? [],
+        },
+        projekt_ansprechpartner: (daten.ansprechpartner_ids ?? []).map((a) => ({ ansprechpartner_id: a })),
+        projektschritte: (daten.schritte ?? []).map((x, i) => schritt(i + 1, x.titel_de, x.status ?? 'offen')),
+        termine: [],
+        dokumente: [],
+        projekt_umsatz: daten.umsatz ?? null,
+      });
+      send(200, id);
+    });
   if (u.profil.art === 'admin' && req.method === 'POST' && path.startsWith('/storage/v1/object/sign/kundenlogos/'))
     return send(200, { signedURL: `/object/sign/kundenlogos/${K1}/logo.svg?token=signiert` });
   if (path === '/rest/v1/kundenprojekte') return send(200, u.projekte);

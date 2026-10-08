@@ -1,7 +1,16 @@
 'use client';
 
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Plus, Trash2 } from 'lucide-react';
-import { startTransition, useActionState, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
+import {
+  Fragment,
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from 'react';
 import { projektMitAssistent } from '@/app/actions/kundenbereich-admin';
 import Button from '@/components/ui/Button';
 import SelectField from '@/components/ui/SelectField';
@@ -18,7 +27,8 @@ import {
   type AssistentKunde,
   type NeuerAnsprechpartner,
 } from '@/lib/kundenbereich/admin/assistent';
-import { ansprechpartnerDaten } from '@/lib/kundenbereich/admin/pruefen';
+import { euro } from '@/lib/kundenbereich/admin/dashboard';
+import { ansprechpartnerDaten, betrag } from '@/lib/kundenbereich/admin/pruefen';
 import {
   optionLabel,
   PROJEKT_STATUS_OPTIONEN,
@@ -48,6 +58,8 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
   const [entwurf, setEntwurf] = useState<NeuerAnsprechpartner>(leererAnsprechpartner());
   const [entwurfFehler, setEntwurfFehler] = useState<Record<string, string>>({});
   const [ansage, setAnsage] = useState('');
+  // Kritiker Assistent 5: aus „Prüfen“ zum Bearbeiten gekommen
+  const [vonPruefung, setVonPruefung] = useState(false);
   const [state, dispatch, pending] = useActionState<AdminState, FormData>(projektMitAssistent, { status: 'idle' });
   const [gesehen, setGesehen] = useState(state);
   const titel = useRef<HTMLHeadingElement>(null);
@@ -82,24 +94,33 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
     setD((x) => ({ ...x, projekt: { ...x.projekt, [key]: value } }));
 
   const gehe = (ziel: number) => {
+    if (ziel === LETZTER) setVonPruefung(false);
     setErrors({});
     setAllgemein(null);
     setSchritt(ziel);
     fokussiere('schritt');
   };
 
+  const bearbeiten = (ziel: number) => {
+    gehe(ziel);
+    setVonPruefung(true);
+  };
+
+  /** Aktuellen Schritt prüfen; bei Fehlern Liste zeigen und false */
+  const pruefeSchritt = () => {
+    const f = schrittFehler(schritt, d);
+    if (!Object.keys(f).length) return true;
+    setErrors(f);
+    setAllgemein(null);
+    fokussiere('fehler');
+    return false;
+  };
+
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (pending) return;
     if (schritt < LETZTER) {
-      const f = schrittFehler(schritt, d);
-      if (Object.keys(f).length) {
-        setErrors(f);
-        setAllgemein(null);
-        fokussiere('fehler');
-        return;
-      }
-      gehe(schritt + 1);
+      if (pruefeSchritt()) gehe(schritt + 1);
       return;
     }
     const r = assistentDaten(d);
@@ -141,14 +162,16 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
   };
 
   // Ablauf (Schritt 4)
-  const schrittName = (i: number) => d.schritte[i]?.titel_de.trim() || `Schritt ${i + 1}`;
+  const schrittName = (i: number) => d.schritte[i]?.titel_de.trim() || `Ablaufschritt ${i + 1}`;
   const setSchritte = (s: AssistentDaten['schritte']) => set('schritte', s);
   const verschieben = (i: number, um: -1 | 1) => {
     const s = [...d.schritte];
     const [x] = s.splice(i, 1);
     s.splice(i + um, 0, x!);
     setSchritte(s);
-    setAnsage(`${schrittName(i)} ${um < 0 ? 'nach oben' : 'nach unten'} verschoben, jetzt Schritt ${i + um + 1}.`);
+    setAnsage(
+      `${schrittName(i)} ${um < 0 ? 'nach oben' : 'nach unten'} verschoben, jetzt Ablaufschritt ${i + um + 1}.`,
+    );
     fokussiere('feld', feldId(`schritte.${i + um}.${um < 0 ? 'hoch' : 'runter'}`));
   };
 
@@ -178,6 +201,8 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
       </h2>
     </legend>
   );
+
+  const wert = betrag(d.projekt.auftragswert_netto);
 
   return (
     <AdminShell title="Neues Projekt" pfad={[{ href: '/kunden/admin', label: 'Verwaltung' }]}>
@@ -358,18 +383,25 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
 
           {schritt === 2 && (
             <div className="flex flex-col gap-6">
+              {/* Kritiker Assistent 14: Link der Fehlerliste führt zum ersten Kontrollkästchen */}
               {err('ansprechpartner') && (
-                <p id={feldId('ansprechpartner')} tabIndex={-1} className="text-[13px] text-error">
+                <p
+                  id={bestehende.length > 0 ? feldId('ansprechpartner.fehler') : feldId('ansprechpartner')}
+                  tabIndex={-1}
+                  className="text-[13px] text-error"
+                >
                   {err('ansprechpartner')}
                 </p>
               )}
               {bestehende.length > 0 && (
-                <fieldset>
+                <fieldset aria-describedby={err('ansprechpartner') ? feldId('ansprechpartner.fehler') : undefined}>
                   <legend className={labelClass}>Ansprechpartner von {kunde?.name}</legend>
                   <div className="flex flex-col gap-1">
-                    {bestehende.map((a) => (
+                    {bestehende.map((a, i) => (
                       <label key={a.id} className="flex items-center gap-3 min-h-11 text-[14px] cursor-pointer">
                         <input
+                          id={i === 0 ? feldId('ansprechpartner') : undefined}
+                          aria-invalid={err('ansprechpartner') ? true : undefined}
                           type="checkbox"
                           className={box}
                           checked={d.ansprechpartner.ids.includes(a.id)}
@@ -448,7 +480,8 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
                       key={k}
                       id={feldId(`entwurf.${k}`)}
                       label={label}
-                      marker={pflicht ? '(Pflicht)' : undefined}
+                      // Kritiker Assistent 13: Pflicht nur, wenn jemand hinzugefügt wird
+                      marker={pflicht ? '(Pflicht beim Hinzufügen)' : undefined}
                       type={type}
                       autoComplete="off"
                       error={entwurfFehler[k]}
@@ -470,15 +503,21 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
                 </Button>
               </fieldset>
 
-              <label className="flex items-center gap-3 min-h-11 text-[14px] cursor-pointer">
-                <input
-                  type="checkbox"
-                  className={box}
-                  checked={d.einladen}
-                  onChange={(e) => set('einladen', e.target.checked)}
-                />
-                Anmeldelink an neue Ansprechpartner schicken
-              </label>
+              <div>
+                <label className="flex items-center gap-3 min-h-11 text-[14px] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className={box}
+                    aria-describedby={feldId('einladen.hinweis')}
+                    checked={d.einladen}
+                    onChange={(e) => set('einladen', e.target.checked)}
+                  />
+                  Anmeldelink an neue Ansprechpartner schicken
+                </label>
+                <p id={feldId('einladen.hinweis')} className="text-[12px] text-text2 ml-9">
+                  Nur neu hinzugefügte Ansprechpartner bekommen den Link. Bestehende lädst du auf der Kundenseite ein.
+                </p>
+              </div>
             </div>
           )}
 
@@ -489,13 +528,14 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
               <ol role="list" className="flex flex-col gap-3">
                 {d.schritte.map((s, i) => (
                   <li key={i} className={card}>
-                    <p className="text-[13px] font-bold text-text2 mb-3">Schritt {i + 1}</p>
+                    {/* Kritiker Assistent 7: „Ablaufschritt“, nicht zu verwechseln mit den Schritten des Assistenten */}
+                    <p className="text-[13px] font-bold text-text2 mb-3">Ablaufschritt {i + 1}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                       <TextField
                         id={feldId(`schritte.${i}.titel_de`)}
                         label={
                           <>
-                            Titel Deutsch<span className="sr-only">, Schritt {i + 1}</span>
+                            Titel Deutsch<span className="sr-only">, Ablaufschritt {i + 1}</span>
                           </>
                         }
                         marker="(Pflicht)"
@@ -509,7 +549,7 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
                         id={feldId(`schritte.${i}.titel_en`)}
                         label={
                           <>
-                            Titel Englisch<span className="sr-only">, Schritt {i + 1}</span>
+                            Titel Englisch<span className="sr-only">, Ablaufschritt {i + 1}</span>
                           </>
                         }
                         error={err(`schritte.${i}.titel_en`)}
@@ -522,7 +562,7 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
                         id={feldId(`schritte.${i}.verantwortlich`)}
                         label={
                           <>
-                            Verantwortlich<span className="sr-only">, Schritt {i + 1}</span>
+                            Verantwortlich<span className="sr-only">, Ablaufschritt {i + 1}</span>
                           </>
                         }
                         options={VERANTWORTLICH_OPTIONEN}
@@ -565,7 +605,14 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
                         onClick={() => {
                           setAnsage(`${schrittName(i)} entfernt.`);
                           setSchritte(d.schritte.filter((_, j) => j !== i));
-                          fokussiere('feld', feldId('schritt-neu'));
+                          // Kritiker Assistent 9/20: alte Fehler weg, Fokus auf das nächste oder vorige Titelfeld
+                          setErrors({});
+                          setAllgemein(null);
+                          const rest = d.schritte.length - 1;
+                          fokussiere(
+                            'feld',
+                            rest === 0 ? feldId('schritt-neu') : feldId(`schritte.${Math.min(i, rest - 1)}.titel_de`),
+                          );
                         }}
                       >
                         <Trash2 size={15} aria-hidden="true" />
@@ -582,12 +629,12 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
                     variant="secondary"
                     onClick={() => {
                       setSchritte([...d.schritte, { titel_de: '', titel_en: '', verantwortlich: 'erik' }]);
-                      setAnsage(`Schritt ${d.schritte.length + 1} hinzugefügt.`);
+                      setAnsage(`Ablaufschritt ${d.schritte.length + 1} hinzugefügt.`);
                       fokussiere('feld', feldId(`schritte.${d.schritte.length}.titel_de`));
                     }}
                   >
                     <Plus size={15} aria-hidden="true" />
-                    Schritt hinzufügen
+                    Ablaufschritt hinzufügen
                   </Button>
                 </div>
               )}
@@ -652,21 +699,30 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
 
           {schritt === 5 && (
             <div className="flex flex-col gap-4">
-              <Zusammenfassung titel="Kunde" schritt={0} gehe={gehe}>
+              <Zusammenfassung titel="Kunde" schritt={0} gehe={bearbeiten}>
                 {d.kunde.modus === 'bestehend' ? (kunde?.name ?? '') : `${d.kunde.name} (neu)`}
                 {d.kunde.modus === 'neu' && d.kunde.website_url && <span className="block">{d.kunde.website_url}</span>}
               </Zusammenfassung>
-              <Zusammenfassung titel="Projekt" schritt={1} gehe={gehe}>
-                <span className="block font-medium text-foreground">{d.projekt.titel}</span>
-                <span className="block">{optionLabel(PROJEKT_STATUS_OPTIONEN, d.projekt.status)}</span>
-                <span className="block">
-                  {d.projekt.auftragswert_netto
-                    ? `Auftragswert ${d.projekt.auftragswert_netto} €, ${d.projekt.wahrscheinlichkeit} %`
-                    : 'Kein Auftragswert'}
-                  {d.projekt.abrechnung_am && `, Abrechnung ${d.projekt.abrechnung_am}`}
-                </span>
+              <Zusammenfassung titel="Projekt" schritt={1} gehe={bearbeiten}>
+                {/* Kritiker Assistent 8: Werte mit Beschriftung */}
+                <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-1">
+                  {(
+                    [
+                      ['Titel', d.projekt.titel],
+                      ['Status', optionLabel(PROJEKT_STATUS_OPTIONEN, d.projekt.status)],
+                      ['Auftragswert', wert === null || Number.isNaN(wert) ? 'Keiner' : euro(wert)],
+                      ['Wahrscheinlichkeit', `${d.projekt.wahrscheinlichkeit} %`],
+                      ['Abrechnung', d.projekt.abrechnung_am || 'Offen'],
+                    ] as const
+                  ).map(([k, v]) => (
+                    <Fragment key={k}>
+                      <dt className="text-text3">{k}</dt>
+                      <dd className="text-foreground">{v}</dd>
+                    </Fragment>
+                  ))}
+                </dl>
               </Zusammenfassung>
-              <Zusammenfassung titel="Ansprechpartner" schritt={2} gehe={gehe}>
+              <Zusammenfassung titel="Ansprechpartner" schritt={2} gehe={bearbeiten}>
                 <ul role="list">
                   {bestehende
                     .filter((a) => d.ansprechpartner.ids.includes(a.id))
@@ -681,21 +737,20 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
                   <span className="block mt-1">Anmeldelink wird verschickt.</span>
                 )}
               </Zusammenfassung>
-              <Zusammenfassung titel="Ablauf" schritt={3} gehe={gehe}>
+              <Zusammenfassung titel="Ablauf" schritt={3} gehe={bearbeiten}>
                 {d.schritte.length === 0 ? (
                   'Kein Ablauf'
                 ) : (
                   <ol role="list" className="list-decimal pl-5">
                     {d.schritte.map((s, i) => (
                       <li key={i}>
-                        {s.titel_de}
-                        {s.verantwortlich === 'kunde' && ' (Kunde)'}
+                        {s.titel_de} {s.verantwortlich === 'kunde' ? '(Kunde)' : '(Erik)'}
                       </li>
                     ))}
                   </ol>
                 )}
               </Zusammenfassung>
-              <Zusammenfassung titel="Termin" schritt={4} gehe={gehe}>
+              <Zusammenfassung titel="Termin" schritt={4} gehe={bearbeiten}>
                 {d.termin
                   ? `${d.termin.datum}, ${d.termin.beginn}–${d.termin.ende} Uhr${d.termin.titel_de ? `, ${d.termin.titel_de}` : ''}`
                   : 'Kein Termin'}
@@ -712,6 +767,15 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
             </Button>
           ) : (
             <span />
+          )}
+          {vonPruefung && schritt < LETZTER && (
+            <Button
+              variant="secondary"
+              className="col-span-2 sm:col-span-1 sm:ml-auto"
+              onClick={() => pruefeSchritt() && gehe(LETZTER)}
+            >
+              Zurück zur Prüfung
+            </Button>
           )}
           <Button type="submit" aria-disabled={pending || undefined}>
             {schritt < LETZTER ? (

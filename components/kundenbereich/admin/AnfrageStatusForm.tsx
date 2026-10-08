@@ -29,6 +29,8 @@ export default function AnfrageStatusForm({ id, name, status }: { id: string; na
         id={`anfrage-${id}-status`}
         name="status"
         label="Status"
+        // Kritiker Dashboard 10: eindeutiger Name bei mehreren Anfragen
+        aria-label={`Status: ${name}`}
         options={ANFRAGE_STATUS_OPTIONEN}
         defaultValue={status}
         className="w-40"

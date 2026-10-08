@@ -14,10 +14,17 @@ import Link from 'next/link';
 import { logout } from '@/app/actions/kundenbereich';
 import Button, { buttonClass } from '@/components/ui/Button';
 import { localizedPath, type Locale } from '@/lib/i18n';
-import { datum, projektAnsicht, waehleProjekt, type ProjektRow, type Schritt } from '@/lib/kundenbereich/projekte';
+import {
+  datum,
+  kennzahlen,
+  projektAnsicht,
+  waehleProjekt,
+  type ProjektRow,
+  type Schritt,
+} from '@/lib/kundenbereich/projekte';
 import type { Profil } from '@/lib/kundenbereich/supabase';
 import { dateiInfo, dokumentGruppen, type DokumentRow } from '@/lib/kundenbereich/dokumente';
-import type { Termin } from '@/lib/kundenbereich/termine';
+import { kurzTermin, type Termin } from '@/lib/kundenbereich/termine';
 import { kundenText } from '@/lib/kundenbereich/text';
 import { EMAIL } from '@/lib/site';
 import type { MeinKunde } from '@/lib/kundenbereich/freigabe';
@@ -28,6 +35,7 @@ import TerminZeit from './TerminZeit';
 
 type T = (typeof kundenText)['de'];
 
+const card = 'border border-border rounded-2xl p-5 md:p-6';
 const sectionTitle = 'text-[13px] font-bold tracking-wider uppercase text-text3 mb-4';
 const badge =
   'inline-flex items-center text-[12px] font-medium border border-primary-border text-primary-text rounded-full px-2.5 py-0.5';
@@ -124,7 +132,9 @@ export default function Projektuebersicht({
       ) : (
         <Projekt t={t} locale={locale} projekt={projektAnsicht(gewaehlt, locale)} logo={logo} />
       )}
-      {(!projekte || !gewaehlt) && logo && <LogoFreigabe locale={locale} mk={logo} className="max-w-[560px] mt-10" />}
+      {(!projekte || !gewaehlt) && logo && (
+        <LogoFreigabe locale={locale} mk={logo} className={`${card} max-w-[560px] mt-10`} />
+      )}
     </div>
   );
 }
@@ -146,12 +156,9 @@ function Projekt({
   ].filter((l): l is { href: string; label: string } => !!l);
 
   return (
-    <article
-      aria-labelledby="projekt-titel"
-      className="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:grid-rows-[auto_1fr] gap-x-16 gap-y-10"
-    >
-      {/* Kritiker Termine 2: Reihenfolge im DOM = Projekt, Termin und nächste Schritte, dann Ablauf und Dokumente */}
-      <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+    <article aria-labelledby="projekt-titel">
+      {/* Kritiker Termine 2: Reihenfolge im DOM = Projekt, Kacheln, Termin und nächste Schritte, dann Ablauf und Dokumente */}
+      <div className="min-w-0 mb-8">
         {p.kunde && <p className="text-[14px] font-semibold text-primary-text mb-2">{p.kunde}</p>}
         <h2
           id="projekt-titel"
@@ -173,80 +180,165 @@ function Projekt({
         )}
       </div>
 
-      <div className="min-w-0 flex flex-col gap-10 lg:pt-1 lg:col-start-2 lg:row-start-1 lg:row-span-2">
-        <Meeting t={t} locale={locale} next={p.naechsterTermin} later={p.weitereTermine} />
-        <section aria-labelledby="naechste-titel" className="sm:border sm:border-border sm:rounded-2xl sm:p-6">
-          <h3 id="naechste-titel" className={sectionTitle}>
-            {t.nextSteps}
-          </h3>
-          {p.naechste.length === 0 ? (
-            // Kritiker 1: ohne geplante Schritte nicht „Alles erledigt.“
-            <p className="text-[15px] text-text2">{p.schritte.length === 0 ? t.noSteps : t.allDone}</p>
-          ) : (
-            <ul role="list" aria-labelledby="naechste-titel" className="flex flex-col gap-4">
-              {p.naechste.map((s) => (
-                <li key={s.id} className="flex flex-col gap-1">
-                  <span lang={s.titelLang} className="text-[15px] font-medium text-foreground">
-                    {s.titel}
-                  </span>
-                  <span className="flex flex-wrap gap-x-3 text-[13px] text-text2">
-                    <span className={s.verantwortlich === 'kunde' ? 'font-semibold text-primary-text' : ''}>
-                      {s.verantwortlich === 'kunde' ? t.fromClient : t.fromErik}
+      <Kacheln t={t} locale={locale} projekt={p} />
+
+      {/* Kritiker Kunde 6: sichtbare Reihenfolge = DOM-Reihenfolge, Termin und nächste Schritte links */}
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-x-8 gap-y-6 mt-6">
+        <div className="min-w-0 flex flex-col gap-6">
+          <Meeting t={t} locale={locale} next={p.naechsterTermin} later={p.weitereTermine} />
+          <section aria-labelledby="naechste-titel" className={card}>
+            <h3 id="naechste-titel" className={sectionTitle}>
+              {t.nextSteps}
+            </h3>
+            {p.naechste.length === 0 ? (
+              // Kritiker 1: ohne geplante Schritte nicht „Alles erledigt.“
+              <p className="text-[15px] text-text2">{p.schritte.length === 0 ? t.noSteps : t.allDone}</p>
+            ) : (
+              <ul role="list" aria-labelledby="naechste-titel" className="flex flex-col gap-4">
+                {p.naechste.map((s) => (
+                  <li key={s.id} className="flex flex-col gap-1">
+                    <span lang={s.titelLang} className="text-[15px] font-medium text-foreground">
+                      {s.titel}
                     </span>
-                    {s.faelligAm && <span>{t.due(datum(s.faelligAm, locale))}</span>}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                    <span className="flex flex-wrap gap-x-3 text-[13px] text-text2">
+                      <span className={s.verantwortlich === 'kunde' ? 'font-semibold text-primary-text' : ''}>
+                        {s.verantwortlich === 'kunde' ? t.fromClient : t.fromErik}
+                      </span>
+                      {s.faelligAm && <span>{t.due(datum(s.faelligAm, locale))}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          {links.length > 0 && (
+            <section aria-labelledby="links-titel" className={card}>
+              <h3 id="links-titel" className={sectionTitle}>
+                {t.links}
+              </h3>
+              <ul role="list" className="flex flex-wrap gap-3">
+                {links.map((l) => (
+                  <li key={l.href}>
+                    <a href={l.href} className={buttonClass('secondary')} target="_blank" rel="noopener noreferrer">
+                      {l.label}
+                      <ExternalLink size={14} aria-hidden="true" />
+                      <span className="sr-only">{t.newTab}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
-        </section>
+          {logo && <LogoFreigabe locale={locale} mk={logo} className={card} />}
+        </div>
+        <div className="min-w-0 flex flex-col gap-6">
+          {p.schritte.length > 0 && (
+            <section aria-labelledby="ablauf-titel" className={card}>
+              <h3 id="ablauf-titel" className={sectionTitle}>
+                {t.process}
+              </h3>
+              <ol role="list" aria-labelledby="ablauf-titel">
+                {p.schritte.map((s, i) => (
+                  <Step
+                    key={s.id}
+                    t={t}
+                    locale={locale}
+                    schritt={s}
+                    current={s.id === p.aktuell}
+                    last={i === p.schritte.length - 1}
+                  />
+                ))}
+              </ol>
+            </section>
+          )}
 
-        {links.length > 0 && (
-          <section aria-labelledby="links-titel">
-            <h3 id="links-titel" className={sectionTitle}>
-              {t.links}
-            </h3>
-            <ul role="list" className="flex flex-wrap gap-3">
-              {links.map((l) => (
-                <li key={l.href}>
-                  <a href={l.href} className={buttonClass('secondary')} target="_blank" rel="noopener noreferrer">
-                    {l.label}
-                    <ExternalLink size={14} aria-hidden="true" />
-                    <span className="sr-only">{t.newTab}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-        {logo && <LogoFreigabe locale={locale} mk={logo} />}
-      </div>
-      <div className="min-w-0 lg:col-start-1 lg:row-start-2">
-        {p.schritte.length > 0 && (
-          <section aria-labelledby="ablauf-titel">
-            <h3 id="ablauf-titel" className={sectionTitle}>
-              {t.process}
-            </h3>
-            <ol role="list" aria-labelledby="ablauf-titel">
-              {p.schritte.map((s, i) => (
-                <Step
-                  key={s.id}
-                  t={t}
-                  locale={locale}
-                  schritt={s}
-                  current={s.id === p.aktuell}
-                  last={i === p.schritte.length - 1}
-                />
-              ))}
-            </ol>
-          </section>
-        )}
-
-        <div className={p.schritte.length > 0 ? 'mt-12' : ''}>
           <Documents t={t} locale={locale} dokumente={p.dokumente} />
         </div>
       </div>
     </article>
+  );
+}
+
+const tile = 'flex flex-col gap-1 border border-border rounded-2xl p-5 min-w-0';
+const tileLabel = 'text-[13px] font-semibold text-text2';
+const tileValue = 'text-[20px] font-bold leading-tight text-foreground';
+const tileLink =
+  'text-[14px] font-medium text-primary-text underline underline-offset-4 hover:no-underline mt-auto pt-2';
+
+/** Vier Kacheln oben (functions/kundenbereich/kunden-dashboard.md AK-2, AK-3) */
+function Kacheln({ t, locale, projekt }: { t: T; locale: Locale; projekt: ReturnType<typeof projektAnsicht> }) {
+  const k = kennzahlen(projekt);
+  return (
+    <ul role="list" aria-label={t.overview} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <li className={tile}>
+        <p className={tileLabel}>{t.progress}</p>
+        {k.gesamt === 0 ? (
+          <p className="text-[15px] text-text2">{t.noProcess}</p>
+        ) : (
+          <>
+            <p className="text-[15px] text-text2">
+              <span className={tileValue}>{t.progressValue(k.erledigt, k.gesamt)}</span> {t.stepsDone}
+            </p>
+            <div
+              role="progressbar"
+              aria-label={t.progressLabel}
+              aria-valuemin={0}
+              aria-valuemax={k.gesamt}
+              aria-valuenow={k.erledigt}
+              aria-valuetext={`${t.progressValue(k.erledigt, k.gesamt)} ${t.stepsDone}`}
+              className="h-2 rounded-full bg-foreground/10 overflow-hidden mt-3"
+            >
+              <div className="h-full rounded-full bg-primary" style={{ width: `${(k.erledigt / k.gesamt) * 100}%` }} />
+            </div>
+          </>
+        )}
+      </li>
+      <li className={tile}>
+        <p className={tileLabel}>{t.nextMeeting}</p>
+        {k.termin ? (
+          <>
+            <p className={tileValue}>{kurzTermin(k.termin.beginn, locale)}</p>
+            <a href="#termin-titel" className={tileLink}>
+              {k.termin.titel}
+            </a>
+          </>
+        ) : (
+          <p className="text-[15px] text-text2">{t.noMeetingShort}</p>
+        )}
+      </li>
+      <li className={tile}>
+        <p className={tileLabel}>{t.yourTurn}</p>
+        {k.kundeOffen > 0 ? (
+          <>
+            <p className={tileValue}>{t.yourTurnCount(k.kundeOffen)}</p>
+            <a href="#naechste-titel" className={tileLink}>
+              {t.yourTurnCount(k.kundeOffen)} {t.yourTurnHint}
+            </a>
+          </>
+        ) : (
+          <p className="text-[15px] text-text2">{t.allWithErik}</p>
+        )}
+      </li>
+      <li className={tile}>
+        <p className={tileLabel}>{t.documents}</p>
+        {k.dokumenteAktuell === 0 && !k.neuestes ? (
+          <p className="text-[15px] text-text2">{t.noDocumentsShort}</p>
+        ) : (
+          <>
+            <p className={tileValue}>{t.documentsCount(k.dokumenteAktuell)}</p>
+            {k.neuestes && (
+              <p className="text-[13px] text-text2">
+                {t.newestDocument(k.neuestes.titel, datum(k.neuestes.created_at.slice(0, 10), locale))}
+              </p>
+            )}
+            <a href="#dokumente-titel" className={tileLink}>
+              {t.allDocuments}
+            </a>
+          </>
+        )}
+      </li>
+    </ul>
   );
 }
 
@@ -311,7 +403,7 @@ function Step({
 /** Nächster Termin mit Meet-Link und Kalenderdatei (functions/kundenbereich/termine.md) */
 function Meeting({ t, locale, next, later }: { t: T; locale: Locale; next: Termin | null; later: Termin[] }) {
   return (
-    <section aria-labelledby="termin-titel" className="sm:border sm:border-border sm:rounded-2xl sm:p-6">
+    <section aria-labelledby="termin-titel" className={card}>
       <h3 id="termin-titel" className={sectionTitle}>
         {t.nextMeeting}
       </h3>
@@ -370,7 +462,7 @@ function Meeting({ t, locale, next, later }: { t: T; locale: Locale; next: Termi
 function Documents({ t, locale, dokumente }: { t: T; locale: Locale; dokumente: DokumentRow[] }) {
   const gruppen = dokumentGruppen(dokumente);
   return (
-    <section aria-labelledby="dokumente-titel">
+    <section aria-labelledby="dokumente-titel" className={card}>
       <h3 id="dokumente-titel" className={sectionTitle}>
         {t.documents}
       </h3>

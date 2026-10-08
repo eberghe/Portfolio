@@ -1,3 +1,4 @@
+import { dokumentGruppen } from './dokumente';
 import type { Locale } from '@/lib/i18n';
 import { terminTitel, type Termin } from './termine';
 
@@ -115,6 +116,20 @@ export function projektAnsicht(p: ProjektRow, locale: Locale, now = new Date()) 
     dokumente: p.dokumente,
     naechsterTermin: termine[0] ?? null,
     weitereTermine: termine.slice(1, 4),
+  };
+}
+
+/** Kacheln der Kundensicht (kunden-dashboard.md AK-1) */
+export function kennzahlen(a: ReturnType<typeof projektAnsicht>) {
+  const aktuelle = dokumentGruppen(a.dokumente).flatMap((g) => g.dokumente.filter((d) => d.aktuell));
+  const neuestes = [...a.dokumente].sort((x, y) => Date.parse(y.created_at) - Date.parse(x.created_at))[0] ?? null;
+  return {
+    erledigt: a.schritte.filter((s) => s.status === 'erledigt').length,
+    gesamt: a.schritte.length,
+    termin: a.naechsterTermin,
+    kundeOffen: a.schritte.filter((s) => s.status !== 'erledigt' && s.verantwortlich === 'kunde').length,
+    dokumenteAktuell: aktuelle.length,
+    neuestes,
   };
 }
 

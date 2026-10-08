@@ -15,7 +15,12 @@ async function login(page: Page, sub: string) {
   ]);
 }
 const overflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-const SEITEN = ['/kunden/admin', `/kunden/admin/kunden/${K1}`, `/kunden/admin/projekte/${P1}`];
+const SEITEN = [
+  '/kunden/admin',
+  `/kunden/admin/kunden/${K1}`,
+  `/kunden/admin/projekte/${P1}`,
+  '/kunden/admin/projekte/neu',
+];
 
 test('AK-1: Verwaltung nur für Admins, sonst 404', async ({ page, request }) => {
   for (const path of SEITEN) expect((await request.get(path)).status(), path).toBe(404);
@@ -71,6 +76,63 @@ test('AK-3: Kunde anlegen mit Prüfung und Weiterleitung', async ({ page }) => {
   await form.getByRole('button', { name: 'Kunde anlegen' }).click();
   await expect(page.getByRole('heading', { level: 1, name })).toBeVisible();
   await expect(page).toHaveURL(/\/kunden\/admin\/kunden\/10000000-/);
+});
+
+test('Dashboard: Kennzahlen, Umsatzprognose, Termine und Anfragen (admin-dashboard.md)', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, '/kunden/admin');
+  const kennzahlen = page.getByRole('list', { name: 'Kennzahlen' });
+  await expect(kennzahlen).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Umsatzprognose' })).toBeVisible();
+  const tabelle = page.getByRole('table');
+  await expect(tabelle).toContainText('2026');
+  await expect(tabelle).toContainText('2027');
+  await expect(page.getByRole('link', { name: /Meet beitreten: Design-Review/ })).toBeVisible();
+  await expect(page.getByText('Clara Muster').first()).toBeVisible();
+  // Kritiker Dashboard 1/10: Projektlinks führen zur Projektseite, Status lässt sich speichern
+  const projekte = page.getByRole('region', { name: 'Projekte' });
+  const href = await projekte.getByRole('link', { name: 'Relaunch der Website' }).getAttribute('href');
+  expect((await page.request.get(href!)).status(), href!).toBe(200);
+  const anfragen = page.getByRole('region', { name: 'Anfragen' });
+  await anfragen.getByRole('combobox', { name: 'Status: Clara Muster' }).selectOption('beantwortet');
+  await anfragen.getByRole('button', { name: 'Status speichern: Clara Muster' }).click();
+  await expect(anfragen.getByText('Status gespeichert.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Projekt anlegen: Clara Muster' })).toHaveAttribute(
+    'href',
+    /\/kunden\/admin\/projekte\/neu\?anfrage=/,
+  );
+});
+
+test('Assistent: Projekt in sechs Schritten anlegen (projekt-assistent.md)', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, '/kunden/admin/projekte/neu');
+  const weiter = page.getByRole('button', { name: 'Weiter' });
+  await expect(page.getByRole('heading', { level: 2, name: 'Schritt 1 von 6: Kunde' })).toBeVisible();
+  await page.getByRole('radio', { name: 'Bestehender Kunde' }).check();
+  // AK-3: „Weiter“ blockiert ohne Auswahl, Fokus auf der Fehlerliste
+  await weiter.click();
+  await expect(page.getByRole('main').getByRole('alert')).toBeFocused();
+  await page.getByLabel(/^Kunde auswählen/).selectOption({ label: 'Bäckerei Beispiel' });
+  await weiter.click();
+  const h2 = page.getByRole('heading', { level: 2, name: 'Schritt 2 von 6: Projekt' });
+  await expect(h2).toBeFocused();
+  await page.getByLabel(/^Titel/).fill('Onlineshop');
+  await page.getByLabel(/^Auftragswert/).fill('8.500');
+  await weiter.click();
+  await page.getByRole('checkbox', { name: /Anna/ }).check();
+  await weiter.click();
+  await expect(page.getByRole('heading', { level: 2, name: 'Schritt 4 von 6: Ablauf' })).toBeFocused();
+  await page.getByRole('button', { name: 'Zurück' }).click();
+  await expect(page.getByRole('checkbox', { name: /Anna/ })).toBeChecked();
+  await weiter.click();
+  await weiter.click();
+  await weiter.click();
+  await expect(page.getByRole('heading', { level: 2, name: 'Schritt 6 von 6: Prüfen' })).toBeFocused();
+  await expect(page.getByRole('main')).toContainText('Onlineshop');
+  expect(await axe(page)).toEqual([]);
+  await page.getByRole('button', { name: 'Projekt anlegen' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Onlineshop' })).toBeVisible();
+  await expect(page).toHaveURL(/\/kunden\/admin\/projekte\/20000000-.*angelegt=1/);
 });
 
 for (const scheme of ['light', 'dark'] as const) {

@@ -74,7 +74,9 @@ describe('Vorbelegung', () => {
       name: '',
       website_url: '',
     });
-    expect(vorbelegung({ kundeId: 'unbekannt', kunden: KUNDEN }).kunde.modus).toBe('neu');
+    // Kritiker Assistent 12: mit bestehenden Kunden startet „Bestehender Kunde“
+    expect(vorbelegung({ kundeId: 'unbekannt', kunden: KUNDEN }).kunde).toMatchObject({ modus: 'bestehend', id: '' });
+    expect(vorbelegung({ kunden: [] }).kunde.modus).toBe('neu');
     const d = vorbelegung({ anfrage: ANFRAGE, kunden: KUNDEN });
     expect(d.kunde).toEqual({ modus: 'neu', id: '', name: 'Max Muster', website_url: 'https://max.example' });
     expect(d.projekt.titel).toBe('Webdesign & Webentwicklung, Barrierefreiheit-Beratung');
@@ -286,7 +288,7 @@ describe('Ansicht', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Nach unten: Kennenlernen' }));
     expect(screen.getAllByLabelText(/^Titel Deutsch/)[1]).toHaveValue('Kennenlernen');
     fireEvent.click(screen.getByRole('button', { name: 'Entfernen: Test & Launch' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Schritt hinzufügen' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ablaufschritt hinzufügen' }));
     expect(screen.getAllByLabelText(/^Titel Deutsch/)).toHaveLength(6);
     fireEvent.change(screen.getAllByLabelText(/^Titel Deutsch/)[5]!, { target: { value: 'Pflege' } });
     weiter();
@@ -345,5 +347,86 @@ describe('Ansicht', () => {
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Projekt anlegen' })));
     expect(await screen.findByRole('heading', { name: 'Schritt 3 von 6: Ansprechpartner' })).toBeVisible();
     expect(screen.getByRole('alert')).toHaveTextContent(A.ADMIN_TEXT.emailVergeben);
+  });
+});
+
+describe('Befunde Blinder Kritiker zum Assistenten', () => {
+  const weiter = () => fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
+  const zuSchritt = (n: number) => {
+    for (let i = 0; i < n; i++) weiter();
+  };
+
+  it('5/8: Prüfen mit beschrifteten Werten, Bearbeiten führt mit „Zurück zur Prüfung“ zurück', async () => {
+    const start = gueltig();
+    start.schritte = [{ titel_de: 'Texte liefern', titel_en: '', verantwortlich: 'kunde' }];
+    render(<ProjektAssistent kunden={KUNDEN} start={start} />);
+    zuSchritt(5);
+    const pruefen = screen.getByRole('heading', { name: 'Schritt 6 von 6: Prüfen' }).closest('fieldset')!;
+    const projekt = within(pruefen).getByRole('region', { name: 'Projekt' });
+    const werte = Object.fromEntries(
+      within(projekt)
+        .getAllByRole('term')
+        .map((dt) => [dt.textContent, dt.nextElementSibling?.textContent]),
+    );
+    expect(werte).toMatchObject({
+      Titel: 'Relaunch',
+      Status: 'Angebot',
+      Auftragswert: '12.500 €',
+      Wahrscheinlichkeit: '40 %',
+    });
+    expect(within(pruefen).getByRole('region', { name: 'Ablauf' })).toHaveTextContent('Texte liefern (Kunde)');
+
+    fireEvent.click(within(pruefen).getByRole('button', { name: 'Bearbeiten: Projekt' }));
+    expect(screen.getByRole('heading', { name: 'Schritt 2 von 6: Projekt' })).toBeVisible();
+    fireEvent.click(screen.getByRole('button', { name: 'Zurück zur Prüfung' }));
+    const h2 = screen.getByRole('heading', { name: 'Schritt 6 von 6: Prüfen' });
+    await waitFor(() => expect(h2).toHaveFocus());
+    expect(screen.queryByRole('button', { name: 'Zurück zur Prüfung' })).toBeNull();
+  });
+
+  it('5: „Zurück zur Prüfung“ prüft den Schritt', async () => {
+    render(<ProjektAssistent kunden={KUNDEN} start={gueltig()} />);
+    zuSchritt(5);
+    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Projekt' }));
+    fireEvent.change(screen.getByLabelText(/^Titel/), { target: { value: '' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Zurück zur Prüfung' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Titel');
+    expect(screen.getByRole('heading', { name: 'Schritt 2 von 6: Projekt' })).toBeVisible();
+  });
+
+  it('7/9/20: Ablaufschritte eindeutig benannt, Fehler verschwinden beim Entfernen, Fokus bleibt in der Liste', async () => {
+    const start = gueltig();
+    start.schritte = [
+      { titel_de: 'Eins', titel_en: '', verantwortlich: 'erik' },
+      { titel_de: '', titel_en: '', verantwortlich: 'erik' },
+      { titel_de: 'Drei', titel_en: '', verantwortlich: 'erik' },
+    ];
+    render(<ProjektAssistent kunden={KUNDEN} start={start} />);
+    zuSchritt(3);
+    expect(screen.getByLabelText('Titel Deutsch, Ablaufschritt 1 (Pflicht)')).toHaveValue('Eins');
+    expect(screen.getByRole('button', { name: 'Ablaufschritt hinzufügen' })).toBeInTheDocument();
+    weiter();
+    expect(await screen.findByRole('alert')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Entfernen: Ablaufschritt 2' }));
+    expect(screen.queryByRole('alert')).toBeNull();
+    // Fokus auf das nächste Titelfeld, beim letzten auf das vorige
+    await waitFor(() => expect(screen.getByLabelText('Titel Deutsch, Ablaufschritt 2 (Pflicht)')).toHaveFocus());
+    fireEvent.click(screen.getByRole('button', { name: 'Entfernen: Drei' }));
+    await waitFor(() => expect(screen.getByLabelText('Titel Deutsch, Ablaufschritt 1 (Pflicht)')).toHaveFocus());
+  });
+
+  it('13/14: Ansprechpartner-Fehler am Fieldset, klare Pflicht-Hinweise', async () => {
+    render(<ProjektAssistent kunden={KUNDEN} start={{ ...gueltig(), ansprechpartner: { ids: [], neu: [] } }} />);
+    zuSchritt(2);
+    weiter();
+    const alert = await screen.findByRole('alert');
+    const link = within(alert).getByRole('link');
+    const ziel = document.querySelector(link.getAttribute('href')!)!;
+    expect(ziel).toBe(screen.getByRole('checkbox', { name: 'Anna (anna@b.example)' }));
+    const gruppe = screen.getByRole('group', { name: 'Ansprechpartner von Bäckerei' });
+    expect(gruppe).toHaveAccessibleDescription(/mindestens einen Ansprechpartner/);
+    const neu = screen.getByRole('group', { name: 'Ansprechpartner hinzufügen' });
+    expect(within(neu).getByLabelText(/^Name/)).toHaveAccessibleName('Name (Pflicht beim Hinzufügen)');
+    expect(screen.getByRole('checkbox', { name: /Anmeldelink/ })).toHaveAccessibleDescription(/Nur neu hinzugefügte/);
   });
 });

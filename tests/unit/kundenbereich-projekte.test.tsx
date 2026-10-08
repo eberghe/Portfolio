@@ -237,3 +237,123 @@ describe('Befunde Blinder Kritiker', () => {
     expect(links[0]!.querySelector('svg')).toBeNull();
   });
 });
+
+// functions/kundenbereich/kunden-dashboard.md
+describe('Kundensicht als Dashboard', () => {
+  const NOW = new Date('2026-10-08T10:00:00Z');
+  const MIT_ALLEM: ProjektRow = {
+    ...PROJEKT,
+    termine: [
+      {
+        id: 't1',
+        beginn: '2026-10-15T08:00:00Z',
+        ende: '2026-10-15T09:00:00Z',
+        titel_de: 'Design-Review',
+        titel_en: 'Design review',
+        meet_url: 'https://meet.google.com/abc',
+      },
+    ],
+    dokumente: [
+      {
+        id: 'd1',
+        created_at: '2026-10-01T09:00:00Z',
+        art: 'vertrag',
+        titel: 'Vertrag',
+        dateiname: 'v1.pdf',
+        groesse_bytes: 1000,
+        mime_typ: 'application/pdf',
+        version: 1,
+      },
+      {
+        id: 'd2',
+        created_at: '2026-10-05T09:00:00Z',
+        art: 'vertrag',
+        titel: 'Vertrag',
+        dateiname: 'v2.pdf',
+        groesse_bytes: 1000,
+        mime_typ: 'application/pdf',
+        version: 2,
+      },
+      {
+        id: 'd3',
+        created_at: '2026-10-03T09:00:00Z',
+        art: 'logo',
+        titel: 'Logo',
+        dateiname: 'logo.svg',
+        groesse_bytes: 1000,
+        mime_typ: 'image/svg+xml',
+        version: 1,
+      },
+    ],
+  };
+
+  it('AK-1: Kennzahlen aus der Ansicht', async () => {
+    const { kennzahlen } = await import('@/lib/kundenbereich/projekte');
+    const k = kennzahlen(projektAnsicht(MIT_ALLEM, 'de', NOW));
+    expect(k).toMatchObject({ erledigt: 1, gesamt: 5, kundeOffen: 1, dokumenteAktuell: 2 });
+    expect(k.termin?.id).toBe('t1');
+    expect(k.neuestes).toMatchObject({ titel: 'Vertrag', created_at: '2026-10-05T09:00:00Z' });
+    expect(kennzahlen(projektAnsicht({ ...PROJEKT, projektschritte: [] }, 'de', NOW))).toMatchObject({
+      erledigt: 0,
+      gesamt: 0,
+      kundeOffen: 0,
+      dokumenteAktuell: 0,
+      termin: null,
+      neuestes: null,
+    });
+  });
+
+  it('AK-2/AK-3: vier Kacheln mit Links und Fortschrittsbalken', () => {
+    vi.useFakeTimers({ now: NOW, toFake: ['Date'] });
+    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[MIT_ALLEM]} />);
+    vi.useRealTimers();
+    const kacheln = screen.getByRole('list', { name: 'Auf einen Blick' });
+    const items = within(kacheln).getAllByRole('listitem');
+    expect(items.map((i) => i.querySelector('p')?.textContent)).toEqual([
+      'Fortschritt',
+      'Nächster Termin',
+      'Du bist dran',
+      'Dokumente',
+    ]);
+    expect(items[0]).toHaveTextContent('1 von 5 Schritten erledigt');
+    const bar = within(items[0]!).getByRole('progressbar', { name: 'Projektfortschritt' });
+    expect(bar).toHaveAttribute('aria-valuenow', '1');
+    expect(bar).toHaveAttribute('aria-valuemax', '5');
+    expect(within(items[1]!).getByRole('link')).toHaveAttribute('href', '#termin-titel');
+    expect(items[1]).toHaveTextContent(/15\. Okt\..*10:00/);
+    expect(within(items[2]!).getByRole('link', { name: /1 Schritt/ })).toHaveAttribute('href', '#naechste-titel');
+    expect(items[3]).toHaveTextContent('2 aktuell');
+    expect(items[3]).toHaveTextContent('Neu: Vertrag, 5. Okt. 2026');
+    expect(within(items[3]!).getByRole('link')).toHaveAttribute('href', '#dokumente-titel');
+  });
+
+  it('AK-2/AK-3: ohne Schritte, Termine, Dokumente; „Du bist dran“ bei 0 ohne Link', () => {
+    render(
+      <Projektuebersicht
+        locale="de"
+        profil={ANNA}
+        projekte={[{ ...PROJEKT, projektschritte: [schritt(1, 'offen')] }]}
+      />,
+    );
+    const items = within(screen.getByRole('list', { name: 'Auf einen Blick' })).getAllByRole('listitem');
+    expect(items[1]).toHaveTextContent('Keiner geplant');
+    expect(within(items[1]!).queryByRole('link')).toBeNull();
+    expect(items[2]).toHaveTextContent('Alles bei Erik');
+    expect(within(items[2]!).queryByRole('link')).toBeNull();
+    expect(items[3]).toHaveTextContent('Noch keine');
+    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[{ ...PROJEKT, projektschritte: [] }]} />);
+    const leer = within(screen.getAllByRole('list', { name: 'Auf einen Blick' })[1]!).getAllByRole('listitem');
+    expect(leer[0]).toHaveTextContent('Noch kein Ablauf');
+    expect(within(leer[0]!).queryByRole('progressbar')).toBeNull();
+  });
+
+  it('AK-4: Englisch', () => {
+    render(<Projektuebersicht locale="en" profil={ANNA} projekte={[PROJEKT]} />);
+    const kacheln = screen.getByRole('list', { name: 'At a glance' });
+    expect(kacheln).toHaveTextContent('Progress');
+    expect(kacheln).toHaveTextContent('1 of 5 steps done');
+    expect(kacheln).toHaveTextContent('Your turn');
+    expect(kacheln).toHaveTextContent('None scheduled');
+    expect(within(kacheln).getByRole('progressbar', { name: 'Project progress' })).toBeInTheDocument();
+  });
+});

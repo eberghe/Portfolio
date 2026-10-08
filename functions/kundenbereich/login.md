@@ -22,7 +22,7 @@ Ansprechpartner von Kunden und Erik (Admin) melden sich ohne Passwort im Kundenb
    - Limit: höchstens 3 Links pro Adresse in 15 Minuten und 10 Anfragen pro Absender (IP-Hash) pro Stunde. Gespeichert werden nur HMAC-Hashes von Adresse und IP (Tabelle `anmeldeversuche`, kein Zugriff für `anon`/`authenticated`).
    - Fehlen Supabase- oder Resend-Zugang auf dem Server: Hinweis „Der Kundenbereich ist gerade nicht erreichbar“ mit Mail-Link an Erik.
 3. `/kunden/anmelden?code=…` zeigt „Anmeldung bestätigen“ mit einem Button. Erst der Klick (POST) löst den Code ein, damit Link-Vorschauen von Mailprogrammen ihn nicht verbrauchen. Gültig: Session-Cookies setzen, weiter auf `/kunden`. Ungültig oder abgelaufen: Meldung mit Link zurück zum Formular.
-4. Angemeldet zeigt `/kunden` „Hallo, <Name>“ (Admins: „Hallo, Erik“ und der Hinweis „Admin“) und den Button „Abmelden“. Die Projektübersicht folgt in #51.
+4. Angemeldet zeigt `/kunden` „Hallo, <Name>“ (Admins: „Hallo, Erik“ und der Hinweis „Admin“) und den Button „Abmelden“. Darunter steht die Projektübersicht (`projektuebersicht.md`).
 5. Abmelden beendet die Supabase-Sitzung und löscht die Cookies.
 
 ## Sitzung
@@ -90,5 +90,6 @@ Geprüft: `/kunden`, `/en/clients`, Bestätigungs- und Abgelaufen-Seite bei 360/
 Behoben (mit Test): Titel der Bestätigungsseiten wurde doppelt angesagt (h1 und verstecktes h2); nach „Jetzt anmelden“ mit ungültigem Code lag der Fokus auf `body`, jetzt auf der neuen h1.
 
 Bewusst offen (niedrig):
+
 - Die Meldung nach dem Absenden bekommt den Fokus ohne sichtbaren Rahmen; sie ist nicht bedienbar, der Rahmen würde nur irritieren.
 - Eingabefeld 42 px und Kopfzeilen-Buttons 36 px hoch: WCAG 2.2 AA verlangt 24 px, erfüllt. Gilt seitenweit, betrifft das Designsystem und wird nicht nur hier geändert.

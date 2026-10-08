@@ -1,28 +1,16 @@
-import { LogOut } from 'lucide-react';
 import { cookies } from 'next/headers';
-import { logout } from '@/app/actions/kundenbereich';
-import Button from '@/components/ui/Button';
 import type { Locale } from '@/lib/i18n';
 import { ACCESS } from '@/lib/kundenbereich/session';
-import { authApi, type Profil } from '@/lib/kundenbereich/supabase';
+import { authApi } from '@/lib/kundenbereich/supabase';
 import { kundenText } from '@/lib/kundenbereich/text';
 import FocusTitle from './FocusTitle';
 import LoginForm from './LoginForm';
+import Projektuebersicht from './Projektuebersicht';
 
-// Einstieg in den Kundenbereich: Anmeldung oder Begrüßung (functions/kundenbereich/login.md AK-1, AK-8)
+// Einstieg in den Kundenbereich: Anmeldung oder Projektübersicht (functions/kundenbereich/login.md AK-1, AK-8)
 
 const card =
   'min-w-0 sm:border sm:border-border sm:rounded-2xl bg-background sm:p-6 sm:shadow-[0_8px_30px_-16px_hsl(var(--primary)/0.25)]';
-
-export async function currentProfil(): Promise<Profil | null> {
-  const access = (await cookies()).get(ACCESS)?.value;
-  if (!access) return null;
-  return (
-    (await authApi(process.env)
-      ?.profil(access)
-      .catch(() => null)) ?? null
-  );
-}
 
 export function KundenShell({
   title,
@@ -60,11 +48,13 @@ export function KundenShell({
 
 export const cardHeading = 'text-[11px] font-bold tracking-wider uppercase text-text3 mb-3';
 
-export default async function KundenPage({ locale }: { locale: Locale }) {
+export default async function KundenPage({ locale, auswahl }: { locale: Locale; auswahl?: string }) {
   const t = kundenText[locale];
-  const profil = await currentProfil();
+  const access = (await cookies()).get(ACCESS)?.value;
+  const api = authApi(process.env);
+  const profil = access && api ? await api.profil(access).catch(() => null) : null;
 
-  if (!profil)
+  if (!profil || !access || !api)
     return (
       <KundenShell title={t.title} intro={t.intro}>
         <h2 id="kunden-karte" className={cardHeading}>
@@ -74,31 +64,6 @@ export default async function KundenPage({ locale }: { locale: Locale }) {
       </KundenShell>
     );
 
-  return <Welcome locale={locale} profil={profil} />;
-}
-
-/** Begrüßung nach dem Login (AK-8) */
-export function Welcome({ locale, profil }: { locale: Locale; profil: Profil }) {
-  const t = kundenText[locale];
-  return (
-    <KundenShell title={t.title}>
-      <h2 id="kunden-karte" className="text-[22px] font-bold tracking-tight mb-2">
-        {t.hello(profil.name)}
-        {profil.art === 'admin' && ' '}
-        {profil.art === 'admin' && (
-          <span className="ml-1 align-middle inline-block text-[11px] font-medium uppercase tracking-wide border border-primary-border text-primary-text rounded-full px-2 py-0.5">
-            {t.admin}
-          </span>
-        )}
-      </h2>
-      <p className="text-[14px] text-text2 leading-relaxed mb-6">{t.welcomeText}</p>
-      <form action={logout}>
-        <input type="hidden" name="sprache" value={locale} />
-        <Button type="submit" variant="secondary">
-          <LogOut size={15} aria-hidden="true" />
-          {t.logout}
-        </Button>
-      </form>
-    </KundenShell>
-  );
+  // Projektübersicht nach dem Login (functions/kundenbereich/projektuebersicht.md)
+  return <Projektuebersicht locale={locale} profil={profil} projekte={await api.projekte(access)} auswahl={auswahl} />;
 }

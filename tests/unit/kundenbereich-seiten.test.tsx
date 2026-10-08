@@ -10,7 +10,7 @@ vi.mock('@/app/actions/kundenbereich', () => ({
 }));
 vi.mock('next/headers', () => ({ cookies: vi.fn(), headers: vi.fn() }));
 
-const { Welcome } = await import('@/components/kundenbereich/KundenPage');
+const { default: Projektuebersicht } = await import('@/components/kundenbereich/Projektuebersicht');
 const { default: ConfirmPage } = await import('@/components/kundenbereich/ConfirmPage');
 const { kundenMetadata } = await import('@/lib/pages/kundenbereich');
 const { sitePaths } = await import('@/lib/routes');
@@ -46,12 +46,14 @@ describe('Kundenbereich Seiten', () => {
   });
 
   it('AK-8: angemeldet mit Namen und Abmelden, Admin gekennzeichnet', () => {
-    const { unmount } = render(<Welcome locale="de" profil={{ art: 'kunde', name: 'Anna', sprache: 'de' }} />);
-    expect(screen.getByRole('heading', { level: 2, name: 'Hallo, Anna' })).toBeInTheDocument();
+    const { unmount } = render(
+      <Projektuebersicht locale="de" profil={{ art: 'kunde', name: 'Anna', sprache: 'de' }} projekte={[]} />,
+    );
+    expect(screen.getByText('Hallo, Anna')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Abmelden' })).toHaveAttribute('type', 'submit');
     unmount();
-    render(<Welcome locale="en" profil={{ art: 'admin', name: 'Erik', sprache: 'de' }} />);
-    expect(screen.getByRole('heading', { level: 2, name: 'Hello, Erik Admin' })).toBeInTheDocument();
+    render(<Projektuebersicht locale="en" profil={{ art: 'admin', name: 'Erik', sprache: 'de' }} projekte={[]} />);
+    expect(screen.getByText(/Hello, Erik/)).toHaveTextContent('Hello, Erik Admin');
     expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument();
   });
 });

@@ -122,4 +122,5 @@ Ersetzt die Kachelübersicht (AK-6 gilt sinngemäß weiter: Links heißen wie di
 ### Blinder Kritiker (Übersicht neu, 2026-10-06)
 
 Behoben (mit Test): Seite endete ohne Aufforderung zum Kontakt (AK-35); englischer Bedarfssatz klang übersetzt. Offen für Erik: „Barrierefreiheit-Beratung“ korrekt wäre „Barrierefreiheitsberatung“ (betrifft Titel auf allen Seiten); Groß- und Kleinschreibung der englischen Leistungsnamen ist uneinheitlich („UX/UI Design“ gegenüber „Design systems“); der Footer sagt auch auf Deutsch „made with love in augsburg“. Bewusst so: Die Bildbänder stehen nach jeder Leistung, wie Erik es wollte.
+
 - AK-36 (Erik: „nav hat wieder weißen hintergrund und verlauf sieht nicht so gut aus“): Auf der Leistungsübersicht ist die Navigation oben transparent wie auf der Startseite (startseite.md AK-36), der Verlauf reicht bis an den oberen Rand. Der Verlauf ist ein einziger, ruhiger grüner Schein von oben mittig (wie früher im Home-Hero), ohne seitliche Flecken.

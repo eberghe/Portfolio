@@ -14,17 +14,17 @@ Grundlage für den Kundenbereich (Epic #49, Issue #55): Tabellen und private Dat
 
 ## Tabellen (Schema `public`)
 
-| Tabelle                    | Inhalt                                                                                                                                                                |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `admins`                   | `user_id` (Supabase-Auth-Nutzer mit Admin-Rechten, also Erik)                                                                                                         |
-| `kunden`                   | Name, Website, `logo_pfad` (Bucket `kundenlogos`), `logo_freigabe` (`offen` / `erteilt` / `widerrufen`), `logo_freigabe_am`                                            |
-| `ansprechpartner`          | gehört zu einem Kunden; Name, E-Mail (eindeutig, klein geschrieben), Rolle, Telefon, Sprache (`de`/`en`), `user_id` (Login, wird beim ersten Anmelden verknüpft, #56) |
-| `kundenprojekte`           | gehört zu einem Kunden; Titel, Status (`angebot`, `in_arbeit`, `abstimmung`, `abgeschlossen`, `pausiert`), Phase, Beschreibung DE/EN, Website- und Staging-URL       |
-| `projekt_ansprechpartner`  | welcher Ansprechpartner welches Projekt sieht                                                                                                                         |
-| `projektschritte`          | Reihenfolge, Titel und Beschreibung DE/EN, Status (`offen`, `aktiv`, `erledigt`), fällig am, verantwortlich (`erik` oder `kunde`)                                     |
-| `termine`                  | Beginn, Ende (nach Beginn), Titel DE/EN, Meet-Link (nur `https://`)                                                                                                   |
-| `dokumente`                | Art (`vertrag`, `rechnung`, `logo`, `datei`), Titel, `storage_pfad` (Bucket `kundendokumente`, eindeutig), Dateiname, Größe, MIME-Typ, Version                        |
-| `logo_freigaben`           | Protokoll: welcher Ansprechpartner wann `erteilt` oder `widerrufen` hat; der letzte Eintrag setzt `kunden.logo_freigabe`                                              |
+| Tabelle                   | Inhalt                                                                                                                                                                |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `admins`                  | `user_id` (Supabase-Auth-Nutzer mit Admin-Rechten, also Erik)                                                                                                         |
+| `kunden`                  | Name, Website, `logo_pfad` (Bucket `kundenlogos`), `logo_freigabe` (`offen` / `erteilt` / `widerrufen`), `logo_freigabe_am`                                           |
+| `ansprechpartner`         | gehört zu einem Kunden; Name, E-Mail (eindeutig, klein geschrieben), Rolle, Telefon, Sprache (`de`/`en`), `user_id` (Login, wird beim ersten Anmelden verknüpft, #56) |
+| `kundenprojekte`          | gehört zu einem Kunden; Titel, Status (`angebot`, `in_arbeit`, `abstimmung`, `abgeschlossen`, `pausiert`), Phase, Beschreibung DE/EN, Website- und Staging-URL        |
+| `projekt_ansprechpartner` | welcher Ansprechpartner welches Projekt sieht                                                                                                                         |
+| `projektschritte`         | Reihenfolge, Titel und Beschreibung DE/EN, Status (`offen`, `aktiv`, `erledigt`), fällig am, verantwortlich (`erik` oder `kunde`)                                     |
+| `termine`                 | Beginn, Ende (nach Beginn), Titel DE/EN, Meet-Link (nur `https://`)                                                                                                   |
+| `dokumente`               | Art (`vertrag`, `rechnung`, `logo`, `datei`), Titel, `storage_pfad` (Bucket `kundendokumente`, eindeutig), Dateiname, Größe, MIME-Typ, Version                        |
+| `logo_freigaben`          | Protokoll: welcher Ansprechpartner wann `erteilt` oder `widerrufen` hat; der letzte Eintrag setzt `kunden.logo_freigabe`                                              |
 
 Löschen eines Kunden löscht seine Ansprechpartner, Projekte und alles darunter (`on delete cascade`). Dateien im Storage löscht die Admin-Ansicht mit (#53).
 

@@ -1,5 +1,6 @@
 import type { Locale } from '@/lib/i18n';
 import type { Konto, LoginDeps } from './login';
+import { PROJEKT_SELECT, type ProjektRow } from './projekte';
 import type { Tokens } from './session';
 
 // Zugriff auf Supabase (Auth, REST) und Resend für den Kundenbereich. Nur auf dem Server verwenden.
@@ -166,6 +167,16 @@ export function authApi(env: Env) {
       if (!res.ok) return null;
       const [p] = (await res.json()) as Profil[];
       return p ?? null;
+    },
+    /** Projekte mit dem Token des Nutzers, damit die Zugriffsregeln greifen; null bei Fehler (projektuebersicht.md AK-1) */
+    projekte: async (access: string): Promise<ProjektRow[] | null> => {
+      const q = new URLSearchParams({ select: PROJEKT_SELECT, order: 'created_at.desc' });
+      try {
+        const res = await fetch(`${url}/rest/v1/kundenprojekte?${q}`, { headers: headers(access), cache: 'no-store' });
+        return res.ok ? ((await res.json()) as ProjektRow[]) : null;
+      } catch {
+        return null;
+      }
     },
   };
 }

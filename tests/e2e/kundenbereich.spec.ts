@@ -40,7 +40,7 @@ test('AK-10: ohne Supabase-Zugang Hinweis mit Mail-Link, Fokus auf der Meldung',
   await page.getByRole('textbox', { name: 'E-Mail-Adresse' }).fill('anna@beispiel.de');
   await page.getByRole('button', { name: 'Anmeldelink schicken' }).click();
   await expect(page.getByRole('heading', { name: 'Der Kundenbereich ist gerade nicht erreichbar' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'erb1209@outlook.de' })).toHaveAttribute(
+  await expect(page.getByRole('main').getByRole('link', { name: 'erb1209@outlook.de' })).toHaveAttribute(
     'href',
     'mailto:erb1209@outlook.de',
   );

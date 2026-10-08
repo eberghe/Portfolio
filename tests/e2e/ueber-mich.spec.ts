@@ -409,3 +409,96 @@ test('AK-32: Richtungswechsel direkt nach einer Geste mit Nachschwung springt zu
   }
   await expect.poll(active).toBe(0);
 });
+
+test('AK-32: Trackpad-Wischer mit Nachschwung, von unten hinein, hoch und wieder hinaus (Erik 2026-10-07)', async ({
+  page,
+}) => {
+  test.slow();
+  await page.goto('/about?animationstest');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await expect(page.locator('[data-journey]')).toHaveAttribute('data-pinned', 'true');
+  await page.waitForTimeout(1800);
+  const n = await panels(page).count();
+  const state = () =>
+    page.evaluate(() => {
+      const r = (
+        document.querySelector('[data-journey] ol')!.parentElement!.parentElement as HTMLElement
+      ).getBoundingClientRect();
+      const active = Array.from(document.querySelectorAll('[data-journey] ol > li')).findIndex((li) =>
+        li.hasAttribute('data-active'),
+      );
+      return { top: r.top, bottom: r.bottom, vh: innerHeight, active };
+    });
+  // Unterhalb der Stationen starten (Kontaktbereich)
+  await page.evaluate(() => {
+    const r = (
+      document.querySelector('[data-journey] ol')!.parentElement!.parentElement as HTMLElement
+    ).getBoundingClientRect();
+    scrollTo({ top: r.bottom + scrollY + 300, behavior: 'instant' });
+  });
+  await page.waitForTimeout(800);
+  const vp = page.viewportSize()!;
+  await page.mouse.move(vp.width / 2, vp.height / 2);
+  // Ein Wisch: kurzes Anlaufen, dann langer, abklingender Nachschwung. Im Browser im 16-ms-Takt ausgelöst,
+  // damit die Abstände wie bei einem echten Trackpad gleichmäßig sind (über das Testprotokoll schwanken sie zu stark)
+  const swipe = async (dir: number) => {
+    await page.evaluate(
+      (dir) =>
+        new Promise<void>((resolve) => {
+          const deltas: number[] = [];
+          for (let k = 0; k < 8; k++) deltas.push(10 + k * 8);
+          for (let v = 70; v > 1; v *= 0.93) deltas.push(v);
+          let i = 0;
+          const tick = () => {
+            const target = document.elementFromPoint(innerWidth / 2, innerHeight / 2) ?? document.body;
+            target.dispatchEvent(
+              new WheelEvent('wheel', { deltaY: dir * deltas[i]!, bubbles: true, cancelable: true, composed: true }),
+            );
+            if (++i < deltas.length) setTimeout(tick, 16);
+            else setTimeout(resolve, 400);
+          };
+          tick();
+        }),
+      dir,
+    );
+  };
+  // Nach oben in die Stationen hinein: sobald sie kleben, steht die letzte da
+  for (let k = 0; k < 4 && (await state()).bottom < (await state()).vh - 0.5; k++) await swipe(-1);
+  let s = await state();
+  expect(s.bottom).toBeGreaterThanOrEqual(s.vh - 1);
+  expect(s.active).toBe(n - 1);
+  // Jeder weitere Wisch genau eine Station zurück
+  for (let i = n - 2; i >= 0; i--) {
+    await swipe(-1);
+    expect((await state()).active).toBe(i);
+  }
+  // Dann hinaus nach oben
+  await swipe(-1);
+  s = await state();
+  expect(s.top).toBeGreaterThan(0);
+  // Wieder hinein und Station für Station nach unten, dann hinaus in den Kontaktbereich
+  // Hinein: sobald die Stationen kleben, steht die erste da (nichts übersprungen)
+  for (let k = 0; k < 4 && (await state()).top > 0.5; k++) await swipe(1);
+  s = await state();
+  expect(s.top).toBeLessThanOrEqual(0.5);
+  expect(s.active).toBe(0);
+  for (let i = 1; i < n; i++) {
+    await swipe(1);
+    expect((await state()).active).toBe(i);
+  }
+  await swipe(1);
+  s = await state();
+  expect(s.bottom).toBeLessThan(s.vh);
+});
+
+test('AK-32: „Nach oben“ läuft mit weichem Scrollen durch die Stationen bis ganz nach oben (Kritiker)', async ({
+  page,
+}) => {
+  await page.goto('/about?animationstest');
+  await page.waitForFunction(() => document.documentElement.dataset.hydrated === 'true');
+  await page.waitForTimeout(1800);
+  await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
+  await page.waitForTimeout(500);
+  await page.locator('footer').getByRole('link', { name: 'Nach oben' }).click();
+  await expect.poll(() => page.evaluate(() => scrollY), { timeout: 10000 }).toBe(0);
+});

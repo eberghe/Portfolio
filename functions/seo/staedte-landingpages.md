@@ -34,6 +34,7 @@ Inhalte liegen vorerst im Code (`lib/content/local.ts`), nicht in Supabase: eine
 - AK-7: Footer hat eine benannte Navigation „Webdesign nach Stadt“ (EN „Web design by city“) mit allen Landingpages; Leistungsseiten der Stadt-Leistungen verlinken sie im Ortssatz mit eigenem Linktext („Mehr zu Webdesign in Augsburg“), kein nacktes Stichwort.
 - AK-8: DE und EN haben die gleiche Struktur (gleiche Zahl an Leistungen, Gründen, Fragen).
 - AK-12: Jede Stadt außer Augsburg beschreibt ihre Leistungs-Karten mit eigenem Text (`serviceTexts`); Innsbruck nennt österreichisches Recht (BaFG), nicht das BFSG.
+- AK-13 (Erik, 2026-10-07): Die Städteseiten verlinken die Leistung „Webdesign & Webentwicklung“ (`web-design-development`, leistungen.md AK-39). Titel, Meta-Texte, Kartentexte und FAQ stellen Webflow nicht als einziges Werkzeug dar, sondern nennen je nach Bedarf Webflow, Framer oder eine eigene Entwicklung.
 - AK-11: `llms.txt` listet alle Landingpages unter „Regions“.
 - AK-10: Keine zwei Städte teilen sich Einleitung, Ortstext, Gründe oder FAQ-Fragen (kein Doorway-Inhalt); nur Augsburg verspricht „vor Ort in … und Umgebung“.
 - AK-9: Keine axe-Verstöße, kein horizontales Scrollen (360/768/1280, hell und dunkel).
@@ -44,7 +45,7 @@ Abschnitte mit h2, Karten mit h3, FAQ über `FaqList` (Frage als Überschrift in
 
 ## Tests
 
-`tests/unit/lokal.test.tsx` (AK-2 bis AK-8, AK-10 bis AK-12), `tests/e2e/lokal.spec.ts` (AK-1, AK-9).
+`tests/unit/lokal.test.tsx` (AK-2 bis AK-8, AK-10 bis AK-13), `tests/e2e/lokal.spec.ts` (AK-1, AK-9).
 
 ## Blinder Kritiker (2026-10-04)
 

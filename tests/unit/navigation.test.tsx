@@ -161,14 +161,18 @@ describe('Footer', () => {
       'href',
       'https://www.instagram.com/erik.bergheimer/',
     );
-    expect(screen.getByRole('link', { name: 'E-Mail' })).toHaveAttribute('href', expect.stringMatching(/^mailto:/));
+    expect(screen.getByRole('link', { name: 'erb1209@outlook.de' })).toHaveAttribute(
+      'href',
+      expect.stringMatching(/^mailto:/),
+    );
     expect(screen.getByRole('link', { name: 'LinkedIn' })).toHaveAttribute(
       'href',
       'https://www.linkedin.com/in/erik-bergheimer/',
     );
     // Kritiker Kundenbereich: neuer Tab wird angesagt (functions/kundenbereich/projektuebersicht.md)
     expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAccessibleDescription('(öffnet in neuem Tab)');
-    expect(screen.getByRole('link', { name: 'E-Mail' })).not.toHaveAttribute('aria-describedby');
+    expect(screen.getByRole('link', { name: 'LinkedIn' })).toHaveAccessibleDescription('(öffnet in neuem Tab)');
+    expect(screen.getByRole('link', { name: 'erb1209@outlook.de' })).not.toHaveAttribute('aria-describedby');
   });
 
   it('AK-8: Links folgen der Sprache', () => {
@@ -200,5 +204,39 @@ describe('AK-19: Leistungen im Footer', () => {
       services.map((s) => `${locale === 'de' ? '' : '/en'}/services/${s.slug}`),
     );
     expect(links.map((l) => l.textContent)).toEqual(services.map((s) => s[locale].title));
+  });
+});
+
+describe('AK-25: Footer in beschrifteten Spalten', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    const { container } = render(<Footer locale={locale} />);
+    const heads = Array.from(container.querySelectorAll('footer [data-footer-heading]')).map((h) => h.textContent);
+    expect(heads).toEqual(
+      locale === 'de'
+        ? ['Kontakt', 'Leistungen', 'Webdesign nach Stadt', 'Seiten']
+        : ['Contact', 'Services', 'Web design by city', 'Pages'],
+    );
+    // E-Mail sichtbar ausgeschrieben
+    expect(screen.getByRole('link', { name: 'erb1209@outlook.de' })).toHaveAttribute(
+      'href',
+      'mailto:erb1209@outlook.de',
+    );
+    expect(container.querySelector('footer')).toHaveTextContent(
+      locale === 'de'
+        ? 'Design Engineer aus Königsbrunn bei Augsburg.'
+        : 'Design engineer from Königsbrunn near Augsburg.',
+    );
+    const pages = container.querySelector('#footer-nav')!;
+    expect(
+      within(pages as HTMLElement)
+        .getAllByRole('link')
+        .map((l) => l.textContent),
+    ).toEqual(
+      locale === 'de'
+        ? ['Projekte', 'Leistungen', 'Über mich', 'Kontakt', 'FAQs', 'Impressum', 'Datenschutz']
+        : ['Projects', 'Services', 'About', 'Contact', 'FAQs', 'Imprint', 'Privacy'],
+    );
+    expect(screen.getAllByRole('link', { name: locale === 'de' ? 'Nach oben' : 'Back to top' })).toHaveLength(1);
+    expect(container.querySelector('footer')).toHaveTextContent('© 2026 Erik Bergheimer');
   });
 });

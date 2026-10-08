@@ -42,15 +42,15 @@ export const localPages: LocalPage[] = [
   {
     path: '/webdesign-augsburg',
     city: 'Augsburg',
-    services: ['webflow-development', 'ux-ui-design', 'accessibility', 'website-process-optimization'],
+    services: ['web-design-development', 'ux-ui-design', 'accessibility', 'website-process-optimization'],
     de: {
-      metaTitle: 'Webdesign & Webflow in Augsburg | Erik Bergheimer',
+      metaTitle: 'Webdesign & Webentwicklung in Augsburg | Erik Bergheimer',
       metaDescription:
-        'Webdesigner in Augsburg: Webflow-Websites, UX/UI-Design und Barrierefreiheit aus Königsbrunn. Persönlich vor Ort in Augsburg oder remote.',
+        'Webdesigner in Augsburg: Websites mit No-Code oder eigenem Code, UX/UI-Design und Barrierefreiheit aus Königsbrunn. Vor Ort in Augsburg oder remote.',
       footerLink: 'Webdesign Augsburg',
       serviceLink: 'Mehr zu Webdesign in Augsburg',
       eyebrow: 'Augsburg & Umgebung',
-      title: 'Webdesign & Webflow in Augsburg',
+      title: 'Webdesign & Webentwicklung in Augsburg',
       lead: 'Du suchst eine Website, die gut aussieht, schnell lädt, gefunden wird und für alle funktioniert? Ich gestalte und baue sie, persönlich und direkt aus der Region.',
       localTitle: 'Vor Ort in Augsburg, remote in ganz Deutschland',
       localText:
@@ -92,8 +92,8 @@ export const localPages: LocalPage[] = [
           a: 'Ja. Ich achte auf saubere Seitenstruktur, schnelle Ladezeiten, passende Texte und strukturierte Daten, damit dich Menschen in Augsburg finden, wenn sie nach deiner Leistung suchen. Rankings kann niemand garantieren, aber die Grundlagen stimmen.',
         },
         {
-          q: 'Warum Webflow für meine Website in Augsburg?',
-          a: 'Mit Webflow bekommst du eine schnelle, sichere Website, die du selbst pflegen kannst, ohne Plugin-Pflege und Sicherheitsupdates, um die du dich kümmern musst. Ich richte sie so ein, dass du Texte und Bilder ohne Programmierkenntnisse änderst; bei Fragen bin ich in der Nähe von Augsburg erreichbar.',
+          q: 'Mit welcher Technik baust du meine Website in Augsburg?',
+          a: 'Das hängt von deinem Vorhaben ab. Für Websites, die du selbst pflegst, nutze ich Webflow oder Framer, ohne Plugin-Pflege und Sicherheitsupdates, um die du dich kümmern musst. Braucht deine Seite Login, Datenbank oder eigene Funktionen, entwickle ich sie mit TypeScript, Supabase und Vercel. Bei Fragen bin ich in der Nähe von Augsburg erreichbar.',
         },
         {
           q: 'Wie starten wir?',
@@ -105,13 +105,13 @@ export const localPages: LocalPage[] = [
         'Erzähl mir, was du vorhast. Im kostenlosen Erstgespräch klären wir, wo du stehst und wie deine neue Website aussehen kann.',
     },
     en: {
-      metaTitle: 'Web design & Webflow in Augsburg | Erik Bergheimer',
+      metaTitle: 'Web design & development in Augsburg | Erik Bergheimer',
       metaDescription:
-        'Web designer in Augsburg: Webflow websites, UX/UI design and accessibility from Königsbrunn. On site in Augsburg or remotely.',
+        'Web designer in Augsburg: websites built no-code or custom, UX/UI design and accessibility from Königsbrunn. On site in Augsburg or remotely.',
       footerLink: 'Web design Augsburg',
       serviceLink: 'More on web design in Augsburg',
       eyebrow: 'Augsburg & area',
-      title: 'Web design & Webflow in Augsburg',
+      title: 'Web design & development in Augsburg',
       lead: 'Looking for a website that looks good, loads fast, gets found and works for everyone? I design and build it, personally and right here in the region.',
       localTitle: 'On site in Augsburg, remote across Germany',
       localText:
@@ -153,8 +153,8 @@ export const localPages: LocalPage[] = [
           a: 'Yes. I take care of a clean page structure, fast loading, fitting copy and structured data so people in Augsburg find you when they search for what you offer. Nobody can guarantee rankings, but the foundations will be right.',
         },
         {
-          q: 'Why Webflow for my website in Augsburg?',
-          a: 'Webflow gives you a fast, secure website you can maintain yourself, without plugin upkeep or security updates to worry about. I set it up so you can change text and images without coding, and I am close by in the Augsburg area if you need help.',
+          q: 'Which technology do you use for my website in Augsburg?',
+          a: 'That depends on your project. For sites you maintain yourself I use Webflow or Framer, with no plugin upkeep or security updates to worry about. If your site needs login, a database or its own features, I develop it with TypeScript, Supabase and Vercel. I am close by in the Augsburg area if you need help.',
         },
         {
           q: 'How do we start?',
@@ -169,11 +169,11 @@ export const localPages: LocalPage[] = [
   {
     path: '/webdesign-muenchen',
     city: 'München',
-    services: ['webflow-development', 'ux-ui-design', 'accessibility', 'website-process-optimization'],
+    services: ['web-design-development', 'ux-ui-design', 'accessibility', 'website-process-optimization'],
     de: {
       metaTitle: 'Webdesign & Webentwicklung in München | Erik Bergheimer',
       metaDescription:
-        'Webdesign und Webentwicklung für München: Webflow-Websites, UX/UI-Design und Barrierefreiheit, remote aus Königsbrunn, Termine nach Absprache.',
+        'Webdesign und Webentwicklung für München: No-Code oder eigener Code, UX/UI-Design, Barrierefreiheit. Remote aus Königsbrunn, Termine nach Absprache.',
       footerLink: 'Webdesign München',
       serviceLink: 'Mehr zu Webdesign in München',
       eyebrow: 'Webdesign für München',
@@ -188,8 +188,8 @@ export const localPages: LocalPage[] = [
         { term: 'Ansprechperson', detail: 'Eine Person für Design und Entwicklung, auf Deutsch oder Englisch' },
       ],
       serviceTexts: {
-        'webflow-development':
-          'Eine Webflow-Website, gebaut von der Person, die sie auch gestaltet hat, ohne Übergabe zwischen Agentur-Abteilungen.',
+        'web-design-development':
+          'Eine Website in Webflow, Framer oder eigenem Code, gebaut von der Person, die sie auch gestaltet hat, ohne Übergabe zwischen Agentur-Abteilungen.',
         'ux-ui-design':
           'Konzept und Interface direkt mit dir abgestimmt, statt über Account-Management und mehrere Feedbackschleifen.',
         accessibility: 'Barrierefreiheit nach WCAG als Teil des Projekts, nicht als teurer Zusatzauftrag am Ende.',
@@ -206,7 +206,7 @@ export const localPages: LocalPage[] = [
         },
         {
           title: 'Eingespielt remote',
-          text: 'Geteilte Figma-Dateien, kurze Video-Calls und eine Webflow-Vorschau, die du jederzeit öffnen kannst: Du siehst den Fortschritt, wann es dir passt.',
+          text: 'Geteilte Figma-Dateien, kurze Video-Calls und einen Vorschau-Link, den du jederzeit öffnen kannst: Du siehst den Fortschritt, wann es dir passt.',
         },
         {
           title: 'Barrierefreiheit mitgedacht',
@@ -221,7 +221,7 @@ export const localPages: LocalPage[] = [
         },
         {
           q: 'Wie läuft ein Remote-Projekt für Kundinnen und Kunden in München ab?',
-          a: 'Nach dem Erstgespräch bekommst du ein Angebot mit Ablauf und Zeitplan. Dann arbeiten wir in klaren Schritten: Konzept, Design in Figma, Umsetzung in Webflow, Abnahme. Feedback gibst du per Video-Call oder direkt in der Vorschau.',
+          a: 'Nach dem Erstgespräch bekommst du ein Angebot mit Ablauf und Zeitplan. Dann arbeiten wir in klaren Schritten: Konzept, Design in Figma, Umsetzung, Abnahme. Feedback gibst du per Video-Call oder direkt in der Vorschau.',
         },
         {
           q: 'Lohnt sich die direkte Zusammenarbeit statt einer Agentur in München?',
@@ -229,7 +229,7 @@ export const localPages: LocalPage[] = [
         },
         {
           q: 'Kann ich die Website nach dem Launch in München selbst pflegen?',
-          a: 'Ja. Ich richte Webflow so ein, dass du Texte, Bilder und Beiträge selbst änderst. Zum Abschluss gibt es eine Einführung per Video, und auch danach bin ich für Fragen erreichbar.',
+          a: 'Ja. Ich richte die Website so ein, dass du Texte, Bilder und Beiträge selbst änderst. Zum Abschluss gibt es eine Einführung per Video, und auch danach bin ich für Fragen erreichbar.',
         },
         {
           q: 'Was kostet eine Website für ein Unternehmen in München?',
@@ -243,7 +243,7 @@ export const localPages: LocalPage[] = [
     en: {
       metaTitle: 'Web design & development in Munich | Erik Bergheimer',
       metaDescription:
-        'Web design and development for Munich (München): Webflow websites, UX/UI design and accessibility, remote from Königsbrunn, meetings by arrangement.',
+        'Web design and development for Munich (München): no-code or custom code, UX/UI design, accessibility. Remote from Königsbrunn, meetings by arrangement.',
       footerLink: 'Web design Munich',
       serviceLink: 'More on web design in Munich',
       eyebrow: 'Web design for Munich',
@@ -258,8 +258,8 @@ export const localPages: LocalPage[] = [
         { term: 'Point of contact', detail: 'One person for design and development, in German or English' },
       ],
       serviceTexts: {
-        'webflow-development':
-          'A Webflow website built by the same person who designed it, with no handover between agency departments.',
+        'web-design-development':
+          'A website in Webflow, Framer or custom code, built by the same person who designed it, with no handover between agency departments.',
         'ux-ui-design':
           'Concept and interface agreed directly with you, not through account managers and several rounds of feedback.',
         accessibility: 'WCAG accessibility as part of the project, not an expensive add-on at the very end.',
@@ -276,7 +276,7 @@ export const localPages: LocalPage[] = [
         },
         {
           title: 'Practised at remote work',
-          text: 'Shared Figma files, short video calls and a Webflow preview you can open any time: you see the progress whenever it suits you.',
+          text: 'Shared Figma files, short video calls and a preview link you can open any time: you see the progress whenever it suits you.',
         },
         {
           title: 'Accessibility built in',
@@ -291,7 +291,7 @@ export const localPages: LocalPage[] = [
         },
         {
           q: 'How does a remote project for clients in Munich work?',
-          a: 'After the intro call you get an offer with process and timeline. Then we work in clear steps: concept, design in Figma, build in Webflow, sign-off. You give feedback over video calls or directly in the preview.',
+          a: 'After the intro call you get an offer with process and timeline. Then we work in clear steps: concept, design in Figma, build, sign-off. You give feedback over video calls or directly in the preview.',
         },
         {
           q: 'Is working with me directly worth it compared to a Munich agency?',
@@ -299,7 +299,7 @@ export const localPages: LocalPage[] = [
         },
         {
           q: 'Can my Munich team maintain the website after launch?',
-          a: 'Yes. I set up Webflow so you can change text, images and posts yourself. At the end there is a walkthrough over video, and afterwards I am still reachable if questions come up.',
+          a: 'Yes. I set up the website so you can change text, images and posts yourself. At the end there is a walkthrough over video, and afterwards I am still reachable if questions come up.',
         },
         {
           q: 'What does a website for a Munich business cost?',
@@ -314,11 +314,11 @@ export const localPages: LocalPage[] = [
   {
     path: '/webdesign-stuttgart',
     city: 'Stuttgart',
-    services: ['webflow-development', 'ux-ui-design', 'design-systems', 'accessibility'],
+    services: ['web-design-development', 'ux-ui-design', 'design-systems', 'accessibility'],
     de: {
       metaTitle: 'Webdesign & Webentwicklung in Stuttgart | Erik Bergheimer',
       metaDescription:
-        'Webdesign, Webflow-Entwicklung und Design-Systeme für Stuttgart: remote aus Königsbrunn bei Augsburg, Termine vor Ort nach Absprache.',
+        'Webdesign, Webentwicklung und Design-Systeme für Stuttgart: remote aus Königsbrunn bei Augsburg, Termine vor Ort nach Absprache.',
       footerLink: 'Webdesign Stuttgart',
       serviceLink: 'Mehr zu Webdesign in Stuttgart',
       eyebrow: 'Für Teams in Stuttgart',
@@ -333,8 +333,8 @@ export const localPages: LocalPage[] = [
         { term: 'Rhythmus', detail: 'Feste Video-Termine und eine stets aktuelle Vorschau' },
       ],
       serviceTexts: {
-        'webflow-development':
-          'Webflow-Websites aus wiederverwendbaren Komponenten, die eure IT nachvollziehen und euer Team selbst erweitern kann.',
+        'web-design-development':
+          'Websites aus wiederverwendbaren Komponenten, die eure IT nachvollziehen und euer Team selbst erweitern kann, gebaut in Webflow, Framer oder als eigene Entwicklung.',
         'ux-ui-design':
           'Interfaces für Produkte und Portale, abgestimmt mit Produktteam und Entwicklung statt im stillen Kämmerlein.',
         'design-systems':
@@ -374,8 +374,8 @@ export const localPages: LocalPage[] = [
           a: 'Ja. Ich stimme mich mit eurer IT oder Entwicklung ab, übergebe sauber und halte Entscheidungen schriftlich fest. Das funktioniert remote, ohne dass jemand anreisen muss.',
         },
         {
-          q: 'Ist Webflow für ein Unternehmen aus Stuttgart sicher genug?',
-          a: 'Webflow übernimmt Hosting, SSL-Zertifikat und Updates der Plattform, Plugins musst du nicht pflegen. Beim Datenschutz gilt: Webflow hostet auf Infrastruktur in den USA und bietet einen Auftragsverarbeitungsvertrag an. Ob das zu euren Anforderungen passt, prüfen wir gemeinsam; eine Rechtsberatung ersetzt das nicht.',
+          q: 'Ist eine Website mit Webflow oder Framer für ein Unternehmen aus Stuttgart sicher genug?',
+          a: 'Beide Plattformen übernehmen Hosting, SSL-Zertifikat und Updates, Plugins müsst ihr nicht pflegen. Beim Datenschutz gilt: Sie hosten überwiegend auf US-Infrastruktur und bieten einen Auftragsverarbeitungsvertrag an. Passt das nicht zu euren Anforderungen, entwickle ich die Website selbst und wir legen Server und Datenbank in ein Rechenzentrum in der EU. Was passt, prüfen wir gemeinsam; eine Rechtsberatung ersetzt das nicht.',
         },
         {
           q: 'Achtest du bei Websites für Stuttgart auf Barrierefreiheit?',
@@ -389,7 +389,7 @@ export const localPages: LocalPage[] = [
     en: {
       metaTitle: 'Web design & development in Stuttgart | Erik Bergheimer',
       metaDescription:
-        'Web design, Webflow development and design systems for Stuttgart: remote from Königsbrunn near Augsburg, on-site meetings by arrangement.',
+        'Web design, web development and design systems for Stuttgart: remote from Königsbrunn near Augsburg, on-site meetings by arrangement.',
       footerLink: 'Web design Stuttgart',
       serviceLink: 'More on web design in Stuttgart',
       eyebrow: 'For teams in Stuttgart',
@@ -404,8 +404,8 @@ export const localPages: LocalPage[] = [
         { term: 'Rhythm', detail: 'Regular video check-ins and an always up-to-date preview' },
       ],
       serviceTexts: {
-        'webflow-development':
-          'Webflow websites made of reusable components that your IT can follow and your team can extend on its own.',
+        'web-design-development':
+          'Websites made of reusable components that your IT can follow and your team can extend on its own, built in Webflow, Framer or custom code.',
         'ux-ui-design':
           'Interfaces for products and portals, worked out with your product team and developers rather than behind closed doors.',
         'design-systems':
@@ -445,8 +445,8 @@ export const localPages: LocalPage[] = [
           a: 'Yes. I coordinate with your IT or developers, hand over cleanly and keep decisions in writing. It all works remotely, without anyone having to travel.',
         },
         {
-          q: 'Is Webflow secure enough for a Stuttgart company?',
-          a: 'Webflow handles hosting, the SSL certificate and platform updates, and there are no plugins to maintain. On data protection: Webflow hosts on US-based infrastructure and offers a data processing agreement. We check together whether that fits your requirements; this is not legal advice.',
+          q: 'Is a Webflow or Framer website secure enough for a Stuttgart company?',
+          a: 'Both platforms handle hosting, the SSL certificate and updates, and there are no plugins to maintain. On data protection: they host mostly on US infrastructure and offer a data processing agreement. If that does not fit your requirements, I develop the site myself and we place the server and database in an EU data centre. We check together what fits; this is not legal advice.',
         },
         {
           q: 'Do you consider accessibility for websites in Stuttgart?',
@@ -462,11 +462,11 @@ export const localPages: LocalPage[] = [
     path: '/webdesign-innsbruck',
     city: 'Innsbruck',
     country: { de: 'Österreich', en: 'Austria' },
-    services: ['ux-ui-design', 'webflow-development', 'accessibility', 'ai-consulting'],
+    services: ['ux-ui-design', 'web-design-development', 'accessibility', 'ai-consulting'],
     de: {
       metaTitle: 'Webdesign & Webentwicklung in Innsbruck | Erik Bergheimer',
       metaDescription:
-        'Webdesign für Innsbruck von einem MCI-Absolventen: UX/UI-Design, Webflow, Barrierefreiheit und KI-Beratung, remote aus Deutschland.',
+        'Webdesign für Innsbruck von einem MCI-Absolventen: UX/UI-Design, Webentwicklung, Barrierefreiheit und KI-Beratung, remote aus Deutschland.',
       footerLink: 'Webdesign Innsbruck',
       serviceLink: 'Mehr zu Webdesign in Innsbruck',
       eyebrow: 'Innsbruck & Tirol',
@@ -483,8 +483,8 @@ export const localPages: LocalPage[] = [
       serviceTexts: {
         'ux-ui-design':
           "Nutzerzentriertes Design, wie ich es am MCI vertieft und bei SIGHT'KICK für Gäste in Innsbruck angewendet habe.",
-        'webflow-development':
-          'Schnelle Webflow-Websites für Unternehmen in Tirol, die du nach dem Launch selbst pflegst, auch ohne Agentur vor Ort.',
+        'web-design-development':
+          'Schnelle Websites für Unternehmen in Tirol, die du nach dem Launch selbst pflegst, auch ohne Agentur vor Ort. Gebaut mit Webflow, Framer oder eigenem Code.',
         accessibility:
           'Umsetzung nach WCAG, damit deine Website den Anforderungen des European Accessibility Act näherkommt, in Österreich geregelt im BaFG.',
         'ai-consulting':
@@ -537,7 +537,7 @@ export const localPages: LocalPage[] = [
     en: {
       metaTitle: 'Web design & development in Innsbruck | Erik Bergheimer',
       metaDescription:
-        'Web design for Innsbruck from an MCI graduate: UX/UI design, Webflow, accessibility and AI consulting, working remotely from Germany.',
+        'Web design for Innsbruck from an MCI graduate: UX/UI design, web development, accessibility and AI consulting, working remotely from Germany.',
       footerLink: 'Web design Innsbruck',
       serviceLink: 'More on web design in Innsbruck',
       eyebrow: 'Innsbruck & Tyrol',
@@ -554,8 +554,8 @@ export const localPages: LocalPage[] = [
       serviceTexts: {
         'ux-ui-design':
           "User-centred design as I deepened it at MCI and applied it in SIGHT'KICK for visitors to Innsbruck.",
-        'webflow-development':
-          'Fast Webflow websites for businesses in Tyrol that you maintain yourself after launch, no local agency needed.',
+        'web-design-development':
+          'Fast websites for businesses in Tyrol that you maintain yourself after launch, no local agency needed. Built with Webflow, Framer or custom code.',
         accessibility:
           'Building to WCAG so your website moves closer to the European Accessibility Act requirements, which Austria regulates in the BaFG.',
         'ai-consulting':
@@ -609,11 +609,11 @@ export const localPages: LocalPage[] = [
   {
     path: '/webdesign-kempten',
     city: 'Kempten',
-    services: ['webflow-development', 'brand-logo-design', 'website-process-optimization', 'ux-ui-design'],
+    services: ['web-design-development', 'brand-logo-design', 'website-process-optimization', 'ux-ui-design'],
     de: {
       metaTitle: 'Webdesign & Webentwicklung in Kempten | Erik Bergheimer',
       metaDescription:
-        'Webdesign für Kempten und das Allgäu: Webflow-Websites, Logo und Marke, schlankere Abläufe. Remote aus Königsbrunn, Termine vor Ort nach Absprache.',
+        'Webdesign für Kempten und das Allgäu: Websites, Logo und Marke, schlankere Abläufe. Remote aus Königsbrunn, Termine vor Ort nach Absprache.',
       footerLink: 'Webdesign Kempten',
       serviceLink: 'Mehr zu Webdesign in Kempten',
       eyebrow: 'Kempten & Allgäu',
@@ -628,8 +628,8 @@ export const localPages: LocalPage[] = [
         { term: 'Im Alltag', detail: 'Video-Calls, die in deinen Betriebsablauf passen' },
       ],
       serviceTexts: {
-        'webflow-development':
-          'Eine Webflow-Website, auf der du Angebote, Saisonzeiten oder Öffnungszeiten selbst änderst, ohne jedes Mal jemanden zu beauftragen.',
+        'web-design-development':
+          'Eine Website in Webflow oder Framer, auf der du Angebote, Saisonzeiten oder Öffnungszeiten selbst änderst, ohne jedes Mal jemanden zu beauftragen.',
         'brand-logo-design':
           'Ein Auftritt für Handwerk, Mittelstand oder Gastgewerbe im Allgäu, der vom Firmenschild bis zur Website zusammenpasst.',
         'website-process-optimization':
@@ -668,8 +668,8 @@ export const localPages: LocalPage[] = [
           a: 'Oft ja. Mit klaren Formularen und passenden Automatisierungen landen Anfragen strukturiert bei dir, statt im Postfach unterzugehen. Was für deinen Betrieb sinnvoll ist, schauen wir uns gemeinsam an.',
         },
         {
-          q: 'Eignet sich Webflow für Gastgeberinnen und Gastgeber in Kempten und Umland?',
-          a: 'Webflow passt gut für schnelle, bildstarke Seiten, die du selbst pflegst, etwa Zimmer, Angebote oder Öffnungszeiten. Ein bestehendes Buchungssystem lässt sich oft einbinden; ob das für dein Angebot klappt, klären wir im Erstgespräch.',
+          q: 'Welche Website eignet sich für Gastgeberinnen und Gastgeber in Kempten und Umland?',
+          a: 'Für schnelle, bildstarke Seiten, die du selbst pflegst, etwa Zimmer, Angebote oder Öffnungszeiten, passen Webflow oder Framer gut. Ein bestehendes Buchungssystem lässt sich oft einbinden; brauchst du eine eigene Lösung, entwickle ich sie. Was für dein Angebot klappt, klären wir im Erstgespräch.',
         },
         {
           q: 'Wie lange dauert eine neue Website für ein Unternehmen aus Kempten?',
@@ -683,7 +683,7 @@ export const localPages: LocalPage[] = [
     en: {
       metaTitle: 'Web design & development in Kempten | Erik Bergheimer',
       metaDescription:
-        'Web design for Kempten and the Allgäu: Webflow websites, logo and brand, leaner processes. Remote from Königsbrunn, on-site meetings by arrangement.',
+        'Web design for Kempten and the Allgäu: websites, logo and brand, leaner processes. Remote from Königsbrunn, on-site meetings by arrangement.',
       footerLink: 'Web design Kempten',
       serviceLink: 'More on web design in Kempten',
       eyebrow: 'Kempten & the Allgäu',
@@ -698,8 +698,8 @@ export const localPages: LocalPage[] = [
         { term: 'Day to day', detail: 'Video calls that fit around your working day' },
       ],
       serviceTexts: {
-        'webflow-development':
-          'A Webflow website where you update offers, seasonal dates or opening hours yourself, without hiring someone every time.',
+        'web-design-development':
+          'A Webflow or Framer website where you update offers, seasonal dates or opening hours yourself, without hiring someone every time.',
         'brand-logo-design':
           'A look for trades, SMEs or hospitality in the Allgäu that fits together from the shop sign to the website.',
         'website-process-optimization':
@@ -739,8 +739,8 @@ export const localPages: LocalPage[] = [
           a: 'Often, yes. With clear forms and suitable automations, enquiries reach you in a structured way instead of getting lost in your inbox. We look together at what makes sense for your business.',
         },
         {
-          q: 'Is Webflow a good fit for hosts in and around Kempten?',
-          a: 'Webflow works well for fast, image-rich pages you maintain yourself, such as rooms, offers or opening hours. An existing booking system can often be embedded; whether that works for your offer we clarify in the intro call.',
+          q: 'What kind of website suits hosts in and around Kempten?',
+          a: 'For fast, image-rich pages you maintain yourself, such as rooms, offers or opening hours, Webflow or Framer work well. An existing booking system can often be embedded; if you need your own solution, I develop it. We clarify what works for your offer in the intro call.',
         },
         {
           q: 'How long does a new website for a Kempten business take?',

@@ -41,7 +41,7 @@ test('Verhalten 1-4: Erik kommt von der Übersicht zum Kunden und zum Projekt', 
   // Kritiker Verwaltung 1: Schritte eingeklappt, Sprungmarke zu den Terminen
   await page.getByRole('navigation', { name: 'Auf dieser Seite' }).getByRole('link', { name: 'Termine' }).click();
   await expect(page.getByRole('heading', { level: 2, name: 'Termine' })).toBeInViewport();
-  const hoehe = await page.evaluate(() => document.documentElement.scrollHeight);
+  const hoehe = await page.getByRole('main').evaluate((el) => el.scrollHeight);
   expect(hoehe).toBeLessThan(7000);
 });
 

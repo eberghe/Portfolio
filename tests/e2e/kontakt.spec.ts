@@ -13,7 +13,7 @@ async function open(page: Page, path: string) {
 const overflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 
 async function fillAll(page: Page) {
-  await page.getByRole('checkbox', { name: 'Webflow-Entwicklung' }).check();
+  await page.getByRole('checkbox', { name: 'Webdesign & Webentwicklung' }).check();
   await page.getByRole('button', { name: 'Weiter' }).click();
   await page.getByRole('textbox', { name: /Beschreibung/ }).fill('Wir brauchen einen barrierefreien Relaunch.');
   await page.getByRole('button', { name: 'Weiter' }).click();
@@ -75,7 +75,7 @@ test('Kritiker 7: Fehlerliste und Schritt-Überschrift haben sichtbaren Fokus', 
   const outline = () => page.evaluate(() => parseFloat(getComputedStyle(document.activeElement!).outlineWidth));
   await expect(page.getByRole('group', { name: /Bitte prüfe/ })).toBeFocused();
   expect(await outline()).toBeGreaterThanOrEqual(2);
-  await page.getByRole('checkbox', { name: 'Webflow-Entwicklung' }).check();
+  await page.getByRole('checkbox', { name: 'Webdesign & Webentwicklung' }).check();
   await page.getByRole('button', { name: 'Weiter' }).focus();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('heading', { name: /Schritt 2 von 4/ })).toBeFocused();
@@ -97,7 +97,7 @@ test.describe('ohne JavaScript', () => {
     for (const step of ['Leistung', 'Projekt', 'Rahmen', 'Kontakt'])
       await expect(page.getByRole('group', { name: new RegExp(`von 4: ${step}`) })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Weiter' })).toBeHidden();
-    await page.getByRole('checkbox', { name: 'Webflow-Entwicklung' }).check();
+    await page.getByRole('checkbox', { name: 'Webdesign & Webentwicklung' }).check();
     await page.getByRole('textbox', { name: /Beschreibung/ }).fill('Wir brauchen einen barrierefreien Relaunch.');
     await page.getByRole('textbox', { name: /^Name/ }).fill('Alex Muster');
     await page.getByRole('textbox', { name: /^E-Mail/ }).fill('alex@beispiel.de');
@@ -146,7 +146,7 @@ test('seite AK-6: Assistent im ersten Bildschirm', async ({ page }, info) => {
   expect(lastOption.y + lastOption.height).toBeLessThanOrEqual(page.viewportSize()!.height);
   await visible('Weiter');
   if (info.project.name === 'mobile-360') return;
-  await page.getByRole('checkbox', { name: 'Webflow-Entwicklung' }).check();
+  await page.getByRole('checkbox', { name: 'Webdesign & Webentwicklung' }).check();
   await page.getByRole('button', { name: 'Weiter' }).click();
   await page.getByRole('textbox', { name: /Beschreibung/ }).fill('Wir brauchen einen barrierefreien Relaunch.');
   await visible('Weiter');

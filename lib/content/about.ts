@@ -36,11 +36,11 @@ export const aboutContent = {
   de: {
     metaTitle: 'Über mich: Erik Bergheimer, UX/UI-Designer | Erik Bergheimer',
     metaDescription:
-      'Erik Bergheimer: UX/UI-Designer und Webflow-Entwickler aus Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. am MCI Innsbruck.',
-    title: 'Erik Bergheimer: UX/UI-Designer & Webflow-Entwickler',
+      'Erik Bergheimer: UX/UI-Designer und Webentwickler aus Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. am MCI Innsbruck.',
+    title: 'Erik Bergheimer: UX/UI-Designer & Webentwickler',
     greeting: 'Servus, ich bin Erik',
     intro:
-      'UX/UI-Designer und Webflow-Entwickler aus Augsburg. Schreib mir, um herauszufinden, ob ich gerade Zeit für dein Projekt habe.',
+      'UX/UI-Designer und Webentwickler aus Augsburg. Schreib mir, um herauszufinden, ob ich gerade Zeit für dein Projekt habe.',
     photoAlt: 'Erik von hinten am Strand im weißen T-Shirt und mit Kappe, neben ihm ein Surfbrett',
     tools: 'Tools, mit denen ich arbeite',
     pause: 'Animation anhalten',
@@ -60,11 +60,10 @@ export const aboutContent = {
   en: {
     metaTitle: 'About Erik Bergheimer, UX/UI designer | Erik Bergheimer',
     metaDescription:
-      'Erik Bergheimer: UX/UI designer and Webflow developer from Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. at MCI Innsbruck.',
-    title: 'Erik Bergheimer: UX/UI Designer & Webflow Developer',
+      'Erik Bergheimer: UX/UI designer and web developer from Augsburg. B.Sc. User Experience Design (TH Ingolstadt), M.A. at MCI Innsbruck.',
+    title: 'Erik Bergheimer: UX/UI Designer & Web Developer',
     greeting: "Hi, I'm Erik",
-    intro:
-      'UX/UI designer and Webflow developer from Augsburg. Get in touch to find out if I have time for your project.',
+    intro: 'UX/UI designer and web developer from Augsburg. Get in touch to find out if I have time for your project.',
     photoAlt: 'Erik seen from behind on a beach in a white T-shirt and cap, next to a surfboard',
     tools: 'Tools I work with',
     pause: 'Pause animation',

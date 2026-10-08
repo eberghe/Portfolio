@@ -758,7 +758,7 @@ export const projects: Project[] = [
         en: 'BlueBird brand identity: logo, caps with the bird logo, colour palette and typefaces',
       },
     },
-    service: 'webflow-development',
+    service: 'web-design-development',
     gallery: [],
     inlineImages: {},
     download: {

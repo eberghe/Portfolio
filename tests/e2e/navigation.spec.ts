@@ -146,11 +146,11 @@ test.describe('mobil', () => {
     });
   }
 
-  test('AK-13: Icon-Links im Footer sind mobil mindestens 44×44 px groß', async ({ page }) => {
+  test('AK-13: Kontakt-Links im Footer sind mobil mindestens 44 px hoch', async ({ page }) => {
     await page.goto('/');
     await ready(page);
     await ready(page);
-    for (const name of ['Instagram', 'E-Mail', 'Nach oben']) {
+    for (const name of ['Instagram', 'erb1209@outlook.de', 'Nach oben']) {
       const box = (await page.locator('footer').getByRole('link', { name, exact: true }).first().boundingBox())!;
       expect(box.width, name).toBeGreaterThanOrEqual(44);
       expect(box.height, name).toBeGreaterThanOrEqual(44);

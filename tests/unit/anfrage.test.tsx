@@ -22,7 +22,7 @@ const { services } = await import('@/lib/content/services');
 const { sitePaths } = await import('@/lib/routes');
 
 const valid = {
-  leistungen: ['webflow-development', 'accessibility'],
+  leistungen: ['web-design-development', 'accessibility'],
   beschreibung: 'Wir brauchen einen barrierefreien Relaunch unserer Website.',
   website: 'beispiel.de',
   zeitrahmen: 'bald',
@@ -48,7 +48,7 @@ describe('AK-6: Prüfregeln', () => {
     const r = validateInquiry(formData());
     expect(r.errors).toEqual({});
     expect(r.data).toMatchObject({
-      leistungen: ['webflow-development', 'accessibility'],
+      leistungen: ['web-design-development', 'accessibility'],
       website: 'https://beispiel.de',
       telefon: '+49 821 123456',
       sprache: 'de',
@@ -179,7 +179,13 @@ describe('AK-3/AK-5/AK-7: Verarbeitung auf dem Server', () => {
     const url = new URL(inquiryMailto(data));
     const body = url.searchParams.get('body')!;
     expect(url.searchParams.get('subject')).toContain('Alex Muster');
-    for (const v of ['Webflow', 'barrierefreien Relaunch', 'https://beispiel.de', 'alex@beispiel.de', '+49 821 123456'])
+    for (const v of [
+      'Webdesign & Webentwicklung',
+      'barrierefreien Relaunch',
+      'https://beispiel.de',
+      'alex@beispiel.de',
+      '+49 821 123456',
+    ])
       expect(body).toContain(v);
   });
 });
@@ -200,7 +206,7 @@ describe('AK-4: Speicherung nur serverseitig', () => {
     expect(init.method).toBe('POST');
     expect(init.headers).toMatchObject({ apikey: 'geheim', Authorization: 'Bearer geheim' });
     expect(JSON.parse(init.body as string)).toMatchObject({
-      leistungen: ['webflow-development', 'accessibility'],
+      leistungen: ['web-design-development', 'accessibility'],
       email: 'alex@beispiel.de',
       ip_hash: 'h1',
       sprache: 'de',
@@ -270,7 +276,7 @@ describe('AK-4: Speicherung nur serverseitig', () => {
       expect(toErik.to).toEqual(['erb1209@outlook.de']);
       expect(confirm).toMatchObject({ from: env.ANFRAGE_ABSENDER, to: ['alex@beispiel.de'], subject });
       expect(confirm.reply_to).toBe('erb1209@outlook.de');
-      expect(confirm.text).toContain('Webflow');
+      expect(confirm.text).toMatch(/Webdesign & Webentwicklung|Web design & development/);
       for (const v of ['Alex Muster', 'barrierefreien Relaunch', '+49 821 123456'])
         expect(confirm.text).not.toContain(v);
       vi.unstubAllGlobals();
@@ -359,14 +365,14 @@ describe('Anfrage-Assistent im Browser', () => {
     const progress = screen.getByRole('list', { name: 'Fortschritt' });
     expect(within(progress).getAllByRole('listitem')).toHaveLength(4);
     expect(within(progress).getByText('Leistung').closest('li')).toHaveAttribute('aria-current', 'step');
-    check('Webflow-Entwicklung');
+    check('Webdesign & Webentwicklung');
     next();
     const heading = await screen.findByRole('heading', { name: 'Schritt 2 von 4: Projekt' });
     expect(heading).toHaveFocus();
     expect(within(progress).getByText('Projekt').closest('li')).toHaveAttribute('aria-current', 'step');
     fireEvent.click(screen.getByRole('button', { name: 'Zurück' }));
     expect(await screen.findByRole('heading', { name: 'Schritt 1 von 4: Leistung' })).toHaveFocus();
-    expect(screen.getByRole('checkbox', { name: 'Webflow-Entwicklung' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Webdesign & Webentwicklung' })).toBeChecked();
   });
 
   it('AK-2: Fehler am Feld und gesammelt, Fokus auf die Fehlerliste', async () => {
@@ -378,7 +384,7 @@ describe('Anfrage-Assistent im Browser', () => {
     expect(link.getAttribute('href')).toMatch(/^#/);
     const group = screen.getByRole('group', { name: /Schritt 1 von 4/ });
     expect(group).toHaveAccessibleDescription(/Wähle mindestens eine Leistung/);
-    check('Webflow-Entwicklung');
+    check('Webdesign & Webentwicklung');
     next();
     type(/Beschreibung/, 'kurz');
     next();
@@ -390,7 +396,7 @@ describe('Anfrage-Assistent im Browser', () => {
   it('AK-2: Server-Fehler öffnen den Schritt des ersten Fehlers', async () => {
     action.mockResolvedValue({ status: 'invalid', errors: { beschreibung: 'tooShort' }, values: {} });
     render(<InquiryWizard locale="de" />);
-    check('Webflow-Entwicklung');
+    check('Webdesign & Webentwicklung');
     next();
     type(/Beschreibung/, valid.beschreibung);
     next();
@@ -409,7 +415,7 @@ describe('Anfrage-Assistent im Browser', () => {
       summary: validateInquiry(fd).data!,
     }));
     render(<InquiryWizard locale="de" />);
-    check('Webflow-Entwicklung');
+    check('Webdesign & Webentwicklung');
     next();
     type(/Beschreibung/, valid.beschreibung);
     next();
@@ -420,11 +426,11 @@ describe('Anfrage-Assistent im Browser', () => {
     await act(async () => fireEvent.click(screen.getByRole('button', { name: 'Anfrage senden' })));
     const thanks = await screen.findByRole('heading', { name: 'Danke, Alex Muster.' });
     expect(thanks).toHaveFocus();
-    expect(document.body).toHaveTextContent('Webflow-Entwicklung');
+    expect(document.body).toHaveTextContent('Webdesign & Webentwicklung');
     expect(document.body).toHaveTextContent('Erstgespräch');
     const sent = action.mock.calls[0]![1];
     expect(sent.get('sprache')).toBe('de');
-    expect(sent.getAll('leistungen')).toEqual(['webflow-development']);
+    expect(sent.getAll('leistungen')).toEqual(['web-design-development']);
   });
 
   it('AK-7: Ausweichweg zeigt E-Mail-Link, Eingaben bleiben', async () => {
@@ -435,7 +441,7 @@ describe('Anfrage-Assistent im Browser', () => {
       text: 'x',
     });
     render(<InquiryWizard locale="en" />);
-    check('Webflow development');
+    check('Web design & development');
     next('Next');
     type(/Description/, valid.beschreibung);
     next('Next');
@@ -553,7 +559,7 @@ describe('Befunde Blinder Kritiker (Runde 1)', () => {
 
   it('AK-13: erledigte Schritte werden im Fortschritt angesagt', () => {
     render(<InquiryWizard locale="de" />);
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Webflow-Entwicklung' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Webdesign & Webentwicklung' }));
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
     const progress = screen.getByRole('list', { name: 'Fortschritt' });
     expect(within(progress).getAllByRole('listitem')[0]).toHaveTextContent('Leistung (erledigt)');
@@ -570,7 +576,7 @@ describe('Befunde Blinder Kritiker (Runde 1)', () => {
     const writeText = vi.fn(async () => {});
     Object.assign(navigator, { clipboard: { writeText } });
     render(<InquiryWizard locale="de" />);
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Webflow-Entwicklung' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Webdesign & Webentwicklung' }));
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));
     fireEvent.change(screen.getByRole('textbox', { name: /Beschreibung/ }), { target: { value: valid.beschreibung } });
     fireEvent.click(screen.getByRole('button', { name: 'Weiter' }));

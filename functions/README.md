@@ -9,7 +9,7 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 
 - [Navigation & Footer](seiten/navigation-und-footer.md)
 - [Startseite](seiten/startseite.md)
-- [Leistungen](seiten/leistungen.md): Webflow-Entwicklung, Barrierefreiheit-Beratung, KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design, UX/UI-Design, Design-Systeme, Fotografie
+- [Leistungen](seiten/leistungen.md): Webdesign & Webentwicklung, Barrierefreiheit-Beratung, KI-Beratung, Website- & Prozessoptimierung, Brand- & Logo-Design, UX/UI-Design, Design-Systeme, Fotografie
 - [Beispiel-Projektablauf](seiten/projektablauf.md)
 - [Projekte / Case Studies](seiten/projekte.md)
 - [FAQ](seiten/faq.md)

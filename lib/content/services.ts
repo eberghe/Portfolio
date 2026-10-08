@@ -26,12 +26,14 @@ export interface Service extends Record<Locale, ServiceText> {
   featured?: boolean;
   /** Slugs der passenden Leistungen (2 bis 3), AK-9 */
   related: string[];
+  /** Echtes Bild statt Platzhalter (AK-38); `alt` deutsch, `altEn` englisch */
+  image?: { src: string; width: number; height: number; alt: string; altEn: string };
 }
 
 export const services: Service[] = [
   {
     slug: 'ux-ui-design',
-    related: ['design-systems', 'accessibility', 'webflow-development'],
+    related: ['design-systems', 'accessibility', 'web-design-development'],
     icon: Layout,
     featured: true,
     de: {
@@ -71,47 +73,58 @@ export const services: Service[] = [
     },
   },
   {
-    slug: 'webflow-development',
+    slug: 'web-design-development',
     related: ['ux-ui-design', 'website-process-optimization', 'accessibility'],
     icon: Monitor,
+    // Nicht nur Webflow: entweder Webflow/Framer oder eigene Entwicklung (leistungen.md AK-39 bis AK-41)
+    image: {
+      src: '/images/services/webdesign-webentwicklung.png',
+      width: 1600,
+      height: 900,
+      alt: 'Mehrere Ansichten einer Hochzeitswebsite für Kristin und Daniel in Dunkelblau und Creme: Startseite mit gezeichneter Landschaft, Anmeldeformular, Dresscode mit Farbpunkten, Ablauf des Tages, Unterkünfte und häufige Fragen.',
+      altEn:
+        'Several views of a wedding website for Kristin and Daniel in dark blue and cream: home page with a drawn landscape, RSVP form, dress code with colour dots, schedule of the day, accommodation and FAQ.',
+    },
     de: {
-      tags: ['Webflow', 'CMS', 'Animationen', 'SEO'],
-      description:
-        'Schnelle, animierte Websites ohne Code-Overhead. Ich baue responsive Seiten mit Webflow, inklusive CMS und Custom Interactions, barrierefrei und suchmaschinenfreundlich.',
+      tags: ['Webflow', 'Framer', 'TypeScript', 'CMS', 'SEO'],
+      description: 'Schnelle, gut gestaltete Websites, gebaut mit dem Werkzeug, das zu deinem Vorhaben passt.',
       features: [
-        'Responsive Website-Entwicklung',
-        'CMS-Setup & Content-Modellierung',
-        'Interactions & Animationen',
-        'Performance-Optimierung',
-        'SEO & Launch-Support',
+        'Entweder No-Code (Webflow oder Framer), wenn du Inhalte im Editor selbst pflegen willst',
+        'Oder eigene Entwicklung mit TypeScript, Supabase und Vercel, unterstützt von Claude Code, wenn deine Website mehr können muss',
+        'Webdesign in Figma',
+        'Responsive, barrierefrei und suchmaschinenfreundlich',
+        'Inhaltsverwaltung & Animationen',
+        'Launch-Support',
       ],
-      label: 'Webflow',
-      title: 'Webflow-Entwicklung',
+      label: 'Web',
+      title: 'Webdesign & Webentwicklung',
       // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
       need: 'Deine Website wirkt veraltet, lädt langsam oder jede kleine Änderung braucht eine Agentur. Du willst eine Seite, die gut aussieht und die dein Team selbst pflegen kann.',
-      short: 'Schnelle, professionelle Websites mit Webflow, inklusive CMS, Animationen und sauberer Struktur.',
+      short:
+        'Schnelle, professionelle Websites mit Webflow, Framer oder eigener Entwicklung, je nachdem, was dein Vorhaben braucht.',
     },
     en: {
-      tags: ['Webflow', 'CMS', 'Animations', 'SEO'],
-      description:
-        'Fast, animated websites without code overhead. I build responsive sites in Webflow, including CMS and custom interactions, accessible and search-friendly.',
+      tags: ['Webflow', 'Framer', 'TypeScript', 'CMS', 'SEO'],
+      description: 'Fast, well-designed websites, built with the tool that fits your project.',
       features: [
-        'Responsive website development',
-        'CMS setup & content modelling',
-        'Interactions & animations',
-        'Performance optimisation',
-        'SEO & launch support',
+        'Either no-code (Webflow or Framer), when you want to edit content yourself in the editor',
+        'Or custom development with TypeScript, Supabase and Vercel, supported by Claude Code, when your website needs to do more',
+        'Web design in Figma',
+        'Responsive, accessible and search-friendly',
+        'Content management & animations',
+        'Launch support',
       ],
-      label: 'Webflow',
-      title: 'Webflow development',
+      label: 'Web',
+      title: 'Web design & development',
       // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
       need: 'Your website looks dated, loads slowly or every small change needs an agency. You want a site that looks good and that your team can update on its own.',
-      short: 'Fast, professional websites built in Webflow, including CMS, animations and a clean structure.',
+      short:
+        'Fast, professional websites built with Webflow, Framer or custom code, depending on what your project needs.',
     },
   },
   {
     slug: 'accessibility',
-    related: ['ux-ui-design', 'website-process-optimization', 'webflow-development'],
+    related: ['ux-ui-design', 'website-process-optimization', 'web-design-development'],
     icon: Accessibility,
     de: {
       tags: ['WCAG 2.2', 'BFSG', 'Audit', 'Screenreader'],
@@ -190,7 +203,7 @@ export const services: Service[] = [
   },
   {
     slug: 'website-process-optimization',
-    related: ['accessibility', 'ai-consulting', 'webflow-development'],
+    related: ['accessibility', 'ai-consulting', 'web-design-development'],
     icon: Workflow,
     de: {
       tags: ['Analyse', 'Performance', 'Conversion', 'Prozesse'],
@@ -229,8 +242,17 @@ export const services: Service[] = [
   },
   {
     slug: 'brand-logo-design',
-    related: ['design-systems', 'webflow-development', 'ux-ui-design'],
+    related: ['design-systems', 'web-design-development', 'ux-ui-design'],
     icon: PenTool,
+    // Bild von Erik (leistungen.md AK-42)
+    image: {
+      src: '/images/services/brand-logo-design.png',
+      width: 1600,
+      height: 900,
+      alt: 'Logo-Arbeiten auf Karten: Bildmarke und Wortbildmarke von Axium (The Body Clinic) in Blau, Siegel und Wortbildmarke von Fräulein Trau dich (Freie Traurednerin) mit gezeichneter Blume, Bildmarke und Wortbildmarke von Solidrive in Dunkelgrün sowie die Bildmarke von Steadypace in Violett.',
+      altEn:
+        'Logo work on cards: symbol and combination mark for Axium (The Body Clinic) in blue, seal and combination mark for Fräulein Trau dich (independent wedding officiant) with a drawn flower, symbol and combination mark for Solidrive in dark green, and the Steadypace symbol in violet.',
+    },
     de: {
       tags: ['Logo', 'Typografie', 'Styleguide', 'Branding'],
       description:
@@ -270,10 +292,18 @@ export const services: Service[] = [
     slug: 'design-systems',
     related: ['ux-ui-design', 'brand-logo-design', 'accessibility'],
     icon: Grid3x3,
+    image: {
+      src: '/images/services/design-systeme.png',
+      width: 1600,
+      height: 900,
+      alt: 'Ausschnitt aus einem Design System: Farbpalette mit Primärgrün, Typografie in Mona Sans, Buttons und Tags, ein Formularfeld mit Fehlermeldung, eine Projektkarte, eine Karte im Dunkelmodus, eine Leistungskarte und ein FAQ-Akkordeon.',
+      altEn:
+        'Excerpt from a design system: colour palette with primary green, Mona Sans typography, buttons and tags, a form field with an error message, a project card, a dark mode card, a service card and an FAQ accordion.',
+    },
     de: {
       tags: ['Design-Tokens', 'Komponenten', 'Figma', 'Dokumentation'],
       description:
-        'Ich baue Design Systems, die Teams schneller und konsistenter arbeiten lassen, mit Token-Architektur, Komponenten und klarer Doku.',
+        'Ich baue Design Systeme, die Teams schneller und konsistenter arbeiten lassen, mit Token-Architektur, Komponenten und klarer Doku.',
       features: [
         'Design-Token-Architektur',
         'Komponentenbibliothek (Figma)',
@@ -281,8 +311,8 @@ export const services: Service[] = [
         'Theming & Dunkelmodus',
         'Design-Dev-Übergabe',
       ],
-      label: 'Design Systems',
-      title: 'Design Systems',
+      label: 'Design Systeme',
+      title: 'Design Systeme',
       // TODO(Erik): Entwurf prüfen (leistungen.md AK-33)
       need: 'Dein Team baut dieselben Komponenten immer wieder neu, Screens sehen überall etwas anders aus und Übergaben an die Entwicklung kosten zu viel Zeit.',
       short: 'Konsistenz, die mitwächst: Design-Tokens, Komponenten und Doku, mit denen dein Team schneller gestaltet.',

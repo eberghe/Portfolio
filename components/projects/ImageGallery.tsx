@@ -116,6 +116,7 @@ export default function ImageGallery({
             >
               <Image
                 src={img.src}
+                quality={90}
                 width={img.width}
                 height={img.height}
                 alt={img.alt}
@@ -147,6 +148,7 @@ export default function ImageGallery({
           <div className="relative flex h-full w-full items-center justify-center p-4 sm:p-16">
             <Image
               src={current.src}
+              quality={90}
               width={current.width}
               height={current.height}
               alt={current.alt}

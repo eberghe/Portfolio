@@ -323,7 +323,9 @@ describe.each(['de', 'en'] as const)('Umbau Startseite (%s)', (locale) => {
       const item = section.querySelector(`#leistung-${s.slug}`)!;
       expect(item).toHaveTextContent(s[locale].description);
       expect(item.querySelectorAll('ul li')).toHaveLength(s[locale].features.length);
-      expect(item.querySelector('[data-service-media]')).toHaveAttribute('aria-hidden', 'true');
+      // Platzhalter dekorativ, echtes Bild mit Alt-Text (leistungen.md AK-38)
+      if (s.image) expect(item.querySelector('[data-service-media]')).not.toHaveAttribute('aria-hidden');
+      else expect(item.querySelector('[data-service-media]')).toHaveAttribute('aria-hidden', 'true');
       expect(within(item as HTMLElement).getByRole('link', { name: t.serviceMore(s[locale].title) })).toHaveAttribute(
         'href',
         `${prefix}/services/${s.slug}`,
@@ -514,5 +516,34 @@ describe('AK-79: Inhalte der Firmen-Fenster', () => {
       locale === 'de' ? /Juli bis September 2018/ : /July to September 2018/,
     );
     expect(homeContent[locale].companyDuties).toBe(locale === 'de' ? 'Aufgaben' : 'What I did');
+  });
+});
+
+describe('AK-38 (leistungen.md): Bild Design Systeme auf der Startseite', () => {
+  it.each(['de', 'en'] as const)('%s', (locale) => {
+    render(<Home locale={locale} />);
+    const ds = services.find((s) => s.slug === 'design-systems')!;
+    const img = screen.getByRole('img', { name: ds.image![locale === 'de' ? 'alt' : 'altEn'] });
+    expect(img.getAttribute('src')).toMatch(/design-systeme/);
+  });
+});
+
+// leistungen.md AK-43: echte Leistungsbilder unbeschnitten in 16:9 und mit Qualität 90
+describe('AK-43: Leistungsbilder unbeschnitten', () => {
+  it('Rahmen 16:9, verlustfreies Original (Qualität 90 prüft die E2E)', () => {
+    const { container } = render(<Home locale="de" />);
+    const withImage = services.filter((s) => s.image);
+    expect(withImage.length).toBeGreaterThanOrEqual(3);
+    for (const s of withImage) {
+      const img = screen.getByRole('img', { name: s.image!.alt });
+      const frame = img.closest('[data-service-media]')!;
+      expect(frame.className).toContain('aspect-[16/9]');
+      expect(frame.className).not.toMatch(/aspect-\[2\/1\]|aspect-\[16\/10\]/);
+      expect(s.image!.src).toMatch(/\.png$/);
+    }
+    // Platzhalter bleiben flacher
+    const placeholders = container.querySelectorAll('[data-service-media][aria-hidden="true"]');
+    expect(placeholders.length).toBe(services.length - withImage.length);
+    for (const frame of placeholders) expect(frame.className).toContain('md:aspect-[2/1]');
   });
 });

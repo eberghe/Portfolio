@@ -301,3 +301,8 @@ Erik hat Beschreibungen zu HERO Software, TEAM23, Amazon und IKEA geschickt („
 ### Blinder Kritiker (Scrollleiste im Firmen-Fenster, 2026-10-07)
 
 Keine Einwände. Der Griff ist hell wie dunkel gut zu sehen. Das X und die Scrollleiste überlappen nicht. Chrome und Safari nutzen die `::-webkit-scrollbar`-Regeln, Firefox bekommt den Ersatz über `@supports`. Ein Hinweis bleibt offen und ist kein Muss für AK-81: In Safari wird der Scrollbereich ohne `tabindex` nicht selbst fokussierbar. Das war schon vorher so.
+
+## Leistungen bis zum rechten Rand (Erik, 2026-10-07)
+
+- AK-82 (Erik: „bei home leistungen den rechten bereich bei desktop bis ganz zum rand! das bild so groß lassen genauso die breite für den text! nur den bg und die linien bis ganz nach rechts zum rand“): Ab 768 px reichen in der Leistungsliste der Startseite die grauen Bildbänder und die waagerechten Linien des rechten Bereichs bis an den rechten Fensterrand. Bilder und Texte behalten Größe und Lage; sie enden weiterhin an der rechten Kante des Seitencontainers. Die linke Liste bleibt im Container. Kein waagerechtes Scrollen.
+- Kritiker zu AK-82: Ohne Einwände. `100vw` enthält die Scrollleiste, das Band ragt ab 1280 px um einige Pixel hinaus. `html { overflow-x: hidden }` schneidet das ab, es gibt kein waagerechtes Scrollen.

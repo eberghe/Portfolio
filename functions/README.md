@@ -36,6 +36,10 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Angebotsseiten für Kunden](kontakt/angebotsseiten.md)
 - [Website-Schnellcheck („wie viel besser kann deine Seite werden")](kontakt/website-schnellcheck.md)
 
+## Kundenbereich (Epic #49)
+
+- [Datenmodell und Zugriffsregeln](kundenbereich/datenmodell.md)
+
 ## Qualität
 
 - [Barrierefreiheit](qualitaet/barrierefreiheit.md)

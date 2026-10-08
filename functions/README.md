@@ -49,3 +49,4 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Supabase (Datenmodell, RLS)](infrastruktur/supabase.md)
 - [Vercel (Deploy, Previews, Umgebungsvariablen)](infrastruktur/vercel.md)
 - [Design-Tokens (Übernahme des bestehenden Designs)](infrastruktur/design-tokens.md)
+- [UI-Bausteine (Button, Textfeld)](infrastruktur/ui-bausteine.md)

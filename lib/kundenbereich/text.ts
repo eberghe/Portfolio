@@ -63,6 +63,7 @@ const de = {
   noDocuments: 'Noch keine Dokumente.',
   loadError: 'Deine Projekte konnten gerade nicht geladen werden. Lade die Seite bitte neu.',
   logout: 'Abmelden',
+  manage: 'Verwaltung',
   mailSubject: 'Dein Link zum Kundenbereich',
   mailText: (name: string | null, link: string) =>
     `${name ? `Hallo ${name},` : 'Hallo,'}\n\nhier ist dein Link zum Kundenbereich von Erik Bergheimer:\n\n${link}\n\nEr gilt eine Stunde und funktioniert einmal. Wenn du ihn nicht angefordert hast, kannst du diese Mail ignorieren.\n\nViele Grüße\nErik`,
@@ -128,6 +129,7 @@ const en: typeof de = {
   noDocuments: 'No documents yet.',
   loadError: 'Your projects could not be loaded right now. Please reload the page.',
   logout: 'Sign out',
+  manage: 'Verwaltung',
   mailSubject: 'Your link to the client area',
   mailText: (name: string | null, link: string) =>
     `${name ? `Hello ${name},` : 'Hello,'}\n\nhere is your link to Erik Bergheimer's client area:\n\n${link}\n\nIt is valid for one hour and works once. If you did not request it, you can ignore this email.\n\nBest regards\nErik`,

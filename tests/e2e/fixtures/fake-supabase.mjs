@@ -114,6 +114,53 @@ const logo = {
   projektschritte: [],
 };
 
+// Verwaltung (Erik): Kunden im Speicher, „Kunde anlegen“ fügt hinzu
+const K1 = '10000000-0000-4000-8000-00000000000a';
+const P1 = '20000000-0000-4000-8000-00000000000b';
+const kunden = [
+  {
+    id: K1,
+    name: 'Bäckerei Beispiel',
+    website_url: 'https://kunde.example',
+    logo_pfad: `${K1}/logo.svg`,
+    logo_freigabe: 'erteilt',
+    logo_freigabe_am: '2026-10-08T09:00:00Z',
+    ansprechpartner: [
+      {
+        id: 'a-anna',
+        name: 'Anna',
+        email: 'anna@kunde.example',
+        rolle: 'Geschäftsführung',
+        telefon: null,
+        sprache: 'de',
+        user_id: 'u-anna',
+      },
+      {
+        id: 'a-ben',
+        name: 'Ben',
+        email: 'ben@kunde.example',
+        rolle: null,
+        telefon: '+49 821 1234',
+        sprache: 'en',
+        user_id: null,
+      },
+    ],
+    kundenprojekte: [
+      { id: P1, titel: 'Relaunch der Website', status: 'in_arbeit', created_at: '2026-10-01T00:00:00Z' },
+    ],
+    logo_freigaben: [
+      { id: 'f1', entscheidung: 'erteilt', am: '2026-10-08T09:00:00Z', ansprechpartner: { name: 'Anna' } },
+    ],
+  },
+];
+const adminProjekt = () => ({
+  ...relaunch,
+  id: P1,
+  kunde_id: K1,
+  kunden: { id: K1, name: kunden[0].name, ansprechpartner: kunden[0].ansprechpartner },
+  projekt_ansprechpartner: [{ ansprechpartner_id: 'a-anna' }],
+});
+
 const users = {
   anna: { profil: { art: 'kunde', name: 'Anna', sprache: 'de' }, projekte: [relaunch] },
   erik: { profil: { art: 'admin', name: 'Erik', sprache: 'de' }, projekte: [logo, relaunch] },
@@ -148,6 +195,48 @@ createServer((req, res) => {
   if (!u) return send(401, { message: 'invalid token' });
   if (path === '/auth/v1/user') return send(200, { id: 'x' });
   if (path === '/rest/v1/rpc/kundenbereich_profil') return send(200, [u.profil]);
+  const params = new URL(req.url ?? '/', 'http://x').searchParams;
+  const idParam = params.get('id')?.replace(/^eq\./, '');
+  if (u.profil.art === 'admin' && path === '/rest/v1/kunden') {
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', (c) => (body += c));
+      req.on('end', () => {
+        const row = JSON.parse(body);
+        const neu = {
+          id: `10000000-0000-4000-8000-${String(kunden.length + 100).padStart(12, '0')}`,
+          website_url: null,
+          logo_pfad: null,
+          logo_freigabe: 'offen',
+          logo_freigabe_am: null,
+          ansprechpartner: [],
+          kundenprojekte: [],
+          logo_freigaben: [],
+          ...row,
+        };
+        kunden.push(neu);
+        send(201, [neu]);
+      });
+      return;
+    }
+    if (idParam)
+      return send(
+        200,
+        kunden.filter((k) => k.id === idParam),
+      );
+    return send(
+      200,
+      kunden.map((k) => ({
+        ...k,
+        kundenprojekte: [{ count: k.kundenprojekte.length }],
+        ansprechpartner: [{ count: k.ansprechpartner.length }],
+      })),
+    );
+  }
+  if (u.profil.art === 'admin' && path === '/rest/v1/kundenprojekte' && idParam)
+    return send(200, idParam === P1 ? [adminProjekt()] : []);
+  if (u.profil.art === 'admin' && req.method === 'POST' && path.startsWith('/storage/v1/object/sign/kundenlogos/'))
+    return send(200, { signedURL: `/object/sign/kundenlogos/${K1}/logo.svg?token=signiert` });
   if (path === '/rest/v1/kundenprojekte') return send(200, u.projekte);
   if (path === '/rest/v1/dokumente') {
     const id = new URL(req.url ?? '/', 'http://x').searchParams.get('id')?.replace(/^eq\./, '');

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { requestLink, siteOrigin, type Konto, type LoginDeps } from '@/lib/kundenbereich/login';
+import { inviteLink, requestLink, siteOrigin, type Konto, type LoginDeps } from '@/lib/kundenbereich/login';
 import { ACCESS, REFRESH, refreshCookies, sessionCookies, tokenExpired } from '@/lib/kundenbereich/session';
 import { supabaseDb } from './helpers/supabase-pglite';
 
@@ -117,6 +117,20 @@ describe('Anmeldelink anfordern', () => {
     d.sendMail.mockRejectedValueOnce(new Error('Resend 500'));
     vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(await run('anna@a.example', d)).toEqual({ status: 'unavailable' });
+  });
+});
+
+describe('Einladung aus der Verwaltung', () => {
+  it('admin.md Verhalten 5: schickt den Link, meldet Limit und unbekannte Adresse ehrlich', async () => {
+    const d = deps();
+    expect(await inviteLink('anna@a.example', { deps: d, host: 'erik-bergheimer.de', hash })).toBe('sent');
+    expect(d.sendMail).toHaveBeenCalledTimes(1);
+    expect(d.logAttempt).toHaveBeenCalledWith('h(anna@a.example)', null);
+    expect(await inviteLink('x@a.example', { deps: deps(null), host: null, hash })).toBe('unknown');
+    const voll = deps(ANNA, { email: 3, ip: 0 });
+    expect(await inviteLink('anna@a.example', { deps: voll, host: null, hash })).toBe('limit');
+    expect(voll.sendMail).not.toHaveBeenCalled();
+    expect(await inviteLink('anna@a.example', { deps: null, host: null, hash })).toBe('unavailable');
   });
 });
 

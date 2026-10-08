@@ -1,4 +1,15 @@
-import { CalendarPlus, Check, Circle, CircleDot, Download, ExternalLink, LogOut, Mail, Video } from 'lucide-react';
+import {
+  CalendarPlus,
+  Check,
+  Circle,
+  CircleDot,
+  Download,
+  ExternalLink,
+  LogOut,
+  Mail,
+  Settings,
+  Video,
+} from 'lucide-react';
 import Link from 'next/link';
 import { logout } from '@/app/actions/kundenbereich';
 import Button, { buttonClass } from '@/components/ui/Button';
@@ -48,13 +59,22 @@ export default function Projektuebersicht({
             {profil.art === 'admin' && <span className={`${badge} ml-1 align-middle uppercase`}>{t.admin}</span>}
           </p>
         </div>
-        <form action={logout}>
-          <input type="hidden" name="sprache" value={locale} />
-          <Button type="submit" variant="secondary">
-            <LogOut size={15} aria-hidden="true" />
-            {t.logout}
-          </Button>
-        </form>
+        <div className="flex flex-wrap gap-2">
+          {profil.art === 'admin' && (
+            // Einstieg in die Verwaltung (functions/kundenbereich/admin.md Verhalten 1)
+            <Button href="/kunden/admin" variant="secondary" lang={locale === 'en' ? 'de' : undefined}>
+              <Settings size={15} aria-hidden="true" />
+              {t.manage}
+            </Button>
+          )}
+          <form action={logout}>
+            <input type="hidden" name="sprache" value={locale} />
+            <Button type="submit" variant="secondary">
+              <LogOut size={15} aria-hidden="true" />
+              {t.logout}
+            </Button>
+          </form>
+        </div>
       </header>
 
       {projekte && projekte.length > 1 && (

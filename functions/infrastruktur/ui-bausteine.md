@@ -25,6 +25,7 @@ Entwicklung: neue Formulare (Login, Admin) bauen aus denselben Teilen. Besucher:
 - AK-4: `multiline` rendert ein `textarea`, sonst ein `input`; weitere Attribute (`type`, `autoComplete`, `defaultValue`, `ref` …) werden durchgereicht.
 - AK-5: Der Button ist ohne `href` ein `<button type="button">` (überschreibbar mit `type="submit"`), mit `href` ein Link; beide mindestens 44 px hoch (`min-h-11`).
 - AK-6: Variante `primary` nutzt `bg-primary text-primary-foreground hover:bg-primary-hover` (Hover-Kontrast, design-tokens.md AK-5), `secondary` einen Rahmen; `aria-disabled` dimmt den Button (`aria-disabled:opacity-60`).
+- AK-8: `components/ui/SelectField.tsx` (für die Verwaltung des Kundenbereichs, `kundenbereich/admin.md`): Label, Zusatz, Hinweis und Fehler wie beim Textfeld (gleiche IDs, `aria-describedby`, `aria-invalid`), Optionen als Liste, mindestens 44 px hoch.
 - AK-7: Der Anfrage-Assistent nutzt `Button` und `TextField`; die Datei enthält keine eigenen Klassen-Strings für Eingaben und Buttons mehr. Alle bisherigen Tests der Kontaktseite bleiben grün.
 
 ## Barrierefreiheit
@@ -49,7 +50,7 @@ Keine.
 
 ## Tests
 
-`tests/unit/ui-bausteine.test.tsx` (AK-1 bis AK-7), weiterhin `tests/unit/anfrage.test.tsx` und `tests/e2e/kontakt.spec.ts`.
+`tests/unit/ui-bausteine.test.tsx` (AK-1 bis AK-8), weiterhin `tests/unit/anfrage.test.tsx` und `tests/e2e/kontakt.spec.ts`.
 
 ## Offene Fragen
 

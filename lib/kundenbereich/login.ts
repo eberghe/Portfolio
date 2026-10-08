@@ -50,6 +50,40 @@ export function siteOrigin(host: string | null): string {
 
 export const confirmPath = (locale: Locale) => localizedPath('/kunden/anmelden', locale);
 
+/** Link für eine hinterlegte Adresse verschicken; false, wenn sie nicht hinterlegt ist */
+async function sendLink(email: string, deps: LoginDeps, host: string | null) {
+  // Erst prüfen, dann Code erzeugen: die Supabase-Admin-API legt sonst unbekannte Nutzer an
+  const konto = await deps.konto(email);
+  if (!konto) return false;
+  if (!konto.userId) {
+    const userId = await deps.createUser(email);
+    if (konto.ansprechpartnerId) await deps.linkUser(konto.ansprechpartnerId, userId);
+  }
+  const code = await deps.generateCode(email);
+  const t = kundenText[konto.sprache];
+  const link = `${siteOrigin(host)}${confirmPath(konto.sprache)}?code=${encodeURIComponent(code)}`;
+  await deps.sendMail({ to: email, subject: t.mailSubject, text: t.mailText(konto.name || null, link) });
+  return true;
+}
+
+/** Einladung aus der Verwaltung: wie die Anmeldung, aber mit ehrlicher Antwort für Erik (admin.md Verhalten 5) */
+export async function inviteLink(
+  email: string,
+  { deps, host, hash }: { deps: LoginDeps | null; host: string | null; hash: (v: string) => string },
+): Promise<'sent' | 'limit' | 'unknown' | 'unavailable'> {
+  if (!deps) return 'unavailable';
+  try {
+    const emailHash = hash(email);
+    const recent = await deps.recent(emailHash, null, new Date(Date.now() - 15 * MINUTE).toISOString(), '');
+    if (recent.email >= EMAIL_LIMIT) return 'limit';
+    await deps.logAttempt(emailHash, null);
+    return (await sendLink(email, deps, host)) ? 'sent' : 'unknown';
+  } catch (error) {
+    console.error('Einladung nicht verschickt', error);
+    return 'unavailable';
+  }
+}
+
 export async function requestLink(
   fd: FormData,
   {
@@ -78,17 +112,7 @@ export async function requestLink(
     // Gleiche Antwort bei Limit und unbekannter Adresse: keine Auskunft, wer Kunde ist (AK-3, AK-5)
     if (recent.email >= EMAIL_LIMIT || recent.ip >= IP_LIMIT) return { status: 'sent' };
 
-    // Erst prüfen, dann Code erzeugen: die Supabase-Admin-API legt sonst unbekannte Nutzer an
-    const konto = await deps.konto(email);
-    if (!konto) return { status: 'sent' };
-    if (!konto.userId) {
-      const userId = await deps.createUser(email);
-      if (konto.ansprechpartnerId) await deps.linkUser(konto.ansprechpartnerId, userId);
-    }
-    const code = await deps.generateCode(email);
-    const t = kundenText[konto.sprache];
-    const link = `${siteOrigin(host)}${confirmPath(konto.sprache)}?code=${encodeURIComponent(code)}`;
-    await deps.sendMail({ to: email, subject: t.mailSubject, text: t.mailText(konto.name || null, link) });
+    await sendLink(email, deps, host);
     return { status: 'sent' };
   } catch (error) {
     console.error('Anmeldelink nicht verschickt', error);

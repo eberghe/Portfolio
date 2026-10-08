@@ -44,6 +44,7 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Nächster Termin mit Meet-Link](kundenbereich/termine.md)
 - [Dokumente und Dateien](kundenbereich/dokumente.md)
 - [Verwaltung durch Erik (Admin)](kundenbereich/admin.md)
+- [Logo-Freigabe und Datenschutz](kundenbereich/logo-freigabe.md)
 
 ## Qualität
 

@@ -98,3 +98,9 @@ export async function dokumentUebernehmen(_: S, fd: FormData) {
 export async function dokumentEntfernen(_: S, fd: FormData) {
   return go(A.dokumentEntfernen, fd);
 }
+export async function umsatzSpeichern(_: S, fd: FormData) {
+  return go(A.umsatzSpeichern, fd);
+}
+export async function anfrageStatus(_: S, fd: FormData) {
+  return go(A.anfrageStatus, fd);
+}

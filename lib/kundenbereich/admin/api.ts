@@ -59,6 +59,16 @@ export function adminApi(env: Env, access: string) {
       if (!rows[0]) throw new AdminFehler(404, null, `${table} ${id} nicht gefunden`);
       return rows[0];
     },
+    /** Einfügen oder bei gleichem Primärschlüssel überschreiben */
+    upsert: (table: string, row: Record<string, unknown>) =>
+      call<unknown[]>(
+        `/rest/v1/${table}`,
+        { method: 'POST', body: JSON.stringify(row) },
+        'resolution=merge-duplicates,return=minimal',
+      ),
+    /** Datenbankfunktion aufrufen (z. B. `projekt_anlegen`) */
+    rpc: <T>(fn: string, args: Record<string, unknown>) =>
+      call<T>(`/rest/v1/rpc/${fn}`, { method: 'POST', body: JSON.stringify(args) }),
     remove: <T>(table: string, filter: Record<string, string>) =>
       call<T[]>(`/rest/v1/${table}?${query(filter)}`, { method: 'DELETE' }, 'return=representation'),
     /** Signierter Upload-Link für genau einen Pfad (AK-5, AK-9) */

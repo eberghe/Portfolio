@@ -26,6 +26,9 @@ vi.mock('@/app/actions/kundenbereich-admin', () =>
       'dokumentVorbereiten',
       'dokumentUebernehmen',
       'dokumentEntfernen',
+      'umsatzSpeichern',
+      'anfrageStatus',
+      'projektMitAssistent',
     ].map((n) => [n, vi.fn(async () => ({ status: 'idle' }))]),
   ),
 );
@@ -33,7 +36,7 @@ vi.mock('@/app/actions/kundenbereich', () => ({ requestLoginLink: vi.fn(), confi
 vi.mock('next/headers', () => ({ cookies: vi.fn(), headers: vi.fn() }));
 vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh: vi.fn() }), notFound: vi.fn() }));
 
-const { default: AdminUebersicht } = await import('@/components/kundenbereich/admin/AdminUebersicht');
+const { default: AdminDashboard } = await import('@/components/kundenbereich/admin/AdminDashboard');
 const { default: AdminKunde } = await import('@/components/kundenbereich/admin/AdminKunde');
 const { default: AdminProjekt } = await import('@/components/kundenbereich/admin/AdminProjekt');
 const { default: AdminForm } = await import('@/components/kundenbereich/admin/AdminForm');
@@ -147,7 +150,7 @@ const PROJEKT: ProjektDetail = {
 
 describe('Verwaltung', () => {
   it('AK-10: Übersicht mit Kunden, Zählern und Stand der Logo-Freigabe als Text', () => {
-    render(<AdminUebersicht kunden={KUNDEN} />);
+    render(<AdminDashboard daten={{ projekte: [], termine: [], anfragen: [], kunden: KUNDEN }} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Verwaltung' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Bäckerei' })).toHaveAttribute('href', `/kunden/admin/kunden/${K}`);
     expect(screen.getByText('2 Projekte, 1 Ansprechpartner')).toBeInTheDocument();
@@ -204,6 +207,22 @@ describe('Verwaltung', () => {
     expect(within(upload).getByLabelText('Art')).toBeInTheDocument();
   });
 
+  it('admin-dashboard.md AK-7: Umsatz am Projekt mit deutschem Betrag', () => {
+    render(
+      <AdminProjekt
+        projekt={{
+          ...PROJEKT,
+          projekt_umsatz: { auftragswert_netto: '12500.50', wahrscheinlichkeit: 40, abrechnung_am: '2027-03-01' },
+        }}
+      />,
+    );
+    const form = screen.getByRole('form', { name: 'Umsatz' });
+    expect(within(form).getByLabelText(/^Auftragswert/)).toHaveValue('12.500,5');
+    expect(within(form).getByLabelText(/^Wahrscheinlichkeit/)).toHaveValue(40);
+    expect(within(form).getByLabelText(/^Voraussichtliche Abrechnung/)).toHaveValue('2027-03-01');
+    expect(screen.getByRole('navigation', { name: 'Auf dieser Seite' })).toHaveTextContent('Umsatz');
+  });
+
   it('Befunde Blinder Kritiker zur Verwaltung', () => {
     const doks = [
       PROJEKT.dokumente[0]!,
@@ -216,7 +235,14 @@ describe('Verwaltung', () => {
       within(nav)
         .getAllByRole('link')
         .map((l) => l.getAttribute('href')),
-    ).toEqual(['#projekt-titel', '#projekt-ap-titel', '#ablauf-titel', '#termine-titel', '#dokumente-titel']);
+    ).toEqual([
+      '#projekt-titel',
+      '#umsatz-titel',
+      '#projekt-ap-titel',
+      '#ablauf-titel',
+      '#termine-titel',
+      '#dokumente-titel',
+    ]);
     for (const href of ['projekt-titel', 'projekt-ap-titel', 'ablauf-titel', 'termine-titel', 'dokumente-titel'])
       expect(container.querySelector(`#${href}`), href).not.toBeNull();
     expect(container.querySelectorAll('details:not([open])')).toHaveLength(2);

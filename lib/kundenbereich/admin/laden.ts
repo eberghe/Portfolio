@@ -1,6 +1,7 @@
 import type { DokumentRow } from '../dokumente';
 import type { ProjektRow, ProjektStatus } from '../projekte';
 import type { AdminApi } from './aktionen';
+import type { Anfrage, DashboardDaten, DashboardProjekt, DashboardTermin, Umsatz } from './dashboard';
 
 // Daten der Verwaltung, gelesen mit Eriks Token (functions/kundenbereich/admin.md)
 
@@ -47,6 +48,7 @@ export type ProjektDetail = Omit<ProjektRow, 'kunden' | 'dokumente'> & {
   kunden: { id: string; name: string; ansprechpartner: Pick<Ansprechpartner, 'id' | 'name' | 'email'>[] } | null;
   projekt_ansprechpartner: { ansprechpartner_id: string }[];
   dokumente: (DokumentRow & { storage_pfad: string })[];
+  projekt_umsatz?: Umsatz | null;
 };
 
 export const kundenListe = (api: AdminApi) =>
@@ -75,11 +77,36 @@ export async function projektDetail(api: AdminApi, id: string) {
     select:
       'id,kunde_id,titel,status,phase,beschreibung_de,beschreibung_en,website_url,staging_url,' +
       'kunden(id,name,ansprechpartner(id,name,email)),projekt_ansprechpartner(ansprechpartner_id),' +
-      'projektschritte(*),termine(*),dokumente(*)',
+      'projektschritte(*),termine(*),dokumente(*),projekt_umsatz(auftragswert_netto,wahrscheinlichkeit,abrechnung_am)',
     id: `eq.${id}`,
     'projektschritte.order': 'reihenfolge.asc',
     'termine.order': 'beginn.desc',
     'dokumente.order': 'created_at.desc',
   });
   return p ?? null;
+}
+
+/** Alles für das Dashboard der Verwaltung (admin-dashboard.md) */
+export async function dashboardDaten(api: AdminApi, now = new Date()): Promise<DashboardDaten> {
+  const [projekte, termine, anfragen, kunden] = await Promise.all([
+    api.get<DashboardProjekt>('kundenprojekte', {
+      select:
+        'id,titel,status,kunden(id,name),projekt_umsatz(auftragswert_netto,wahrscheinlichkeit,abrechnung_am),' +
+        'projektschritte(titel_de,status,reihenfolge,verantwortlich)',
+      order: 'titel.asc',
+    }),
+    api.get<DashboardTermin>('termine', {
+      select: 'id,beginn,ende,titel_de,meet_url,kundenprojekte(id,titel,kunden(name))',
+      ende: `gte.${now.toISOString()}`,
+      order: 'beginn.asc',
+      limit: '50',
+    }),
+    api.get<Anfrage>('anfragen', {
+      select: 'id,created_at,name,email,telefon,website,leistungen,zeitrahmen,budget,beschreibung,status,sprache',
+      order: 'created_at.desc',
+      limit: '200',
+    }),
+    kundenListe(api),
+  ]);
+  return { projekte, termine, anfragen, kunden };
 }

@@ -10,12 +10,15 @@ export default function AdminShell({
   title,
   pfad = [],
   aside,
+  wide = false,
   children,
 }: {
   title: string;
   /** Pfadnavigation bis zur aktuellen Seite (ohne sie) */
   pfad?: { href: string; label: string }[];
   aside?: React.ReactNode;
+  /** Volle Seitenbreite, z. B. für das Dashboard */
+  wide?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -48,7 +51,7 @@ export default function AdminShell({
         </h1>
         {aside}
       </div>
-      <div className="max-w-[860px]">{children}</div>
+      <div className={wide ? undefined : 'max-w-[860px]'}>{children}</div>
     </div>
   );
 }

@@ -45,6 +45,9 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Dokumente und Dateien](kundenbereich/dokumente.md)
 - [Verwaltung durch Erik (Admin)](kundenbereich/admin.md)
 - [Logo-Freigabe und Datenschutz](kundenbereich/logo-freigabe.md)
+- [Dashboard der Verwaltung](kundenbereich/admin-dashboard.md)
+- [Projekt anlegen in Schritten](kundenbereich/projekt-assistent.md)
+- [Kundensicht als Dashboard](kundenbereich/kunden-dashboard.md)
 
 ## Qualität
 

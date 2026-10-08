@@ -69,6 +69,10 @@ html {
     --text3: 214 20% 44.5%;
     --bg2: 120 6% 97%;
     --bg3: 120 6% 94%;
+
+    /* Diagramme (admin-dashboard.md): mit dem dataviz-Validator geprüft, hell gegen Weiß */
+    --chart-sicher: #0b8a5e;
+    --chart-gewichtet: #3ec08c;
   }
 
   .dark {
@@ -111,6 +115,10 @@ html {
     --text3: 205 20% 53%;
     --bg2: 207 35% 9%;
     --bg3: 207 30% 13%;
+
+    /* dunkel gegen --background geprüft */
+    --chart-sicher: #2fab79;
+    --chart-gewichtet: #127652;
   }
 }
 

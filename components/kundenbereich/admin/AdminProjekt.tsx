@@ -11,6 +11,7 @@ import {
   schrittSpeichern,
   terminEntfernen,
   terminHinzufuegen,
+  umsatzSpeichern,
 } from '@/app/actions/kundenbereich-admin';
 import { buttonClass } from '@/components/ui/Button';
 import { dateiInfo } from '@/lib/kundenbereich/dokumente';
@@ -78,6 +79,12 @@ const schrittFelder = (s?: Schritt, reihenfolge = 1): Feld[] => [
   },
 ];
 
+/** „12.500,50“ für das Eingabefeld */
+const betragText = (v: string | number | null | undefined) =>
+  v === null || v === undefined || v === ''
+    ? ''
+    : new Intl.NumberFormat('de-DE', { maximumFractionDigits: 2, useGrouping: true }).format(Number(v));
+
 export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt: ProjektDetail; now?: Date }) {
   const kunde = p.kunden;
   const naechste = Math.max(0, ...p.projektschritte.map((s) => s.reihenfolge)) + 1;
@@ -101,6 +108,7 @@ export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt
         <ul role="list" className="flex flex-wrap gap-2">
           {[
             ['#projekt-titel', 'Projekt'],
+            ['#umsatz-titel', 'Umsatz'],
             ['#projekt-ap-titel', 'Ansprechpartner'],
             ['#ablauf-titel', 'Ablauf'],
             ['#termine-titel', 'Termine'],
@@ -160,6 +168,41 @@ export default function AdminProjekt({ projekt: p, now = new Date() }: { projekt
               defaultValue: p.staging_url ?? '',
               half: true,
               hint: 'Mit https://',
+            },
+          ]}
+        />
+      </section>
+
+      {/* Nur für Admins, eigene Tabelle (admin-dashboard.md Verhalten 9) */}
+      <section className={adminSection}>
+        <AdminForm
+          id="umsatz"
+          title="Umsatz"
+          action={umsatzSpeichern}
+          submitLabel="Umsatz speichern"
+          hidden={{ projekt_id: p.id }}
+          felder={[
+            {
+              name: 'auftragswert_netto',
+              label: 'Auftragswert netto in Euro',
+              defaultValue: betragText(p.projekt_umsatz?.auftragswert_netto),
+              hint: 'Z. B. 12.500 oder 12.500,50. Nur für dich sichtbar.',
+              half: true,
+            },
+            {
+              name: 'wahrscheinlichkeit',
+              label: 'Wahrscheinlichkeit in Prozent',
+              type: 'number',
+              defaultValue: String(p.projekt_umsatz?.wahrscheinlichkeit ?? 50),
+              hint: 'Zählt nur bei Angeboten.',
+              half: true,
+            },
+            {
+              name: 'abrechnung_am',
+              label: 'Voraussichtliche Abrechnung',
+              type: 'date',
+              defaultValue: p.projekt_umsatz?.abrechnung_am ?? '',
+              half: true,
             },
           ]}
         />

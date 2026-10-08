@@ -22,7 +22,7 @@ Erik pflegt den Kundenbereich direkt auf der Website statt in Supabase Studio: K
 ## Verhalten
 
 1. `/kunden` zeigt Admins im Kopf zusätzlich den Button „Verwaltung“.
-2. **`/kunden/admin`** (h1 „Verwaltung“): Liste aller Kunden mit Name, Anzahl Projekte und Ansprechpartner und Stand der Logo-Freigabe als Text („offen“, „erteilt am …“, „widerrufen am …“); jeder Name verlinkt auf den Kunden. Formular „Kunde anlegen“: Name (Pflicht), Website (optional, `https://`). Danach weiter zum neuen Kunden.
+2. **`/kunden/admin`** (h1 „Verwaltung“): seit Issue #62 ein Dashboard (`admin-dashboard.md`), darin die Liste aller Kunden mit Name, Anzahl Projekte und Ansprechpartner und Stand der Logo-Freigabe als Text („offen“, „erteilt am …“, „widerrufen am …“); jeder Name verlinkt auf den Kunden. Formular „Kunde anlegen“: Name (Pflicht), Website (optional, `https://`). Danach weiter zum neuen Kunden.
 3. **`/kunden/admin/kunden/<id>`** (h1 Kundenname):
    - „Stammdaten“: Name, Website, speichern.
    - „Logo“: Vorschau des aktuellen Logos, Datei wählen (PNG, JPEG, SVG, WebP, max. 5 MB) und hochladen; das neue Logo ersetzt das alte (`kunden.logo_pfad`), die alte Datei wird gelöscht. Darunter der Stand der Logo-Freigabe und das Protokoll (wer, was, wann).

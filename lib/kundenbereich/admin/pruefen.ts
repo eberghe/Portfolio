@@ -22,6 +22,8 @@ const MSG = {
   datum: 'Bitte gib ein gültiges Datum ein.',
   zeit: 'Bitte gib eine gültige Uhrzeit ein.',
   ende: 'Das Ende muss nach dem Beginn liegen.',
+  betrag: 'Bitte gib einen Betrag in Euro ein, z. B. 12.500 oder 12.500,50.',
+  prozent: 'Bitte gib eine ganze Zahl von 0 bis 100 ein.',
 };
 
 const str = (fd: FormData, key: string) => {
@@ -155,6 +157,34 @@ export function berlinZuUtc(datum: string, zeit: string) {
   let ms = lokal - berlinVersatz(lokal);
   ms = lokal - berlinVersatz(ms);
   return new Date(ms).toISOString();
+}
+
+/** Betrag in Euro, deutsch („12.500,50“) oder englisch („12500.5“) geschrieben; null bei leer, NaN bei ungültig */
+export function betrag(v: string) {
+  const t = v.replace(/[\s€]/g, '');
+  if (!t) return null;
+  let n: string | null = null;
+  if (t.includes(',')) {
+    if (/^(\d{1,3}(\.\d{3})+|\d+)(,\d{1,2})?$/.test(t)) n = t.replace(/\./g, '').replace(',', '.');
+  } else if (/^\d{1,3}(\.\d{3})+$/.test(t)) n = t.replace(/\./g, '');
+  else if (/^\d+(\.\d{1,2})?$/.test(t)) n = t;
+  return n === null ? NaN : Number(n);
+}
+
+/** Umsatzwerte eines Projekts (admin-dashboard.md, Prüfungen) */
+export function umsatzDaten(fd: FormData) {
+  const f = form();
+  const wert = betrag(str(fd, 'auftragswert_netto'));
+  if (wert !== null && !(wert >= 0 && wert <= 10_000_000)) f.errors.auftragswert_netto = MSG.betrag;
+  const w = str(fd, 'wahrscheinlichkeit');
+  if (w && !(/^\d{1,3}$/.test(w) && Number(w) <= 100)) f.errors.wahrscheinlichkeit = MSG.prozent;
+  const abrechnung = str(fd, 'abrechnung_am');
+  if (abrechnung && !gueltigesDatum(abrechnung)) f.errors.abrechnung_am = MSG.datum;
+  return f.done({
+    auftragswert_netto: wert,
+    wahrscheinlichkeit: w ? Number(w) : 50,
+    abrechnung_am: optional(abrechnung),
+  });
 }
 
 export function terminDaten(fd: FormData) {

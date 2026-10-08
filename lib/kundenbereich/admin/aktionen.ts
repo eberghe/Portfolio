@@ -1,4 +1,5 @@
 import { AdminFehler, type adminApi } from './api';
+import { ANFRAGE_STATUS, type AnfrageStatus } from './dashboard';
 import {
   ansprechpartnerDaten,
   dateiPruefen,
@@ -13,6 +14,7 @@ import {
   projektNeu,
   schrittDaten,
   terminDaten,
+  umsatzDaten,
   type Bucket,
 } from './pruefen';
 
@@ -220,6 +222,28 @@ export const projektAnsprechpartner = (fd: FormData, ctx: AdminCtx) =>
         gewaehlt.map((a) => ({ projekt_id: pid, ansprechpartner_id: a })),
       );
     return ok();
+  });
+
+/** Umsatzwerte nur für Admins in eigener Tabelle (admin-dashboard.md AK-7) */
+export const umsatzSpeichern = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const pid = id(fd, 'projekt_id');
+    if (!pid) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    const r = umsatzDaten(fd);
+    if (!r.ok) return fehler(r.errors);
+    await api.upsert('projekt_umsatz', { projekt_id: pid, ...r.data });
+    return ok();
+  });
+
+// Anfragen ------------------------------------------------------------------------------------------
+
+export const anfrageStatus = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const aid = id(fd);
+    const status = str(fd, 'status') as AnfrageStatus;
+    if (!aid || !ANFRAGE_STATUS.includes(status)) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    await api.update('anfragen', aid, { status });
+    return ok('Status gespeichert.');
   });
 
 // Schritte und Termine ------------------------------------------------------------------------------

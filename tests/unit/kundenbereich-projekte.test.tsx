@@ -38,6 +38,7 @@ const PROJEKT: ProjektRow = {
   website_url: 'https://kunde.example',
   staging_url: null,
   kunden: { name: 'Kunde A' },
+  dokumente: [],
   termine: [],
   // absichtlich unsortiert
   projektschritte: [

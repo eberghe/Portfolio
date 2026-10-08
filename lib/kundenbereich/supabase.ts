@@ -1,6 +1,7 @@
 import type { Locale } from '@/lib/i18n';
 import type { Konto, LoginDeps } from './login';
 import { PROJEKT_SELECT, type ProjektRow } from './projekte';
+import type { DokumentDownload } from './dokumente';
 import type { TerminRow } from './termine';
 import type { Tokens } from './session';
 
@@ -180,6 +181,35 @@ export function authApi(env: Env) {
         if (!res.ok) return null;
         const [row] = (await res.json()) as TerminRow[];
         return row ?? null;
+      } catch {
+        return null;
+      }
+    },
+    /** Speicherpfad eines Dokuments, sofern der Nutzer es sehen darf (dokumente.md AK-5) */
+    dokument: async (access: string, id: string): Promise<DokumentDownload | null> => {
+      const q = new URLSearchParams({ select: 'id,storage_pfad,dateiname', id: `eq.${id}` });
+      try {
+        const res = await fetch(`${url}/rest/v1/dokumente?${q}`, { headers: headers(access), cache: 'no-store' });
+        if (!res.ok) return null;
+        const [row] = (await res.json()) as DokumentDownload[];
+        return row ?? null;
+      } catch {
+        return null;
+      }
+    },
+    /** Kurz gültiger signierter Link, erzeugt mit dem Token des Nutzers, damit die Storage-Regeln greifen */
+    signieren: async (access: string, pfad: string, sekunden: number): Promise<string | null> => {
+      const path = pfad.split('/').map(encodeURIComponent).join('/');
+      try {
+        const res = await fetch(`${url}/storage/v1/object/sign/kundendokumente/${path}`, {
+          method: 'POST',
+          headers: headers(access),
+          body: JSON.stringify({ expiresIn: sekunden }),
+          cache: 'no-store',
+        });
+        if (!res.ok) return null;
+        const { signedURL } = (await res.json()) as { signedURL?: string };
+        return signedURL ? `${url}/storage/v1${signedURL}` : null;
       } catch {
         return null;
       }

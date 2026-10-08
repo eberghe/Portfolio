@@ -50,6 +50,26 @@ const termine = [
   },
 ];
 
+const dok = (id, art, titel, version, dateiname, mime_typ, groesse_bytes) => ({
+  id,
+  created_at: '2026-10-08T09:00:00Z',
+  art,
+  titel,
+  dateiname,
+  groesse_bytes,
+  mime_typ,
+  version,
+  storage_pfad: `k1/p-relaunch/${dateiname}`,
+});
+const dokumente = [
+  dok('d-vertrag-2', 'vertrag', 'Vertrag Relaunch', 2, 'vertrag-v2.pdf', 'application/pdf', 182_000),
+  dok('d-vertrag-1', 'vertrag', 'Vertrag Relaunch', 1, 'vertrag-v1.pdf', 'application/pdf', 179_000),
+  dok('d-rechnung', 'rechnung', 'Rechnung 2026-001', 1, 'rechnung-2026-001.pdf', 'application/pdf', 64_000),
+  dok('d-logo', 'logo', 'Logo dunkel', 1, 'logo.svg', 'image/svg+xml', 3_200),
+];
+const LOGO_SVG =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#1f6f5c"/></svg>';
+
 const relaunch = {
   id: 'p-relaunch',
   titel: 'Relaunch der Website',
@@ -61,6 +81,7 @@ const relaunch = {
   staging_url: 'https://staging.kunde.example',
   kunden: { name: 'Bäckerei Beispiel' },
   termine,
+  dokumente,
   projektschritte: [
     schritt(1, 'Erstgespräch', 'erledigt', { titel_en: 'Kick-off call' }),
     schritt(2, 'Analyse der bestehenden Website', 'erledigt', { titel_en: 'Audit of the current website' }),
@@ -87,6 +108,7 @@ const logo = {
   beschreibung_de: 'Wortmarke und Bildmarke für die Bäckerei, mit Farben und Schrift.',
   beschreibung_en: null,
   termine: [],
+  dokumente: [],
   website_url: null,
   staging_url: null,
   projektschritte: [],
@@ -116,11 +138,29 @@ createServer((req, res) => {
   const u = user(req);
   if (path === '/') return send(200, { ok: true });
   if (path === '/auth/v1/logout') return send(204);
+  // Signierte Links: ohne Token-Prüfung, liefert eine kleine Datei
+  if (req.method === 'GET' && path.startsWith('/storage/v1/object/sign/')) {
+    const svg = path.endsWith('.svg');
+    res.writeHead(200, { 'Content-Type': svg ? 'image/svg+xml' : 'application/pdf' });
+    return res.end(svg ? LOGO_SVG : '%PDF-1.4\n%%EOF\n');
+  }
   if (path === '/auth/v1/verify' || path === '/auth/v1/token') return send(403, { error_code: 'otp_expired' });
   if (!u) return send(401, { message: 'invalid token' });
   if (path === '/auth/v1/user') return send(200, { id: 'x' });
   if (path === '/rest/v1/rpc/kundenbereich_profil') return send(200, [u.profil]);
   if (path === '/rest/v1/kundenprojekte') return send(200, u.projekte);
+  if (path === '/rest/v1/dokumente') {
+    const id = new URL(req.url ?? '/', 'http://x').searchParams.get('id')?.replace(/^eq\./, '');
+    const d = u.projekte.flatMap((p) => p.dokumente).find((d) => d.id === id);
+    return send(200, d ? [{ id: d.id, storage_pfad: d.storage_pfad, dateiname: d.dateiname }] : []);
+  }
+  if (req.method === 'POST' && path.startsWith('/storage/v1/object/sign/kundendokumente/')) {
+    const pfad = decodeURIComponent(path.slice('/storage/v1/object/sign/kundendokumente/'.length));
+    const erlaubt = u.projekte.some((p) => p.dokumente.some((d) => d.storage_pfad === pfad));
+    return erlaubt
+      ? send(200, { signedURL: `/object/sign/kundendokumente/${encodeURI(pfad)}?token=signiert` })
+      : send(400, { message: 'Object not found' });
+  }
   if (path === '/rest/v1/termine') {
     const id = new URL(req.url ?? '/', 'http://x').searchParams.get('id')?.replace(/^eq\./, '');
     const projekt = u.projekte.find((p) => p.termine.some((t) => t.id === id));

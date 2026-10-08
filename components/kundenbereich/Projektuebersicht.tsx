@@ -1,10 +1,11 @@
-import { CalendarPlus, Check, Circle, CircleDot, ExternalLink, LogOut, Mail, Video } from 'lucide-react';
+import { CalendarPlus, Check, Circle, CircleDot, Download, ExternalLink, LogOut, Mail, Video } from 'lucide-react';
 import Link from 'next/link';
 import { logout } from '@/app/actions/kundenbereich';
 import Button, { buttonClass } from '@/components/ui/Button';
 import { localizedPath, type Locale } from '@/lib/i18n';
 import { datum, projektAnsicht, waehleProjekt, type ProjektRow, type Schritt } from '@/lib/kundenbereich/projekte';
 import type { Profil } from '@/lib/kundenbereich/supabase';
+import { dateiInfo, dokumentGruppen, type DokumentRow } from '@/lib/kundenbereich/dokumente';
 import type { Termin } from '@/lib/kundenbereich/termine';
 import { kundenText } from '@/lib/kundenbereich/text';
 import { EMAIL } from '@/lib/site';
@@ -153,6 +154,8 @@ function Projekt({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: Ret
             </ol>
           </section>
         )}
+
+        <Documents t={t} locale={locale} dokumente={p.dokumente} />
       </div>
 
       <div className="min-w-0 flex flex-col gap-10 lg:pt-1">
@@ -317,6 +320,76 @@ function Meeting({ t, locale, next, later }: { t: T; locale: Locale; next: Termi
             </>
           )}
         </>
+      )}
+    </section>
+  );
+}
+
+/** Dokumente nach Art gruppiert, Download über den Server (functions/kundenbereich/dokumente.md) */
+function Documents({ t, locale, dokumente }: { t: T; locale: Locale; dokumente: DokumentRow[] }) {
+  const gruppen = dokumentGruppen(dokumente);
+  return (
+    <section aria-labelledby="dokumente-titel" className="mt-12">
+      <h3 id="dokumente-titel" className={sectionTitle}>
+        {t.documents}
+      </h3>
+      {gruppen.length === 0 ? (
+        <p className="text-[15px] text-text2">{t.noDocuments}</p>
+      ) : (
+        <div className="flex flex-col gap-8">
+          {gruppen.map((g) => (
+            <div key={g.art}>
+              <h4 id={`dokumente-${g.art}`} className="text-[15px] font-bold text-foreground mb-3">
+                {t.documentGroups[g.art]}
+              </h4>
+              <ul
+                role="list"
+                aria-labelledby={`dokumente-${g.art}`}
+                className="flex flex-col divide-y divide-border border-y border-border"
+              >
+                {g.dokumente.map((d) => (
+                  <li key={d.id}>
+                    <a
+                      href={`/kunden/dokumente/${encodeURIComponent(d.id)}`}
+                      // Name eindeutig zusammengesetzt, beginnt mit dem sichtbaren Titel (WCAG 2.5.3)
+                      aria-label={[d.titel, dateiInfo(d, locale), d.aktuell ? t.currentVersion : null]
+                        .filter(Boolean)
+                        .join(', ')}
+                      className="group flex items-center gap-4 min-h-11 py-3 hover:bg-foreground/[0.03] transition-colors"
+                    >
+                      {g.art === 'logo' ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- privates Bild über die Download-Route
+                        <img
+                          src={`/kunden/dokumente/${encodeURIComponent(d.id)}?vorschau=1`}
+                          alt={t.logoAlt(d.titel)}
+                          width={48}
+                          height={48}
+                          className="w-12 h-12 shrink-0 object-contain rounded-md border border-border bg-white p-1"
+                        />
+                      ) : (
+                        <span
+                          aria-hidden="true"
+                          className="flex items-center justify-center w-12 h-12 shrink-0 rounded-md bg-foreground/[0.06] text-text2"
+                        >
+                          <Download size={18} />
+                        </span>
+                      )}
+                      <span className="min-w-0 flex-1 flex flex-col">
+                        <span
+                          className={`text-[15px] font-medium break-words ${d.aktuell ? 'text-foreground' : 'text-text2'}`}
+                        >
+                          {d.titel}
+                        </span>
+                        <span className="text-[13px] text-text2">{dateiInfo(d, locale)}</span>
+                      </span>
+                      {d.aktuell && <span className={`${badge} shrink-0`}>{t.currentVersion}</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
       )}
     </section>
   );

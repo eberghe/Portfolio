@@ -41,6 +41,8 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Datenmodell und Zugriffsregeln](kundenbereich/datenmodell.md)
 - [Login per Magic Link](kundenbereich/login.md)
 - [Projektübersicht](kundenbereich/projektuebersicht.md)
+- [Nächster Termin mit Meet-Link](kundenbereich/termine.md)
+- [Dokumente und Dateien](kundenbereich/dokumente.md)
 
 ## Qualität
 

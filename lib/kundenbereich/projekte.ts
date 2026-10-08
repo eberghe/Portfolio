@@ -28,6 +28,16 @@ export interface ProjektRow {
     faellig_am: string | null;
     verantwortlich: 'erik' | 'kunde';
   }[];
+  dokumente: {
+    id: string;
+    created_at: string;
+    art: 'vertrag' | 'rechnung' | 'logo' | 'datei';
+    titel: string;
+    dateiname: string;
+    groesse_bytes: number | null;
+    mime_typ: string | null;
+    version: number;
+  }[];
   termine: {
     id: string;
     beginn: string;
@@ -42,7 +52,8 @@ export interface ProjektRow {
 export const PROJEKT_SELECT =
   'id,titel,status,phase,beschreibung_de,beschreibung_en,website_url,staging_url,kunden(name),' +
   'projektschritte(id,reihenfolge,titel_de,titel_en,beschreibung_de,beschreibung_en,status,faellig_am,verantwortlich),' +
-  'termine(id,beginn,ende,titel_de,titel_en,meet_url)';
+  'termine(id,beginn,ende,titel_de,titel_en,meet_url),' +
+  'dokumente(id,created_at,art,titel,dateiname,groesse_bytes,mime_typ,version)';
 
 export interface Schritt {
   id: string;
@@ -101,6 +112,7 @@ export function projektAnsicht(p: ProjektRow, locale: Locale, now = new Date()) 
     schritte,
     aktuell,
     naechste: schritte.filter((s) => s.status !== 'erledigt').slice(0, 3),
+    dokumente: p.dokumente,
     naechsterTermin: termine[0] ?? null,
     weitereTermine: termine.slice(1, 4),
   };

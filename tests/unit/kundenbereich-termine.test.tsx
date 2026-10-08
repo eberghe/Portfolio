@@ -33,6 +33,7 @@ const PROJEKT: ProjektRow = {
   website_url: null,
   staging_url: null,
   kunden: { name: 'Kunde A' },
+  dokumente: [],
   projektschritte: [],
   termine: [
     termin('t5', '2026-10-30T09:00:00Z', '2026-10-30T10:00:00Z'),

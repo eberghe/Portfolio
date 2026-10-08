@@ -48,6 +48,28 @@ test('termine.md AK-3/AK-6: nächster Termin mit Meet-Link und Kalenderdatei', a
   expect((await page.request.get('/kunden/termine/t-review')).status()).toBe(401);
 });
 
+test('dokumente.md AK-3/AK-5: Dokumente mit Angaben, Download über signierten Link', async ({ page }) => {
+  await login(page, 'anna');
+  await openHydrated(page, '/kunden');
+  const docs = page.getByRole('region', { name: 'Dokumente' });
+  await expect(
+    docs.getByRole('link', { name: 'Vertrag Relaunch, PDF, 182 KB, Version 2, 8. Okt. 2026, Aktuell' }),
+  ).toBeVisible();
+  const logo = docs.getByRole('img', { name: 'Logo: Logo dunkel' });
+  await expect(logo).toBeVisible();
+  expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+  expect(await page.content()).not.toContain('token=');
+
+  const res = await page.request.get('/kunden/dokumente/d-vertrag-2', { maxRedirects: 0 });
+  expect(res.status()).toBe(303);
+  const location = new URL(res.headers()['location']!);
+  expect(location.searchParams.get('token')).toBe('signiert');
+  expect(location.searchParams.get('download')).toBe('vertrag-v2.pdf');
+  expect((await page.request.get('/kunden/dokumente/fremd', { maxRedirects: 0 })).status()).toBe(404);
+  await page.context().clearCookies();
+  expect((await page.request.get('/kunden/dokumente/d-vertrag-2', { maxRedirects: 0 })).status()).toBe(401);
+});
+
 test('AK-6: Admin wechselt zwischen Projekten', async ({ page }) => {
   await login(page, 'erik');
   await openHydrated(page, '/kunden');

@@ -121,4 +121,4 @@ Ohne Einwände sind Kontrast (white/80 und white/60 auf #0b1219), 44-px-Ziele mo
 
 Erik: „oben rechts in der Navigationsleiste ähnlich zu dem Dark- und Light-Mode-Button ein Icon für Login machen, nur ein Icon, kein Text“.
 
-- AK-31: Neben dem Dunkelmodus-Button steht ein runder Icon-Link im gleichen Stil, mit Personen-Icon und ohne sichtbaren Text. Er führt zu `/kunden` bzw. `/en/clients` und hat den zugänglichen Namen „Kundenbereich“ bzw. „Client area“. Er ist auch ohne JavaScript da, weil er ein normaler Link ist. Auf dem Handy steht er in der Leiste neben dem Menü-Button.
+- AK-31: Neben dem Dunkelmodus-Button steht ein runder Icon-Link im gleichen Stil, mit Personen-Icon und ohne sichtbaren Text. Er führt zu `/kunden` bzw. `/en/clients` und hat den zugänglichen Namen „Kundenbereich“ bzw. „Client area“. Er ist auch ohne JavaScript da, weil er ein normaler Link ist. Unter 640 px reicht der Platz in der Leiste nicht (AK-12), dort steht „Kundenbereich“ mit Icon im Menü unter „Kontakt“. Damit die Leiste auf dem Tablet passt (AK-17), zeigt der Sprachlink bis 1024 px nur das Kürzel „EN“ bzw. „DE“.

@@ -36,6 +36,21 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Angebotsseiten für Kunden](kontakt/angebotsseiten.md)
 - [Website-Schnellcheck („wie viel besser kann deine Seite werden")](kontakt/website-schnellcheck.md)
 
+## Kundenbereich (Epic #49)
+
+- [Datenmodell und Zugriffsregeln](kundenbereich/datenmodell.md)
+- [Login per Magic Link](kundenbereich/login.md)
+- [Projektübersicht](kundenbereich/projektuebersicht.md)
+- [Nächster Termin mit Meet-Link](kundenbereich/termine.md)
+- [Dokumente und Dateien](kundenbereich/dokumente.md)
+- [Verwaltung durch Erik (Admin)](kundenbereich/admin.md)
+- [Logo-Freigabe und Datenschutz](kundenbereich/logo-freigabe.md)
+- [Dashboard der Verwaltung](kundenbereich/admin-dashboard.md)
+- [Projekt anlegen in Schritten](kundenbereich/projekt-assistent.md)
+- [Kundensicht als Dashboard](kundenbereich/kunden-dashboard.md)
+- [Eigener Rahmen ohne Navigation und Footer](kundenbereich/rahmen.md)
+- [Verwaltung übersichtlich: Bereiche, Dialoge, Hilfe](kundenbereich/admin-aufbau.md)
+
 ## Qualität
 
 - [Barrierefreiheit](qualitaet/barrierefreiheit.md)

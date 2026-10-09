@@ -54,6 +54,10 @@ export default function Footer({ locale }: { locale: Locale }) {
   return (
     <footer className="relative pt-20 md:pt-28 pb-8 bg-[#0b1219] dark:border-t dark:border-white/10">
       <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 flex flex-col gap-14 md:gap-20">
+        {/* Kritiker Kundenbereich 2026-10-08: neuer Tab wird angesagt wie bei den übrigen externen Links */}
+        <span id="footer-neuer-tab" hidden>
+          {locale === 'en' ? '(opens in a new tab)' : '(öffnet in neuem Tab)'}
+        </span>
         <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,1fr))]">
           {/* Marke */}
           <div className="sm:col-span-2 lg:col-span-1">
@@ -79,12 +83,24 @@ export default function Footer({ locale }: { locale: Locale }) {
                 </a>
               </li>
               <li>
-                <a href={LINKEDIN} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                <a
+                  href={LINKEDIN}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-describedby="footer-neuer-tab"
+                  className={linkClass}
+                >
                   LinkedIn
                 </a>
               </li>
               <li>
-                <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                <a
+                  href={INSTAGRAM}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-describedby="footer-neuer-tab"
+                  className={linkClass}
+                >
                   Instagram
                 </a>
               </li>

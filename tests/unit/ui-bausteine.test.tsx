@@ -90,3 +90,34 @@ describe('Button', () => {
     expect(src).not.toMatch(/<(button|textarea)\b/);
   });
 });
+
+describe('SelectField', () => {
+  it('AK-8: Label, Hinweis, Fehler und Optionen wie beim Textfeld', async () => {
+    const { default: SelectField } = await import('@/components/ui/SelectField');
+    const options = [
+      { value: 'de', label: 'Deutsch' },
+      { value: 'en', label: 'Englisch' },
+    ];
+    const { rerender } = render(
+      <SelectField
+        id="sprache"
+        name="sprache"
+        label="Sprache"
+        hint="Für Mails"
+        error="Bitte wählen"
+        options={options}
+        defaultValue="en"
+      />,
+    );
+    const select = screen.getByLabelText('Sprache');
+    expect(select.tagName).toBe('SELECT');
+    expect(select).toHaveValue('en');
+    expect(select).toHaveAttribute('aria-describedby', 'sprache-hinweis sprache-fehler');
+    expect(select).toHaveAttribute('aria-invalid', 'true');
+    expect(select.className).toMatch(/min-h-11/);
+    expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(['Deutsch', 'Englisch']);
+    rerender(<SelectField id="sprache" name="sprache" label="Sprache" options={options} />);
+    expect(screen.getByLabelText('Sprache')).not.toHaveAttribute('aria-describedby');
+    expect(screen.getByLabelText('Sprache')).not.toHaveAttribute('aria-invalid');
+  });
+});

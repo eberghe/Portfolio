@@ -32,7 +32,7 @@ test('AK-1/AK-2/AK-3: Anmeldung ohne Navigation, Footer und weiches Scrollen', a
   ] as const) {
     await openHydrated(page, `${path}${path.includes('?') ? '&' : '?'}animationstest`);
     await ohneWebsiteRahmen(page);
-    await expect(page.getByRole('banner').getByRole('link', { name: link })).toHaveAttribute('href', ziel);
+    await expect(page.getByRole('banner').getByRole('link', { name: link, exact: true })).toHaveAttribute('href', ziel);
   }
 });
 
@@ -42,7 +42,7 @@ test('AK-1/AK-4: Admin landet auf der Verwaltung, ohne Website-Rahmen', async ({
   await expect(page).toHaveURL(/\/kunden\/admin/);
   await expect(page.getByRole('heading', { level: 1, name: 'Verwaltung' })).toBeVisible();
   await ohneWebsiteRahmen(page);
-  await page.getByRole('link', { name: 'Zur Website' }).click();
+  await page.getByRole('link', { name: 'Zur Website', exact: true }).click();
   await expect(page.getByRole('navigation', { name: 'Hauptnavigation' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Kundenbereich' })).toHaveAttribute('href', '/kunden');
 });

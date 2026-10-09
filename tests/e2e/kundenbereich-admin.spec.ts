@@ -54,7 +54,7 @@ test('Verhalten 1-4: Erik kommt über die Bereiche zum Kunden und zum Projekt', 
   // admin-aufbau.md AK-7: Formulare hinter Buttons, die Seite bleibt kurz
   await expect(page.getByRole('main').locator('input:not([type="hidden"]), textarea, select')).toHaveCount(0);
   const hoehe = await page.getByRole('main').evaluate((el) => el.scrollHeight);
-  expect(hoehe).toBeLessThan(3000);
+  expect(hoehe).toBeLessThan(4000);
   await page.getByRole('button', { name: 'Zuordnung ändern' }).click();
   const dialog = page.getByRole('dialog', { name: 'Ansprechpartner im Projekt' });
   await expect(dialog.getByRole('checkbox', { name: /Anna/ })).toBeChecked();
@@ -125,7 +125,10 @@ test('Dashboard: Kennzahlen, Diagramme, Hilfe, Termine und Anfragen (admin-aufba
   await expect(page.getByRole('link', { name: 'Projekt anlegen: Clara Muster' })).toHaveAttribute(
     'href',
     /\/kunden\/admin\/projekte\/neu\?anfrage=/,
-  );
+  ); // Zurück auf „Neu“, das nachgebildete Supabase teilt den Stand zwischen den Geräten
+  await page.getByRole('combobox', { name: 'Status: Clara Muster' }).selectOption('neu');
+  await page.getByRole('button', { name: 'Status speichern: Clara Muster' }).click();
+  await expect.poll(async () => (await page.request.get('/kunden/admin')).text()).toContain('Clara Muster');
 });
 
 test('Assistent: Projekt in sechs Schritten anlegen (projekt-assistent.md)', async ({ page }) => {

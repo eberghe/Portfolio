@@ -128,3 +128,13 @@ export function projekteNachStatus(projekte: DashboardProjekt[]) {
 
 const EURO = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
 export const euro = (n: number) => EURO.format(n);
+
+const PIPELINE: ProjektStatus[] = ['angebot', 'in_arbeit', 'abstimmung', 'pausiert', 'abgeschlossen'];
+
+/** Auftragswert und Anzahl je Status, ungewichtet (admin-aufbau.md AK-4) */
+export function auftragswertNachStatus(projekte: DashboardProjekt[]) {
+  return PIPELINE.map((status) => {
+    const liste = projekte.filter((p) => p.status === status);
+    return { status, anzahl: liste.length, wert: liste.reduce((s, p) => s + (wert(p.projekt_umsatz) ?? 0), 0) };
+  });
+}

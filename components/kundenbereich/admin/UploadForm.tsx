@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import SelectField from '@/components/ui/SelectField';
 import TextField from '@/components/ui/TextField';
 import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
+import { useAdminDialog } from './AdminDialog';
 import { Meldung, type AdminAction } from './AdminForm';
 
 // Upload in drei Schritten: Server prüft und gibt einen signierten Upload-Link, der Browser lädt direkt
@@ -24,7 +25,8 @@ export default function UploadForm({
   arten = [],
 }: {
   id: string;
-  title: string;
+  /** Überschrift; im Dialog trägt der Dialog den Titel */
+  title?: string;
   prepare: AdminAction;
   finish: AdminAction;
   hidden: Record<string, string>;
@@ -39,6 +41,7 @@ export default function UploadForm({
   const [pending, setPending] = useState(false);
   const form = useRef<HTMLFormElement>(null);
   const router = useRouter();
+  const dialog = useAdminDialog();
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -84,6 +87,7 @@ export default function UploadForm({
       if (fertig.status === 'ok') {
         form.current?.reset();
         router.refresh();
+        dialog?.schliessen(fertig.message);
       }
     } catch {
       setState({ status: 'error', message: 'Das hat nicht geklappt. Bitte versuch es noch einmal.' });
@@ -94,10 +98,12 @@ export default function UploadForm({
 
   const errors = state.status === 'error' ? (state.errors ?? {}) : {};
   return (
-    <form ref={form} onSubmit={submit} noValidate aria-labelledby={`${id}-titel`}>
-      <h3 id={`${id}-titel`} className="text-[16px] font-bold mb-3">
-        {title}
-      </h3>
+    <form ref={form} onSubmit={submit} noValidate aria-labelledby={title ? `${id}-titel` : undefined}>
+      {title && (
+        <h3 id={`${id}-titel`} className="text-[16px] font-bold mb-3">
+          {title}
+        </h3>
+      )}
       <Meldung state={state} />
       {Object.entries(hidden).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />

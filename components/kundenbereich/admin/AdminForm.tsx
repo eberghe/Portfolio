@@ -2,6 +2,7 @@
 
 import { startTransition, useActionState, useEffect, useRef, type FormEvent } from 'react';
 import Button from '@/components/ui/Button';
+import { useAdminDialog } from './AdminDialog';
 import SelectField from '@/components/ui/SelectField';
 import TextField, { labelClass } from '@/components/ui/TextField';
 import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
@@ -68,13 +69,17 @@ export default function AdminForm({
   const [state, dispatch, pending] = useActionState(action, { status: 'idle' });
   const form = useRef<HTMLFormElement>(null);
 
+  const dialog = useAdminDialog();
+
   useEffect(() => {
+    // Im Dialog: nach Erfolg schließen, die Meldung steht neben dem Button (admin-aufbau.md AK-8)
+    if (state.status === 'ok' && dialog) dialog.schliessen(state.message);
     if (state.status === 'ok' && reset) form.current?.reset();
     if (state.status === 'error' && state.errors) {
       const first = Object.keys(state.errors)[0];
       form.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
     }
-  }, [state, reset]);
+  }, [state, reset, dialog]);
 
   // Kein automatisches Zurücksetzen durch React: Eingaben bleiben bei Fehlern stehen
   const submit = (e: FormEvent<HTMLFormElement>) => {

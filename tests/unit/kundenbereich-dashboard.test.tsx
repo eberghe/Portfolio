@@ -246,13 +246,13 @@ describe('Ansicht', () => {
     expect(screen.getByRole('link', { name: 'Neues Projekt' })).toHaveAttribute('href', '/kunden/admin/projekte/neu');
 
     const kz = screen.getByRole('list', { name: 'Kennzahlen' });
-    expect(within(kz).getByText('Aktive Projekte').nextElementSibling).toHaveTextContent('3');
-    expect(within(kz).getByText('Umsatz 2026').nextElementSibling).toHaveTextContent('16.000 €');
+    expect(within(kz).getByText('Aktive Projekte').closest('li')).toHaveTextContent('3');
+    expect(within(kz).getByText('Umsatz 2026').closest('li')).toHaveTextContent('16.000 €');
     expect(kz).toHaveTextContent('davon sicher 14.000 €');
 
     // AK-3: Diagramm dekorativ, Tabelle als Alternative
     const prognose = screen.getByRole('region', { name: 'Umsatzprognose' });
-    expect(prognose.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    expect(prognose.querySelector('svg[data-diagramm]')).toHaveAttribute('aria-hidden', 'true');
     const table = within(prognose).getByRole('table', { name: /Umsatzprognose/ });
     const zeilen = within(table).getAllByRole('row');
     expect(zeilen[1]).toHaveTextContent(/2026.*14\.000 €.*2\.000 €.*16\.000 €/);
@@ -274,45 +274,31 @@ describe('Ansicht', () => {
       'https://meet.google.com/abc',
     );
 
-    // AK-5
-    const projekte = screen.getByRole('region', { name: 'Projekte' });
-    expect(within(projekte).getByText('Abgeschlossen (1)')).toBeInTheDocument();
+    // AK-5: laufende Projekte, abgeschlossene stehen auf der Seite Projekte (admin-aufbau.md AK-2)
+    const projekte = screen.getByRole('region', { name: 'Laufende Projekte' });
     expect(projekte).toHaveTextContent('Nächster Schritt: Texte liefern (Kunde)');
 
-    // AK-6
-    const anfragen = screen.getByRole('region', { name: 'Anfragen' });
+    // AK-6: Anfragen kurz, alle Angaben auf der Seite der Anfrage (admin-aufbau.md AK-5)
+    const anfragen = screen.getByRole('region', { name: 'Neue Anfragen' });
     expect(anfragen).toHaveTextContent('Max Muster');
     expect(anfragen).toHaveTextContent('Webdesign & Webentwicklung');
-    expect(anfragen).toHaveTextContent('2.000 bis 5.000 €');
-    expect(within(anfragen).getByRole('link', { name: 'max@example.org' })).toHaveAttribute(
+    expect(within(anfragen).getByRole('link', { name: 'Max Muster' })).toHaveAttribute(
       'href',
-      'mailto:max@example.org',
+      '/kunden/admin/anfragen/40000000-0000-4000-8000-000000000001',
     );
-    expect(within(anfragen).getByRole('button', { name: 'Status speichern: Max Muster' })).toBeInTheDocument();
-    expect(within(anfragen).getByRole('link', { name: 'Projekt anlegen: Max Muster' })).toHaveAttribute(
-      'href',
-      '/kunden/admin/projekte/neu?anfrage=40000000-0000-4000-8000-000000000001',
-    );
-    expect(within(anfragen).getByText('Erledigt (1)')).toBeInTheDocument();
-
-    expect(screen.getByRole('region', { name: 'Kunden' })).toHaveTextContent('Bäckerei');
-    expect(screen.getByRole('form', { name: 'Kunde anlegen' })).toBeInTheDocument();
+    expect(screen.queryByRole('form')).toBeNull();
   });
 
   it('AK-3: ohne Beträge ein Hinweis statt Diagramm', () => {
     render(<AdminDashboard daten={{ projekte: [], termine: [], anfragen: [], kunden: [] }} now={NOW} />);
     const prognose = screen.getByRole('region', { name: 'Umsatzprognose' });
     expect(prognose).toHaveTextContent('Noch keine Beträge. Trag beim Projekt einen Auftragswert ein.');
-    expect(prognose.querySelector('svg')).toBeNull();
+    expect(prognose.querySelector('svg[data-diagramm]')).toBeNull();
     expect(screen.getByRole('region', { name: 'Nächste Termine' })).toHaveTextContent('Keine Termine geplant.');
   });
 
-  it('Kritiker Dashboard 10/11: Anfragen beschriftet, Diagramm wie die Tabelle formatiert', () => {
+  it('Kritiker Dashboard 11: Diagramm wie die Tabelle formatiert', () => {
     const { container } = render(<AdminDashboard daten={DATEN} now={NOW} />);
-    const anfragen = screen.getByRole('region', { name: 'Anfragen' });
-    expect(anfragen).toHaveTextContent('Leistungen:');
-    expect(anfragen).toHaveTextContent('Zeitrahmen:');
-    expect(within(anfragen).getByRole('combobox', { name: 'Status: Max Muster' })).toBeInTheDocument();
     const beschriftung = [...container.querySelectorAll('svg text')].map((t) => t.textContent ?? '');
     expect(beschriftung.length).toBeGreaterThan(0);
     for (const t of beschriftung.filter((x) => x.includes('€'))) expect(t).not.toMatch(/,0|T€|Mio/);

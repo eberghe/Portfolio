@@ -15,8 +15,13 @@ async function login(page: Page, sub: string) {
   ]);
 }
 const overflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+const A1 = '30000000-0000-4000-8000-00000000000c';
 const SEITEN = [
   '/kunden/admin',
+  '/kunden/admin/anfragen',
+  `/kunden/admin/anfragen/${A1}`,
+  '/kunden/admin/projekte',
+  '/kunden/admin/kunden',
   `/kunden/admin/kunden/${K1}`,
   `/kunden/admin/projekte/${P1}`,
   '/kunden/admin/projekte/neu',
@@ -29,11 +34,14 @@ test('AK-1: Verwaltung nur für Admins, sonst 404', async ({ page, request }) =>
   expect((await page.request.get(`/kunden/admin/logo/${K1}`, { maxRedirects: 0 })).status()).toBe(404);
 });
 
-test('Verhalten 1-4: Erik kommt von der Übersicht zum Kunden und zum Projekt', async ({ page }) => {
+test('Verhalten 1-4: Erik kommt über die Bereiche zum Kunden und zum Projekt', async ({ page }) => {
   await login(page, 'erik');
   await openHydrated(page, '/kunden');
-  await page.getByRole('link', { name: 'Verwaltung' }).click();
+  await expect(page).toHaveURL(/\/kunden\/admin$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Verwaltung' })).toBeVisible();
+  const bereiche = page.getByRole('navigation', { name: 'Bereiche der Verwaltung' });
+  await bereiche.getByRole('link', { name: 'Kunden' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Kunden' })).toBeVisible();
   await expect(page.getByText('Logo-Freigabe erteilt am 8. Okt. 2026')).toBeVisible();
   await page.getByRole('link', { name: 'Bäckerei Beispiel' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Bäckerei Beispiel' })).toBeVisible();
@@ -42,18 +50,26 @@ test('Verhalten 1-4: Erik kommt von der Übersicht zum Kunden und zum Projekt', 
   await expect.poll(() => logo.evaluate((img: HTMLImageElement) => img.naturalWidth > 0)).toBe(true);
   await page.getByRole('link', { name: 'Relaunch der Website' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Relaunch der Website' })).toBeVisible();
-  await expect(page.getByRole('checkbox', { name: /Anna/ })).toBeChecked();
-  // Kritiker Verwaltung 1: Schritte eingeklappt, Sprungmarke zu den Terminen
-  await page.getByRole('navigation', { name: 'Auf dieser Seite' }).getByRole('link', { name: 'Termine' }).click();
-  await expect(page.getByRole('heading', { level: 2, name: 'Termine' })).toBeInViewport();
+  await expect(page.getByRole('region', { name: 'Ansprechpartner' })).toContainText('Anna');
+  // admin-aufbau.md AK-7: Formulare hinter Buttons, die Seite bleibt kurz
+  await expect(page.getByRole('main').locator('input:not([type="hidden"]), textarea, select')).toHaveCount(0);
   const hoehe = await page.getByRole('main').evaluate((el) => el.scrollHeight);
-  expect(hoehe).toBeLessThan(7000);
+  expect(hoehe).toBeLessThan(3000);
+  await page.getByRole('button', { name: 'Zuordnung ändern' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Ansprechpartner im Projekt' });
+  await expect(dialog.getByRole('checkbox', { name: /Anna/ })).toBeChecked();
+  expect(await axe(page)).toEqual([]);
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Zuordnung ändern' })).toBeFocused();
 });
 
-test('AK-3: Kunde anlegen mit Prüfung und Weiterleitung', async ({ page }) => {
+test('AK-3: Kunde anlegen im Dialog mit Prüfung und Weiterleitung', async ({ page }) => {
   await login(page, 'erik');
-  await openHydrated(page, '/kunden/admin');
-  const form = page.getByRole('form', { name: 'Kunde anlegen' });
+  await openHydrated(page, '/kunden/admin/kunden');
+  await page.getByRole('button', { name: 'Kunde anlegen' }).click();
+  const form = page.getByRole('dialog', { name: 'Kunde anlegen' });
+  await expect(form.getByLabel(/^Name/)).toBeFocused();
   await form.getByLabel(/^Website/).fill('kunde.example');
   await form.getByRole('button', { name: 'Kunde anlegen' }).click();
   await expect(form.getByLabel(/^Name/)).toHaveAttribute('aria-invalid', 'true');
@@ -78,25 +94,34 @@ test('AK-3: Kunde anlegen mit Prüfung und Weiterleitung', async ({ page }) => {
   await expect(page).toHaveURL(/\/kunden\/admin\/kunden\/10000000-/);
 });
 
-test('Dashboard: Kennzahlen, Umsatzprognose, Termine und Anfragen (admin-dashboard.md)', async ({ page }) => {
+test('Dashboard: Kennzahlen, Diagramme, Hilfe, Termine und Anfragen (admin-aufbau.md)', async ({ page }) => {
   await login(page, 'erik');
   await openHydrated(page, '/kunden/admin');
-  const kennzahlen = page.getByRole('list', { name: 'Kennzahlen' });
-  await expect(kennzahlen).toBeVisible();
-  await expect(page.getByRole('heading', { level: 2, name: 'Umsatzprognose' })).toBeVisible();
-  const tabelle = page.getByRole('table');
-  await expect(tabelle).toContainText('2026');
-  await expect(tabelle).toContainText('2027');
+  await expect(page.getByRole('list', { name: 'Kennzahlen' })).toBeVisible();
+  const prognose = page.getByRole('region', { name: 'Umsatzprognose' });
+  await expect(prognose.locator('svg[data-diagramm]')).toBeVisible();
+  await expect(prognose.getByRole('table')).toBeHidden();
+  await prognose.getByText('Als Tabelle').click();
+  await expect(prognose.getByRole('table')).toContainText('2027');
+  await expect(page.getByRole('region', { name: 'Auftragswert nach Status' })).toContainText('In Arbeit');
+  const hilfe = page.getByRole('button', { name: 'Erklärung: Umsatzprognose' });
+  await hilfe.click();
+  await expect(hilfe).toHaveAttribute('aria-expanded', 'true');
+  await expect(prognose).toContainText('Gewichtet: Angebote');
+  await page.keyboard.press('Escape');
+  await expect(hilfe).toHaveAttribute('aria-expanded', 'false');
   await expect(page.getByRole('link', { name: /Meet beitreten: Design-Review/ })).toBeVisible();
-  await expect(page.getByText('Clara Muster').first()).toBeVisible();
-  // Kritiker Dashboard 1/10: Projektlinks führen zur Projektseite, Status lässt sich speichern
-  const projekte = page.getByRole('region', { name: 'Projekte' });
+  // Kritiker Dashboard 1: Projektlinks führen zur Projektseite
+  const projekte = page.getByRole('region', { name: 'Laufende Projekte' });
   const href = await projekte.getByRole('link', { name: 'Relaunch der Website' }).getAttribute('href');
   expect((await page.request.get(href!)).status(), href!).toBe(200);
-  const anfragen = page.getByRole('region', { name: 'Anfragen' });
-  await anfragen.getByRole('combobox', { name: 'Status: Clara Muster' }).selectOption('beantwortet');
-  await anfragen.getByRole('button', { name: 'Status speichern: Clara Muster' }).click();
-  await expect(anfragen.getByText('Status gespeichert.')).toBeVisible();
+  // Anfragen: kurz im Dashboard, alles auf der eigenen Seite
+  await page.getByRole('region', { name: 'Neue Anfragen' }).getByRole('link', { name: 'Clara Muster' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Clara Muster' })).toBeVisible();
+  await expect(page.getByRole('main')).toContainText('Wir brauchen eine neue Website.');
+  await page.getByRole('combobox', { name: 'Status: Clara Muster' }).selectOption('beantwortet');
+  await page.getByRole('button', { name: 'Status speichern: Clara Muster' }).click();
+  await expect(page.getByText('Status gespeichert.')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Projekt anlegen: Clara Muster' })).toHaveAttribute(
     'href',
     /\/kunden\/admin\/projekte\/neu\?anfrage=/,

@@ -1,8 +1,9 @@
 'use client';
 
-import { startTransition, useActionState, type FormEvent } from 'react';
+import { startTransition, useActionState, useEffect, type FormEvent } from 'react';
 import Button from '@/components/ui/Button';
 import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
+import { useAdminDialog } from './AdminDialog';
 import { Meldung, type AdminAction } from './AdminForm';
 
 // Einzelne Aktion als Button, z. B. „Entfernen“ oder „Anmeldelink schicken“ (functions/kundenbereich/admin.md)
@@ -26,6 +27,11 @@ export default function ActionButton({
   variant?: 'primary' | 'secondary';
 }) {
   const [state, dispatch, pending] = useActionState<AdminState, FormData>(action, { status: 'idle' });
+  const dialog = useAdminDialog();
+  // Im Dialog, z. B. „Entfernen“ beim Bearbeiten eines Schritts: nach Erfolg schließen
+  useEffect(() => {
+    if (state.status === 'ok' && dialog) dialog.schliessen(state.message);
+  }, [state, dialog]);
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (confirm && !window.confirm(confirm)) return;

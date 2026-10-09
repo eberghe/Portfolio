@@ -1,56 +1,76 @@
 import { CalendarClock, Inbox, Plus, TrendingUp, Video, Workflow } from 'lucide-react';
 import Link from 'next/link';
-import { kundeAnlegen } from '@/app/actions/kundenbereich-admin';
 import { buttonClass } from '@/components/ui/Button';
-import { contactText } from '@/lib/content/contact';
-import { services } from '@/lib/content/services';
 import {
+  auftragswertNachStatus,
   dashboardKennzahlen,
   euro,
   projekteNachStatus,
   umsatzPrognose,
-  type Anfrage,
   type DashboardDaten,
 } from '@/lib/kundenbereich/admin/dashboard';
-import { freigabeText, optionLabel, PROJEKT_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
-import { datum } from '@/lib/kundenbereich/projekte';
+import { optionLabel, PROJEKT_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
 import { zeitraum } from '@/lib/kundenbereich/termine';
-import AdminForm from './AdminForm';
-import AdminShell, { listItem } from './AdminShell';
-import AnfrageStatusForm from './AnfrageStatusForm';
+import { AnfrageListe, karte, kartenTitel, KundeAnlegen, mehrLink, ProjektListe } from './AdminListen';
+import AdminShell from './AdminShell';
+import Hilfe from './Hilfe';
 import UmsatzDiagramm, { schraffur } from './UmsatzDiagramm';
 
-// Startseite der Verwaltung als Dashboard (functions/kundenbereich/admin-dashboard.md)
+// Startseite der Verwaltung: nur das Wichtigste (functions/kundenbereich/admin-dashboard.md, admin-aufbau.md AK-2)
 
-export const karte = 'border border-border rounded-2xl p-5 md:p-6 min-w-0 bg-background';
-const h2 = 'text-[18px] font-bold mb-4 flex items-center gap-2';
-const badge =
-  'inline-flex items-center text-[12px] font-medium border border-primary-border text-primary-text rounded-full px-2.5 py-0.5';
-const ct = contactText.de;
+export { karte };
 
-const leistung = (slug: string) =>
-  services.find((s) => s.slug === slug)?.de.title ?? (slug === 'sonstiges' ? ct.other : slug);
+const MAX_TERMINE = 3;
+const MAX_ANFRAGEN = 3;
+const MAX_PROJEKTE = 5;
+
+/** Kopf einer Karte mit Hilfe-Icon oben rechts (admin-aufbau.md Verhalten 8) */
+function Kopf({ id, titel, hilfe }: { id: string; titel: string; hilfe?: string }) {
+  return (
+    <div className="flex items-start justify-between gap-3 mb-4">
+      <h2 id={id} className={kartenTitel}>
+        {titel}
+      </h2>
+      {hilfe && <Hilfe titel={titel}>{hilfe}</Hilfe>}
+    </div>
+  );
+}
 
 export default function AdminDashboard({ daten, now = new Date() }: { daten: DashboardDaten; now?: Date }) {
   const kz = dashboardKennzahlen(daten, now);
   const prognose = umsatzPrognose(daten.projekte, now);
-  const projekte = projekteNachStatus(daten.projekte);
-  const laufend = projekte.filter((p) => p.status !== 'abgeschlossen');
-  const fertig = projekte.filter((p) => p.status === 'abgeschlossen');
+  const pipeline = auftragswertNachStatus(daten.projekte);
+  const pipelineMax = Math.max(1, ...pipeline.map((p) => p.wert));
+  const laufend = projekteNachStatus(daten.projekte).filter((p) => p.status !== 'abgeschlossen');
   const offen = daten.anfragen.filter((a) => a.status !== 'erledigt');
-  const erledigt = daten.anfragen.filter((a) => a.status === 'erledigt');
-  const termine = daten.termine.slice(0, 5);
+  const termine = daten.termine.slice(0, MAX_TERMINE);
   const leer = prognose.jahre.every((j) => j.sicher + j.gewichtet === 0);
 
   const kacheln = [
-    { label: 'Aktive Projekte', wert: String(kz.aktiveProjekte), icon: Workflow },
-    { label: 'Termine in 7 Tagen', wert: String(kz.termine7), icon: CalendarClock },
-    { label: 'Neue Anfragen', wert: String(kz.neueAnfragen), icon: Inbox },
+    {
+      label: 'Aktive Projekte',
+      wert: String(kz.aktiveProjekte),
+      icon: Workflow,
+      hilfe: 'Projekte im Status „In Arbeit“ oder „In Abstimmung“. Angebote und pausierte Projekte zählen nicht.',
+    },
+    {
+      label: 'Termine in 7 Tagen',
+      wert: String(kz.termine7),
+      icon: CalendarClock,
+      hilfe: 'Termine aller Projekte, die in den nächsten sieben Tagen beginnen oder gerade laufen.',
+    },
+    {
+      label: 'Neue Anfragen',
+      wert: String(kz.neueAnfragen),
+      icon: Inbox,
+      hilfe: 'Anfragen aus dem Kontaktformular mit dem Status „Neu“. Beantwortete und erledigte zählen nicht.',
+    },
     {
       label: `Umsatz ${kz.jahr}`,
       wert: euro(kz.umsatzJahr),
       zusatz: `davon sicher ${euro(kz.sicherJahr)}`,
       icon: TrendingUp,
+      hilfe: `Netto, nach Abrechnungsdatum im Jahr ${kz.jahr}. Sicher sind laufende und abgeschlossene Projekte, Angebote zählen mit ihrer Wahrscheinlichkeit.`,
     },
   ];
 
@@ -58,31 +78,40 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
     <AdminShell
       title="Verwaltung"
       wide
+      bereich="uebersicht"
       aside={
-        <Link href="/kunden/admin/projekte/neu" className={buttonClass('primary')}>
-          <Plus size={15} aria-hidden="true" />
-          Neues Projekt
-        </Link>
+        <>
+          <KundeAnlegen />
+          <Link href="/kunden/admin/projekte/neu" className={buttonClass('primary')}>
+            <Plus size={15} aria-hidden="true" />
+            Neues Projekt
+          </Link>
+        </>
       }
     >
-      <ul role="list" aria-label="Kennzahlen" className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+      <ul role="list" aria-label="Kennzahlen" className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
         {kacheln.map((k) => (
           <li key={k.label} className={`${karte} flex flex-col gap-1`}>
-            <p className="flex items-center gap-2 text-[13px] text-text2">
-              <k.icon size={15} aria-hidden="true" className="text-primary-text shrink-0" />
-              {k.label}
-            </p>
+            <div className="flex items-start justify-between gap-2">
+              <p className="flex items-center gap-2 text-[13px] text-text2 min-w-0">
+                <k.icon size={15} aria-hidden="true" className="text-primary-text shrink-0" />
+                {k.label}
+              </p>
+              <Hilfe titel={k.label}>{k.hilfe}</Hilfe>
+            </div>
             <p className="text-[24px] md:text-[30px] font-bold tracking-tight leading-tight break-words">{k.wert}</p>
             {k.zusatz && <p className="text-[12px] text-text2">{k.zusatz}</p>}
           </li>
         ))}
       </ul>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-        <section aria-labelledby="prognose-titel" className={karte}>
-          <h2 id="prognose-titel" className={h2}>
-            Umsatzprognose
-          </h2>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+        <section aria-labelledby="prognose-titel" className={`${karte} lg:col-span-2`}>
+          <Kopf
+            id="prognose-titel"
+            titel="Umsatzprognose"
+            hilfe="Netto je Jahr der Abrechnung. Sicher: Projekte in Arbeit, in Abstimmung und abgeschlossen. Gewichtet: Angebote mal Wahrscheinlichkeit. Pausierte Projekte zählen nicht."
+          />
           {leer ? (
             <p className="text-[15px] text-text2">Noch keine Beträge. Trag beim Projekt einen Auftragswert ein.</p>
           ) : (
@@ -98,44 +127,46 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
                 </li>
               </ul>
               <UmsatzDiagramm jahre={prognose.jahre} />
-              <table className="w-full mt-4 text-[13px] tabular-nums">
-                <caption className="text-left text-[13px] text-text2 mb-2">
-                  Umsatzprognose je Jahr, netto. Sicher: laufende und abgeschlossene Projekte. Gewichtet: Angebote mal
-                  Wahrscheinlichkeit.
-                </caption>
-                <thead>
-                  <tr className="text-text2 border-b border-border">
-                    <th scope="col" className="text-left font-medium py-1.5">
-                      Jahr
-                    </th>
-                    <th scope="col" className="text-right font-medium py-1.5">
-                      Sicher
-                    </th>
-                    <th scope="col" className="text-right font-medium py-1.5">
-                      Gewichtet
-                    </th>
-                    <th scope="col" className="text-right font-medium py-1.5">
-                      Summe
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {prognose.jahre.map((j) => (
-                    <tr key={j.jahr} className="border-b border-border last:border-0">
-                      <th scope="row" className="text-left font-medium py-1.5">
-                        {j.jahr}
+              <details className="mt-3">
+                <summary className="cursor-pointer min-h-11 flex items-center text-[14px] font-medium">
+                  Als Tabelle
+                </summary>
+                <table className="w-full mt-2 text-[13px] tabular-nums">
+                  <caption className="sr-only">Umsatzprognose je Jahr, netto</caption>
+                  <thead>
+                    <tr className="text-text2 border-b border-border">
+                      <th scope="col" className="text-left font-medium py-1.5">
+                        Jahr
                       </th>
-                      <td className="text-right py-1.5">{euro(j.sicher)}</td>
-                      <td className="text-right py-1.5">{euro(j.gewichtet)}</td>
-                      <td className="text-right py-1.5 font-semibold">{euro(j.sicher + j.gewichtet)}</td>
+                      <th scope="col" className="text-right font-medium py-1.5">
+                        Sicher
+                      </th>
+                      <th scope="col" className="text-right font-medium py-1.5">
+                        Gewichtet
+                      </th>
+                      <th scope="col" className="text-right font-medium py-1.5">
+                        Summe
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {prognose.jahre.map((j) => (
+                      <tr key={j.jahr} className="border-b border-border last:border-0">
+                        <th scope="row" className="text-left font-medium py-1.5">
+                          {j.jahr}
+                        </th>
+                        <td className="text-right py-1.5">{euro(j.sicher)}</td>
+                        <td className="text-right py-1.5">{euro(j.gewichtet)}</td>
+                        <td className="text-right py-1.5 font-semibold">{euro(j.sicher + j.gewichtet)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </details>
             </>
           )}
           {prognose.ohneAngaben > 0 && (
-            <p className="text-[13px] text-text2 mt-3">
+            <p className="text-[13px] text-text2 mt-2">
               {prognose.ohneAngaben === 1
                 ? '1 Projekt ohne Auftragswert oder Abrechnungsdatum'
                 : `${prognose.ohneAngaben} Projekte ohne Auftragswert oder Abrechnungsdatum`}
@@ -143,10 +174,42 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
           )}
         </section>
 
+        {/* Zweites Diagramm: ungewichteter Auftragswert je Status (admin-aufbau.md AK-4) */}
+        <section aria-labelledby="pipeline-titel" className={karte}>
+          <Kopf
+            id="pipeline-titel"
+            titel="Auftragswert nach Status"
+            hilfe="Summe der Auftragswerte netto je Status, ohne Gewichtung. So siehst du, wie viel in Angeboten steckt und wie viel schon läuft."
+          />
+          <ul role="list" className="flex flex-col gap-3">
+            {pipeline.map((p) => (
+              <li key={p.status} className="flex flex-col gap-1">
+                <span className="flex flex-wrap items-baseline justify-between gap-x-3 text-[13px]">
+                  <span className="font-medium text-foreground">{optionLabel(PROJEKT_STATUS_OPTIONEN, p.status)}</span>
+                  <span className="text-text2 tabular-nums">
+                    {euro(p.wert)} · {p.anzahl === 1 ? '1 Projekt' : `${p.anzahl} Projekte`}
+                  </span>
+                </span>
+                <span
+                  data-balken
+                  aria-hidden="true"
+                  className="block h-2 rounded-full bg-foreground/10 overflow-hidden"
+                >
+                  <span
+                    className="block h-full rounded-full"
+                    style={{
+                      width: `${(p.wert / pipelineMax) * 100}%`,
+                      background: p.status === 'angebot' ? schraffur : 'var(--chart-sicher)',
+                    }}
+                  />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section aria-labelledby="termine-titel" className={karte}>
-          <h2 id="termine-titel" className={h2}>
-            Nächste Termine
-          </h2>
+          <Kopf id="termine-titel" titel="Nächste Termine" />
           {termine.length === 0 ? (
             <p className="text-[15px] text-text2">Keine Termine geplant.</p>
           ) : (
@@ -154,32 +217,27 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
               {termine.map((t) => {
                 const titel = t.titel_de ?? 'Termin';
                 return (
-                  <li
-                    key={t.id}
-                    className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3 border-t border-border first:border-0 first:pt-0"
-                  >
-                    <div className="min-w-0 flex-1 basis-56">
-                      <p className="text-[13px] text-text2">{zeitraum(t.beginn, t.ende, 'de')}</p>
-                      <p className="text-[15px] font-medium break-words">{titel}</p>
-                      {t.kundenprojekte && (
-                        <p className="text-[13px] text-text2">
-                          <Link
-                            href={`/kunden/admin/projekte/${t.kundenprojekte.id}`}
-                            className="underline underline-offset-2 hover:text-foreground"
-                          >
-                            {t.kundenprojekte.titel}
-                          </Link>
-                          {t.kundenprojekte.kunden && ` · ${t.kundenprojekte.kunden.name}`}
-                        </p>
-                      )}
-                    </div>
+                  <li key={t.id} className="flex flex-col gap-1 py-3 border-t border-border first:border-0 first:pt-0">
+                    <p className="text-[13px] text-text2">{zeitraum(t.beginn, t.ende, 'de')}</p>
+                    <p className="text-[15px] font-medium break-words">{titel}</p>
+                    {t.kundenprojekte && (
+                      <p className="text-[13px] text-text2">
+                        <Link
+                          href={`/kunden/admin/projekte/${t.kundenprojekte.id}`}
+                          className="underline underline-offset-2 hover:text-foreground"
+                        >
+                          {t.kundenprojekte.titel}
+                        </Link>
+                        {t.kundenprojekte.kunden && ` · ${t.kundenprojekte.kunden.name}`}
+                      </p>
+                    )}
                     {t.meet_url && (
                       <a
                         href={t.meet_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`Meet beitreten: ${titel} (öffnet in neuem Tab)`}
-                        className={buttonClass('secondary')}
+                        className={`${buttonClass('secondary')} self-start mt-1`}
                       >
                         <Video size={15} aria-hidden="true" />
                         Meet beitreten
@@ -192,177 +250,30 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
           )}
         </section>
 
-        <section aria-labelledby="projekte-titel" className={karte}>
-          <h2 id="projekte-titel" className={h2}>
-            Projekte
-          </h2>
-          {projekte.length === 0 ? (
-            <p className="text-[15px] text-text2">Noch keine Projekte.</p>
-          ) : (
-            <>
-              <ProjektListe projekte={laufend} />
-              {fertig.length > 0 && (
-                <details className="mt-3">
-                  <summary className="cursor-pointer min-h-11 flex items-center text-[14px] font-medium">
-                    Abgeschlossen ({fertig.length})
-                  </summary>
-                  <ProjektListe projekte={fertig} />
-                </details>
-              )}
-            </>
-          )}
-        </section>
-
         <section aria-labelledby="anfragen-titel" className={karte}>
-          <h2 id="anfragen-titel" className={h2}>
-            Anfragen
-          </h2>
+          <Kopf id="anfragen-titel" titel="Neue Anfragen" />
           {offen.length === 0 ? (
             <p className="text-[15px] text-text2">Keine offenen Anfragen.</p>
           ) : (
-            <AnfrageListe anfragen={offen} />
+            <AnfrageListe anfragen={offen.slice(0, MAX_ANFRAGEN)} />
           )}
-          {erledigt.length > 0 && (
-            <details className="mt-3">
-              <summary className="cursor-pointer min-h-11 flex items-center text-[14px] font-medium">
-                Erledigt ({erledigt.length})
-              </summary>
-              <AnfrageListe anfragen={erledigt} />
-            </details>
-          )}
+          <Link href="/kunden/admin/anfragen" className={`${mehrLink} mt-2`}>
+            Alle Anfragen
+          </Link>
         </section>
 
-        <section aria-labelledby="kunden-titel" className={`${karte} lg:col-span-2`}>
-          <h2 id="kunden-titel" className={h2}>
-            Kunden
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] gap-x-10 gap-y-8">
-            {daten.kunden.length === 0 ? (
-              <p className="text-[15px] text-text2">Noch keine Kunden angelegt.</p>
-            ) : (
-              <ul role="list">
-                {daten.kunden.map((k) => {
-                  const pr = k.kundenprojekte[0]?.count ?? 0;
-                  const ap = k.ansprechpartner[0]?.count ?? 0;
-                  return (
-                    <li key={k.id} className={`${listItem} first:border-0 first:pt-0`}>
-                      <Link
-                        href={`/kunden/admin/kunden/${k.id}`}
-                        className="inline-flex items-center min-h-11 text-[16px] font-bold underline underline-offset-2 hover:text-primary-text break-words min-w-0"
-                      >
-                        {k.name}
-                      </Link>
-                      <span className="text-[13px] text-text2">
-                        {pr === 1 ? '1 Projekt' : `${pr} Projekte`},{' '}
-                        {ap === 1 ? '1 Ansprechpartner' : `${ap} Ansprechpartner`}
-                      </span>
-                      <span className="text-[13px] text-text2">
-                        {freigabeText(k.logo_freigabe, k.logo_freigabe_am)}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-            <AdminForm
-              id="kunde-neu"
-              title="Kunde anlegen"
-              titleLevel={3}
-              action={kundeAnlegen}
-              submitLabel="Kunde anlegen"
-              felder={[
-                { name: 'name', label: 'Name', required: true, autoComplete: 'organization' },
-                { name: 'website_url', label: 'Website', type: 'url', hint: 'Mit https://, z. B. https://firma.de' },
-              ]}
-            />
-          </div>
+        <section aria-labelledby="projekte-titel" className={karte}>
+          <Kopf id="projekte-titel" titel="Laufende Projekte" />
+          {laufend.length === 0 ? (
+            <p className="text-[15px] text-text2">Noch keine laufenden Projekte.</p>
+          ) : (
+            <ProjektListe projekte={laufend.slice(0, MAX_PROJEKTE)} />
+          )}
+          <Link href="/kunden/admin/projekte" className={`${mehrLink} mt-2`}>
+            Alle Projekte
+          </Link>
         </section>
       </div>
     </AdminShell>
-  );
-}
-
-function ProjektListe({ projekte }: { projekte: ReturnType<typeof projekteNachStatus> }) {
-  return (
-    <ul role="list" className="flex flex-col">
-      {projekte.map((p) => (
-        <li key={p.id} className="flex flex-col gap-1 py-3 border-t border-border first:border-0 first:pt-0">
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <Link
-              href={`/kunden/admin/projekte/${p.id}`}
-              className="inline-flex items-center min-h-11 text-[15px] font-bold underline underline-offset-2 hover:text-primary-text break-words min-w-0"
-            >
-              {p.titel}
-            </Link>
-            <span className={badge}>{optionLabel(PROJEKT_STATUS_OPTIONEN, p.status)}</span>
-          </div>
-          <p className="flex flex-wrap gap-x-3 text-[13px] text-text2">
-            {p.kunden && <span>{p.kunden.name}</span>}
-            <span>{p.wert === null ? 'kein Auftragswert' : euro(p.wert)}</span>
-          </p>
-          {p.naechsterSchritt && (
-            <p className="text-[13px] text-text2">
-              Nächster Schritt: {p.naechsterSchritt.titel} (
-              {p.naechsterSchritt.verantwortlich === 'kunde' ? 'Kunde' : 'Erik'})
-            </p>
-          )}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function AnfrageListe({ anfragen }: { anfragen: Anfrage[] }) {
-  return (
-    <ul role="list" className="flex flex-col">
-      {anfragen.map((a) => (
-        <li key={a.id} className="flex flex-col gap-2 py-4 border-t border-border first:border-0 first:pt-0">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-            <h3 className="text-[15px] font-bold break-words min-w-0">{a.name}</h3>
-            <span className="text-[13px] text-text2">{datum(a.created_at.slice(0, 10), 'de')}</span>
-          </div>
-          {/* Kritiker Dashboard 10: Werte beschriftet */}
-          <p className="text-[13px] text-text2">Leistungen: {a.leistungen.map(leistung).join(', ')}</p>
-          <p className="flex flex-wrap gap-x-3 text-[13px] text-text2">
-            <span>Zeitrahmen: {ct.timeframes[a.zeitrahmen as keyof typeof ct.timeframes] ?? a.zeitrahmen}</span>
-            <span>Budget: {ct.budgets[a.budget as keyof typeof ct.budgets] ?? a.budget}</span>
-          </p>
-          <p className="flex flex-wrap gap-x-4 text-[13px]">
-            <a
-              href={`mailto:${a.email}`}
-              className="inline-flex items-center min-h-11 underline underline-offset-2 break-all"
-            >
-              {a.email}
-            </a>
-            {a.telefon && (
-              <a
-                href={`tel:${a.telefon.replace(/[^\d+]/g, '')}`}
-                className="inline-flex items-center min-h-11 underline underline-offset-2"
-              >
-                {a.telefon}
-              </a>
-            )}
-          </p>
-          <details>
-            <summary className="cursor-pointer min-h-11 flex items-center text-[13px] font-medium">
-              Beschreibung
-            </summary>
-            <p className="text-[14px] text-text2 leading-relaxed whitespace-pre-line break-words">{a.beschreibung}</p>
-            {a.website && <p className="text-[13px] text-text2 mt-2 break-all">Website: {a.website}</p>}
-          </details>
-          <div className="flex flex-wrap items-end gap-3">
-            <AnfrageStatusForm id={a.id} name={a.name} status={a.status} />
-            <Link
-              href={`/kunden/admin/projekte/neu?anfrage=${a.id}`}
-              aria-label={`Projekt anlegen: ${a.name}`}
-              className={buttonClass('secondary')}
-            >
-              <Plus size={15} aria-hidden="true" />
-              Projekt anlegen
-            </Link>
-          </div>
-        </li>
-      ))}
-    </ul>
   );
 }

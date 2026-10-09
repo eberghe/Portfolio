@@ -127,3 +127,19 @@ export async function anfrage(api: AdminApi, id: string) {
   });
   return a ?? null;
 }
+
+const ANFRAGE_FELDER =
+  'id,created_at,name,email,telefon,website,leistungen,zeitrahmen,budget,beschreibung,status,sprache';
+
+/** Alle Anfragen für die Seite Anfragen (admin-aufbau.md Verhalten 3) */
+export const anfragenListe = (api: AdminApi) =>
+  api.get<Anfrage>('anfragen', { select: ANFRAGE_FELDER, order: 'created_at.desc', limit: '500' });
+
+/** Alle Projekte für die Seite Projekte (admin-aufbau.md Verhalten 3) */
+export const projektListe = (api: AdminApi) =>
+  api.get<DashboardProjekt>('kundenprojekte', {
+    select:
+      'id,titel,status,kunden(id,name),projekt_umsatz(auftragswert_netto,wahrscheinlichkeit,abrechnung_am),' +
+      'projektschritte(titel_de,status,reihenfolge,verantwortlich)',
+    order: 'titel.asc',
+  });

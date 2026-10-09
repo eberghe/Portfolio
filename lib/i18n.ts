@@ -56,6 +56,7 @@ const de = {
     menu: 'Menü',
     darkMode: 'Dunkelmodus',
     switchLanguage: 'English',
+    clientArea: 'Kundenbereich',
   },
   footer: {
     label: 'Fußzeile',
@@ -89,6 +90,7 @@ const en: Messages = {
     menu: 'Menu',
     darkMode: 'Dark mode',
     switchLanguage: 'Deutsch',
+    clientArea: 'Client area',
   },
   footer: {
     label: 'Footer',

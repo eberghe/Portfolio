@@ -7,6 +7,12 @@ html {
   scroll-padding-top: 80px;
 }
 
+/* Kundenbereich: normales Scrollen, keine feste Navigation (functions/kundenbereich/rahmen.md AK-3) */
+html.kundenbereich {
+  scroll-behavior: auto;
+  scroll-padding-top: 16px;
+}
+
 /* Die Schritt-Buttons des Anfrage-Assistenten kleben auf dem Handy unten und dürfen fokussierte Felder nicht verdecken */
 @media (max-width: 639px) {
   html {

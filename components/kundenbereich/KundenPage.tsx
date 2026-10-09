@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
 import { ACCESS } from '@/lib/kundenbereich/session';
 import { authApi } from '@/lib/kundenbereich/supabase';
@@ -63,6 +64,9 @@ export default async function KundenPage({ locale, auswahl }: { locale: Locale; 
         <LoginForm locale={locale} />
       </KundenShell>
     );
+
+  // Admins landen direkt auf der Verwaltung; mit ?projekt sehen sie die Ansicht des Kunden (rahmen.md AK-4)
+  if (profil.art === 'admin' && !auswahl) redirect('/kunden/admin');
 
   // Projektübersicht nach dem Login (functions/kundenbereich/projektuebersicht.md)
   const [projekte, logo] = await Promise.all([

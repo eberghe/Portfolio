@@ -28,6 +28,7 @@ export default function UmsatzDiagramm({ jahre }: { jahre: Jahr[] }) {
   const y0 = TOP + plot;
   return (
     <svg
+      data-diagramm
       aria-hidden="true"
       viewBox={`0 0 ${breite} ${H}`}
       className="w-full h-auto max-h-[240px] overflow-visible"

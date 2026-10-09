@@ -48,6 +48,8 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Dashboard der Verwaltung](kundenbereich/admin-dashboard.md)
 - [Projekt anlegen in Schritten](kundenbereich/projekt-assistent.md)
 - [Kundensicht als Dashboard](kundenbereich/kunden-dashboard.md)
+- [Eigener Rahmen ohne Navigation und Footer](kundenbereich/rahmen.md)
+- [Verwaltung übersichtlich: Bereiche, Dialoge, Hilfe](kundenbereich/admin-aufbau.md)
 
 ## Qualität
 

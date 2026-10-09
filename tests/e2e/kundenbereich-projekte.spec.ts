@@ -100,14 +100,15 @@ test('logo-freigabe.md AK-1/AK-2: Anna gibt das Logo frei und widerruft', async 
 
 test('logo-freigabe.md AK-1: Admins sehen die Logo-Freigabe nicht', async ({ page }) => {
   await login(page, 'erik');
-  await openHydrated(page, '/kunden');
+  await openHydrated(page, '/kunden?projekt=p-relaunch');
   await expect(page.getByRole('heading', { level: 2 }).first()).toBeVisible();
   await expect(page.getByRole('region', { name: 'Logo auf meiner Website' })).toHaveCount(0);
 });
 
 test('AK-6: Admin wechselt zwischen Projekten', async ({ page }) => {
   await login(page, 'erik');
-  await openHydrated(page, '/kunden');
+  // Ohne ?projekt landet der Admin auf der Verwaltung (rahmen.md AK-4)
+  await openHydrated(page, '/kunden?projekt=p-logo');
   const nav = page.getByRole('navigation', { name: 'Deine Projekte' });
   await expect(nav.getByRole('link', { name: 'Neues Logo' })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('heading', { level: 2, name: 'Neues Logo' })).toBeVisible();

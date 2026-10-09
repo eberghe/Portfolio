@@ -42,7 +42,8 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
   const pipeline = auftragswertNachStatus(daten.projekte);
   const pipelineMax = Math.max(1, ...pipeline.map((p) => p.wert));
   const laufend = projekteNachStatus(daten.projekte).filter((p) => p.status !== 'abgeschlossen');
-  const offen = daten.anfragen.filter((a) => a.status !== 'erledigt');
+  // Kritiker Aufbau 10: dieselbe Bedeutung wie die Kennzahl „Neue Anfragen“
+  const neu = daten.anfragen.filter((a) => a.status === 'neu');
   const termine = daten.termine.slice(0, MAX_TERMINE);
   const leer = prognose.jahre.every((j) => j.sicher + j.gewichtet === 0);
 
@@ -89,7 +90,11 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
         </>
       }
     >
-      <ul role="list" aria-label="Kennzahlen" className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6">
+      <ul
+        role="list"
+        aria-label="Kennzahlen"
+        className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6"
+      >
         {kacheln.map((k) => (
           <li key={k.label} className={`${karte} flex flex-col gap-1`}>
             <div className="flex items-start justify-between gap-2">
@@ -252,10 +257,10 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
 
         <section aria-labelledby="anfragen-titel" className={karte}>
           <Kopf id="anfragen-titel" titel="Neue Anfragen" />
-          {offen.length === 0 ? (
-            <p className="text-[15px] text-text2">Keine offenen Anfragen.</p>
+          {neu.length === 0 ? (
+            <p className="text-[15px] text-text2">Keine neuen Anfragen.</p>
           ) : (
-            <AnfrageListe anfragen={offen.slice(0, MAX_ANFRAGEN)} />
+            <AnfrageListe anfragen={neu.slice(0, MAX_ANFRAGEN)} />
           )}
           <Link href="/kunden/admin/anfragen" className={`${mehrLink} mt-2`}>
             Alle Anfragen

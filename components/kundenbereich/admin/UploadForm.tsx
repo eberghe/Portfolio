@@ -40,11 +40,14 @@ export default function UploadForm({
   const [state, setState] = useState<AdminState>({ status: 'idle' });
   const [pending, setPending] = useState(false);
   const form = useRef<HTMLFormElement>(null);
+  // Kritiker Aufbau 2: Sperre sofort, setPending greift erst beim nächsten Rendern
+  const laeuft = useRef(false);
   const router = useRouter();
   const dialog = useAdminDialog();
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (laeuft.current) return;
     const el = e.currentTarget;
     const file = (el.elements.namedItem('datei') as HTMLInputElement).files?.[0];
     if (!file) {
@@ -57,6 +60,7 @@ export default function UploadForm({
       return;
     }
     setPending(true);
+    laeuft.current = true;
     const fd = new FormData(el);
     fd.delete('datei');
     fd.set('name', file.name);
@@ -92,6 +96,7 @@ export default function UploadForm({
     } catch {
       setState({ status: 'error', message: 'Das hat nicht geklappt. Bitte versuch es noch einmal.' });
     } finally {
+      laeuft.current = false;
       setPending(false);
     }
   }

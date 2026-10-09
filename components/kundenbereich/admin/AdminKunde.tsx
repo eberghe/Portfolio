@@ -27,10 +27,7 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
       title={k.name}
       bereich="kunden"
       unterseite
-      pfad={[
-        { href: '/kunden/admin', label: 'Verwaltung' },
-        { href: '/kunden/admin/kunden', label: 'Kunden' },
-      ]}
+      pfad={[{ href: '/kunden/admin/kunden', label: 'Kunden' }]}
       aside={
         <Link href={`/kunden/admin/projekte/neu?kunde=${k.id}`} className={buttonClass('primary')}>
           <Plus size={15} aria-hidden="true" />

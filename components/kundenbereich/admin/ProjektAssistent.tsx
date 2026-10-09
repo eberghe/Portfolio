@@ -205,7 +205,12 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
   const wert = betrag(d.projekt.auftragswert_netto);
 
   return (
-    <AdminShell title="Neues Projekt" pfad={[{ href: '/kunden/admin', label: 'Verwaltung' }]}>
+    <AdminShell
+      title="Neues Projekt"
+      bereich="projekte"
+      unterseite
+      pfad={[{ href: '/kunden/admin/projekte', label: 'Projekte' }]}
+    >
       <form onSubmit={submit} noValidate aria-label="Neues Projekt" className="max-w-[720px]">
         {fortschritt}
 

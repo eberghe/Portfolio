@@ -488,3 +488,12 @@ html.lenis {
     opacity: 0;
   }
 }
+
+/* Dialoge der Verwaltung: deutlich abgedunkelt, im Dunkelmodus abgesetzt (Kritiker Aufbau 6) */
+.admin-dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+html.dark .admin-dialog {
+  background: hsl(var(--bg2));
+  border-color: hsl(var(--foreground) / 0.2);
+}

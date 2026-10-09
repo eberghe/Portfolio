@@ -6,6 +6,14 @@ import { buttonClass } from '@/components/ui/Button';
 
 // Formular hinter einem Button in einem modalen Dialog (functions/kundenbereich/admin-aufbau.md Verhalten 7, AK-8)
 
+/** Meldung in der Live-Region der Verwaltung (AdminShell), wenn der eigene Platz verschwunden ist */
+export function melden(text: string) {
+  const ziel = document.getElementById('admin-meldung');
+  if (!ziel) return;
+  ziel.textContent = '';
+  requestAnimationFrame(() => (ziel.textContent = text));
+}
+
 type DialogApi = { schliessen: (meldung?: string) => void };
 const DialogContext = createContext<DialogApi | null>(null);
 
@@ -36,10 +44,20 @@ export default function AdminDialog({
   const heading = title ?? label;
 
   const schliessen = (m?: string) => {
+    const karte = knopf.current?.closest('section');
     setOffen(false);
     setMeldung(m ?? '');
     // Der Dialog wird entfernt; der Fokus geht zurück auf den Auslöser (AK-8)
-    requestAnimationFrame(() => knopf.current?.focus());
+    requestAnimationFrame(() => {
+      if (knopf.current?.isConnected) return knopf.current.focus();
+      // Kritiker Aufbau 3: Auslöser ist mit dem Eintrag verschwunden, z. B. nach „Entfernen“
+      if (m) melden(m);
+      const ziel = karte?.isConnected ? karte.querySelector<HTMLElement>('h2') : null;
+      if (ziel) {
+        ziel.tabIndex = -1;
+        ziel.focus();
+      }
+    });
   };
 
   return (
@@ -58,7 +76,8 @@ export default function AdminDialog({
         {icon}
         {label}
       </button>
-      <span aria-live="polite" className="text-[13px] text-text2 empty:hidden">
+      {/* Kritiker Aufbau 4: Live-Region bleibt im Baum, auch leer */}
+      <span aria-live="polite" className="text-[13px] text-text2">
         {meldung}
       </span>
       {offen && (
@@ -74,6 +93,7 @@ export default function AdminDialog({
 
 function Fenster({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const druck = useRef(false);
   const titleId = useId();
 
   useEffect(() => {
@@ -97,12 +117,18 @@ function Fenster({ title, onClose, children }: { title: string; onClose: () => v
         onClose();
       }}
       // Klick auf die abgedunkelte Fläche trifft das <dialog> selbst
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+      // Kritiker Aufbau Rand: nur schließen, wenn Druck und Loslassen auf der Fläche liegen (Text markieren)
+      onMouseDown={(e) => {
+        druck.current = e.target === e.currentTarget;
       }}
-      className="admin-dialog m-auto w-[calc(100%-2rem)] max-w-[640px] max-h-[calc(100svh-2rem)] overflow-hidden rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
+      onClick={(e) => {
+        if (druck.current && e.target === e.currentTarget) onClose();
+        druck.current = false;
+      }}
+      // Kritiker Aufbau 5: Kopf fest, Inhalt scrollt, auch wenn der Titel umbricht
+      className="admin-dialog m-auto w-[calc(100%-2rem)] max-w-[640px] max-h-[calc(100svh-2rem)] overflow-hidden flex-col open:flex rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
     >
-      <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-3 sm:px-6">
+      <div className="shrink-0 flex items-center justify-between gap-4 border-b border-border px-5 py-3 sm:px-6">
         <h2 id={titleId} className="text-[18px] font-bold break-words min-w-0">
           {title}
         </h2>
@@ -116,9 +142,7 @@ function Fenster({ title, onClose, children }: { title: string; onClose: () => v
           <X size={18} aria-hidden="true" />
         </button>
       </div>
-      <div className="max-h-[calc(100svh-2rem-70px)] overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">
-        {children}
-      </div>
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">{children}</div>
     </dialog>
   );
 }

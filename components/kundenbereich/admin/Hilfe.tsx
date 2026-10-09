@@ -23,12 +23,28 @@ export default function Hilfe({
     const weg = (e: PointerEvent) => {
       if (!box.current?.contains(e.target as Node)) setOffen(false);
     };
+    // Kritiker Aufbau 8: Escape auch außerhalb des Buttons
+    const taste = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOffen(false);
+    };
     document.addEventListener('pointerdown', weg);
-    return () => document.removeEventListener('pointerdown', weg);
+    document.addEventListener('keydown', taste);
+    return () => {
+      document.removeEventListener('pointerdown', weg);
+      document.removeEventListener('keydown', taste);
+    };
   }, [offen]);
 
   return (
-    <span ref={box} className={`relative inline-flex ${className}`}>
+    // Kritiker Aufbau 1: Blase richtet sich an der Karte aus (relative), nicht am Button, damit sie bei 320 px nicht abgeschnitten wird
+    // Kritiker Aufbau 8: Fokus verlässt die Hilfe, die Blase schließt
+    <span
+      ref={box}
+      className={`inline-flex ${className}`}
+      onBlur={(e) => {
+        if (!box.current?.contains(e.relatedTarget as Node | null)) setOffen(false);
+      }}
+    >
       <button
         type="button"
         aria-label={`Erklärung: ${titel}`}
@@ -46,7 +62,7 @@ export default function Hilfe({
       </button>
       <span role="status" className="contents">
         {offen && (
-          <span className="absolute right-0 top-full mt-2 z-20 w-64 max-w-[calc(100vw-3rem)] rounded-xl border border-border bg-background p-3 text-[13px] leading-relaxed text-text2 shadow-xl text-left font-normal normal-case tracking-normal">
+          <span className="absolute inset-x-3 top-14 z-20 rounded-xl border border-border bg-background p-3 text-[13px] leading-relaxed text-text2 shadow-xl text-left font-normal normal-case tracking-normal">
             {children}
           </span>
         )}

@@ -18,7 +18,7 @@ Erik am 2026-10-09: Die Verwaltung ist unübersichtlich. Alles sieht gleich aus,
    - Die Umsatzprognose als Säulendiagramm mit Fragezeichen. Die Tabelle mit denselben Werten ist eingeklappt („Als Tabelle“).
    - Ein zweites Diagramm „Auftragswert nach Status“ mit waagerechten Balken für Angebot, In Arbeit, Abstimmung, Pausiert und Abgeschlossen, jeweils mit Betrag und Anzahl.
    - Die nächsten 3 Termine.
-   - Die neuesten 3 offenen Anfragen mit Name, Datum und Status, verlinkt auf die Anfrage, dazu „Alle Anfragen“.
+   - Die neuesten 3 neuen Anfragen (Status „Neu“, wie die Kennzahl) mit Name, Datum und Status, verlinkt auf die Anfrage, dazu „Alle Anfragen“.
    - Bis zu 5 laufende Projekte mit Titel, Kunde und Status, dazu „Alle Projekte“.
    - Oben rechts stehen die Buttons „Kunde anlegen“ (Dialog) und „Neues Projekt“ (Assistent).
 3. **Projekte** (`/kunden/admin/projekte`): alle Projekte nach Status mit Kunde, Auftragswert und nächstem Schritt. Abgeschlossene sind eingeklappt.
@@ -70,3 +70,18 @@ Keine neuen Tabellen. Anfragen lädt `anfrage(api, id)`, Projekte und Kunden die
 
 - `tests/unit/kundenbereich-admin-aufbau.test.tsx`: Bereiche, Dashboard, Hilfe, Dialoge, neue Seiten (AK-1 bis AK-8)
 - `tests/e2e/kundenbereich-admin.spec.ts`: Dialoge im Browser, axe (AK-8, AK-9)
+
+## Befunde Blinder Kritiker (2026-10-09)
+
+1. Hilfe-Blase war am Button ausgerichtet und wurde bei 320 px links abgeschnitten. Jetzt an der Karte ausgerichtet.
+2. Formulare ließen sich während des Sendens erneut absenden. Jetzt gesperrt, solange gesendet wird.
+3. Nach „Entfernen“ verschwand der Auslöser mit Fokus und Meldung. Jetzt Fokus auf die Kartenüberschrift, Meldung in einer Live-Region der Seite.
+4. Live-Regionen mit `empty:hidden` wurden unzuverlässig angesagt. Jetzt bleiben sie im Baum.
+5. Dialoginhalt wurde bei umbrechendem Titel unten abgeschnitten. Jetzt Kopf fest, Inhalt scrollt.
+6. Dialog war im Dunkelmodus kaum abgesetzt. Jetzt abgedunkelter Hintergrund und eigene Fläche.
+7. Bereichsleiste schnitt den Fokusrahmen ab. Jetzt Innenabstand und Rahmen nach innen.
+8. Offene Hilfe-Blase blieb beim Weitertabben stehen. Jetzt schließt sie, wenn der Fokus geht, und auf Escape überall.
+9. Kennzahlen waren bei 320–360 px zu schmal. Jetzt eine Spalte unter 420 px.
+10. „Neue Anfragen“ bedeutete in Kachel und Karte Verschiedenes. Jetzt beide nur Status „Neu“.
+11. Pfad war uneinheitlich und führte über „Kundenbereich“ im Kreis. Jetzt beginnt er immer mit „Verwaltung“, auf der Übersicht gibt es keinen Pfad.
+12. Klick neben den Dialog schloss ihn auch beim Markieren von Text. Jetzt nur, wenn Drücken und Loslassen auf der Fläche liegen.

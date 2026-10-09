@@ -30,10 +30,7 @@ export default function AdminAnfrage({ anfrage: a }: { anfrage: Anfrage }) {
       title={a.name}
       bereich="anfragen"
       unterseite
-      pfad={[
-        { href: '/kunden/admin', label: 'Verwaltung' },
-        { href: '/kunden/admin/anfragen', label: 'Anfragen' },
-      ]}
+      pfad={[{ href: '/kunden/admin/anfragen', label: 'Anfragen' }]}
       aside={
         <>
           <span className={badge}>{ANFRAGE_STATUS_TEXT[a.status]}</span>

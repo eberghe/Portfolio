@@ -39,7 +39,10 @@ export default function AdminShell({
 }) {
   return (
     <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-6 md:py-10">
-      <nav aria-label="Bereiche der Verwaltung" className="mb-6 -mx-1 overflow-x-auto">
+      {/* Meldungen, deren Button nach der Aktion verschwunden ist (Kritiker Aufbau 3) */}
+      <p id="admin-meldung" aria-live="polite" className="sr-only" />
+      {/* Kritiker Aufbau 7: Innenabstand, damit der Fokusrahmen nicht abgeschnitten wird */}
+      <nav aria-label="Bereiche der Verwaltung" className="mb-6 -mx-2 px-2 pt-2 overflow-x-auto">
         <ul role="list" className="flex gap-1 min-w-max border-b border-border">
           {BEREICHE.map((b) => {
             const aktiv = b.key === bereich;
@@ -48,7 +51,7 @@ export default function AdminShell({
                 <Link
                   href={b.href}
                   aria-current={aktiv ? (unterseite ? 'true' : 'page') : undefined}
-                  className={`inline-flex items-center min-h-11 px-3 -mb-px border-b-2 text-[14px] font-medium transition-colors ${
+                  className={`inline-flex items-center min-h-11 px-3 -mb-px border-b-2 focus-visible:outline-offset-[-2px] text-[14px] font-medium transition-colors ${
                     aktiv ? 'border-primary text-foreground' : 'border-transparent text-text2 hover:text-foreground'
                   }`}
                 >
@@ -59,28 +62,31 @@ export default function AdminShell({
           })}
         </ul>
       </nav>
-      <nav aria-label="Pfad" className="mb-2">
-        <ol role="list" className="flex flex-wrap gap-x-2 text-[14px] text-text2">
-          {[{ href: '/kunden', label: 'Kundenbereich' }, ...pfad].map((p) => (
-            <li key={p.href} className="flex items-center gap-2">
-              <Link
-                href={p.href}
-                className="inline-flex items-center min-h-11 underline underline-offset-2 hover:text-foreground"
-              >
-                {p.label}
-              </Link>
-              <span aria-hidden="true">/</span>
+      {/* Kritiker Aufbau 11: „Verwaltung“ immer als erster Eintrag; auf der Übersicht selbst kein Pfad */}
+      {!(bereich === 'uebersicht' && !unterseite) && (
+        <nav aria-label="Pfad" className="mb-2">
+          <ol role="list" className="flex flex-wrap gap-x-2 text-[14px] text-text2">
+            {[{ href: '/kunden/admin', label: 'Verwaltung' }, ...pfad].map((p) => (
+              <li key={p.href} className="flex items-center gap-2">
+                <Link
+                  href={p.href}
+                  className="inline-flex items-center min-h-11 underline underline-offset-2 hover:text-foreground"
+                >
+                  {p.label}
+                </Link>
+                <span aria-hidden="true">/</span>
+              </li>
+            ))}
+            {/* Kritiker Verwaltung 7: aktuelle Seite am Ende */}
+            <li
+              aria-current="page"
+              className="flex items-center min-h-11 text-foreground font-medium break-words min-w-0"
+            >
+              {title}
             </li>
-          ))}
-          {/* Kritiker Verwaltung 7: aktuelle Seite am Ende */}
-          <li
-            aria-current="page"
-            className="flex items-center min-h-11 text-foreground font-medium break-words min-w-0"
-          >
-            {title}
-          </li>
-        </ol>
-      </nav>
+          </ol>
+        </nav>
+      )}
       <div className="flex flex-wrap items-end justify-between gap-4 mb-6 md:mb-8">
         <h1 className="text-[28px] md:text-[36px] leading-[1.1] font-bold tracking-tight text-balance break-words min-w-0">
           {title}

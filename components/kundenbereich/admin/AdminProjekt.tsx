@@ -144,10 +144,7 @@ export default function AdminProjekt({
       bereich="projekte"
       unterseite
       wide
-      pfad={[
-        { href: '/kunden/admin', label: 'Verwaltung' },
-        { href: '/kunden/admin/projekte', label: 'Projekte' },
-      ]}
+      pfad={[{ href: '/kunden/admin/projekte', label: 'Projekte' }]}
       aside={
         <>
           <span className={badge}>{optionLabel(PROJEKT_STATUS_OPTIONEN, p.status)}</span>

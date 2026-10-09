@@ -29,7 +29,7 @@ export interface Feld {
 
 export function Meldung({ state, live = true }: { state: AdminState; live?: boolean }) {
   return (
-    <div aria-live={live ? 'polite' : undefined} className="empty:hidden">
+    <div aria-live={live ? 'polite' : undefined}>
       {state.status === 'ok' && state.message && (
         <p className="border border-primary-border bg-primary-light rounded-lg px-3 py-2 text-[13px] text-foreground mb-4">
           {state.message}
@@ -84,6 +84,8 @@ export default function AdminForm({
   // Kein automatisches Zurücksetzen durch React: Eingaben bleiben bei Fehlern stehen
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Kritiker Aufbau 2: kein doppeltes Absenden
+    if (pending) return;
     const fd = new FormData(e.currentTarget);
     startTransition(() => dispatch(fd));
   };

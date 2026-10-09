@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import '@/app/globals.css';
 import { messages, type Locale } from '@/lib/i18n';
 import Footer from './Footer';
+import Hydriert from './kundenbereich/Hydriert';
 import KundenLeiste from './kundenbereich/KundenLeiste';
 import Navbar from './Navbar';
 import Logo from './Logo';
@@ -73,7 +74,14 @@ export default function SiteShell({
         >
           {messages[locale].skipLink}
         </a>
-        {kunden ? <KundenLeiste locale={locale} /> : <Navbar locale={locale} notFound={notFound} />}
+        {kunden ? (
+          <>
+            <KundenLeiste locale={locale} />
+            <Hydriert />
+          </>
+        ) : (
+          <Navbar locale={locale} notFound={notFound} />
+        )}
         <main id="inhalt" tabIndex={-1} className="focus:outline-none">
           {children}
         </main>

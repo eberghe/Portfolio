@@ -11,6 +11,8 @@ const enSlugs: Record<string, string> = {
   '/webdesign-stuttgart': '/web-design-stuttgart',
   '/webdesign-innsbruck': '/web-design-innsbruck',
   '/webdesign-kempten': '/web-design-kempten',
+  '/kunden': '/clients',
+  '/kunden/anmelden': '/clients/sign-in',
 };
 const deSlugs = Object.fromEntries(Object.entries(enSlugs).map(([de, en]) => [en, de]));
 
@@ -35,7 +37,10 @@ export function splitLocale(pathname: string): { locale: Locale; path: string } 
 
 /** Dieselbe Seite in einer anderen Sprache. */
 export function alternatePath(pathname: string, target: Locale): string {
-  return localizedPath(splitLocale(pathname).path, target);
+  const { path } = splitLocale(pathname);
+  // Verwaltung des Kundenbereichs gibt es nur deutsch (functions/kundenbereich/admin.md)
+  if (target === 'en' && path.startsWith('/kunden/admin')) return localizedPath('/kunden', target);
+  return localizedPath(path, target);
 }
 
 const de = {
@@ -51,6 +56,7 @@ const de = {
     menu: 'Menü',
     darkMode: 'Dunkelmodus',
     switchLanguage: 'English',
+    clientArea: 'Kundenbereich',
   },
   footer: {
     label: 'Fußzeile',
@@ -84,6 +90,7 @@ const en: Messages = {
     menu: 'Menu',
     darkMode: 'Dark mode',
     switchLanguage: 'Deutsch',
+    clientArea: 'Client area',
   },
   footer: {
     label: 'Footer',

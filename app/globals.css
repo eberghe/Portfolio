@@ -7,6 +7,12 @@ html {
   scroll-padding-top: 80px;
 }
 
+/* Kundenbereich: normales Scrollen, keine feste Navigation (functions/kundenbereich/rahmen.md AK-3) */
+html.kundenbereich {
+  scroll-behavior: auto;
+  scroll-padding-top: 16px;
+}
+
 /* Die Schritt-Buttons des Anfrage-Assistenten kleben auf dem Handy unten und dürfen fokussierte Felder nicht verdecken */
 @media (max-width: 639px) {
   html {
@@ -69,6 +75,10 @@ html {
     --text3: 214 20% 44.5%;
     --bg2: 120 6% 97%;
     --bg3: 120 6% 94%;
+
+    /* Diagramme (admin-dashboard.md): mit dem dataviz-Validator geprüft, hell gegen Weiß */
+    --chart-sicher: #0b8a5e;
+    --chart-gewichtet: #3ec08c;
   }
 
   .dark {
@@ -111,6 +121,10 @@ html {
     --text3: 205 20% 53%;
     --bg2: 207 35% 9%;
     --bg3: 207 30% 13%;
+
+    /* dunkel gegen --background geprüft */
+    --chart-sicher: #2fab79;
+    --chart-gewichtet: #127652;
   }
 }
 
@@ -138,6 +152,7 @@ html {
 
   input:focus-visible,
   textarea:focus-visible,
+  select:focus-visible,
   [tabindex='-1']:focus-visible {
     outline: 2px solid hsl(var(--foreground));
     outline-offset: 2px;
@@ -147,7 +162,8 @@ html {
   .dark button:focus-visible,
   .dark summary:focus-visible,
   .dark input:focus-visible,
-  .dark textarea:focus-visible {
+  .dark textarea:focus-visible,
+  .dark select:focus-visible {
     outline-color: white;
   }
 
@@ -471,4 +487,13 @@ html.lenis {
   from {
     opacity: 0;
   }
+}
+
+/* Dialoge der Verwaltung: deutlich abgedunkelt, im Dunkelmodus abgesetzt (Kritiker Aufbau 6) */
+.admin-dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}
+html.dark .admin-dialog {
+  background: hsl(var(--bg2));
+  border-color: hsl(var(--foreground) / 0.2);
 }

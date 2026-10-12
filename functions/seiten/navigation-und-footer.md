@@ -116,3 +116,9 @@ Erik: „den footer bitte so umbauen das ist strukturierter. den screenshot bitt
 ### Blinder Kritiker (Footer-Spalten, 2026-10-07)
 
 Ohne Einwände sind Kontrast (white/80 und white/60 auf #0b1219), 44-px-Ziele mobil, `lang` und Landmarks. Offen als Hinweis: Die Spaltenüberschriften sind `<p>` wie bisher und keine Überschriften. Die Seiten-Navigation heißt weiter „Fußzeile“ (AK-1, AK-22).
+
+## Login-Icon (Erik, 2026-10-09)
+
+Erik: „oben rechts in der Navigationsleiste ähnlich zu dem Dark- und Light-Mode-Button ein Icon für Login machen, nur ein Icon, kein Text“.
+
+- AK-31: Neben dem Dunkelmodus-Button steht ein runder Icon-Link im gleichen Stil, mit Personen-Icon und ohne sichtbaren Text. Er führt zu `/kunden` bzw. `/en/clients` und hat den zugänglichen Namen „Kundenbereich“ bzw. „Client area“. Er ist auch ohne JavaScript da, weil er ein normaler Link ist. Unter 640 px reicht der Platz in der Leiste nicht (AK-12), dort steht „Kundenbereich“ mit Icon im Menü unter „Kontakt“. Damit die Leiste auf dem Tablet passt (AK-17), zeigt der Sprachlink bis 1024 px nur das Kürzel „EN“ bzw. „DE“.

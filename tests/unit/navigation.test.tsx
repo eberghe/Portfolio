@@ -14,6 +14,18 @@ beforeEach(() => {
 });
 
 describe('Navbar', () => {
+  it('AK-31: Login-Icon neben dem Dunkelmodus führt in den Kundenbereich', () => {
+    const { unmount } = render(<Navbar locale="de" />);
+    const login = screen.getByRole('link', { name: 'Kundenbereich' });
+    expect(login).toHaveAttribute('href', '/kunden');
+    expect(login.textContent).toBe('');
+    expect(login.querySelector('svg')).toHaveAttribute('aria-hidden', 'true');
+    unmount();
+    pathname = '/en/about';
+    render(<Navbar locale="en" />);
+    expect(screen.getByRole('link', { name: 'Client area' })).toHaveAttribute('href', '/en/clients');
+  });
+
   it('AK-1: nav mit sprachrichtigem Namen', () => {
     render(<Navbar locale="de" />);
     expect(screen.getByRole('navigation', { name: 'Hauptnavigation' })).toBeInTheDocument();
@@ -169,6 +181,10 @@ describe('Footer', () => {
       'href',
       'https://www.linkedin.com/in/erik-bergheimer/',
     );
+    // Kritiker Kundenbereich: neuer Tab wird angesagt (functions/kundenbereich/projektuebersicht.md)
+    expect(screen.getByRole('link', { name: 'Instagram' })).toHaveAccessibleDescription('(öffnet in neuem Tab)');
+    expect(screen.getByRole('link', { name: 'LinkedIn' })).toHaveAccessibleDescription('(öffnet in neuem Tab)');
+    expect(screen.getByRole('link', { name: 'erb1209@outlook.de' })).not.toHaveAttribute('aria-describedby');
   });
 
   it('AK-8: Links folgen der Sprache', () => {

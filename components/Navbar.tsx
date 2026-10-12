@@ -1,6 +1,6 @@
 'use client';
 
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -173,12 +173,12 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
               href={notFound ? localizedPath('/', otherLocale) : alternatePath(pathname, otherLocale)}
               hrefLang={otherLocale}
               lang={otherLocale}
-              className="h-9 min-w-9 px-2 sm:px-2.5 rounded-lg border border-border flex items-center justify-center text-[13px] text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition"
+              className="h-9 min-w-9 px-2 lg:px-2.5 rounded-lg border border-border flex items-center justify-center text-[13px] text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition"
             >
-              <span aria-hidden="true" className="sm:hidden">
+              <span aria-hidden="true" className="lg:hidden">
                 {otherLocale.toUpperCase()}
               </span>
-              <span className="sr-only sm:not-sr-only">{t.switchLanguage}</span>
+              <span className="sr-only lg:not-sr-only">{t.switchLanguage}</span>
             </a>
 
             <button
@@ -191,6 +191,16 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
             >
               {dark ? <Moon size={16} aria-hidden="true" /> : <Sun size={16} aria-hidden="true" />}
             </button>
+
+            {/* Login-Icon zum Kundenbereich, nur Icon wie der Dunkelmodus-Button (navigation-und-footer.md AK-31) */}
+            <Link
+              href={localizedPath('/kunden', locale)}
+              aria-label={t.clientArea}
+              // Unter 640 px fehlt der Platz, dann steht der Kundenbereich im Menü (AK-31, AK-12)
+              className="w-9 h-9 rounded-lg border border-border hidden sm:flex items-center justify-center text-text2 hover:bg-bg2 hover:text-foreground hover:border-muted-foreground transition"
+            >
+              <UserRound size={16} aria-hidden="true" />
+            </Link>
 
             <Link
               href={localizedPath('/contact', locale)}
@@ -257,6 +267,13 @@ export default function Navbar({ locale, notFound = false }: { locale: Locale; n
           className="mt-6 block bg-primary text-primary-foreground px-4 py-4 rounded-lg text-lg font-medium text-center hover:bg-primary-hover"
         >
           {t.contact}
+        </Link>
+        <Link
+          href={localizedPath('/kunden', locale)}
+          className="mt-3 sm:hidden flex items-center justify-center gap-2 border border-border px-4 py-4 rounded-lg text-lg text-text2 hover:bg-bg2 hover:text-foreground"
+        >
+          <UserRound size={18} aria-hidden="true" />
+          {t.clientArea}
         </Link>
       </div>
     </>

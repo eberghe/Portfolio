@@ -1,0 +1,64 @@
+'use client';
+
+import { startTransition, useActionState, useEffect, type FormEvent } from 'react';
+import Button from '@/components/ui/Button';
+import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
+import { melden, useAdminDialog } from './AdminDialog';
+import { Meldung, type AdminAction } from './AdminForm';
+
+// Einzelne Aktion als Button, z. B. „Entfernen“ oder „Anmeldelink schicken“ (functions/kundenbereich/admin.md)
+
+export default function ActionButton({
+  action,
+  hidden,
+  label,
+  name,
+  confirm,
+  variant = 'secondary',
+}: {
+  action: AdminAction;
+  hidden: Record<string, string>;
+  /** Sichtbarer Text */
+  label: string;
+  /** Zugänglicher Name, nennt das Ziel, z. B. „Anna entfernen“; beginnt mit dem sichtbaren Text */
+  name?: string;
+  /** Rückfrage vor dem Ausführen */
+  confirm?: string;
+  variant?: 'primary' | 'secondary';
+}) {
+  const [state, dispatch, pending] = useActionState<AdminState, FormData>(action, { status: 'idle' });
+  const dialog = useAdminDialog();
+  // Im Dialog, z. B. „Entfernen“ beim Bearbeiten eines Schritts: nach Erfolg schließen
+  useEffect(() => {
+    if (state.status === 'ok' && dialog) dialog.schliessen(state.message);
+    // Kritiker Aufbau 3: „Entfernen“ nimmt den Button mit; die Meldung steht auch in der Live-Region der Seite
+    else if (state.status === 'ok' && state.message) melden(state.message);
+  }, [state, dialog]);
+  const submit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Kritiker Aufbau 2: kein doppeltes Absenden
+    if (pending) return;
+    if (confirm && !window.confirm(confirm)) return;
+    const fd = new FormData(e.currentTarget);
+    startTransition(() => dispatch(fd));
+  };
+  return (
+    <form onSubmit={submit} noValidate className="contents">
+      {Object.entries(hidden).map(([k, v]) => (
+        <input key={k} type="hidden" name={k} value={v} />
+      ))}
+      <Button type="submit" variant={variant} aria-label={name} aria-disabled={pending || undefined}>
+        {label}
+      </Button>
+      {/* Kritiker Verwaltung 9: Meldung bricht die Button-Zeile nur um, wenn es eine gibt */}
+      <p aria-live="polite" className="sr-only">
+        {state.status !== 'idle' ? state.message : ''}
+      </p>
+      {state.status !== 'idle' && state.message && (
+        <div aria-hidden="true" className="basis-full">
+          <Meldung state={state} live={false} />
+        </div>
+      )}
+    </form>
+  );
+}

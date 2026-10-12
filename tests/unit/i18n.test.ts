@@ -36,6 +36,9 @@ describe('Pfade je Sprache', () => {
     ['/en/imprint', 'de', '/impressum'],
     ['/datenschutz', 'en', '/en/privacy'],
     ['/', 'en', '/en'],
+    // Kritiker Dashboard 2: Verwaltung gibt es nur deutsch, Englisch führt zum Kundenbereich
+    ['/kunden/admin', 'en', '/en/clients'],
+    ['/kunden/admin/projekte/neu', 'en', '/en/clients'],
   ] as const)('AK-3: alternatePath(%s, %s) = %s', (pathname, target, expected) => {
     expect(alternatePath(pathname, target)).toBe(expected);
   });

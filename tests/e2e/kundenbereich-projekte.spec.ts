@@ -67,7 +67,7 @@ test('termine.md AK-3/AK-6: nächster Termin mit Meet-Link und Kalenderdatei', a
 test('dokumente.md AK-3/AK-5: Dokumente mit Angaben, Download über signierten Link', async ({ page }) => {
   await login(page, 'anna');
   await openHydrated(page, '/kunden/dokumente');
-  const docs = page.getByRole('region', { name: 'Dokumente' });
+  const docs = page.getByRole('region', { name: 'Alle Dokumente' });
   await expect(
     docs.getByRole('link', { name: 'Vertrag Relaunch, PDF, 182 KB, Version 2, 8. Okt. 2026, Aktuell' }),
   ).toBeVisible();

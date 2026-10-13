@@ -84,7 +84,13 @@ export default function Projektuebersicht({
       }
       aside={
         <>
-          {ansicht && <span className={badge}>{t.projectStatus[ansicht.status]}</span>}
+          {ansicht && (
+            <span className={badge}>
+              {/* Kritiker Kunden-Dashboard 7: Status mit Bezeichnung für Screenreader */}
+              <span className="sr-only">{t.projectStatusLabel} </span>
+              {t.projectStatus[ansicht.status]}
+            </span>
+          )}
           {profil.art === 'admin' && (
             // Zurück in die Verwaltung (admin.md Verhalten 1, kunden-sidebar.md AK-9)
             <Button href="/kunden/admin" variant="secondary" lang={locale === 'en' ? 'de' : undefined}>
@@ -139,16 +145,16 @@ export default function Projektuebersicht({
         </>
       ) : bereich === 'ablauf' ? (
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-4 md:gap-6 items-start">
-          <Ablauf t={t} locale={locale} projekt={ansicht} />
+          <Ablauf t={t} locale={locale} projekt={ansicht} titel={t.allSteps} />
           <NaechsteSchritte t={t} locale={locale} projekt={ansicht} />
         </div>
       ) : bereich === 'termine' ? (
-        <div className="max-w-[720px]">
+        <div className="max-w-[900px]">
           <Meeting t={t} locale={locale} next={ansicht.naechsterTermin} later={ansicht.weitereTermine} />
         </div>
       ) : bereich === 'dokumente' ? (
         <div className="max-w-[900px]">
-          <Documents t={t} locale={locale} dokumente={ansicht.dokumente} />
+          <Documents t={t} locale={locale} dokumente={ansicht.dokumente} titel={t.allDocumentsLink} />
         </div>
       ) : (
         <Uebersicht t={t} locale={locale} projekt={ansicht} logo={logo} pfad={pfad} />
@@ -259,15 +265,17 @@ function Kacheln({
   pfad: (b: KundenBereich) => string;
 }) {
   const k = kennzahlen(projekt);
-  const wert = 'text-[24px] md:text-[28px] font-bold tracking-tight leading-tight break-words';
+  // Kritiker Kunden-Dashboard 5: eine Farbe und Größe für alle Werte
+  const wert = 'text-[20px] md:text-[24px] font-bold tracking-tight leading-tight break-words text-foreground';
   const leer = 'text-[15px] text-text2';
   const kachelLink = `${mehrLink} mt-auto`;
-  const kachel = `${karte} flex flex-col gap-1`;
+  const kachel = `${karte} flex flex-col gap-1 max-sm:p-4`;
   return (
     <ul
       role="list"
       aria-label={t.overview}
-      className="grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4"
+      // Kritiker Kunden-Dashboard 6: auch auf dem Handy zu zweit, damit der Inhalt früher kommt
+      className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4"
     >
       <li className={kachel}>
         <Bezeichnung icon={ListChecks}>{t.progress}</Bezeichnung>
@@ -377,17 +385,20 @@ function Ablauf({
   projekt: p,
   kurz = false,
   mehr,
+  titel,
 }: {
   t: T;
   locale: Locale;
   projekt: Ansicht;
   kurz?: boolean;
   mehr?: string;
+  /** Kritiker Kunden-Dashboard 3: auf der eigenen Seite nicht noch einmal „Ablauf“ */
+  titel?: string;
 }) {
   return (
     <section aria-labelledby="ablauf-titel" className={karte}>
       <h2 id="ablauf-titel" className={kopf}>
-        {t.process}
+        {titel ?? t.process}
       </h2>
       {p.schritte.length === 0 ? (
         <p className="text-[15px] text-text2">{t.noSteps}</p>
@@ -629,12 +640,12 @@ function NeuesteDokumente({
 }
 
 /** Dokumente nach Art gruppiert, Download über den Server (functions/kundenbereich/dokumente.md) */
-function Documents({ t, locale, dokumente }: { t: T; locale: Locale; dokumente: DokumentRow[] }) {
+function Documents({ t, locale, dokumente, titel }: { t: T; locale: Locale; dokumente: DokumentRow[]; titel: string }) {
   const gruppen = dokumentGruppen(dokumente);
   return (
     <section aria-labelledby="dokumente-titel" className={karte}>
       <h2 id="dokumente-titel" className={kopf}>
-        {t.documents}
+        {titel}
       </h2>
       {gruppen.length === 0 ? (
         <p className="text-[15px] text-text2">{t.noDocuments}</p>

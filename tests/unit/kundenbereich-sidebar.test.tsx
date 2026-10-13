@@ -17,6 +17,7 @@ const { default: KundenNavigation } = await import('@/components/kundenbereich/K
 const { default: AdminNavigation } = await import('@/components/kundenbereich/admin/AdminNavigation');
 const { default: Projektuebersicht } = await import('@/components/kundenbereich/Projektuebersicht');
 const { default: KundenEinstellungen } = await import('@/components/kundenbereich/KundenEinstellungen');
+const { kundenMetadata } = await import('@/lib/pages/kundenbereich');
 
 const schritt = (n: number, status: 'offen' | 'aktiv' | 'erledigt', beschreibung_de: string | null = null) => ({
   id: `s${n}`,
@@ -143,7 +144,7 @@ describe('Seiten des Kundenbereichs', () => {
   it('AK-5: Ablauf, Termine und Dokumente zeigen den ganzen Inhalt', () => {
     const { unmount } = render(<Projektuebersicht locale="de" profil={ANNA} projekte={[PROJEKT]} bereich="ablauf" />);
     expect(screen.getByRole('heading', { level: 1, name: 'Ablauf' })).toBeInTheDocument();
-    expect(screen.getByRole('region', { name: 'Ablauf' })).toHaveTextContent('Zwei Entwürfe zur Auswahl.');
+    expect(screen.getByRole('region', { name: 'Alle Schritte' })).toHaveTextContent('Zwei Entwürfe zur Auswahl.');
     expect(screen.getByRole('region', { name: 'Nächste Schritte' })).toBeInTheDocument();
     expect(screen.queryByRole('region', { name: 'Dokumente' })).toBeNull();
     unmount();
@@ -155,7 +156,7 @@ describe('Seiten des Kundenbereichs', () => {
     t.unmount();
     render(<Projektuebersicht locale="en" profil={ANNA} projekte={[PROJEKT]} bereich="dokumente" />);
     expect(screen.getByRole('heading', { level: 1, name: 'Documents' })).toBeInTheDocument();
-    expect(within(screen.getByRole('region', { name: 'Documents' })).getAllByRole('link')).toHaveLength(4);
+    expect(within(screen.getByRole('region', { name: 'All documents' })).getAllByRole('link')).toHaveLength(4);
   });
 
   it('AK-6: Einstellungen mit Konto, Sprache, Darstellung', () => {
@@ -164,7 +165,7 @@ describe('Seiten des Kundenbereichs', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Einstellungen' })).toBeInTheDocument();
     const konto = screen.getByRole('region', { name: 'Konto' });
     expect(konto).toHaveTextContent('Anna');
-    expect(konto).toHaveTextContent('Ansprechpartner');
+    expect(konto).toHaveTextContent('Ansprechperson');
     expect(screen.getByRole('link', { name: 'English version' })).toHaveAttribute('href', '/en/clients/settings');
     expect(screen.getByRole('radiogroup', { name: 'Darstellung' })).toBeInTheDocument();
     unmount();
@@ -176,5 +177,35 @@ describe('Seiten des Kundenbereichs', () => {
   it('AK-9: Admin in der Kundenansicht hat einen Link zur Verwaltung', () => {
     render(<Projektuebersicht locale="de" profil={ERIK} projekte={[PROJEKT]} auswahl="p1" bereich="ablauf" />);
     expect(screen.getByRole('link', { name: 'Verwaltung' })).toHaveAttribute('href', '/kunden/admin');
+  });
+});
+
+describe('Befunde Blinder Kritiker Kunden-Dashboard (2026-10-13)', () => {
+  it('1: Seitentitel nennt die Seite', () => {
+    expect(kundenMetadata('/kunden/ablauf', 'de').title).toBe('Ablauf | Kundenbereich');
+    expect(kundenMetadata('/kunden/dokumente', 'en').title).toBe('Documents | Client area');
+    expect(kundenMetadata('/kunden', 'de').title).toBe('Kundenbereich | Erik Bergheimer');
+  });
+
+  it('3: Karten auf Ablauf und Dokumente wiederholen den Seitentitel nicht', () => {
+    const { unmount } = render(<Projektuebersicht locale="de" profil={ANNA} projekte={[PROJEKT]} bereich="ablauf" />);
+    expect(screen.getByRole('region', { name: 'Alle Schritte' })).toBeInTheDocument();
+    unmount();
+    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[PROJEKT]} bereich="dokumente" />);
+    expect(screen.getByRole('region', { name: 'Alle Dokumente' })).toBeInTheDocument();
+    expect(screen.getAllByRole('heading', { name: 'Dokumente' })).toHaveLength(1);
+  });
+
+  it('5/7: Werte der Kacheln in Textfarbe, Kacheln zu zweit, Status mit Bezeichnung', () => {
+    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[PROJEKT]} />);
+    const kacheln = screen.getByRole('list', { name: 'Auf einen Blick' });
+    expect(kacheln).toHaveClass('grid-cols-2');
+    expect(within(kacheln).getByText('1 von 3')).toHaveClass('text-foreground');
+    expect(screen.getByText('Projektstatus:')).toHaveClass('sr-only');
+  });
+
+  it('12: neutrale Rolle', () => {
+    render(<KundenEinstellungen locale="de" profil={ANNA} />);
+    expect(screen.getByRole('region', { name: 'Konto' })).toHaveTextContent('Ansprechperson');
   });
 });

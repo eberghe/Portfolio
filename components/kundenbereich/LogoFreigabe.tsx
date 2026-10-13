@@ -17,9 +17,10 @@ export default function LogoFreigabe({ locale, mk, className }: { locale: Locale
   const erteilt = mk.freigabe === 'erteilt';
   return (
     <section aria-labelledby="logo-freigabe-titel" className={className}>
-      <h3 id="logo-freigabe-titel" className="text-[13px] font-bold tracking-wider uppercase text-text3 mb-4">
+      {/* Kritiker Kunden-Dashboard 4: Überschrift wie die anderen Karten */}
+      <h2 id="logo-freigabe-titel" className="text-[16px] font-bold flex items-center gap-2 mb-4">
         {t.logoTitle}
-      </h3>
+      </h2>
       <p className="text-[15px] text-text2 leading-relaxed mb-3">{t.logoQuestion(mk.kunde)}</p>
       <p className="text-[14px] font-medium text-foreground mb-4">
         {mk.letzte && mk.freigabe !== 'offen'

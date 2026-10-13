@@ -82,3 +82,22 @@ Keine neuen Daten. Jede Seite lädt Profil und Projekte wie die Übersicht.
 
 - `tests/unit/kundenbereich-sidebar.test.tsx`: Navigation, Projekt-ID in Links, Übersicht kurz, Seiten mit ganzem Inhalt, Einstellungen, Admin-Link (AK-1 bis AK-6, AK-9)
 - `tests/e2e/kundenbereich-projekte.spec.ts`: Seiten erreichbar, Abmelden in der Sidebar, Anmeldung ohne Sidebar, axe (AK-7, AK-8, AK-10)
+
+## Blinder Kritiker (2026-10-13)
+
+Behoben (mit Test in `tests/unit/kundenbereich-sidebar.test.tsx`):
+
+- 1: Unterseiten nennen sich im Seitentitel, z. B. „Ablauf | Kundenbereich“.
+- 3: Auf „Ablauf“ und „Dokumente“ heißen die Karten „Alle Schritte“ und „Alle Dokumente“, nicht noch einmal wie die Seite.
+- 4: „Logo auf meiner Website“ ist ein `h2` im Stil der anderen Karten.
+- 5/6: Werte der Kacheln in einer Farbe und Größe; Kacheln auch auf dem Handy zu zweit.
+- 7: Der Status im Seitenkopf heißt für Screenreader „Projektstatus: In Arbeit“.
+- 12: Rolle neutral „Ansprechperson“.
+- 13: Termine und Dokumente gleich breit.
+
+Offen:
+
+- 2: Projekttitel und Dokumenttitel gibt es nur auf Deutsch; auf den englischen Seiten bleiben sie deutsch. Braucht englische Felder in den Daten.
+- 8: „Von mir“ und „Von dir“ bleiben, der Kundenbereich spricht durchgehend als Erik.
+- 10: Der Button heißt weiter „Seitenleiste“ mit `aria-expanded` (admin-sidebar.md AK-14).
+- 9, 11, 14 bis 17 (niedrig): Linkziel der Kacheln, Abmelden im Handy-Kopf nur als Icon, Hinweis „veraltet“ bei alten Versionen, Rückfrage beim Widerrufen der Logo-Freigabe, Linie der Sidebar auf langen Seiten, Abstände der Anmeldung.

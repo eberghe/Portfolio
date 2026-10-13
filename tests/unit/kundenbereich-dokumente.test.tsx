@@ -87,7 +87,7 @@ describe('Ansicht', () => {
   it('AK-3/AK-4: Abschnitt mit Gruppen, Linktext mit Angaben, Logo-Vorschau', () => {
     // kunden-sidebar.md AK-5: ganze Liste auf der Seite „Dokumente“
     render(<Projektuebersicht locale="de" profil={ANNA} projekte={[PROJEKT]} bereich="dokumente" />);
-    const section = screen.getByRole('region', { name: 'Dokumente' });
+    const section = screen.getByRole('region', { name: 'Alle Dokumente' });
     expect(
       within(section)
         .getAllByRole('heading', { level: 3 })
@@ -107,7 +107,7 @@ describe('Ansicht', () => {
     const { unmount } = render(
       <Projektuebersicht locale="en" profil={ANNA} projekte={[PROJEKT]} bereich="dokumente" />,
     );
-    const section = screen.getByRole('region', { name: 'Documents' });
+    const section = screen.getByRole('region', { name: 'All documents' });
     expect(
       within(section)
         .getAllByRole('heading', { level: 3 })

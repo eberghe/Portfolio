@@ -1,19 +1,25 @@
 import {
+  ArrowRight,
+  CalendarClock,
   CalendarPlus,
   Check,
   Circle,
   CircleDot,
   Download,
   ExternalLink,
-  LogOut,
+  FileText,
+  Hand,
+  ListChecks,
   Mail,
   Settings,
   Video,
 } from 'lucide-react';
 import Link from 'next/link';
-import { logout } from '@/app/actions/kundenbereich';
 import Button, { buttonClass } from '@/components/ui/Button';
-import { localizedPath, type Locale } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
+import { bereichPfad, type KundenBereich } from '@/lib/kundenbereich/bereiche';
+import { dateiInfo, dokumentGruppen, type DokumentRow } from '@/lib/kundenbereich/dokumente';
+import type { MeinKunde } from '@/lib/kundenbereich/freigabe';
 import {
   datum,
   kennzahlen,
@@ -23,22 +29,24 @@ import {
   type Schritt,
 } from '@/lib/kundenbereich/projekte';
 import type { Profil } from '@/lib/kundenbereich/supabase';
-import { dateiInfo, dokumentGruppen, type DokumentRow } from '@/lib/kundenbereich/dokumente';
 import { kurzTermin, type Termin } from '@/lib/kundenbereich/termine';
 import { kundenText } from '@/lib/kundenbereich/text';
 import { EMAIL } from '@/lib/site';
-import type { MeinKunde } from '@/lib/kundenbereich/freigabe';
+import { badge, karte, kartenTitel } from './admin/AdminListen';
+import AdminShell from './admin/AdminShell';
 import LogoFreigabe from './LogoFreigabe';
 import TerminZeit from './TerminZeit';
 
-// Startseite des Kundenbereichs nach dem Login (functions/kundenbereich/projektuebersicht.md)
+// Seiten des Kundenbereichs nach dem Login: Übersicht, Ablauf, Termine, Dokumente
+// (functions/kundenbereich/projektuebersicht.md, kunden-dashboard.md, kunden-sidebar.md).
+// Seitenkopf, Karten und Kacheln sind dieselben wie in der Verwaltung (kunden-sidebar.md Zweck).
 
 type T = (typeof kundenText)['de'];
+type Ansicht = ReturnType<typeof projektAnsicht>;
+export type ProjektBereich = Exclude<KundenBereich, 'einstellungen'>;
 
-const card = 'border border-border rounded-2xl p-5 md:p-6';
-const sectionTitle = 'text-[13px] font-bold tracking-wider uppercase text-text3 mb-4';
-const badge =
-  'inline-flex items-center text-[12px] font-medium border border-primary-border text-primary-text rounded-full px-2.5 py-0.5';
+const kopf = `${kartenTitel} mb-4`;
+const MAX_DOKUMENTE = 3;
 
 export default function Projektuebersicht({
   locale,
@@ -46,59 +54,62 @@ export default function Projektuebersicht({
   projekte,
   auswahl,
   logo = null,
+  bereich = 'uebersicht',
 }: {
   locale: Locale;
   profil: Profil;
   /** Kunde des Ansprechpartners für die Logo-Freigabe; null für Admins */
   logo?: MeinKunde | null;
-  /** null: Laden fehlgeschlagen (AK-7) */
+  /** null: Laden fehlgeschlagen (projektuebersicht.md AK-7) */
   projekte: ProjektRow[] | null;
   auswahl?: string;
+  bereich?: ProjektBereich;
 }) {
   const t = kundenText[locale];
   const gewaehlt = projekte && waehleProjekt(projekte, auswahl);
-  const base = localizedPath('/kunden', locale);
+  const ansicht = gewaehlt && projektAnsicht(gewaehlt, locale);
+  // Mit mehreren Projekten bleibt die Wahl in allen Links erhalten (kunden-sidebar.md AK-2)
+  const projekt = projekte && projekte.length > 1 ? gewaehlt?.id : auswahl;
+  const pfad = (b: KundenBereich) => bereichPfad(b, locale, projekt);
 
   return (
-    <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-8 md:py-16">
-      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 mb-8 md:mb-12">
-        <div className="min-w-0">
-          <h1 className="text-[32px] md:text-[48px] leading-[1.1] font-bold tracking-tight mb-2 text-balance">
-            {t.title}
-          </h1>
-          <p className="text-[16px] text-text2">
-            {t.hello(profil.name)}
-            {profil.art === 'admin' && ' '}
-            {profil.art === 'admin' && <span className={`${badge} ml-1 align-middle uppercase`}>{t.admin}</span>}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
+    <AdminShell
+      title={t.nav[bereich]}
+      intro={
+        <>
+          {t.hello(profil.name)}
+          {profil.art === 'admin' && ' '}
+          {profil.art === 'admin' && <span className={`${badge} ml-1 align-middle uppercase`}>{t.admin}</span>}
+        </>
+      }
+      aside={
+        <>
+          {ansicht && (
+            <span className={badge}>
+              {/* Kritiker Kunden-Dashboard 7: Status mit Bezeichnung für Screenreader */}
+              <span className="sr-only">{t.projectStatusLabel} </span>
+              {t.projectStatus[ansicht.status]}
+            </span>
+          )}
           {profil.art === 'admin' && (
-            // Einstieg in die Verwaltung (functions/kundenbereich/admin.md Verhalten 1)
+            // Zurück in die Verwaltung (admin.md Verhalten 1, kunden-sidebar.md AK-9)
             <Button href="/kunden/admin" variant="secondary" lang={locale === 'en' ? 'de' : undefined}>
               <Settings size={15} aria-hidden="true" />
               {t.manage}
             </Button>
           )}
-          <form action={logout}>
-            <input type="hidden" name="sprache" value={locale} />
-            <Button type="submit" variant="secondary">
-              <LogOut size={15} aria-hidden="true" />
-              {t.logout}
-            </Button>
-          </form>
-        </div>
-      </header>
-
+        </>
+      }
+    >
       {projekte && projekte.length > 1 && (
-        <nav aria-label={t.projectsNav} className="mb-8 md:mb-10">
+        <nav aria-label={t.projectsNav} className="mb-6">
           <ul role="list" className="flex flex-wrap gap-2">
             {projekte.map((p) => {
               const current = p.id === gewaehlt?.id;
               return (
                 <li key={p.id}>
                   <Link
-                    href={`${base}?projekt=${encodeURIComponent(p.id)}`}
+                    href={bereichPfad(bereich, locale, p.id)}
                     aria-current={current ? 'page' : undefined}
                     className={`inline-flex items-center min-h-11 px-4 rounded-lg border text-[14px] font-medium transition-colors ${
                       current
@@ -121,34 +132,50 @@ export default function Projektuebersicht({
         <p role="status" className="text-[15px] text-text2 leading-relaxed max-w-[560px]">
           {t.loadError}
         </p>
-      ) : !gewaehlt ? (
-        <div className="max-w-[560px] sm:border sm:border-border sm:rounded-2xl sm:p-8">
-          <p className="text-[16px] text-text2 leading-relaxed mb-6">{t.noProjects}</p>
-          <a href={`mailto:${EMAIL}`} className={buttonClass('secondary')}>
-            <Mail size={15} aria-hidden="true" />
-            {t.noProjectsContact}
-          </a>
+      ) : !ansicht ? (
+        <>
+          <div className={`${karte} max-w-[560px]`}>
+            <p className="text-[16px] text-text2 leading-relaxed mb-6">{t.noProjects}</p>
+            <a href={`mailto:${EMAIL}`} className={buttonClass('secondary')}>
+              <Mail size={15} aria-hidden="true" />
+              {t.noProjectsContact}
+            </a>
+          </div>
+          {logo && <LogoFreigabe locale={locale} mk={logo} className={`${karte} max-w-[560px] mt-6`} />}
+        </>
+      ) : bereich === 'ablauf' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] gap-4 md:gap-6 items-start">
+          <Ablauf t={t} locale={locale} projekt={ansicht} titel={t.allSteps} />
+          <NaechsteSchritte t={t} locale={locale} projekt={ansicht} />
+        </div>
+      ) : bereich === 'termine' ? (
+        <div className="max-w-[900px]">
+          <Meeting t={t} locale={locale} next={ansicht.naechsterTermin} later={ansicht.weitereTermine} />
+        </div>
+      ) : bereich === 'dokumente' ? (
+        <div className="max-w-[900px]">
+          <Documents t={t} locale={locale} dokumente={ansicht.dokumente} titel={t.allDocumentsLink} />
         </div>
       ) : (
-        <Projekt t={t} locale={locale} projekt={projektAnsicht(gewaehlt, locale)} logo={logo} />
+        <Uebersicht t={t} locale={locale} projekt={ansicht} logo={logo} pfad={pfad} />
       )}
-      {(!projekte || !gewaehlt) && logo && (
-        <LogoFreigabe locale={locale} mk={logo} className={`${card} max-w-[560px] mt-10`} />
-      )}
-    </div>
+    </AdminShell>
   );
 }
 
-function Projekt({
+/** Dashboard: Projekt, Kacheln, dann Karten in zwei Spalten (kunden-sidebar.md Verhalten 5, AK-4) */
+function Uebersicht({
   t,
   locale,
   projekt: p,
   logo,
+  pfad,
 }: {
   t: T;
   locale: Locale;
-  projekt: ReturnType<typeof projektAnsicht>;
+  projekt: Ansicht;
   logo: MeinKunde | null;
+  pfad: (b: KundenBereich) => string;
 }) {
   const links = [
     p.websiteUrl && { href: p.websiteUrl, label: t.website },
@@ -157,66 +184,37 @@ function Projekt({
 
   return (
     <article aria-labelledby="projekt-titel">
-      {/* Kritiker Termine 2: Reihenfolge im DOM = Projekt, Kacheln, Termin und nächste Schritte, dann Ablauf und Dokumente */}
-      <div className="min-w-0 mb-8">
-        {p.kunde && <p className="text-[14px] font-semibold text-primary-text mb-2">{p.kunde}</p>}
+      <div className="min-w-0 mb-4 md:mb-6">
+        {p.kunde && <p className="text-[14px] font-semibold text-primary-text mb-1">{p.kunde}</p>}
         <h2
           id="projekt-titel"
-          className="text-[26px] md:text-[32px] font-bold leading-tight tracking-tight mb-3 text-balance"
+          className="text-[22px] md:text-[26px] font-bold leading-tight tracking-tight mb-2 text-balance"
         >
           {p.titel}
         </h2>
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-2 mb-4 text-[14px] text-text2">
-          <span className={badge}>{t.projectStatus[p.status]}</span>
-          {p.phase && <span>{t.phase(p.phase)}</span>}
-        </p>
+        {p.phase && <p className="text-[14px] text-text2 mb-2">{t.phase(p.phase)}</p>}
         {p.beschreibung && (
           <p
             lang={p.beschreibungLang}
-            className="text-[15px] md:text-[16px] text-text2 leading-relaxed max-w-[640px] whitespace-pre-line"
+            className="text-[15px] text-text2 leading-relaxed max-w-[720px] whitespace-pre-line"
           >
             {p.beschreibung}
           </p>
         )}
       </div>
 
-      <Kacheln t={t} locale={locale} projekt={p} />
+      <Kacheln t={t} locale={locale} projekt={p} pfad={pfad} />
 
       {/* Kritiker Kunde 6: sichtbare Reihenfolge = DOM-Reihenfolge, Termin und nächste Schritte links */}
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-x-8 gap-y-6 mt-6">
-        <div className="min-w-0 flex flex-col gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-4 md:gap-6 mt-4 md:mt-6 items-start">
+        <div className="min-w-0 flex flex-col gap-4 md:gap-6">
           <Meeting t={t} locale={locale} next={p.naechsterTermin} later={p.weitereTermine} />
-          <section aria-labelledby="naechste-titel" className={card}>
-            <h3 id="naechste-titel" className={sectionTitle}>
-              {t.nextSteps}
-            </h3>
-            {p.naechste.length === 0 ? (
-              // Kritiker 1: ohne geplante Schritte nicht „Alles erledigt.“
-              <p className="text-[15px] text-text2">{p.schritte.length === 0 ? t.noSteps : t.allDone}</p>
-            ) : (
-              <ul role="list" aria-labelledby="naechste-titel" className="flex flex-col gap-4">
-                {p.naechste.map((s) => (
-                  <li key={s.id} className="flex flex-col gap-1">
-                    <span lang={s.titelLang} className="text-[15px] font-medium text-foreground">
-                      {s.titel}
-                    </span>
-                    <span className="flex flex-wrap gap-x-3 text-[13px] text-text2">
-                      <span className={s.verantwortlich === 'kunde' ? 'font-semibold text-primary-text' : ''}>
-                        {s.verantwortlich === 'kunde' ? t.fromClient : t.fromErik}
-                      </span>
-                      {s.faelligAm && <span>{t.due(datum(s.faelligAm, locale))}</span>}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-
+          <NaechsteSchritte t={t} locale={locale} projekt={p} />
           {links.length > 0 && (
-            <section aria-labelledby="links-titel" className={card}>
-              <h3 id="links-titel" className={sectionTitle}>
+            <section aria-labelledby="links-titel" className={karte}>
+              <h2 id="links-titel" className={kopf}>
                 {t.links}
-              </h3>
+              </h2>
               <ul role="list" className="flex flex-wrap gap-3">
                 {links.map((l) => (
                   <li key={l.href}>
@@ -230,55 +228,63 @@ function Projekt({
               </ul>
             </section>
           )}
-          {logo && <LogoFreigabe locale={locale} mk={logo} className={card} />}
+          {logo && <LogoFreigabe locale={locale} mk={logo} className={karte} />}
         </div>
-        <div className="min-w-0 flex flex-col gap-6">
-          {p.schritte.length > 0 && (
-            <section aria-labelledby="ablauf-titel" className={card}>
-              <h3 id="ablauf-titel" className={sectionTitle}>
-                {t.process}
-              </h3>
-              <ol role="list" aria-labelledby="ablauf-titel">
-                {p.schritte.map((s, i) => (
-                  <Step
-                    key={s.id}
-                    t={t}
-                    locale={locale}
-                    schritt={s}
-                    current={s.id === p.aktuell}
-                    last={i === p.schritte.length - 1}
-                  />
-                ))}
-              </ol>
-            </section>
-          )}
-
-          <Documents t={t} locale={locale} dokumente={p.dokumente} />
+        <div className="min-w-0 flex flex-col gap-4 md:gap-6">
+          {p.schritte.length > 0 && <Ablauf t={t} locale={locale} projekt={p} kurz mehr={pfad('ablauf')} />}
+          <NeuesteDokumente t={t} locale={locale} dokumente={p.dokumente} mehr={pfad('dokumente')} />
         </div>
       </div>
     </article>
   );
 }
 
-const tile = 'flex flex-col gap-1 border border-border rounded-2xl p-5 min-w-0';
-const tileLabel = 'text-[13px] font-semibold text-text2';
-const tileValue = 'text-[20px] font-bold leading-tight text-foreground';
-const tileLink =
-  'text-[14px] font-medium text-primary-text underline underline-offset-4 hover:no-underline mt-auto pt-2';
+const mehrLink =
+  'inline-flex items-center gap-1.5 min-h-11 text-[14px] font-medium text-primary-text underline underline-offset-4 hover:no-underline';
 
-/** Vier Kacheln oben (functions/kundenbereich/kunden-dashboard.md AK-2, AK-3) */
-function Kacheln({ t, locale, projekt }: { t: T; locale: Locale; projekt: ReturnType<typeof projektAnsicht> }) {
-  const k = kennzahlen(projekt);
+/** Bezeichnung einer Kachel mit Icon, wie in der Verwaltung */
+function Bezeichnung({ icon: Icon, children }: { icon: typeof ListChecks; children: string }) {
   return (
-    <ul role="list" aria-label={t.overview} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <li className={tile}>
-        <p className={tileLabel}>{t.progress}</p>
+    <p className="flex items-center gap-2 text-[13px] text-text2 min-w-0">
+      <Icon size={15} aria-hidden="true" className="text-primary-text shrink-0" />
+      {children}
+    </p>
+  );
+}
+
+/** Vier Kacheln wie in der Verwaltung (kunden-dashboard.md AK-2, AK-3, kunden-sidebar.md AK-4) */
+function Kacheln({
+  t,
+  locale,
+  projekt,
+  pfad,
+}: {
+  t: T;
+  locale: Locale;
+  projekt: Ansicht;
+  pfad: (b: KundenBereich) => string;
+}) {
+  const k = kennzahlen(projekt);
+  // Kritiker Kunden-Dashboard 5: eine Farbe und Größe für alle Werte
+  const wert = 'text-[20px] md:text-[24px] font-bold tracking-tight leading-tight break-words text-foreground';
+  const leer = 'text-[15px] text-text2';
+  const kachelLink = `${mehrLink} mt-auto`;
+  const kachel = `${karte} flex flex-col gap-1 max-sm:p-4`;
+  return (
+    <ul
+      role="list"
+      aria-label={t.overview}
+      // Kritiker Kunden-Dashboard 6: auch auf dem Handy zu zweit, damit der Inhalt früher kommt
+      className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4"
+    >
+      <li className={kachel}>
+        <Bezeichnung icon={ListChecks}>{t.progress}</Bezeichnung>
         {k.gesamt === 0 ? (
-          <p className="text-[15px] text-text2">{t.noProcess}</p>
+          <p className={leer}>{t.noProcess}</p>
         ) : (
           <>
-            <p className="text-[15px] text-text2">
-              <span className={tileValue}>{t.progressValue(k.erledigt, k.gesamt)}</span> {t.stepsDone}
+            <p className="text-[14px] text-text2">
+              <span className={wert}>{t.progressValue(k.erledigt, k.gesamt)}</span> {t.stepsDone}
             </p>
             <div
               role="progressbar"
@@ -294,45 +300,45 @@ function Kacheln({ t, locale, projekt }: { t: T; locale: Locale; projekt: Return
           </>
         )}
       </li>
-      <li className={tile}>
-        <p className={tileLabel}>{t.nextMeeting}</p>
+      <li className={kachel}>
+        <Bezeichnung icon={CalendarClock}>{t.nextMeeting}</Bezeichnung>
         {k.termin ? (
           <>
-            <p className={tileValue}>{kurzTermin(k.termin.beginn, locale)}</p>
-            <a href="#termin-titel" className={tileLink}>
+            <p className={wert}>{kurzTermin(k.termin.beginn, locale)}</p>
+            <a href={pfad('termine')} className={kachelLink}>
               {k.termin.titel}
             </a>
           </>
         ) : (
-          <p className="text-[15px] text-text2">{t.noMeetingShort}</p>
+          <p className={leer}>{t.noMeetingShort}</p>
         )}
       </li>
-      <li className={tile}>
-        <p className={tileLabel}>{t.yourTurn}</p>
+      <li className={`${kachel} ${k.kundeOffen > 0 ? 'border-primary' : ''}`}>
+        <Bezeichnung icon={Hand}>{t.yourTurn}</Bezeichnung>
         {k.kundeOffen > 0 ? (
           <>
-            <p className={tileValue}>{t.yourTurnCount(k.kundeOffen)}</p>
-            <a href="#naechste-titel" className={tileLink}>
+            <p className={wert}>{t.yourTurnCount(k.kundeOffen)}</p>
+            <a href="#naechste-titel" className={kachelLink}>
               {t.yourTurnCount(k.kundeOffen)} {t.yourTurnHint}
             </a>
           </>
         ) : (
-          <p className="text-[15px] text-text2">{t.allWithErik}</p>
+          <p className={leer}>{t.allWithErik}</p>
         )}
       </li>
-      <li className={tile}>
-        <p className={tileLabel}>{t.documents}</p>
+      <li className={kachel}>
+        <Bezeichnung icon={FileText}>{t.documents}</Bezeichnung>
         {k.dokumenteAktuell === 0 && !k.neuestes ? (
-          <p className="text-[15px] text-text2">{t.noDocumentsShort}</p>
+          <p className={leer}>{t.noDocumentsShort}</p>
         ) : (
           <>
-            <p className={tileValue}>{t.documentsCount(k.dokumenteAktuell)}</p>
+            <p className={wert}>{t.documentsCount(k.dokumenteAktuell)}</p>
             {k.neuestes && (
               <p className="text-[13px] text-text2">
                 {t.newestDocument(k.neuestes.titel, datum(k.neuestes.created_at.slice(0, 10), locale))}
               </p>
             )}
-            <a href="#dokumente-titel" className={tileLink}>
+            <a href={pfad('dokumente')} className={kachelLink}>
               {t.allDocuments}
             </a>
           </>
@@ -342,27 +348,112 @@ function Kacheln({ t, locale, projekt }: { t: T; locale: Locale; projekt: Return
   );
 }
 
+function NaechsteSchritte({ t, locale, projekt: p }: { t: T; locale: Locale; projekt: Ansicht }) {
+  return (
+    <section aria-labelledby="naechste-titel" className={karte}>
+      <h2 id="naechste-titel" className={kopf}>
+        {t.nextSteps}
+      </h2>
+      {p.naechste.length === 0 ? (
+        // Kritiker 1: ohne geplante Schritte nicht „Alles erledigt.“
+        <p className="text-[15px] text-text2">{p.schritte.length === 0 ? t.noSteps : t.allDone}</p>
+      ) : (
+        <ul role="list" aria-labelledby="naechste-titel" className="flex flex-col gap-4">
+          {p.naechste.map((s) => (
+            <li key={s.id} className="flex flex-col gap-1">
+              <span lang={s.titelLang} className="text-[15px] font-medium text-foreground">
+                {s.titel}
+              </span>
+              <span className="flex flex-wrap gap-x-3 text-[13px] text-text2">
+                <span className={s.verantwortlich === 'kunde' ? 'font-semibold text-primary-text' : ''}>
+                  {s.verantwortlich === 'kunde' ? t.fromClient : t.fromErik}
+                </span>
+                {s.faelligAm && <span>{t.due(datum(s.faelligAm, locale))}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+/** Ablauf ganz oder kurz (nur Titel und Status) mit Link zur Seite „Ablauf“ (kunden-sidebar.md AK-4, AK-5) */
+function Ablauf({
+  t,
+  locale,
+  projekt: p,
+  kurz = false,
+  mehr,
+  titel,
+}: {
+  t: T;
+  locale: Locale;
+  projekt: Ansicht;
+  kurz?: boolean;
+  mehr?: string;
+  /** Kritiker Kunden-Dashboard 3: auf der eigenen Seite nicht noch einmal „Ablauf“ */
+  titel?: string;
+}) {
+  return (
+    <section aria-labelledby="ablauf-titel" className={karte}>
+      <h2 id="ablauf-titel" className={kopf}>
+        {titel ?? t.process}
+      </h2>
+      {p.schritte.length === 0 ? (
+        <p className="text-[15px] text-text2">{t.noSteps}</p>
+      ) : (
+        <ol role="list" aria-labelledby="ablauf-titel">
+          {p.schritte.map((s, i) => (
+            <Step
+              key={s.id}
+              t={t}
+              locale={locale}
+              schritt={s}
+              current={s.id === p.aktuell}
+              last={i === p.schritte.length - 1}
+              kurz={kurz}
+            />
+          ))}
+        </ol>
+      )}
+      {mehr && p.schritte.length > 0 && (
+        <Link href={mehr} className={`${mehrLink} mt-2`}>
+          {t.fullProcess}
+          <ArrowRight size={14} aria-hidden="true" />
+        </Link>
+      )}
+    </section>
+  );
+}
+
 function Step({
   t,
   locale,
   schritt: s,
   current,
   last,
+  kurz,
 }: {
   t: T;
   locale: Locale;
   schritt: Schritt;
   current: boolean;
   last: boolean;
+  kurz: boolean;
 }) {
   const Icon = s.status === 'erledigt' ? Check : s.status === 'aktiv' ? CircleDot : Circle;
   const done = s.status === 'erledigt';
+  const kreis = kurz ? 'w-8 h-8' : 'w-10 h-10';
   return (
-    <li aria-current={current ? 'step' : undefined} className="grid grid-cols-[40px_minmax(0,1fr)] gap-x-4">
+    <li
+      aria-current={current ? 'step' : undefined}
+      className={`grid gap-x-4 ${kurz ? 'grid-cols-[32px_minmax(0,1fr)]' : 'grid-cols-[40px_minmax(0,1fr)]'}`}
+    >
       <div className="flex flex-col items-center">
         <span
           aria-hidden="true"
-          className={`flex items-center justify-center w-10 h-10 rounded-full shrink-0 ${
+          className={`flex items-center justify-center ${kreis} rounded-full shrink-0 ${
             done
               ? 'bg-primary text-primary-foreground'
               : current
@@ -370,27 +461,27 @@ function Step({
                 : 'bg-foreground/[0.06] text-text3'
           }`}
         >
-          <Icon size={18} />
+          <Icon size={kurz ? 15 : 18} />
         </span>
         {!last && (
           <span
             aria-hidden="true"
-            className={`flex-1 w-0.5 min-h-6 my-2 rounded-full ${done ? 'bg-primary' : 'bg-foreground/15'}`}
+            className={`flex-1 w-0.5 ${kurz ? 'min-h-3 my-1' : 'min-h-6 my-2'} rounded-full ${done ? 'bg-primary' : 'bg-foreground/15'}`}
           />
         )}
       </div>
-      <div className={`pt-2 ${last ? '' : 'pb-6'}`}>
+      <div className={`${kurz ? 'pt-1' : 'pt-2'} ${last ? '' : kurz ? 'pb-3' : 'pb-6'}`}>
         <p
           lang={s.titelLang}
-          className={`text-[16px] leading-snug font-bold ${done ? 'text-text2' : 'text-foreground'}`}
+          className={`${kurz ? 'text-[15px]' : 'text-[16px]'} leading-snug font-bold ${done ? 'text-text2' : 'text-foreground'}`}
         >
           {s.titel}
         </p>
-        <p className="flex flex-wrap gap-x-3 text-[13px] text-text2 mt-1">
+        <p className="flex flex-wrap gap-x-3 text-[13px] text-text2 mt-0.5">
           <span className={current ? 'font-semibold text-primary-text' : ''}>{t.stepStatus[s.status]}</span>
           {s.faelligAm && !done && <span>{t.due(datum(s.faelligAm, locale))}</span>}
         </p>
-        {s.beschreibung && (
+        {!kurz && s.beschreibung && (
           <p lang={s.beschreibungLang} className="text-[14px] text-text2 leading-relaxed mt-2 whitespace-pre-line">
             {s.beschreibung}
           </p>
@@ -403,10 +494,10 @@ function Step({
 /** Nächster Termin mit Meet-Link und Kalenderdatei (functions/kundenbereich/termine.md) */
 function Meeting({ t, locale, next, later }: { t: T; locale: Locale; next: Termin | null; later: Termin[] }) {
   return (
-    <section aria-labelledby="termin-titel" className={card}>
-      <h3 id="termin-titel" className={sectionTitle}>
+    <section aria-labelledby="termin-titel" className={karte}>
+      <h2 id="termin-titel" className={kopf}>
         {t.nextMeeting}
-      </h3>
+      </h2>
       {!next ? (
         <p className="text-[15px] text-text2">{t.noMeeting}</p>
       ) : (
@@ -435,9 +526,9 @@ function Meeting({ t, locale, next, later }: { t: T; locale: Locale; next: Termi
           </div>
           {later.length > 0 && (
             <>
-              <h4 id="termine-danach" className="text-[13px] font-semibold text-text2 mt-6 mb-2">
+              <h3 id="termine-danach" className="text-[13px] font-semibold text-text2 mt-6 mb-2">
                 {t.laterMeetings}
-              </h4>
+              </h3>
               <ul role="list" aria-labelledby="termine-danach" className="flex flex-col gap-2 text-[14px]">
                 {later.map((m) => (
                   <li key={m.id} className="flex flex-col">
@@ -458,23 +549,113 @@ function Meeting({ t, locale, next, later }: { t: T; locale: Locale; next: Termi
   );
 }
 
+/** Ein Dokument als Link zum Download über den Server (dokumente.md AK-3, AK-4) */
+function DokumentLink({
+  t,
+  locale,
+  d,
+  logo,
+}: {
+  t: T;
+  locale: Locale;
+  d: DokumentRow & { aktuell: boolean };
+  logo: boolean;
+}) {
+  return (
+    <a
+      href={`/kunden/dokumente/${encodeURIComponent(d.id)}`}
+      // Name eindeutig zusammengesetzt, beginnt mit dem sichtbaren Titel (WCAG 2.5.3)
+      aria-label={[d.titel, dateiInfo(d, locale), d.aktuell ? t.currentVersion : null].filter(Boolean).join(', ')}
+      className="group flex items-center gap-4 min-h-11 py-3 hover:bg-foreground/[0.03] transition-colors"
+    >
+      {logo ? (
+        // eslint-disable-next-line @next/next/no-img-element -- privates Bild über die Download-Route
+        <img
+          src={`/kunden/dokumente/${encodeURIComponent(d.id)}?vorschau=1`}
+          // Kritiker Dokumente 4: Name kommt aus dem aria-label des Links
+          alt=""
+          width={48}
+          height={48}
+          className="w-12 h-12 shrink-0 object-contain rounded-md border border-border bg-white p-1"
+        />
+      ) : (
+        <span
+          aria-hidden="true"
+          className="flex items-center justify-center w-12 h-12 shrink-0 rounded-md bg-foreground/[0.06] text-text2"
+        >
+          <Download size={18} />
+        </span>
+      )}
+      <span className="min-w-0 flex-1 flex flex-col">
+        <span className={`text-[15px] font-medium break-words ${d.aktuell ? 'text-foreground' : 'text-text2'}`}>
+          {d.titel}
+        </span>
+        <span className="text-[13px] text-text2">{dateiInfo(d, locale)}</span>
+      </span>
+      {d.aktuell && <span className={`${badge} shrink-0`}>{t.currentVersion}</span>}
+    </a>
+  );
+}
+
+/** Die neuesten aktuellen Dokumente auf der Übersicht (kunden-sidebar.md AK-4) */
+function NeuesteDokumente({
+  t,
+  locale,
+  dokumente,
+  mehr,
+}: {
+  t: T;
+  locale: Locale;
+  dokumente: DokumentRow[];
+  mehr: string;
+}) {
+  const neueste = dokumentGruppen(dokumente)
+    .flatMap((g) => g.dokumente.filter((d) => d.aktuell))
+    .sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at))
+    .slice(0, MAX_DOKUMENTE);
+  return (
+    <section aria-labelledby="neueste-titel" className={karte}>
+      <h2 id="neueste-titel" className={kopf}>
+        {t.latestDocuments}
+      </h2>
+      {neueste.length === 0 ? (
+        <p className="text-[15px] text-text2">{t.noDocuments}</p>
+      ) : (
+        <>
+          <ul role="list" className="flex flex-col divide-y divide-border border-y border-border">
+            {neueste.map((d) => (
+              <li key={d.id}>
+                <DokumentLink t={t} locale={locale} d={d} logo={d.art === 'logo'} />
+              </li>
+            ))}
+          </ul>
+          <Link href={mehr} className={`${mehrLink} mt-2`}>
+            {t.allDocumentsLink}
+            <ArrowRight size={14} aria-hidden="true" />
+          </Link>
+        </>
+      )}
+    </section>
+  );
+}
+
 /** Dokumente nach Art gruppiert, Download über den Server (functions/kundenbereich/dokumente.md) */
-function Documents({ t, locale, dokumente }: { t: T; locale: Locale; dokumente: DokumentRow[] }) {
+function Documents({ t, locale, dokumente, titel }: { t: T; locale: Locale; dokumente: DokumentRow[]; titel: string }) {
   const gruppen = dokumentGruppen(dokumente);
   return (
-    <section aria-labelledby="dokumente-titel" className={card}>
-      <h3 id="dokumente-titel" className={sectionTitle}>
-        {t.documents}
-      </h3>
+    <section aria-labelledby="dokumente-titel" className={karte}>
+      <h2 id="dokumente-titel" className={kopf}>
+        {titel}
+      </h2>
       {gruppen.length === 0 ? (
         <p className="text-[15px] text-text2">{t.noDocuments}</p>
       ) : (
         <div className="flex flex-col gap-8">
           {gruppen.map((g) => (
             <div key={g.art}>
-              <h4 id={`dokumente-${g.art}`} className="text-[15px] font-bold text-foreground mb-3">
+              <h3 id={`dokumente-${g.art}`} className="text-[15px] font-bold text-foreground mb-3">
                 {t.documentGroups[g.art]}
-              </h4>
+              </h3>
               <ul
                 role="list"
                 aria-labelledby={`dokumente-${g.art}`}
@@ -482,42 +663,7 @@ function Documents({ t, locale, dokumente }: { t: T; locale: Locale; dokumente: 
               >
                 {g.dokumente.map((d) => (
                   <li key={d.id}>
-                    <a
-                      href={`/kunden/dokumente/${encodeURIComponent(d.id)}`}
-                      // Name eindeutig zusammengesetzt, beginnt mit dem sichtbaren Titel (WCAG 2.5.3)
-                      aria-label={[d.titel, dateiInfo(d, locale), d.aktuell ? t.currentVersion : null]
-                        .filter(Boolean)
-                        .join(', ')}
-                      className="group flex items-center gap-4 min-h-11 py-3 hover:bg-foreground/[0.03] transition-colors"
-                    >
-                      {g.art === 'logo' ? (
-                        // eslint-disable-next-line @next/next/no-img-element -- privates Bild über die Download-Route
-                        <img
-                          src={`/kunden/dokumente/${encodeURIComponent(d.id)}?vorschau=1`}
-                          // Kritiker Dokumente 4: Name kommt aus dem aria-label des Links
-                          alt=""
-                          width={48}
-                          height={48}
-                          className="w-12 h-12 shrink-0 object-contain rounded-md border border-border bg-white p-1"
-                        />
-                      ) : (
-                        <span
-                          aria-hidden="true"
-                          className="flex items-center justify-center w-12 h-12 shrink-0 rounded-md bg-foreground/[0.06] text-text2"
-                        >
-                          <Download size={18} />
-                        </span>
-                      )}
-                      <span className="min-w-0 flex-1 flex flex-col">
-                        <span
-                          className={`text-[15px] font-medium break-words ${d.aktuell ? 'text-foreground' : 'text-text2'}`}
-                        >
-                          {d.titel}
-                        </span>
-                        <span className="text-[13px] text-text2">{dateiInfo(d, locale)}</span>
-                      </span>
-                      {d.aktuell && <span className={`${badge} shrink-0`}>{t.currentVersion}</span>}
-                    </a>
+                    <DokumentLink t={t} locale={locale} d={d} logo={g.art === 'logo'} />
                   </li>
                 ))}
               </ul>

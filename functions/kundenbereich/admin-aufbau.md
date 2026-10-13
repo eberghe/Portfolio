@@ -48,7 +48,7 @@ Erik am 2026-10-09: Die Verwaltung ist unübersichtlich. Alles sieht gleich aus,
 - AK-8: Ein Dialog hat `aria-modal`, eine Überschrift als Namen und „Schließen“. Nach Erfolg schließt er sich, der Fokus geht zurück auf den Button, und „Gespeichert.“ wird angesagt.
 - AK-9: Keine axe-Verstöße und kein horizontales Scrollen bei 360, 768 und 1280 px, hell und dunkel, auch mit offenem Dialog.
 - AK-10: Jeder Dialog mit Formular hat einen Fuß (`[data-dialog-fuss]`) außerhalb des Scrollbereichs. Sein letzter Button ist die Hauptaktion (Typ `submit`, gehört zum Formular), direkt davor steht „Abbrechen“. „Abbrechen“ schließt den Dialog ohne Speichern, der Fokus geht zurück auf den Auslöser.
-- AK-11: Im Dialog „Ablaufschritt bearbeiten“ steht „Entfernen“ im Fuß links außen, vor „Abbrechen“ und „Schritt speichern“.
+- AK-11: ~~Im Dialog „Ablaufschritt bearbeiten“ steht „Entfernen“ im Fuß links außen.~~ Ersetzt durch admin-bearbeiten.md AK-8: Der Dialog hat nur „Abbrechen“ und „Schritt speichern“, „Entfernen“ steht im ⋯-Menü des Schritts.
 - AK-12: Bei 360 px sind alle vier Bereiche vollständig sichtbar; die Bereichsleiste scrollt nicht.
 - AK-13: Unter `/kunden/admin` gibt es einen Ladezustand (`loading.tsx`) mit Bereichsleiste; der Bereich ergibt sich dort aus der Adresse. Die Admin-Prüfung läuft vorher im Layout, Nicht-Admins bekommen weiter Status 404.
 - AK-14: Zeilenaktionen bei Ablauf, Terminen und Dokumenten sind Icon-Buttons mit eindeutigem Namen und gleichlautendem Tooltip (`title`), mindestens 44 × 44 px.
@@ -56,7 +56,7 @@ Erik am 2026-10-09: Die Verwaltung ist unübersichtlich. Alles sieht gleich aus,
 - AK-16: Scheitert das Speichern, weil der Server nicht erreichbar ist, bleibt der Dialog offen, die Eingaben bleiben stehen, und im Dialog steht „Das hat nicht geklappt. Bitte prüf die Verbindung und versuch es noch einmal.“. Die Seite stürzt nicht ab. Gilt auch für „Entfernen“.
 - AK-17: „Dokument hochladen“ markiert einen leeren Titel und eine fehlende Datei gemeinsam, jeweils mit Text am Feld.
 - AK-18: Ein Klick neben den Dialog schließt ihn nicht.
-- AK-19: „Entfernen“ im Dialog-Fuß ist als zerstörende Aktion erkennbar (Fehlerfarbe), nicht wie „Abbrechen“.
+- AK-19: „Entfernen“ ist als zerstörende Aktion erkennbar (Fehlerfarbe), im ⋯-Menü und in der Rückfrage (admin-bearbeiten.md AK-2), nicht wie „Abbrechen“.
 - AK-20: Bei 360 px stehen die Icon-Buttons von Ablauf und Terminen rechts neben dem Titel, nicht darunter.
 
 ## Barrierefreiheit
@@ -109,7 +109,7 @@ Keine neuen Tabellen. Anfragen lädt `anfrage(api, id)`, Projekte und Kunden die
 2. Ein Netzfehler beim Speichern ersetzte die Seite durch die Fehlerseite. Jetzt Meldung im Dialog (AK-16).
 3. „Dokument hochladen“ markierte den leeren Titel nicht. Jetzt beide Felder (AK-17).
 4. Klick neben den Dialog verwarf Eingaben. Jetzt schließt nur noch X, „Abbrechen“ oder Escape (AK-18). Offen: Rückfrage bei geänderten Feldern vor „Abbrechen“/Escape.
-5. „Entfernen“ fragt mit dem Browser-Dialog nach und sah aus wie „Abbrechen“. Jetzt in Fehlerfarbe (AK-19). Offen: eigene Rückfrage statt Browser-Dialog.
+5. „Entfernen“ fragt mit dem Browser-Dialog nach und sah aus wie „Abbrechen“. Jetzt in Fehlerfarbe (AK-19). Erledigt mit admin-bearbeiten.md: eigene Rückfrage statt Browser-Dialog.
 6. Nach dem Bereichswechsel liegt der Fokus auf der Seite, Next sagt den Titel an. Titel der Übersicht jetzt einheitlich „Übersicht | Verwaltung“. Offen: Fokus auf die Überschrift.
 7. Der Fokusrahmen überdeckte den roten Rand eines fehlerhaften Felds. Jetzt ist der Fokusrahmen dort rot.
 8. Lange Button-Texte brechen im Fuß bei 360 px in zwei Zeilen um. Offen: kürzere Texte auf dem Handy.

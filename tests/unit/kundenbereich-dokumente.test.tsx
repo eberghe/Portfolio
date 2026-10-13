@@ -85,11 +85,12 @@ describe('Dokumente aufbereiten', () => {
 
 describe('Ansicht', () => {
   it('AK-3/AK-4: Abschnitt mit Gruppen, Linktext mit Angaben, Logo-Vorschau', () => {
-    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[PROJEKT]} />);
-    const section = screen.getByRole('region', { name: 'Dokumente' });
+    // kunden-sidebar.md AK-5: ganze Liste auf der Seite „Dokumente“
+    render(<Projektuebersicht locale="de" profil={ANNA} projekte={[PROJEKT]} bereich="dokumente" />);
+    const section = screen.getByRole('region', { name: 'Alle Dokumente' });
     expect(
       within(section)
-        .getAllByRole('heading', { level: 4 })
+        .getAllByRole('heading', { level: 3 })
         .map((h) => h.textContent),
     ).toEqual(['Verträge', 'Rechnungen', 'Logos', 'Weitere Dateien']);
     const vertrag = within(section).getByRole('link', {
@@ -103,16 +104,20 @@ describe('Ansicht', () => {
   });
 
   it('AK-6: englisch und ohne Dokumente', () => {
-    const { unmount } = render(<Projektuebersicht locale="en" profil={ANNA} projekte={[PROJEKT]} />);
-    const section = screen.getByRole('region', { name: 'Documents' });
+    const { unmount } = render(
+      <Projektuebersicht locale="en" profil={ANNA} projekte={[PROJEKT]} bereich="dokumente" />,
+    );
+    const section = screen.getByRole('region', { name: 'All documents' });
     expect(
       within(section)
-        .getAllByRole('heading', { level: 4 })
+        .getAllByRole('heading', { level: 3 })
         .map((h) => h.textContent),
     ).toEqual(['Contracts', 'Invoices', 'Logos', 'Other files']);
     expect(within(section).getAllByText('Current').length).toBeGreaterThan(0);
     unmount();
-    render(<Projektuebersicht locale="en" profil={ANNA} projekte={[{ ...PROJEKT, dokumente: [] }]} />);
+    render(
+      <Projektuebersicht locale="en" profil={ANNA} projekte={[{ ...PROJEKT, dokumente: [] }]} bereich="dokumente" />,
+    );
     expect(screen.getByText('No documents yet.')).toBeInTheDocument();
   });
 });

@@ -13,6 +13,11 @@ const enSlugs: Record<string, string> = {
   '/webdesign-kempten': '/web-design-kempten',
   '/kunden': '/clients',
   '/kunden/anmelden': '/clients/sign-in',
+  // Seiten des Kundenbereichs (functions/kundenbereich/kunden-sidebar.md Verhalten 2)
+  '/kunden/ablauf': '/clients/process',
+  '/kunden/termine': '/clients/meetings',
+  '/kunden/dokumente': '/clients/documents',
+  '/kunden/einstellungen': '/clients/settings',
 };
 const deSlugs = Object.fromEntries(Object.entries(enSlugs).map(([de, en]) => [en, de]));
 

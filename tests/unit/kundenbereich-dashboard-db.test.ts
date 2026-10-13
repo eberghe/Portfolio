@@ -30,6 +30,7 @@ beforeAll(async () => {
     'supabase/migrations/20261004000000_anfragen.sql',
     'supabase/migrations/20261008000000_kundenbereich.sql',
     'supabase/migrations/20261008200000_dashboard.sql',
+    'supabase/migrations/20261013100000_anfragen_loeschen.sql',
   );
   await db.exec(`
     insert into auth.users (id, email) values ('${ERIK}', 'erik@example.org'), ('${ANNA}', 'anna@a.example');
@@ -65,10 +66,23 @@ describe('Dashboard: Daten und Regeln', () => {
       await db.query(`update public.anfragen set status = 'beantwortet' where id = $1`, [ANFRAGE]);
       // nur der Status ist änderbar
       expect(await fails(`update public.anfragen set email = 'x@y.de'`)).toMatch(/permission/);
-      expect(await fails(`delete from public.anfragen`)).toMatch(/permission/);
       expect(await fails(`update public.projekt_umsatz set wahrscheinlichkeit = 101`)).toMatch(/check/);
     });
     expect((await rows(`select status from public.anfragen`))[0]!.status).toBe('beantwortet');
+  });
+
+  it('admin-bearbeiten.md AK-5: nur der Admin darf Anfragen löschen (Policy und Grant)', async () => {
+    for (const user of [null, ANNA])
+      await db.as(user, async () => {
+        await fails(`delete from public.anfragen`);
+      });
+    expect(await count('anfragen')).toBe(1);
+    await db.as(ERIK, async () => {
+      expect(await rows(`delete from public.anfragen where id = $1 returning name`, [ANFRAGE])).toEqual([
+        { name: 'Max' },
+      ]);
+    });
+    expect(await count('anfragen')).toBe(0);
   });
 
   it('AK-8: Ansprechpartner dürfen keinen Umsatz schreiben', async () => {

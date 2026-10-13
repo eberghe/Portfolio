@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { kundeStatus } from '@/app/actions/kundenbereich-admin';
+import { kundeLoeschen, kundeStatus } from '@/app/actions/kundenbereich-admin';
 import type { KundeZeile } from '@/lib/kundenbereich/admin/laden';
 import { freigabeText, KUNDEN_STATUS_OPTIONEN, optionLabel } from '@/lib/kundenbereich/admin/texte';
 import AktionenMenue from './AktionenMenue';
+import { kundeLoeschenText } from './loeschenTexte';
 import { badge, KundeAnlegen, tabelle as t } from './AdminListen';
 import AdminShell from './AdminShell';
 
@@ -58,6 +59,14 @@ export default function AdminKunden({ kunden }: { kunden: KundeZeile[] }) {
                         eintraege={[
                           { art: 'link', label: 'Öffnen', href: `/kunden/admin/kunden/${k.id}` },
                           { art: 'link', label: 'Neues Projekt', href: `/kunden/admin/projekte/neu?kunde=${k.id}` },
+                          {
+                            art: 'aktion',
+                            label: 'Löschen',
+                            aktion: kundeLoeschen,
+                            hidden: { id: k.id },
+                            gefahr: true,
+                            bestaetigen: kundeLoeschenText(k.name, pr, ap),
+                          },
                         ]}
                       />
                     </td>

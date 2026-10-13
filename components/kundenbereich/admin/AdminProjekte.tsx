@@ -1,10 +1,11 @@
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
-import { projektStatus } from '@/app/actions/kundenbereich-admin';
+import { projektLoeschen, projektStatus } from '@/app/actions/kundenbereich-admin';
 import { buttonClass } from '@/components/ui/Button';
 import { euro, projekteNachStatus, type DashboardProjekt } from '@/lib/kundenbereich/admin/dashboard';
 import { optionLabel, PROJEKT_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
 import AktionenMenue from './AktionenMenue';
+import { projektLoeschenText } from './loeschenTexte';
 import { badge, tabelle as t } from './AdminListen';
 import AdminShell from './AdminShell';
 
@@ -74,6 +75,14 @@ export default function AdminProjekte({ projekte }: { projekte: DashboardProjekt
                       eintraege={[
                         { art: 'link', label: 'Öffnen', href: `/kunden/admin/projekte/${p.id}` },
                         { art: 'link', label: 'So sieht es der Kunde', href: `/kunden?projekt=${p.id}` },
+                        {
+                          art: 'aktion',
+                          label: 'Löschen',
+                          aktion: projektLoeschen,
+                          hidden: { id: p.id },
+                          gefahr: true,
+                          bestaetigen: projektLoeschenText(p.titel),
+                        },
                       ]}
                     />
                   </td>

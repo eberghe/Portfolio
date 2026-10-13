@@ -113,3 +113,20 @@ export async function anfrageStatus(_: S, fd: FormData) {
 export async function projektMitAssistent(_: S, fd: FormData) {
   return go(A.projektMitAssistent, fd);
 }
+
+// functions/kundenbereich/admin-bearbeiten.md
+export async function schrittStatus(_: S, fd: FormData) {
+  return go(A.schrittStatus, fd);
+}
+export async function schritteSortieren(_: S, fd: FormData) {
+  return go(A.schritteSortieren, fd);
+}
+export async function projektLoeschen(_: S, fd: FormData) {
+  return go(A.projektLoeschen, fd);
+}
+export async function kundeLoeschen(_: S, fd: FormData) {
+  return go(A.kundeLoeschen, fd);
+}
+export async function anfrageLoeschen(_: S, fd: FormData) {
+  return go(A.anfrageLoeschen, fd);
+}

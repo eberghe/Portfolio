@@ -5,7 +5,7 @@ import { adminKontext } from '@/components/kundenbereich/admin/kontext';
 import { ACCESS } from '@/lib/kundenbereich/session';
 
 // functions/kundenbereich/admin-sidebar.md Verhalten 10
-export const metadata: Metadata = { title: 'Settings | Verwaltung', robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: 'Einstellungen | Verwaltung', robots: { index: false, follow: false } };
 
 /** E-Mail aus dem bereits geprüften Zugangstoken, nur zur Anzeige */
 function emailAusToken(token: string | undefined) {

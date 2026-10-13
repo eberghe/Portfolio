@@ -29,6 +29,11 @@ const aktionen = vi.hoisted(() =>
       'umsatzSpeichern',
       'anfrageStatus',
       'projektStatus',
+      'projektLoeschen',
+      'kundeLoeschen',
+      'anfrageLoeschen',
+      'schrittStatus',
+      'schritteSortieren',
       'kundeStatus',
       'projektMitAssistent',
     ].map((n) => [n, vi.fn(async (): Promise<AdminState> => ({ status: 'idle' }))]),
@@ -336,14 +341,16 @@ describe('Formulare hinter Buttons', () => {
       'aria-haspopup',
       'dialog',
     );
+    // admin-bearbeiten.md AK-10: Bearbeiten im Menü der Karte, im Kopf Neues Projekt und Löschen
     const m = menue('Bäckerei');
-    for (const name of ['Stammdaten bearbeiten', 'Logo hochladen'])
-      expect(within(m).getByRole('menuitem', { name })).toBeInTheDocument();
     expect(within(m).getByRole('menuitem', { name: 'Neues Projekt' })).toHaveAttribute(
       'href',
       `/kunden/admin/projekte/neu?kunde=${K}`,
     );
-    fireEvent.click(within(m).getByRole('menuitem', { name: 'Stammdaten bearbeiten' }));
+    fireEvent.keyDown(m, { key: 'Escape' });
+    expect(within(menue('Logo')).getByRole('menuitem', { name: 'Logo hochladen' })).toBeInTheDocument();
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
+    imMenue('Stammdaten', 'Stammdaten bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Stammdaten bearbeiten' });
     expect(within(dialog).getByLabelText(/^Name/)).toHaveValue('Bäckerei');
   });
@@ -353,10 +360,15 @@ describe('Formulare hinter Buttons', () => {
     expect(felder(container)).toHaveLength(0);
     for (const name of ['Ablaufschritt hinzufügen', 'Termin hinzufügen', 'Dokument hochladen'])
       expect(screen.getByRole('button', { name })).toHaveAttribute('aria-haspopup', 'dialog');
-    const m = menue(PROJEKT.titel);
-    for (const name of ['Projekt bearbeiten', 'Umsatz bearbeiten', 'Zuordnung ändern'])
+    for (const [karte, name] of [
+      ['Projekt', 'Projekt bearbeiten'],
+      ['Umsatz', 'Umsatz bearbeiten'],
+      ['Ansprechpartner', 'Zuordnung ändern'],
+    ]) {
+      const m = menue(karte!);
       expect(within(m).getByRole('menuitem', { name })).toBeInTheDocument();
-    fireEvent.keyDown(m, { key: 'Escape' });
+      fireEvent.keyDown(m, { key: 'Escape' });
+    }
     const umsatz = screen.getByRole('region', { name: 'Umsatz' });
     expect(umsatz).toHaveTextContent('12.000 €');
     expect(umsatz).toHaveTextContent('100 %');
@@ -364,7 +376,6 @@ describe('Formulare hinter Buttons', () => {
     imMenue('Schritt Design', 'Bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
     expect(within(dialog).getByLabelText(/^Titel Deutsch/)).toHaveValue('Design');
-    expect(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })).toBeInTheDocument();
   });
 });
 
@@ -383,7 +394,7 @@ describe('Dialog-Fuß und ruhigere Oberfläche (2026-10-13)', () => {
       ['Termin hinzufügen', 'Termin hinzufügen', 'Termin hinzufügen'],
       ['Dokument hochladen', 'Dokument hochladen', 'Dokument hochladen'],
     ] as const) {
-      if (knopf === 'Projekt bearbeiten') imMenue(PROJEKT.titel, knopf);
+      if (knopf === 'Projekt bearbeiten') imMenue('Projekt', knopf);
       else fireEvent.click(screen.getByRole('button', { name: knopf }));
       const dialog = screen.getByRole('dialog', { name: titel });
       const knoepfe = fussKnoepfe(dialog);
@@ -413,12 +424,12 @@ describe('Dialog-Fuß und ruhigere Oberfläche (2026-10-13)', () => {
     await waitFor(() => expect(knopf).toHaveFocus());
   });
 
-  it('AK-11: Entfernen links außen im Fuß des Schritt-Dialogs', () => {
+  it('AK-11: Schritt-Dialog nur mit Abbrechen und Speichern, Entfernen im ⋯-Menü (admin-bearbeiten.md AK-8)', () => {
     render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
     imMenue('Schritt Design', 'Bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
     const namen = fussKnoepfe(dialog).map((b) => b.getAttribute('aria-label') ?? b.textContent);
-    expect(namen).toEqual(['Entfernen: Schritt Design', 'Abbrechen', 'Schritt speichern']);
+    expect(namen).toEqual(['Abbrechen', 'Schritt speichern']);
   });
 
   it('AK-13: Ladezustand nur im Inhalt', async () => {
@@ -496,12 +507,16 @@ describe('Befunde Blinder Kritiker Dialoge (2026-10-13)', () => {
 
   it('AK-16: Netzfehler beim Entfernen stürzt nicht ab', async () => {
     aktionen.schrittEntfernen!.mockRejectedValueOnce(new TypeError('Failed to fetch'));
-    vi.spyOn(window, 'confirm').mockReturnValueOnce(true);
-    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
-    imMenue('Schritt Design', 'Bearbeiten');
-    const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
-    await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })));
-    await waitFor(() => expect(dialog).toHaveTextContent('Das hat nicht geklappt.'));
+    render(
+      <>
+        <p id="admin-fehler" />
+        <AdminProjekt projekt={PROJEKT} now={NOW} />
+      </>,
+    );
+    imMenue('Schritt Design', 'Entfernen');
+    const dialog = screen.getByRole('dialog', { name: 'Schritt entfernen?' });
+    await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Schritt entfernen' })));
+    await waitFor(() => expect(document.getElementById('admin-fehler')).toHaveTextContent('Das hat nicht geklappt.'));
   });
 
   it('AK-17: Upload markiert leeren Titel und fehlende Datei gemeinsam', async () => {
@@ -525,11 +540,13 @@ describe('Befunde Blinder Kritiker Dialoge (2026-10-13)', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
-  it('AK-19: Entfernen im Fuß in Fehlerfarbe', () => {
+  it('AK-19: Entfernen in Fehlerfarbe, in der Rückfrage auch der Bestätigen-Knopf', () => {
     render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
-    imMenue('Schritt Design', 'Bearbeiten');
-    const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
-    expect(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })).toHaveClass('text-error');
+    const m = menue('Schritt Design');
+    expect(within(m).getByRole('menuitem', { name: 'Entfernen' })).toHaveClass('text-error');
+    fireEvent.click(within(m).getByRole('menuitem', { name: 'Entfernen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Schritt entfernen?' });
+    expect(within(dialog).getByRole('button', { name: 'Schritt entfernen' })).toHaveClass('text-error');
     expect(within(dialog).getByRole('button', { name: 'Abbrechen' })).not.toHaveClass('text-error');
   });
 });

@@ -29,6 +29,11 @@ vi.mock('@/app/actions/kundenbereich-admin', () =>
       'umsatzSpeichern',
       'anfrageStatus',
       'projektStatus',
+      'projektLoeschen',
+      'kundeLoeschen',
+      'anfrageLoeschen',
+      'schrittStatus',
+      'schritteSortieren',
       'kundeStatus',
       'projektMitAssistent',
     ].map((n) => [n, vi.fn(async () => ({ status: 'idle' }))]),
@@ -201,10 +206,10 @@ describe('Verwaltung', () => {
     fireEvent.keyDown(anna, { key: 'Escape' });
     expect(screen.getByText('Noch nicht angemeldet')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Relaunch' })).toHaveAttribute('href', `/kunden/admin/projekte/${P}`);
-    imMenue('Bäckerei', 'Stammdaten bearbeiten');
+    imMenue('Stammdaten', 'Stammdaten bearbeiten');
     expect(within(screen.getByRole('dialog')).getByLabelText(/^Name/)).toHaveValue('Bäckerei');
     fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
-    imMenue('Bäckerei', 'Neues Logo hochladen');
+    imMenue('Logo', 'Neues Logo hochladen');
     expect(within(screen.getByRole('dialog')).getByLabelText(/^Datei/)).toHaveAttribute('type', 'file');
     fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
     fireEvent.click(screen.getByRole('button', { name: 'Ansprechpartner hinzufügen' }));
@@ -220,11 +225,12 @@ describe('Verwaltung', () => {
     );
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.getByRole('region', { name: 'Ansprechpartner' })).not.toHaveTextContent('Ben');
-    imMenue('Relaunch', 'Zuordnung ändern');
+    imMenue('Ansprechpartner', 'Zuordnung ändern');
     expect(screen.getByRole('checkbox', { name: 'Anna (anna@b.example)' })).toBeChecked();
     expect(screen.getByRole('checkbox', { name: 'Ben (ben@b.example)' })).not.toBeChecked();
     fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
-    expect(screen.getByText('4. Design')).toBeInTheDocument();
+    // admin-bearbeiten.md Verhalten 5: Nummer ist die Position im Ablauf
+    expect(screen.getByText('2. Design')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Ablaufschritt hinzufügen' }));
     expect(within(screen.getByRole('dialog')).getByLabelText(/^Reihenfolge/)).toHaveValue(5);
     fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
@@ -251,7 +257,7 @@ describe('Verwaltung', () => {
     const umsatz = screen.getByRole('region', { name: 'Umsatz' });
     expect(umsatz).toHaveTextContent('40 %');
     expect(umsatz).toHaveTextContent('1. März 2027');
-    imMenue('Relaunch', 'Umsatz bearbeiten');
+    imMenue('Umsatz', 'Umsatz bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Umsatz bearbeiten' });
     expect(within(dialog).getByLabelText(/^Auftragswert/)).toHaveValue('12.500,5');
     expect(within(dialog).getByLabelText(/^Wahrscheinlichkeit/)).toHaveValue(40);
@@ -281,7 +287,7 @@ describe('Verwaltung', () => {
     const ids = [...container.querySelectorAll('[id]')].map((e) => e.id);
     expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
     // 5: keine Browser-Blasen statt eigener Meldungen; Titel-Feld hat einen Namen
-    imMenue('Relaunch', 'Projekt bearbeiten');
+    imMenue('Projekt', 'Projekt bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Projekt bearbeiten' });
     for (const f of dialog.querySelectorAll('form')) expect(f).toHaveAttribute('novalidate');
     expect(within(dialog).getByRole('textbox', { name: /^Titel/ })).toHaveValue('Relaunch');

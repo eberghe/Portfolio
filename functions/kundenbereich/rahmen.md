@@ -18,7 +18,8 @@ Der Kundenbereich und die Verwaltung sind ein Arbeitsbereich und keine Marketing
    - Die Hauptnavigation, der Footer, die Ladeanimation und das weiche Scrollen (Lenis und CSS `scroll-behavior: smooth`) gibt es dort nicht.
 2. Der Link „Zum Inhalt springen“ bleibt erhalten.
 3. Der Dunkelmodus folgt der gespeicherten Wahl der Website, sonst der Systemeinstellung, ohne Aufblitzen.
-4. Admins ohne `?projekt=` landen beim Aufruf von `/kunden` oder `/en/clients` direkt auf der Verwaltung (`/kunden/admin`). Mit `?projekt=<id>` sehen sie weiter die Ansicht des Kunden („So sieht es der Kunde“).
+4. Nach der Anmeldung ersetzt die Sidebar die schmale Leiste (`kunden-sidebar.md`), wie in der Verwaltung. Anmeldung und Bestätigung behalten die Leiste.
+5. Admins ohne `?projekt=` landen beim Aufruf von `/kunden` oder `/en/clients` direkt auf der Verwaltung (`/kunden/admin`). Mit `?projekt=<id>` sehen sie weiter die Ansicht des Kunden („So sieht es der Kunde“).
 
 ## Akzeptanzkriterien
 

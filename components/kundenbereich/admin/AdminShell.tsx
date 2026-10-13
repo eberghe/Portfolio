@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-// Kopf und Inhalt einer Verwaltungsseite auf voller Breite neben der Sidebar
+// Kopf und Inhalt einer Seite auf voller Breite neben der Sidebar, in Verwaltung und Kundenbereich
 // (functions/kundenbereich/admin-sidebar.md Verhalten 5; Pfad auf Detailseiten: admin-aufbau.md Kritiker 11)
 
 export const adminSection = 'border-t border-border pt-8 mt-10';
@@ -11,9 +11,12 @@ export default function AdminShell({
   title,
   pfad = [],
   aside,
+  intro,
   children,
 }: {
   title: string;
+  /** Kurzer Text unter dem Titel, z. B. „Hallo, Anna“ im Kundenbereich (kunden-sidebar.md Verhalten 4) */
+  intro?: React.ReactNode;
   /** Pfadnavigation bis zur aktuellen Seite (ohne sie), nur auf Detailseiten */
   pfad?: { href: string; label: string }[];
   /** Status und ⋯-Menü bzw. Hauptaktion rechts neben dem Titel */
@@ -41,9 +44,12 @@ export default function AdminShell({
         </nav>
       )}
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 mb-6 lg:mb-8">
-        <h1 className="text-[24px] md:text-[28px] leading-[1.15] font-bold tracking-tight text-balance break-words min-w-0">
-          {title}
-        </h1>
+        <div className="min-w-0">
+          <h1 className="text-[24px] md:text-[28px] leading-[1.15] font-bold tracking-tight text-balance break-words">
+            {title}
+          </h1>
+          {intro && <p className="text-[14px] text-text2 mt-1">{intro}</p>}
+        </div>
         {/* Verhalten 12 (admin-aufbau.md): schmaler Innenabstand, damit zwei Buttons bei 360 px in eine Zeile passen */}
         {aside && (
           <div className="flex flex-wrap items-center gap-2 max-sm:[&_a]:px-4 max-sm:[&_button]:px-4">{aside}</div>

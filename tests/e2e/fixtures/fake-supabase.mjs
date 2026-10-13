@@ -253,6 +253,11 @@ createServer((req, res) => {
       });
       return;
     }
+    // admin-bearbeiten.md AK-5: Kunde löschen, Projekte und Ansprechpartner hängen per Kaskade dran
+    if (req.method === 'DELETE') {
+      const i = kunden.findIndex((x) => x.id === idParam);
+      return send(200, i < 0 ? [] : kunden.splice(i, 1));
+    }
     // admin-sidebar.md AK-8: Status und Stammdaten ändern
     if (req.method === 'PATCH')
       return void lies(req).then((row) => {
@@ -285,6 +290,20 @@ createServer((req, res) => {
       const p = idParam === P1 ? relaunch : neueProjekte.get(idParam);
       if (p && row?.status) p.status = row.status;
       send(200, p ? [{ ...p, id: idParam }] : []);
+    });
+  // admin-bearbeiten.md AK-5: Projekte eines Kunden vor dem Löschen
+  if (u.profil.art === 'admin' && path === '/rest/v1/kundenprojekte' && params.get('kunde_id'))
+    return send(200, params.get('kunde_id') === `eq.${K1}` ? [{ id: P1 }] : []);
+  // admin-bearbeiten.md AK-7 bis AK-9: Schritte sortieren und Status setzen; ändert die Daten nicht,
+  // damit andere Tests denselben Ablauf sehen
+  if (u.profil.art === 'admin' && path === '/rest/v1/projektschritte' && req.method === 'GET')
+    return send(
+      200,
+      params.get('projekt_id') === `eq.${P1}` ? relaunch.projektschritte.map((x) => ({ id: x.id })) : [],
+    );
+  if (u.profil.art === 'admin' && path === '/rest/v1/projektschritte' && req.method === 'PATCH')
+    return void lies(req).then((row) => {
+      send(200, [{ id: idParam, ...row }]);
     });
   if (u.profil.art === 'admin' && path === '/rest/v1/kundenprojekte' && idParam)
     return send(200, idParam === P1 ? [adminProjekt()] : neueProjekte.has(idParam) ? [neueProjekte.get(idParam)] : []);

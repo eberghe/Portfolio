@@ -25,7 +25,7 @@ const SEITEN = [
   `/kunden/admin/kunden/${K1}`,
   `/kunden/admin/projekte/${P1}`,
   '/kunden/admin/projekte/neu',
-  '/kunden/admin/settings',
+  '/kunden/admin/einstellungen',
 ];
 /** Öffnet das ⋯-Menü „Aktionen: <ziel>“ (admin-sidebar.md AK-7) */
 async function menue(page: Page, ziel: string) {
@@ -44,7 +44,7 @@ test('Verhalten 1-4: Erik kommt über die Bereiche zum Kunden und zum Projekt', 
   await login(page, 'erik');
   await openHydrated(page, '/kunden');
   await expect(page).toHaveURL(/\/kunden\/admin$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Home' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Übersicht' })).toBeVisible();
   const bereiche = page.getByRole('navigation', { name: 'Verwaltung' });
   await bereiche.getByRole('link', { name: 'Kunden' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Kunden' })).toBeVisible();
@@ -61,13 +61,14 @@ test('Verhalten 1-4: Erik kommt über die Bereiche zum Kunden und zum Projekt', 
   await expect(page.getByRole('main').locator('input:not([type="hidden"]), textarea, select')).toHaveCount(0);
   const hoehe = await page.getByRole('main').evaluate((el) => el.scrollHeight);
   expect(hoehe).toBeLessThan(4000);
-  await (await menue(page, 'Relaunch der Website')).getByRole('menuitem', { name: 'Zuordnung ändern' }).click();
+  // admin-bearbeiten.md AK-10: Aktionen im ⋯-Menü der Karte
+  await (await menue(page, 'Ansprechpartner')).getByRole('menuitem', { name: 'Zuordnung ändern' }).click();
   const dialog = page.getByRole('dialog', { name: 'Ansprechpartner im Projekt' });
   await expect(dialog.getByRole('checkbox', { name: /Anna/ })).toBeChecked();
   expect(await axe(page)).toEqual([]);
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Aktionen: Relaunch der Website' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Aktionen: Ansprechpartner' })).toBeFocused();
 });
 
 test('AK-3: Kunde anlegen im Dialog mit Prüfung und Weiterleitung', async ({ page }) => {
@@ -191,7 +192,7 @@ test('AK-2/AK-3/AK-4/AK-5: Sidebar ab 1024 px, sonst Leiste unten', async ({ pag
   await openHydrated(page, '/kunden/admin/projekte');
   const { width: breite, height: hoehe } = page.viewportSize()!;
   const nav = page.getByRole('navigation', { name: 'Verwaltung' });
-  const namen = ['Home', 'Projekte', 'Kunden', /^Anfragen/, 'Settings'];
+  const namen = ['Übersicht', 'Projekte', 'Kunden', /^Anfragen/, 'Einstellungen'];
   await expect(nav.getByRole('link')).toHaveCount(5);
   // AK-5 mit Zahl im Unit-Test; hier teilen sich die Geräte den Stand der Anfragen
   await expect(nav.getByRole('link', { name: 'Projekte' })).toHaveAttribute('aria-current', 'page');
@@ -239,7 +240,7 @@ test('AK-10/AK-15: Dialog-Fuß unten rechts, Kopf-Buttons in einer Zeile', async
   expect(Math.abs(anlegen.y - neu.y)).toBeLessThan(2);
 
   await openHydrated(page, `/kunden/admin/projekte/${P1}`);
-  await (await menue(page, 'Relaunch der Website')).getByRole('menuitem', { name: 'Projekt bearbeiten' }).click();
+  await (await menue(page, 'Projekt')).getByRole('menuitem', { name: 'Projekt bearbeiten' }).click();
   const dialog = page.getByRole('dialog', { name: 'Projekt bearbeiten' });
   const fuss = dialog.locator('[data-dialog-fuss]');
   await expect(fuss).toBeVisible();
@@ -255,7 +256,7 @@ test('AK-10/AK-15: Dialog-Fuß unten rechts, Kopf-Buttons in einer Zeile', async
   expect(Math.abs(abbrechen.y - speichern.y)).toBeLessThan(2);
   await fuss.getByRole('button', { name: 'Abbrechen' }).click();
   await expect(dialog).toBeHidden();
-  await expect(page.getByRole('button', { name: 'Aktionen: Relaunch der Website' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Aktionen: Projekt' })).toBeFocused();
 });
 
 test('AK-20: ⋯-Menüs von Ablauf und Terminen rechts neben dem Titel', async ({ page }) => {
@@ -279,4 +280,44 @@ test('admin-sidebar.md AK-16: unbekannte ID zeigt „Nicht gefunden“ in der Ve
   await expect(page.getByRole('navigation', { name: 'Verwaltung' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Zur Übersicht' })).toHaveAttribute('href', '/kunden/admin');
   expect(await axe(page)).toEqual([]);
+});
+
+// functions/kundenbereich/admin-bearbeiten.md AK-12
+test('admin-bearbeiten.md AK-12: Kunde löschen über die eigene Rückfrage', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, '/kunden/admin/kunden');
+  const name = `Wegwerfkunde ${test.info().project.name}`;
+  await page.getByRole('button', { name: 'Kunde anlegen' }).click();
+  const form = page.getByRole('dialog', { name: 'Kunde anlegen' });
+  await form.getByLabel(/^Name/).fill(name);
+  await form.getByRole('button', { name: 'Kunde anlegen' }).click();
+  await expect(page.getByRole('heading', { level: 1, name })).toBeVisible();
+  await (await menue(page, name)).getByRole('menuitem', { name: 'Löschen' }).click();
+  const frage = page.getByRole('dialog', { name: 'Kunde löschen?' });
+  await expect(frage.getByRole('button', { name: 'Abbrechen' })).toBeFocused();
+  expect(await axe(page)).toEqual([]);
+  await frage.getByRole('button', { name: 'Kunde löschen' }).click();
+  await expect(page).toHaveURL(/\/kunden\/admin\/kunden$/);
+  await expect(page.getByText(`${name} gelöscht.`)).toBeVisible();
+  await expect(page.getByRole('link', { name })).toHaveCount(0);
+});
+
+test('admin-bearbeiten.md AK-12: Ablauf per Ziehen sortieren', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, `/kunden/admin/projekte/${P1}`);
+  const ablauf = page.getByRole('region', { name: 'Ablauf' });
+  const griff = ablauf.getByRole('button', { name: 'Ziehen zum Sortieren: Erstgespräch' });
+  // Mausbewegungen außerhalb des Fensters kommen nicht an, deshalb Ziel und Griff zuerst ins Bild
+  await ablauf.getByText('3. Konzept und Design').scrollIntoViewIfNeeded();
+  await griff.scrollIntoViewIfNeeded();
+  // unteres Ende der dritten Zeile, also hinter deren Mitte
+  const ziel = (await ablauf.getByRole('listitem').nth(2).boundingBox())!;
+  const g = (await griff.boundingBox())!;
+  await page.mouse.move(g.x + g.width / 2, g.y + g.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(g.x + g.width / 2, ziel.y + ziel.height - 2, { steps: 8 });
+  await page.mouse.up();
+  await expect(ablauf.getByText('3. Erstgespräch')).toBeVisible();
+  await expect(ablauf.getByText('1. Analyse der bestehenden Website')).toBeVisible();
+  await expect(page.getByText('Erstgespräch jetzt an Position 3 von 6.')).toBeVisible();
 });

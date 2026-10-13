@@ -10,6 +10,18 @@ export const PROJEKT_STATUS_OPTIONEN = [
   { value: 'abgeschlossen', label: 'Abgeschlossen' },
   { value: 'pausiert', label: 'Pausiert' },
 ];
+/** Status eines Kunden (functions/kundenbereich/admin-sidebar.md Verhalten 8) */
+export const KUNDEN_STATUS_OPTIONEN = [
+  { value: 'interessent', label: 'Interessent' },
+  { value: 'aktiv', label: 'Aktiv' },
+  { value: 'pausiert', label: 'Pausiert' },
+  { value: 'ehemalig', label: 'Ehemalig' },
+];
+export const ANFRAGE_STATUS_OPTIONEN = [
+  { value: 'neu', label: 'Neu' },
+  { value: 'beantwortet', label: 'Beantwortet' },
+  { value: 'erledigt', label: 'Erledigt' },
+];
 export const SCHRITT_STATUS_OPTIONEN = [
   { value: 'offen', label: 'Offen' },
   { value: 'aktiv', label: 'Läuft gerade' },

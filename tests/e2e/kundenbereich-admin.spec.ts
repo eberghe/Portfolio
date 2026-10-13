@@ -25,7 +25,13 @@ const SEITEN = [
   `/kunden/admin/kunden/${K1}`,
   `/kunden/admin/projekte/${P1}`,
   '/kunden/admin/projekte/neu',
+  '/kunden/admin/settings',
 ];
+/** Öffnet das ⋯-Menü „Aktionen: <ziel>“ (admin-sidebar.md AK-7) */
+async function menue(page: Page, ziel: string) {
+  await page.getByRole('button', { name: `Aktionen: ${ziel}` }).click();
+  return page.getByRole('menu', { name: `Aktionen: ${ziel}` });
+}
 
 test('AK-1: Verwaltung nur für Admins, sonst 404', async ({ page, request }) => {
   for (const path of SEITEN) expect((await request.get(path)).status(), path).toBe(404);
@@ -38,8 +44,8 @@ test('Verhalten 1-4: Erik kommt über die Bereiche zum Kunden und zum Projekt', 
   await login(page, 'erik');
   await openHydrated(page, '/kunden');
   await expect(page).toHaveURL(/\/kunden\/admin$/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Verwaltung' })).toBeVisible();
-  const bereiche = page.getByRole('navigation', { name: 'Bereiche der Verwaltung' });
+  await expect(page.getByRole('heading', { level: 1, name: 'Home' })).toBeVisible();
+  const bereiche = page.getByRole('navigation', { name: 'Verwaltung' });
   await bereiche.getByRole('link', { name: 'Kunden' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Kunden' })).toBeVisible();
   await expect(page.getByText('Logo-Freigabe erteilt am 8. Okt. 2026')).toBeVisible();
@@ -55,13 +61,13 @@ test('Verhalten 1-4: Erik kommt über die Bereiche zum Kunden und zum Projekt', 
   await expect(page.getByRole('main').locator('input:not([type="hidden"]), textarea, select')).toHaveCount(0);
   const hoehe = await page.getByRole('main').evaluate((el) => el.scrollHeight);
   expect(hoehe).toBeLessThan(4000);
-  await page.getByRole('button', { name: 'Zuordnung ändern' }).click();
+  await (await menue(page, 'Relaunch der Website')).getByRole('menuitem', { name: 'Zuordnung ändern' }).click();
   const dialog = page.getByRole('dialog', { name: 'Ansprechpartner im Projekt' });
   await expect(dialog.getByRole('checkbox', { name: /Anna/ })).toBeChecked();
   expect(await axe(page)).toEqual([]);
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
-  await expect(page.getByRole('button', { name: 'Zuordnung ändern' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Aktionen: Relaunch der Website' })).toBeFocused();
 });
 
 test('AK-3: Kunde anlegen im Dialog mit Prüfung und Weiterleitung', async ({ page }) => {
@@ -119,15 +125,17 @@ test('Dashboard: Kennzahlen, Diagramme, Hilfe, Termine und Anfragen (admin-aufba
   await page.getByRole('region', { name: 'Neue Anfragen' }).getByRole('link', { name: 'Clara Muster' }).click();
   await expect(page.getByRole('heading', { level: 1, name: 'Clara Muster' })).toBeVisible();
   await expect(page.getByRole('main')).toContainText('Wir brauchen eine neue Website.');
-  await page.getByRole('combobox', { name: 'Status: Clara Muster' }).selectOption('beantwortet');
-  await page.getByRole('button', { name: 'Status speichern: Clara Muster' }).click();
-  await expect(page.getByText('Status gespeichert.')).toBeVisible();
+  // admin-sidebar.md AK-7: Status im ⋯-Menü, speichert sofort
+  await (await menue(page, 'Clara Muster')).getByRole('menuitemradio', { name: 'Beantwortet' }).click();
+  await expect(page.locator('#admin-meldung')).toHaveText('Status geändert.');
+  await expect(page.getByRole('main')).toContainText('Beantwortet');
   await expect(page.getByRole('link', { name: 'Projekt anlegen: Clara Muster' })).toHaveAttribute(
     'href',
     /\/kunden\/admin\/projekte\/neu\?anfrage=/,
   ); // Zurück auf „Neu“, das nachgebildete Supabase teilt den Stand zwischen den Geräten
-  await page.getByRole('combobox', { name: 'Status: Clara Muster' }).selectOption('neu');
-  await page.getByRole('button', { name: 'Status speichern: Clara Muster' }).click();
+  const zurueck = (await menue(page, 'Clara Muster')).getByRole('menuitemradio', { name: 'Neu' });
+  await expect(zurueck).toHaveAttribute('aria-checked', 'false');
+  await zurueck.click();
   await expect.poll(async () => (await page.request.get('/kunden/admin')).text()).toContain('Clara Muster');
 });
 
@@ -177,26 +185,64 @@ for (const scheme of ['light', 'dark'] as const) {
   });
 }
 
-// admin-aufbau.md AK-10, AK-12, AK-15 (Erik, 2026-10-13)
-test('AK-10/AK-12/AK-15: Dialog-Fuß unten rechts, Bereiche ohne Scrollen, Kopf-Buttons in einer Zeile', async ({
-  page,
-}) => {
+// admin-sidebar.md AK-2 bis AK-5 (Erik, 2026-10-13)
+test('AK-2/AK-3/AK-4/AK-5: Sidebar ab 1024 px, sonst Leiste unten', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, '/kunden/admin/projekte');
+  const { width: breite, height: hoehe } = page.viewportSize()!;
+  const nav = page.getByRole('navigation', { name: 'Verwaltung' });
+  const namen = ['Home', 'Projekte', 'Kunden', /^Anfragen/, 'Settings'];
+  await expect(nav.getByRole('link')).toHaveCount(5);
+  // AK-5 mit Zahl im Unit-Test; hier teilen sich die Geräte den Stand der Anfragen
+  await expect(nav.getByRole('link', { name: 'Projekte' })).toHaveAttribute('aria-current', 'page');
+  const main = (await page.getByRole('main').boundingBox())!;
+  if (breite >= 1024) {
+    const leiste = (await page.getByRole('banner').boundingBox())!;
+    expect(leiste.x).toBe(0);
+    expect(leiste.height).toBeGreaterThanOrEqual(hoehe - 1);
+    expect(main.x).toBeGreaterThanOrEqual(leiste.x + leiste.width - 1);
+    // AK-3: einklappen, Namen bleiben, Wahl bleibt nach dem Neuladen
+    const ein = page.getByRole('button', { name: 'Seitenleiste einklappen' });
+    await expect(ein).toHaveAttribute('aria-expanded', 'true');
+    await ein.click();
+    await expect(ein).toHaveAttribute('aria-expanded', 'false');
+    await page.reload();
+    await expect(page.getByRole('button', { name: 'Seitenleiste einklappen' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+    expect((await page.getByRole('banner').boundingBox())!.width).toBeLessThanOrEqual(80);
+    for (const name of namen) await expect(nav.getByRole('link', { name })).toBeVisible();
+    expect(await axe(page)).toEqual([]);
+    await page.getByRole('button', { name: 'Seitenleiste einklappen' }).click();
+  } else {
+    // AK-4: Leiste unten, fünf Ziele nebeneinander, mindestens 44 px hoch
+    const n = (await nav.boundingBox())!;
+    expect(Math.round(n.y + n.height)).toBe(hoehe);
+    for (const name of namen) {
+      const box = (await nav.getByRole('link', { name }).boundingBox())!;
+      expect(box.height).toBeGreaterThanOrEqual(44);
+      expect(box.x + box.width).toBeLessThanOrEqual(breite + 0.5);
+      expect(Math.abs(box.y - n.y)).toBeLessThan(2);
+    }
+    // der Inhalt endet über der Leiste
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    const letzte = (await page.getByRole('main').locator('table, p').last().boundingBox())!;
+    expect(letzte.y + letzte.height).toBeLessThanOrEqual(n.y + 1);
+  }
+  expect(await overflow(page)).toBeLessThanOrEqual(0);
+});
+
+// admin-aufbau.md AK-10, AK-15 (Erik, 2026-10-13)
+test('AK-10/AK-15: Dialog-Fuß unten rechts, Kopf-Buttons in einer Zeile', async ({ page }) => {
   await login(page, 'erik');
   await openHydrated(page, '/kunden/admin');
-  const breite = page.viewportSize()!.width;
-  const nav = page.getByRole('navigation', { name: 'Bereiche der Verwaltung' });
-  expect(await nav.evaluate((el) => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(0);
-  for (const name of ['Übersicht', 'Projekte', 'Kunden', 'Anfragen']) {
-    const box = (await nav.getByRole('link', { name }).boundingBox())!;
-    expect(box.x).toBeGreaterThanOrEqual(0);
-    expect(box.x + box.width, name).toBeLessThanOrEqual(breite);
-  }
   const anlegen = (await page.getByRole('button', { name: 'Kunde anlegen' }).boundingBox())!;
   const neu = (await page.getByRole('link', { name: 'Neues Projekt' }).boundingBox())!;
   expect(Math.abs(anlegen.y - neu.y)).toBeLessThan(2);
 
   await openHydrated(page, `/kunden/admin/projekte/${P1}`);
-  await page.getByRole('button', { name: 'Projekt bearbeiten' }).click();
+  await (await menue(page, 'Relaunch der Website')).getByRole('menuitem', { name: 'Projekt bearbeiten' }).click();
   const dialog = page.getByRole('dialog', { name: 'Projekt bearbeiten' });
   const fuss = dialog.locator('[data-dialog-fuss]');
   await expect(fuss).toBeVisible();
@@ -212,19 +258,19 @@ test('AK-10/AK-12/AK-15: Dialog-Fuß unten rechts, Bereiche ohne Scrollen, Kopf-
   expect(Math.abs(abbrechen.y - speichern.y)).toBeLessThan(2);
   await fuss.getByRole('button', { name: 'Abbrechen' }).click();
   await expect(dialog).toBeHidden();
-  await expect(page.getByRole('button', { name: 'Projekt bearbeiten' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Aktionen: Relaunch der Website' })).toBeFocused();
 });
 
-test('AK-20: Icon-Buttons von Ablauf und Terminen rechts neben dem Titel', async ({ page }) => {
+test('AK-20: ⋯-Menüs von Ablauf und Terminen rechts neben dem Titel', async ({ page }) => {
   await login(page, 'erik');
   await openHydrated(page, `/kunden/admin/projekte/${P1}`);
   const ablauf = page.getByRole('region', { name: 'Ablauf' });
   const titel = (await ablauf.getByText('1. Erstgespräch').boundingBox())!;
-  const knopf = (await ablauf.getByRole('button', { name: 'Bearbeiten: Erstgespräch' }).boundingBox())!;
+  const knopf = (await ablauf.getByRole('button', { name: 'Aktionen: Schritt Erstgespräch' }).boundingBox())!;
   expect(knopf.x).toBeGreaterThan(titel.x + titel.width - 1);
   expect(knopf.y).toBeLessThan(titel.y + titel.height);
   const termine = page.getByRole('region', { name: 'Termine' });
   const t = (await termine.getByRole('heading', { name: 'Design-Review' }).boundingBox())!;
-  const weg = (await termine.getByRole('button', { name: 'Entfernen: Termin Design-Review' }).boundingBox())!;
+  const weg = (await termine.getByRole('button', { name: 'Aktionen: Termin Design-Review' }).boundingBox())!;
   expect(weg.y).toBeLessThan(t.y + t.height);
 });

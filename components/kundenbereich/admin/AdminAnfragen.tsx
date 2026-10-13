@@ -1,30 +1,62 @@
+import Link from 'next/link';
+import { anfrageStatus } from '@/app/actions/kundenbereich-admin';
 import type { Anfrage } from '@/lib/kundenbereich/admin/dashboard';
-import { AnfrageListe, karte } from './AdminListen';
+import { ANFRAGE_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
+import { datum } from '@/lib/kundenbereich/projekte';
+import AktionenMenue from './AktionenMenue';
+import { ANFRAGE_STATUS_TEXT, badge, leistung, tabelle as t } from './AdminListen';
 import AdminShell from './AdminShell';
 
-// Alle Anfragen auf einer eigenen Seite (functions/kundenbereich/admin-aufbau.md Verhalten 3, AK-5)
+// Alle Anfragen als Tabelle, neueste zuerst (functions/kundenbereich/admin-sidebar.md Verhalten 6 und 7, AK-6)
 
 export default function AdminAnfragen({ anfragen }: { anfragen: Anfrage[] }) {
-  const offen = anfragen.filter((a) => a.status !== 'erledigt');
-  const erledigt = anfragen.filter((a) => a.status === 'erledigt');
   return (
-    <AdminShell title="Anfragen" bereich="anfragen">
-      <section aria-label="Offene Anfragen" className={karte}>
-        {offen.length === 0 ? (
-          <p className="text-[15px] text-text2">Keine offenen Anfragen.</p>
-        ) : (
-          <AnfrageListe anfragen={offen} />
-        )}
-      </section>
-      {erledigt.length > 0 && (
-        <details className={`${karte} mt-4`}>
-          <summary className="cursor-pointer min-h-11 flex items-center text-[15px] font-bold">
-            Erledigt ({erledigt.length})
-          </summary>
-          <div className="mt-3">
-            <AnfrageListe anfragen={erledigt} />
-          </div>
-        </details>
+    <AdminShell title="Anfragen">
+      {anfragen.length === 0 ? (
+        <p className="text-[15px] text-text2">Noch keine Anfragen.</p>
+      ) : (
+        <div className={t.rahmen}>
+          <table aria-label="Anfragen" className={t.table}>
+            <thead className={t.thead}>
+              <tr>
+                {['Name', 'Eingang', 'Leistungen', 'Status'].map((h) => (
+                  <th key={h} scope="col" className={t.th}>
+                    {h}
+                  </th>
+                ))}
+                <th scope="col" className={t.th}>
+                  <span className="sr-only">Aktionen</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className={t.tbody}>
+              {anfragen.map((a) => (
+                <tr key={a.id} className={t.tr}>
+                  <td className={t.tdName}>
+                    <Link href={`/kunden/admin/anfragen/${a.id}`} className={t.name}>
+                      {a.name}
+                    </Link>
+                  </td>
+                  <td className={`${t.td} whitespace-nowrap`}>{datum(a.created_at.slice(0, 10), 'de')}</td>
+                  <td className={t.td}>{a.leistungen.map(leistung).join(', ') || '–'}</td>
+                  <td className={t.td}>
+                    <span className={badge}>{ANFRAGE_STATUS_TEXT[a.status]}</span>
+                  </td>
+                  <td className={t.tdAktion}>
+                    <AktionenMenue
+                      name={a.name}
+                      status={{ aktion: anfrageStatus, id: a.id, wert: a.status, optionen: ANFRAGE_STATUS_OPTIONEN }}
+                      eintraege={[
+                        { art: 'link', label: 'Öffnen', href: `/kunden/admin/anfragen/${a.id}` },
+                        { art: 'link', label: 'Projekt anlegen', href: `/kunden/admin/projekte/neu?anfrage=${a.id}` },
+                      ]}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </AdminShell>
   );

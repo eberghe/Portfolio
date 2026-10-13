@@ -7,10 +7,13 @@ import type { Anfrage, DashboardDaten, DashboardProjekt, DashboardTermin, Umsatz
 // Daten der Verwaltung, gelesen mit Eriks Token (functions/kundenbereich/admin.md)
 
 export type Freigabe = 'offen' | 'erteilt' | 'widerrufen';
+/** admin-sidebar.md Verhalten 8 */
+export type KundenStatus = 'interessent' | 'aktiv' | 'pausiert' | 'ehemalig';
 
 export interface KundeZeile {
   id: string;
   name: string;
+  status: KundenStatus;
   logo_freigabe: Freigabe;
   logo_freigabe_am: string | null;
   kundenprojekte: { count: number }[];
@@ -30,6 +33,7 @@ export interface Ansprechpartner {
 export interface KundeDetail {
   id: string;
   name: string;
+  status: KundenStatus;
   website_url: string | null;
   logo_pfad: string | null;
   logo_freigabe: Freigabe;
@@ -54,14 +58,14 @@ export type ProjektDetail = Omit<ProjektRow, 'kunden' | 'dokumente'> & {
 
 export const kundenListe = (api: AdminApi) =>
   api.get<KundeZeile>('kunden', {
-    select: 'id,name,logo_freigabe,logo_freigabe_am,kundenprojekte(count),ansprechpartner(count)',
+    select: 'id,name,status,logo_freigabe,logo_freigabe_am,kundenprojekte(count),ansprechpartner(count)',
     order: 'name.asc',
   });
 
 export async function kundeDetail(api: AdminApi, id: string) {
   const [k] = await api.get<KundeDetail>('kunden', {
     select:
-      'id,name,website_url,logo_pfad,logo_freigabe,logo_freigabe_am,' +
+      'id,name,status,website_url,logo_pfad,logo_freigabe,logo_freigabe_am,' +
       'ansprechpartner(id,name,email,rolle,telefon,sprache,user_id),' +
       'kundenprojekte(id,titel,status,created_at),' +
       'logo_freigaben(id,entscheidung,am,ansprechpartner(name))',
@@ -130,6 +134,12 @@ export async function anfrage(api: AdminApi, id: string) {
 
 const ANFRAGE_FELDER =
   'id,created_at,name,email,telefon,website,leistungen,zeitrahmen,budget,beschreibung,status,sprache';
+
+/** Zahl der Anfragen mit Status „Neu“ für die Sidebar (admin-sidebar.md AK-5) */
+export async function neueAnfragenZahl(api: AdminApi) {
+  const rows = await api.get<{ id: string; status: string }>('anfragen', { select: 'id,status', status: 'eq.neu' });
+  return rows.filter((a) => a.status === 'neu').length;
+}
 
 /** Alle Anfragen für die Seite Anfragen (admin-aufbau.md Verhalten 3) */
 export const anfragenListe = (api: AdminApi) =>

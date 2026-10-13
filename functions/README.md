@@ -50,6 +50,7 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Kundensicht als Dashboard](kundenbereich/kunden-dashboard.md)
 - [Eigener Rahmen ohne Navigation und Footer](kundenbereich/rahmen.md)
 - [Verwaltung übersichtlich: Bereiche, Dialoge, Hilfe](kundenbereich/admin-aufbau.md)
+- [Verwaltung als Dashboard mit Sidebar](kundenbereich/admin-sidebar.md)
 
 ## Qualität
 

@@ -40,9 +40,10 @@ test('AK-1/AK-4: Admin landet auf der Verwaltung, ohne Website-Rahmen', async ({
   await login(page, 'erik');
   await openHydrated(page, '/kunden?animationstest');
   await expect(page).toHaveURL(/\/kunden\/admin/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Verwaltung' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Home' })).toBeVisible();
   await ohneWebsiteRahmen(page);
-  await page.getByRole('link', { name: 'Zur Website', exact: true }).click();
+  // admin-sidebar.md AK-2: „Zur Website“ steht in der Sidebar bzw. oben in der schmalen Leiste
+  await page.getByRole('banner').getByRole('link', { name: 'Zur Website', exact: true }).click();
   await expect(page.getByRole('navigation', { name: 'Hauptnavigation' })).toBeVisible();
   // Login-Icon in der Leiste ab 640 px, darunter im Menü (navigation-und-footer.md AK-31)
   if (test.info().project.name === 'mobile-360') await page.getByRole('button', { name: 'Menü' }).click();

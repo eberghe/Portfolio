@@ -1,17 +1,25 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { buttonClass, iconButtonClass } from '@/components/ui/Button';
 
 // Formular hinter einem Button in einem modalen Dialog (functions/kundenbereich/admin-aufbau.md Verhalten 7, AK-8)
 
-/** Meldung in der Live-Region der Verwaltung (AdminShell), wenn der eigene Platz verschwunden ist */
+/**
+ * Meldung in der Live-Region der Verwaltung; im Rahmen der Verwaltung zugleich ein kurzer sichtbarer Hinweis
+ * (admin-sidebar.md AK-7), der nach einigen Sekunden verschwindet.
+ */
+let meldungsTimer: ReturnType<typeof setTimeout> | undefined;
 export function melden(text: string) {
   const ziel = document.getElementById('admin-meldung');
   if (!ziel) return;
   ziel.textContent = '';
-  requestAnimationFrame(() => (ziel.textContent = text));
+  clearTimeout(meldungsTimer);
+  requestAnimationFrame(() => {
+    ziel.textContent = text;
+    meldungsTimer = setTimeout(() => (ziel.textContent = ''), 5000);
+  });
 }
 
 type DialogApi = { schliessen: (meldung?: string) => void };
@@ -41,27 +49,10 @@ export default function AdminDialog({
   nurIcon?: boolean;
   children: ReactNode;
 }) {
-  const [offen, setOffen] = useState(false);
   const [meldung, setMeldung] = useState('');
   const knopf = useRef<HTMLButtonElement>(null);
   const heading = title ?? label;
-
-  const schliessen = (m?: string) => {
-    const karte = knopf.current?.closest('section');
-    setOffen(false);
-    setMeldung(m ?? '');
-    // Der Dialog wird entfernt; der Fokus geht zurück auf den Auslöser (AK-8)
-    requestAnimationFrame(() => {
-      if (knopf.current?.isConnected) return knopf.current.focus();
-      // Kritiker Aufbau 3: Auslöser ist mit dem Eintrag verschwunden, z. B. nach „Entfernen“
-      if (m) melden(m);
-      const ziel = karte?.isConnected ? karte.querySelector<HTMLElement>('h2') : null;
-      if (ziel) {
-        ziel.tabIndex = -1;
-        ziel.focus();
-      }
-    });
-  };
+  const steuerung = useDialogSteuerung(knopf, undefined, setMeldung);
 
   return (
     <span className="inline-flex flex-wrap items-center gap-y-1">
@@ -74,7 +65,7 @@ export default function AdminDialog({
         title={nurIcon ? (name ?? label) : undefined}
         onClick={() => {
           setMeldung('');
-          setOffen(true);
+          steuerung.oeffnen();
         }}
       >
         {icon}
@@ -84,14 +75,66 @@ export default function AdminDialog({
       <span aria-live="polite" className="text-[13px] text-text2 [&:not(:empty)]:ml-3">
         {meldung}
       </span>
-      {offen && (
-        <DialogContext.Provider value={{ schliessen }}>
-          <Fenster title={heading} onClose={() => schliessen()}>
-            {children}
-          </Fenster>
-        </DialogContext.Provider>
+      {steuerung.offen && (
+        <DialogFenster title={heading} steuerung={steuerung}>
+          {children}
+        </DialogFenster>
       )}
     </span>
+  );
+}
+
+type Steuerung = ReturnType<typeof useDialogSteuerung>;
+
+/**
+ * Öffnen und Schließen eines Dialogs mit Fokus-Rückgabe an den Auslöser (AK-8). `inline` zeigt die Meldung
+ * neben dem Auslöser; ohne sie geht die Meldung an die Live-Region der Verwaltung, z. B. bei ⋯-Menüs.
+ */
+export function useDialogSteuerung(
+  knopf: RefObject<HTMLElement | null>,
+  nachSchliessen?: () => void,
+  inline?: (meldung: string) => void,
+) {
+  const [offen, setOffen] = useState(false);
+  const schliessen = (m?: string) => {
+    const karte = knopf.current?.closest('section');
+    setOffen(false);
+    inline?.(m ?? '');
+    nachSchliessen?.();
+    // Der Dialog wird entfernt; der Fokus geht zurück auf den Auslöser (AK-8)
+    requestAnimationFrame(() => {
+      if (knopf.current?.isConnected) {
+        if (m && !inline) melden(m);
+        return knopf.current.focus();
+      }
+      // Kritiker Aufbau 3: Auslöser ist mit dem Eintrag verschwunden, z. B. nach „Entfernen“
+      if (m) melden(m);
+      const ziel = karte?.isConnected ? karte.querySelector<HTMLElement>('h2') : null;
+      if (ziel) {
+        ziel.tabIndex = -1;
+        ziel.focus();
+      }
+    });
+  };
+  return { offen, oeffnen: () => setOffen(true), schliessen };
+}
+
+/** Modaler Dialog mit Kontext für Formulare (schließen nach Erfolg) */
+export function DialogFenster({
+  title,
+  steuerung,
+  children,
+}: {
+  title: string;
+  steuerung: Steuerung;
+  children: ReactNode;
+}) {
+  return (
+    <DialogContext.Provider value={{ schliessen: steuerung.schliessen }}>
+      <Fenster title={title} onClose={() => steuerung.schliessen()}>
+        {children}
+      </Fenster>
+    </DialogContext.Provider>
   );
 }
 

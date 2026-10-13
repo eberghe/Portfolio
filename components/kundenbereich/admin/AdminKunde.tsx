@@ -1,18 +1,25 @@
-import { Pencil, Plus, Upload, UserPlus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import {
   ansprechpartnerEinladen,
   ansprechpartnerEntfernen,
   ansprechpartnerHinzufuegen,
   kundeSpeichern,
+  kundeStatus,
   logoUebernehmen,
   logoVorbereiten,
 } from '@/app/actions/kundenbereich-admin';
-import { buttonClass } from '@/components/ui/Button';
+import { iconButtonClass } from '@/components/ui/Button';
 import type { KundeDetail } from '@/lib/kundenbereich/admin/laden';
-import { freigabeText, optionLabel, PROJEKT_STATUS_OPTIONEN, SPRACH_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
+import {
+  freigabeText,
+  KUNDEN_STATUS_OPTIONEN,
+  optionLabel,
+  PROJEKT_STATUS_OPTIONEN,
+  SPRACH_OPTIONEN,
+} from '@/lib/kundenbereich/admin/texte';
 import { datum } from '@/lib/kundenbereich/projekte';
-import ActionButton from './ActionButton';
+import AktionenMenue from './AktionenMenue';
 import AdminDialog from './AdminDialog';
 import AdminForm from './AdminForm';
 import { badge, karte, kartenTitel, zeile, titelLink } from './AdminListen';
@@ -21,27 +28,74 @@ import UploadForm from './UploadForm';
 
 // Ein Kunde als Übersicht, Formulare in Dialogen (functions/kundenbereich/admin.md Verhalten 3, admin-aufbau.md Verhalten 5)
 
+const zeileMitAktion = 'flex items-center justify-between gap-3 py-3 border-t border-border first:border-0 first:pt-0';
+
 export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
+  const stammForm = (
+    <AdminForm
+      id="kunde"
+      action={kundeSpeichern}
+      submitLabel="Stammdaten speichern"
+      hidden={{ id: k.id }}
+      felder={[
+        { name: 'name', label: 'Name', required: true, defaultValue: k.name },
+        {
+          name: 'website_url',
+          label: 'Website',
+          type: 'url',
+          defaultValue: k.website_url ?? '',
+          hint: 'Mit https://',
+        },
+      ]}
+    />
+  );
+  const logoForm = (
+    <UploadForm
+      id="logo-upload"
+      prepare={logoVorbereiten}
+      finish={logoUebernehmen}
+      hidden={{ kunde_id: k.id }}
+      accept="image/png,image/jpeg,image/svg+xml,image/webp"
+      hint="PNG, JPEG, SVG oder WebP, höchstens 5 MB. Ersetzt das bisherige Logo."
+      submitLabel="Logo hochladen"
+    />
+  );
   return (
     <AdminShell
       title={k.name}
-      bereich="kunden"
-      unterseite
       pfad={[{ href: '/kunden/admin/kunden', label: 'Kunden' }]}
       aside={
-        <Link href={`/kunden/admin/projekte/neu?kunde=${k.id}`} className={buttonClass('primary')}>
-          <Plus size={15} aria-hidden="true" />
-          Neues Projekt
-        </Link>
+        <>
+          <span className={badge}>{optionLabel(KUNDEN_STATUS_OPTIONEN, k.status)}</span>
+          {/* admin-sidebar.md Verhalten 9: Bearbeiten-Aktionen im ⋯-Menü */}
+          <AktionenMenue
+            name={k.name}
+            status={{ aktion: kundeStatus, id: k.id, wert: k.status, optionen: KUNDEN_STATUS_OPTIONEN }}
+            eintraege={[
+              { art: 'dialog', label: 'Stammdaten bearbeiten', inhalt: stammForm },
+              { art: 'dialog', label: k.logo_pfad ? 'Neues Logo hochladen' : 'Logo hochladen', inhalt: logoForm },
+              { art: 'link', label: 'Neues Projekt', href: `/kunden/admin/projekte/neu?kunde=${k.id}` },
+            ]}
+          />
+        </>
       }
-      wide
     >
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-4 md:gap-6 items-start">
         <div className="flex flex-col gap-4 md:gap-6 min-w-0">
           <section aria-labelledby="projekte-titel" className={karte}>
-            <h2 id="projekte-titel" className={`${kartenTitel} mb-3`}>
-              Projekte
-            </h2>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+              <h2 id="projekte-titel" className={kartenTitel}>
+                Projekte
+              </h2>
+              <Link
+                href={`/kunden/admin/projekte/neu?kunde=${k.id}`}
+                aria-label="Neues Projekt"
+                title="Neues Projekt"
+                className={iconButtonClass}
+              >
+                <Plus size={18} aria-hidden="true" />
+              </Link>
+            </div>
             {k.kundenprojekte.length === 0 ? (
               <p className="text-[15px] text-text2">Noch keine Projekte.</p>
             ) : (
@@ -65,7 +119,7 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
               <h2 id="ap-titel" className={kartenTitel}>
                 Ansprechpartner
               </h2>
-              <AdminDialog label="Ansprechpartner hinzufügen" icon={<UserPlus size={15} aria-hidden="true" />}>
+              <AdminDialog label="Ansprechpartner hinzufügen" icon={<Plus size={18} aria-hidden="true" />} nurIcon>
                 <AdminForm
                   id="ap-neu"
                   action={ansprechpartnerHinzufuegen}
@@ -93,31 +147,37 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
             ) : (
               <ul role="list" className="flex flex-col">
                 {k.ansprechpartner.map((a) => (
-                  <li key={a.id} className={`${zeile} gap-2`}>
-                    <h3 className="text-[15px] font-bold break-words">{a.name}</h3>
-                    <p className="text-[13px] text-text2 break-words">
-                      {[a.email, a.rolle, a.telefon, optionLabel(SPRACH_OPTIONEN, a.sprache)]
-                        .filter(Boolean)
-                        .join(' · ')}
-                    </p>
-                    <p className="text-[13px] text-text2">
-                      {a.user_id ? 'Hat sich schon angemeldet' : 'Noch nicht angemeldet'}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      <ActionButton
-                        action={ansprechpartnerEinladen}
-                        hidden={{ id: a.id }}
-                        label="Anmeldelink schicken"
-                        name={`Anmeldelink schicken an ${a.name}`}
-                      />
-                      <ActionButton
-                        action={ansprechpartnerEntfernen}
-                        hidden={{ id: a.id }}
-                        label="Entfernen"
-                        name={`Entfernen: ${a.name}`}
-                        confirm={`${a.name} wirklich entfernen? Der Zugang zum Kundenbereich endet damit.`}
-                      />
+                  <li key={a.id} className={zeileMitAktion}>
+                    <div className="min-w-0">
+                      <h3 className="text-[15px] font-bold break-words">{a.name}</h3>
+                      <p className="text-[13px] text-text2 break-words">
+                        {[a.email, a.rolle, a.telefon, optionLabel(SPRACH_OPTIONEN, a.sprache)]
+                          .filter(Boolean)
+                          .join(' · ')}
+                      </p>
+                      <p className="text-[13px] text-text2">
+                        {a.user_id ? 'Hat sich schon angemeldet' : 'Noch nicht angemeldet'}
+                      </p>
                     </div>
+                    <AktionenMenue
+                      name={a.name}
+                      eintraege={[
+                        {
+                          art: 'aktion',
+                          label: 'Anmeldelink schicken',
+                          aktion: ansprechpartnerEinladen,
+                          hidden: { id: a.id },
+                        },
+                        {
+                          art: 'aktion',
+                          label: 'Entfernen',
+                          aktion: ansprechpartnerEntfernen,
+                          hidden: { id: a.id },
+                          confirm: `${a.name} wirklich entfernen? Der Zugang zum Kundenbereich endet damit.`,
+                          gefahr: true,
+                        },
+                      ]}
+                    />
                   </li>
                 ))}
               </ul>
@@ -130,7 +190,7 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
             <h2 id="stamm-titel" className={`${kartenTitel} mb-3`}>
               Stammdaten
             </h2>
-            <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-[14px] mb-4">
+            <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-[14px]">
               <dt className="text-text2">Name</dt>
               <dd className="break-words">{k.name}</dd>
               <dt className="text-text2">Website</dt>
@@ -150,31 +210,13 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
                 )}
               </dd>
             </dl>
-            <AdminDialog label="Stammdaten bearbeiten" icon={<Pencil size={15} aria-hidden="true" />}>
-              <AdminForm
-                id="kunde"
-                action={kundeSpeichern}
-                submitLabel="Stammdaten speichern"
-                hidden={{ id: k.id }}
-                felder={[
-                  { name: 'name', label: 'Name', required: true, defaultValue: k.name },
-                  {
-                    name: 'website_url',
-                    label: 'Website',
-                    type: 'url',
-                    defaultValue: k.website_url ?? '',
-                    hint: 'Mit https://',
-                  },
-                ]}
-              />
-            </AdminDialog>
           </section>
 
           <section aria-labelledby="logo-titel" className={karte}>
             <h2 id="logo-titel" className={`${kartenTitel} mb-3`}>
               Logo
             </h2>
-            <div className="flex flex-wrap items-center gap-4 mb-4">
+            <div className="flex flex-wrap items-center gap-4">
               {k.logo_pfad ? (
                 // eslint-disable-next-line @next/next/no-img-element -- privates Bild über die Verwaltungsroute
                 <img
@@ -189,20 +231,6 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
               )}
               <p className="text-[14px] text-text2">{freigabeText(k.logo_freigabe, k.logo_freigabe_am)}</p>
             </div>
-            <AdminDialog
-              label={k.logo_pfad ? 'Neues Logo hochladen' : 'Logo hochladen'}
-              icon={<Upload size={15} aria-hidden="true" />}
-            >
-              <UploadForm
-                id="logo-upload"
-                prepare={logoVorbereiten}
-                finish={logoUebernehmen}
-                hidden={{ kunde_id: k.id }}
-                accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                hint="PNG, JPEG, SVG oder WebP, höchstens 5 MB. Ersetzt das bisherige Logo."
-                submitLabel="Logo hochladen"
-              />
-            </AdminDialog>
             {k.logo_freigaben.length > 0 && (
               <details className="mt-4">
                 <summary className="cursor-pointer min-h-11 flex items-center text-[14px] font-medium">

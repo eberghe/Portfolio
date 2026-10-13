@@ -122,6 +122,7 @@ const kunden = [
   {
     id: K1,
     name: 'Bäckerei Beispiel',
+    status: 'aktiv',
     website_url: 'https://kunde.example',
     logo_pfad: `${K1}/logo.svg`,
     logo_freigabe: 'erteilt',
@@ -241,6 +242,7 @@ createServer((req, res) => {
           logo_pfad: null,
           logo_freigabe: 'offen',
           logo_freigabe_am: null,
+          status: 'aktiv',
           ansprechpartner: [],
           kundenprojekte: [],
           logo_freigaben: [],
@@ -251,6 +253,13 @@ createServer((req, res) => {
       });
       return;
     }
+    // admin-sidebar.md AK-8: Status und Stammdaten ändern
+    if (req.method === 'PATCH')
+      return void lies(req).then((row) => {
+        const k = kunden.find((x) => x.id === idParam);
+        if (k) Object.assign(k, row);
+        send(200, k ? [k] : []);
+      });
     if (idParam)
       return send(
         200,

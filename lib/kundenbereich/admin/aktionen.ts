@@ -1,6 +1,7 @@
 import { AdminFehler, type adminApi } from './api';
 import { assistentDaten, normalisieren } from './assistent';
 import { ANFRAGE_STATUS, type AnfrageStatus } from './dashboard';
+import { KUNDEN_STATUS_OPTIONEN, PROJEKT_STATUS_OPTIONEN } from './texte';
 import {
   ansprechpartnerDaten,
   dateiPruefen,
@@ -285,7 +286,29 @@ export const anfrageStatus = (fd: FormData, ctx: AdminCtx) =>
     const status = str(fd, 'status') as AnfrageStatus;
     if (!aid || !ANFRAGE_STATUS.includes(status)) return { status: 'error', message: ADMIN_TEXT.ungueltig };
     await api.update('anfragen', aid, { status });
-    return ok('Status gespeichert.');
+    return ok('Status geändert.');
+  });
+
+/** Nur den Status eines Projekts ändern, z. B. im ⋯-Menü (functions/kundenbereich/admin-sidebar.md AK-7) */
+export const projektStatus = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const pid = id(fd);
+    const status = str(fd, 'status');
+    if (!pid || !PROJEKT_STATUS_OPTIONEN.some((o) => o.value === status))
+      return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    await api.update('kundenprojekte', pid, { status });
+    return ok('Status geändert.');
+  });
+
+/** Nur den Status eines Kunden ändern (admin-sidebar.md AK-8) */
+export const kundeStatus = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const kid = id(fd);
+    const status = str(fd, 'status');
+    if (!kid || !KUNDEN_STATUS_OPTIONEN.some((o) => o.value === status))
+      return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    await api.update('kunden', kid, { status });
+    return ok('Status geändert.');
   });
 
 // Schritte und Termine ------------------------------------------------------------------------------

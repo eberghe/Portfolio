@@ -28,6 +28,8 @@ const aktionen = vi.hoisted(() =>
       'dokumentEntfernen',
       'umsatzSpeichern',
       'anfrageStatus',
+      'projektStatus',
+      'kundeStatus',
       'projektMitAssistent',
     ].map((n) => [n, vi.fn(async (): Promise<AdminState> => ({ status: 'idle' }))]),
   ),
@@ -81,6 +83,7 @@ const KUNDEN: KundeZeile[] = [
   {
     id: K,
     name: 'Bäckerei',
+    status: 'aktiv',
     logo_freigabe: 'erteilt',
     logo_freigabe_am: '2026-10-08T09:00:00Z',
     kundenprojekte: [{ count: 2 }],
@@ -118,6 +121,7 @@ const KUNDE: KundeDetail = {
   name: 'Bäckerei',
   website_url: 'https://b.example',
   logo_pfad: null,
+  status: 'aktiv',
   logo_freigabe: 'offen',
   logo_freigabe_am: null,
   ansprechpartner: [
@@ -157,24 +161,17 @@ const PROJEKT: ProjektDetail = {
   dokumente: [],
 };
 
+/** Öffnet das ⋯-Menü „Aktionen: <ziel>“ (admin-sidebar.md AK-7) */
+const menue = (ziel: string) => {
+  fireEvent.click(screen.getByRole('button', { name: `Aktionen: ${ziel}` }));
+  return screen.getByRole('menu', { name: `Aktionen: ${ziel}` });
+};
+/** Wählt einen Eintrag im ⋯-Menü */
+const imMenue = (ziel: string, eintrag: string) =>
+  fireEvent.click(within(menue(ziel)).getByRole('menuitem', { name: eintrag }));
+
 /** Sichtbare Eingabefelder, ohne versteckte Felder der Formulare hinter Buttons */
 const felder = (c: HTMLElement) => c.querySelectorAll('input:not([type="hidden"]), textarea, select');
-
-describe('Bereiche der Verwaltung', () => {
-  it('AK-1: Leiste mit vier Bereichen, aktueller markiert', () => {
-    render(<AdminAnfragen anfragen={DATEN.anfragen} />);
-    const nav = screen.getByRole('navigation', { name: 'Bereiche der Verwaltung' });
-    const links = within(nav).getAllByRole('link');
-    expect(links.map((l) => [l.textContent, l.getAttribute('href')])).toEqual([
-      ['Übersicht', '/kunden/admin'],
-      ['Projekte', '/kunden/admin/projekte'],
-      ['Kunden', '/kunden/admin/kunden'],
-      ['Anfragen', '/kunden/admin/anfragen'],
-    ]);
-    expect(within(nav).getByRole('link', { name: 'Anfragen' })).toHaveAttribute('aria-current', 'page');
-    expect(within(nav).getByRole('link', { name: 'Übersicht' })).not.toHaveAttribute('aria-current');
-  });
-});
 
 describe('Dashboard aufs Wichtigste', () => {
   it('AK-2: höchstens 3 Termine, 3 Anfragen, 5 Projekte, kein Formular', () => {
@@ -282,7 +279,7 @@ describe('Eigene Seiten', () => {
       'href',
       '/kunden/admin/anfragen/40000000-0000-4000-8000-000000000005',
     );
-    expect(screen.getByText('Erledigt (1)').closest('details')).not.toHaveAttribute('open');
+    expect(screen.getByRole('table', { name: 'Anfragen' })).toBeInTheDocument();
     expect(document.body).not.toHaveTextContent('Beschreibung der Anfrage 5');
   });
 
@@ -302,7 +299,11 @@ describe('Eigene Seiten', () => {
       Sprache: 'Deutsch',
     });
     expect(screen.getByText('Beschreibung der Anfrage 1, ausführlich.')).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'Status: Person 1' })).toHaveValue('neu');
+    expect(within(menue('Person 1')).getByRole('menuitemradio', { name: 'Neu' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.getByRole('link', { name: 'Projekt anlegen: Person 1' })).toHaveAttribute(
       'href',
       '/kunden/admin/projekte/neu?anfrage=40000000-0000-4000-8000-000000000001',
@@ -314,13 +315,13 @@ describe('Eigene Seiten', () => {
     const { unmount } = render(<AdminProjekte projekte={DATEN.projekte} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Projekte' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Projekt a' })).toHaveAttribute('href', '/kunden/admin/projekte/a');
-    expect(screen.getByText('Abgeschlossen (1)').closest('details')).not.toHaveAttribute('open');
+    expect(screen.getByRole('table', { name: 'Projekte' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Neues Projekt' })).toHaveAttribute('href', '/kunden/admin/projekte/neu');
     unmount();
     const { container } = render(<AdminKunden kunden={KUNDEN} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Kunden' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Bäckerei' })).toHaveAttribute('href', `/kunden/admin/kunden/${K}`);
-    expect(screen.getByText('2 Projekte, 1 Ansprechpartner')).toBeInTheDocument();
+    expect(screen.getByRole('table', { name: 'Kunden' })).toBeInTheDocument();
     expect(felder(container)).toHaveLength(0);
     fireEvent.click(screen.getByRole('button', { name: 'Kunde anlegen' }));
     expect(screen.getByRole('dialog', { name: 'Kunde anlegen' })).toBeInTheDocument();
@@ -331,13 +332,18 @@ describe('Formulare hinter Buttons', () => {
   it('AK-7: Kundenseite ohne offenes Formular, Dialoge mit eindeutigen Buttons', () => {
     const { container } = render(<AdminKunde kunde={KUNDE} />);
     expect(felder(container)).toHaveLength(0);
-    for (const name of ['Stammdaten bearbeiten', 'Logo hochladen', 'Ansprechpartner hinzufügen'])
-      expect(screen.getByRole('button', { name })).toHaveAttribute('aria-haspopup', 'dialog');
-    expect(screen.getByRole('link', { name: 'Neues Projekt' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: 'Ansprechpartner hinzufügen' })).toHaveAttribute(
+      'aria-haspopup',
+      'dialog',
+    );
+    const m = menue('Bäckerei');
+    for (const name of ['Stammdaten bearbeiten', 'Logo hochladen'])
+      expect(within(m).getByRole('menuitem', { name })).toBeInTheDocument();
+    expect(within(m).getByRole('menuitem', { name: 'Neues Projekt' })).toHaveAttribute(
       'href',
       `/kunden/admin/projekte/neu?kunde=${K}`,
     );
-    fireEvent.click(screen.getByRole('button', { name: 'Stammdaten bearbeiten' }));
+    fireEvent.click(within(m).getByRole('menuitem', { name: 'Stammdaten bearbeiten' }));
     const dialog = screen.getByRole('dialog', { name: 'Stammdaten bearbeiten' });
     expect(within(dialog).getByLabelText(/^Name/)).toHaveValue('Bäckerei');
   });
@@ -345,21 +351,17 @@ describe('Formulare hinter Buttons', () => {
   it('AK-7: Projektseite ohne offenes Formular, Werte als Übersicht', () => {
     const { container } = render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
     expect(felder(container)).toHaveLength(0);
-    for (const name of [
-      'Projekt bearbeiten',
-      'Umsatz bearbeiten',
-      'Zuordnung ändern',
-      'Ablaufschritt hinzufügen',
-      'Bearbeiten: Design',
-      'Termin hinzufügen',
-      'Dokument hochladen',
-    ])
+    for (const name of ['Ablaufschritt hinzufügen', 'Termin hinzufügen', 'Dokument hochladen'])
       expect(screen.getByRole('button', { name })).toHaveAttribute('aria-haspopup', 'dialog');
+    const m = menue(PROJEKT.titel);
+    for (const name of ['Projekt bearbeiten', 'Umsatz bearbeiten', 'Zuordnung ändern'])
+      expect(within(m).getByRole('menuitem', { name })).toBeInTheDocument();
+    fireEvent.keyDown(m, { key: 'Escape' });
     const umsatz = screen.getByRole('region', { name: 'Umsatz' });
     expect(umsatz).toHaveTextContent('12.000 €');
     expect(umsatz).toHaveTextContent('100 %');
     expect(screen.getByRole('region', { name: 'Ansprechpartner' })).toHaveTextContent('Anna');
-    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Design' }));
+    imMenue('Schritt Design', 'Bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
     expect(within(dialog).getByLabelText(/^Titel Deutsch/)).toHaveValue('Design');
     expect(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })).toBeInTheDocument();
@@ -381,7 +383,8 @@ describe('Dialog-Fuß und ruhigere Oberfläche (2026-10-13)', () => {
       ['Termin hinzufügen', 'Termin hinzufügen', 'Termin hinzufügen'],
       ['Dokument hochladen', 'Dokument hochladen', 'Dokument hochladen'],
     ] as const) {
-      fireEvent.click(screen.getByRole('button', { name: knopf }));
+      if (knopf === 'Projekt bearbeiten') imMenue(PROJEKT.titel, knopf);
+      else fireEvent.click(screen.getByRole('button', { name: knopf }));
       const dialog = screen.getByRole('dialog', { name: titel });
       const knoepfe = fussKnoepfe(dialog);
       const letzter = knoepfe.at(-1)!;
@@ -412,24 +415,23 @@ describe('Dialog-Fuß und ruhigere Oberfläche (2026-10-13)', () => {
 
   it('AK-11: Entfernen links außen im Fuß des Schritt-Dialogs', () => {
     render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Design' }));
+    imMenue('Schritt Design', 'Bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
     const namen = fussKnoepfe(dialog).map((b) => b.getAttribute('aria-label') ?? b.textContent);
     expect(namen).toEqual(['Entfernen: Schritt Design', 'Abbrechen', 'Schritt speichern']);
   });
 
-  it('AK-13: Ladezustand mit Bereichsleiste, Bereich aus der Adresse', async () => {
+  it('AK-13: Ladezustand nur im Inhalt', async () => {
     const { default: Laden } = await import('@/app/(kunden-de)/kunden/admin/loading');
     adresse.pfad = '/kunden/admin/kunden';
     render(<Laden />);
-    const nav = screen.getByRole('navigation', { name: 'Bereiche der Verwaltung' });
-    expect(within(nav).getByRole('link', { name: 'Kunden' })).toHaveAttribute('aria-current', 'page');
-    expect(within(nav).getByRole('link', { name: 'Übersicht' })).not.toHaveAttribute('aria-current');
+    // Die Sidebar steht im Layout und bleibt stehen, der Ladezustand zeigt nur den Inhalt (admin-sidebar.md)
+    expect(screen.queryByRole('navigation')).toBeNull();
     expect(screen.getByRole('status')).toHaveTextContent('Wird geladen');
     adresse.pfad = '/kunden/admin';
   });
 
-  it('AK-14: Zeilenaktionen als Icon-Buttons mit Tooltip', () => {
+  it('AK-14: Zeilenaktionen im ⋯-Menü mit Tooltip', () => {
     const mit = {
       ...PROJEKT,
       termine: [
@@ -457,17 +459,22 @@ describe('Dialog-Fuß und ruhigere Oberfläche (2026-10-13)', () => {
       ],
     } as unknown as ProjektDetail;
     render(<AdminProjekt projekt={mit} now={NOW} />);
-    const namen = [
-      'Bearbeiten: Design',
-      'Entfernen: Termin Review',
-      'Herunterladen: Vertrag, Version 1',
-      'Entfernen: Vertrag, Version 1',
-    ];
-    for (const name of namen) {
-      const el = screen.getByRole(name.startsWith('Herunterladen') ? 'link' : 'button', { name });
-      expect(el).toHaveAttribute('title', name);
+    for (const [ziel, eintraege] of [
+      ['Schritt Design', ['Bearbeiten', 'Entfernen']],
+      ['Termin Review', ['Entfernen']],
+      ['Vertrag, Version 1', ['Herunterladen', 'Entfernen']],
+    ] as const) {
+      const knopf = screen.getByRole('button', { name: `Aktionen: ${ziel}` });
+      expect(knopf).toHaveAttribute('title', `Aktionen: ${ziel}`);
       // nur Icon, kein sichtbarer Text
-      expect(el.textContent?.trim()).toBe('');
+      expect(knopf.textContent?.trim()).toBe('');
+      const m = menue(ziel);
+      expect(
+        within(m)
+          .getAllByRole('menuitem')
+          .map((e) => e.textContent),
+      ).toEqual(eintraege);
+      fireEvent.keyDown(m, { key: 'Escape' });
     }
   });
 });
@@ -491,7 +498,7 @@ describe('Befunde Blinder Kritiker Dialoge (2026-10-13)', () => {
     aktionen.schrittEntfernen!.mockRejectedValueOnce(new TypeError('Failed to fetch'));
     vi.spyOn(window, 'confirm').mockReturnValueOnce(true);
     render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Design' }));
+    imMenue('Schritt Design', 'Bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
     await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })));
     await waitFor(() => expect(dialog).toHaveTextContent('Das hat nicht geklappt.'));
@@ -520,7 +527,7 @@ describe('Befunde Blinder Kritiker Dialoge (2026-10-13)', () => {
 
   it('AK-19: Entfernen im Fuß in Fehlerfarbe', () => {
     render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Design' }));
+    imMenue('Schritt Design', 'Bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
     expect(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })).toHaveClass('text-error');
     expect(within(dialog).getByRole('button', { name: 'Abbrechen' })).not.toHaveClass('text-error');

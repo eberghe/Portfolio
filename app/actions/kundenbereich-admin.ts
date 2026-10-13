@@ -71,6 +71,12 @@ export async function projektAnlegen(_: S, fd: FormData) {
 export async function projektSpeichern(_: S, fd: FormData) {
   return go(A.projektSpeichern, fd);
 }
+export async function projektStatus(_: S, fd: FormData) {
+  return go(A.projektStatus, fd);
+}
+export async function kundeStatus(_: S, fd: FormData) {
+  return go(A.kundeStatus, fd);
+}
 export async function projektAnsprechpartner(_: S, fd: FormData) {
   return go(A.projektAnsprechpartner, fd);
 }

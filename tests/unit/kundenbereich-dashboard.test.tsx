@@ -14,7 +14,12 @@ import { umsatzDaten } from '@/lib/kundenbereich/admin/pruefen';
 // functions/kundenbereich/admin-dashboard.md
 
 vi.mock('@/app/actions/kundenbereich-admin', () =>
-  Object.fromEntries(['kundeAnlegen', 'anfrageStatus'].map((n) => [n, vi.fn(async () => ({ status: 'idle' }))])),
+  Object.fromEntries(
+    ['kundeAnlegen', 'anfrageStatus', 'projektStatus', 'kundeStatus'].map((n) => [
+      n,
+      vi.fn(async () => ({ status: 'idle' })),
+    ]),
+  ),
 );
 vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh: vi.fn() }), notFound: vi.fn() }));
 const { default: AdminDashboard } = await import('@/components/kundenbereich/admin/AdminDashboard');
@@ -142,6 +147,7 @@ const DATEN: DashboardDaten = {
     {
       id: 'k1',
       name: 'Bäckerei',
+      status: 'aktiv',
       logo_freigabe: 'offen',
       logo_freigabe_am: null,
       kundenprojekte: [{ count: 2 }],
@@ -242,7 +248,7 @@ describe('Aktionen', () => {
 describe('Ansicht', () => {
   it('AK-1, AK-3 bis AK-6: Dashboard', () => {
     render(<AdminDashboard daten={DATEN} now={NOW} />);
-    expect(screen.getByRole('heading', { level: 1, name: 'Verwaltung' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Home' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Neues Projekt' })).toHaveAttribute('href', '/kunden/admin/projekte/neu');
 
     const kz = screen.getByRole('list', { name: 'Kennzahlen' });

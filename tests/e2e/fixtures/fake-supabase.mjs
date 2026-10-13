@@ -4,8 +4,9 @@ import { createServer } from 'node:http';
 
 const port = Number(process.argv[2] ?? 3199);
 
+let schrittNr = 0;
 const schritt = (n, titel_de, status, extra = {}) => ({
-  id: `s${n}`,
+  id: `40000000-0000-4000-8000-${String(++schrittNr).padStart(12, '0')}`,
   reihenfolge: n,
   titel_de,
   titel_en: null,
@@ -121,6 +122,7 @@ const kunden = [
   {
     id: K1,
     name: 'Bäckerei Beispiel',
+    status: 'aktiv',
     website_url: 'https://kunde.example',
     logo_pfad: `${K1}/logo.svg`,
     logo_freigabe: 'erteilt',
@@ -240,6 +242,7 @@ createServer((req, res) => {
           logo_pfad: null,
           logo_freigabe: 'offen',
           logo_freigabe_am: null,
+          status: 'aktiv',
           ansprechpartner: [],
           kundenprojekte: [],
           logo_freigaben: [],
@@ -250,6 +253,13 @@ createServer((req, res) => {
       });
       return;
     }
+    // admin-sidebar.md AK-8: Status und Stammdaten ändern
+    if (req.method === 'PATCH')
+      return void lies(req).then((row) => {
+        const k = kunden.find((x) => x.id === idParam);
+        if (k) Object.assign(k, row);
+        send(200, k ? [k] : []);
+      });
     if (idParam)
       return send(
         200,
@@ -269,6 +279,13 @@ createServer((req, res) => {
       })),
     );
   }
+  // admin-sidebar.md AK-7: Projektstatus aus dem ⋯-Menü speichern
+  if (u.profil.art === 'admin' && path === '/rest/v1/kundenprojekte' && idParam && req.method === 'PATCH')
+    return void lies(req).then((row) => {
+      const p = idParam === P1 ? relaunch : neueProjekte.get(idParam);
+      if (p && row?.status) p.status = row.status;
+      send(200, p ? [{ ...p, id: idParam }] : []);
+    });
   if (u.profil.art === 'admin' && path === '/rest/v1/kundenprojekte' && idParam)
     return send(200, idParam === P1 ? [adminProjekt()] : neueProjekte.has(idParam) ? [neueProjekte.get(idParam)] : []);
   if (

@@ -1,4 +1,4 @@
-import { CalendarPlus, Download, Eye, ListPlus, Pencil, Upload, Users } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import {
   dokumentEntfernen,
@@ -6,6 +6,7 @@ import {
   dokumentVorbereiten,
   projektAnsprechpartner,
   projektSpeichern,
+  projektStatus,
   schrittEntfernen,
   schrittHinzufuegen,
   schrittSpeichern,
@@ -13,7 +14,6 @@ import {
   terminHinzufuegen,
   umsatzSpeichern,
 } from '@/app/actions/kundenbereich-admin';
-import { buttonClass } from '@/components/ui/Button';
 import { dateiInfo } from '@/lib/kundenbereich/dokumente';
 import type { ProjektDetail } from '@/lib/kundenbereich/admin/laden';
 import {
@@ -27,6 +27,7 @@ import { euro } from '@/lib/kundenbereich/admin/dashboard';
 import { datum } from '@/lib/kundenbereich/projekte';
 import { terminTitel, zeitraum } from '@/lib/kundenbereich/termine';
 import ActionButton from './ActionButton';
+import AktionenMenue from './AktionenMenue';
 import AdminDialog from './AdminDialog';
 import AdminForm, { type Feld } from './AdminForm';
 import { badge, karte, kartenTitel, zeile } from './AdminListen';
@@ -121,6 +122,8 @@ function UrlWert({ url }: { url: string | null }) {
 
 const dl = 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-[14px]';
 
+// Kritiker Dialoge 9: Icon-Buttons bleiben auch bei 360 px rechts neben dem Eintrag (AK-20)
+const zeileMitAktion = 'flex items-center justify-between gap-3 py-3 border-t border-border first:border-0 first:pt-0';
 export default function AdminProjekt({
   projekt: p,
   now = new Date(),
@@ -138,20 +141,131 @@ export default function AdminProjekt({
   const u = p.projekt_umsatz;
   const betrag = u?.auftragswert_netto ? Number(u.auftragswert_netto) : null;
 
+  const projektForm = (
+    <AdminForm
+      id="projekt"
+      action={projektSpeichern}
+      submitLabel="Projekt speichern"
+      hidden={{ id: p.id }}
+      felder={[
+        { name: 'titel', label: 'Titel', required: true, defaultValue: p.titel },
+        {
+          name: 'status',
+          label: 'Status',
+          type: 'select',
+          options: PROJEKT_STATUS_OPTIONEN,
+          defaultValue: p.status,
+          half: true,
+        },
+        { name: 'phase', label: 'Aktuelle Phase', defaultValue: p.phase ?? '', half: true },
+        {
+          name: 'beschreibung_de',
+          label: 'Beschreibung Deutsch',
+          type: 'textarea',
+          defaultValue: p.beschreibung_de ?? '',
+        },
+        {
+          name: 'beschreibung_en',
+          label: 'Beschreibung Englisch',
+          type: 'textarea',
+          defaultValue: p.beschreibung_en ?? '',
+        },
+        {
+          name: 'website_url',
+          label: 'Website',
+          type: 'url',
+          defaultValue: p.website_url ?? '',
+          half: true,
+          hint: 'Mit https://',
+        },
+        {
+          name: 'staging_url',
+          label: 'Testversion (Staging)',
+          type: 'url',
+          defaultValue: p.staging_url ?? '',
+          half: true,
+          hint: 'Mit https://',
+        },
+      ]}
+    />
+  );
+  const umsatzForm = (
+    <AdminForm
+      id="umsatz"
+      action={umsatzSpeichern}
+      submitLabel="Umsatz speichern"
+      hidden={{ projekt_id: p.id }}
+      felder={[
+        {
+          name: 'auftragswert_netto',
+          label: 'Auftragswert netto in Euro',
+          defaultValue: betragText(u?.auftragswert_netto),
+          hint: 'Z. B. 12.500 oder 12.500,50. Nur für dich sichtbar.',
+          half: true,
+        },
+        {
+          name: 'wahrscheinlichkeit',
+          label: 'Wahrscheinlichkeit in Prozent',
+          type: 'number',
+          defaultValue: String(u?.wahrscheinlichkeit ?? 50),
+          hint: 'Zählt nur bei Angeboten.',
+          half: true,
+        },
+        {
+          name: 'abrechnung_am',
+          label: 'Voraussichtliche Abrechnung',
+          type: 'date',
+          defaultValue: u?.abrechnung_am ?? '',
+          half: true,
+        },
+      ]}
+    />
+  );
+  const zuordnungForm = kunde && kunde.ansprechpartner.length > 0 && (
+    <AdminForm
+      id="projekt-ap"
+      action={projektAnsprechpartner}
+      submitLabel="Zuordnung speichern"
+      hidden={{ projekt_id: p.id }}
+      felder={[
+        {
+          name: 'ansprechpartner',
+          label: 'Wer sieht dieses Projekt?',
+          type: 'checkboxes',
+          options: kunde.ansprechpartner.map((a) => ({ value: a.id, label: `${a.name} (${a.email})` })),
+          checked: zugeordnet,
+        },
+      ]}
+    />
+  );
+
   return (
     <AdminShell
       title={p.titel}
-      bereich="projekte"
-      unterseite
-      wide
       pfad={[{ href: '/kunden/admin/projekte', label: 'Projekte' }]}
       aside={
         <>
           <span className={badge}>{optionLabel(PROJEKT_STATUS_OPTIONEN, p.status)}</span>
-          <Link href={`/kunden?projekt=${p.id}`} className={buttonClass('secondary')}>
-            <Eye size={15} aria-hidden="true" />
-            So sieht es der Kunde
-          </Link>
+          {/* admin-sidebar.md Verhalten 9: alle Bearbeiten-Aktionen im ⋯-Menü */}
+          <AktionenMenue
+            name={p.titel}
+            status={{ aktion: projektStatus, id: p.id, wert: p.status, optionen: PROJEKT_STATUS_OPTIONEN }}
+            eintraege={[
+              { art: 'dialog', label: 'Projekt bearbeiten', inhalt: projektForm },
+              { art: 'dialog', label: 'Umsatz bearbeiten', inhalt: umsatzForm },
+              ...(zuordnungForm
+                ? [
+                    {
+                      art: 'dialog' as const,
+                      label: 'Zuordnung ändern',
+                      titel: 'Ansprechpartner im Projekt',
+                      inhalt: zuordnungForm,
+                    },
+                  ]
+                : []),
+              { art: 'link', label: 'So sieht es der Kunde', href: `/kunden?projekt=${p.id}` },
+            ]}
+          />
         </>
       }
     >
@@ -160,7 +274,7 @@ export default function AdminProjekt({
         <div className="flex flex-col gap-4 md:gap-6 min-w-0">
           <section aria-labelledby="ablauf-titel" className={karte}>
             <Kopf id="ablauf-titel" titel="Ablauf">
-              <AdminDialog label="Ablaufschritt hinzufügen" icon={<ListPlus size={15} aria-hidden="true" />}>
+              <AdminDialog label="Ablaufschritt hinzufügen" icon={<Plus size={18} aria-hidden="true" />} nurIcon>
                 <AdminForm
                   id="schritt-neu"
                   action={schrittHinzufuegen}
@@ -175,7 +289,7 @@ export default function AdminProjekt({
             ) : (
               <ol role="list" className="flex flex-col">
                 {p.projektschritte.map((s) => (
-                  <li key={s.id} className={`${zeile} sm:flex-row sm:items-center sm:justify-between sm:gap-4`}>
+                  <li key={s.id} className={zeileMitAktion}>
                     <div className="min-w-0">
                       <p className="font-bold text-[15px] break-words">
                         {s.reihenfolge}. {s.titel_de}
@@ -186,29 +300,43 @@ export default function AdminProjekt({
                         {s.faellig_am && ` · fällig ${datum(s.faellig_am, 'de')}`}
                       </p>
                     </div>
-                    <AdminDialog
-                      label="Bearbeiten"
-                      name={`Bearbeiten: ${s.titel_de}`}
-                      title={`Ablaufschritt bearbeiten: ${s.titel_de}`}
-                      icon={<Pencil size={14} aria-hidden="true" />}
-                    >
-                      <AdminForm
-                        id={`schritt-${s.id}`}
-                        action={schrittSpeichern}
-                        submitLabel="Schritt speichern"
-                        hidden={{ id: s.id }}
-                        felder={schrittFelder(s)}
-                      />
-                      <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
-                        <ActionButton
-                          action={schrittEntfernen}
-                          hidden={{ id: s.id }}
-                          label="Entfernen"
-                          name={`Entfernen: Schritt ${s.titel_de}`}
-                          confirm={`Schritt „${s.titel_de}“ entfernen?`}
-                        />
-                      </div>
-                    </AdminDialog>
+                    <AktionenMenue
+                      name={`Schritt ${s.titel_de}`}
+                      eintraege={[
+                        {
+                          art: 'dialog',
+                          label: 'Bearbeiten',
+                          titel: `Ablaufschritt bearbeiten: ${s.titel_de}`,
+                          inhalt: (
+                            <AdminForm
+                              id={`schritt-${s.id}`}
+                              action={schrittSpeichern}
+                              submitLabel="Schritt speichern"
+                              hidden={{ id: s.id }}
+                              felder={schrittFelder(s)}
+                              fussLinks={
+                                <ActionButton
+                                  action={schrittEntfernen}
+                                  hidden={{ id: s.id }}
+                                  label="Entfernen"
+                                  name={`Entfernen: Schritt ${s.titel_de}`}
+                                  confirm={`Schritt „${s.titel_de}“ entfernen?`}
+                                  variant="gefahr"
+                                />
+                              }
+                            />
+                          ),
+                        },
+                        {
+                          art: 'aktion',
+                          label: 'Entfernen',
+                          aktion: schrittEntfernen,
+                          hidden: { id: s.id },
+                          confirm: `Schritt „${s.titel_de}“ entfernen?`,
+                          gefahr: true,
+                        },
+                      ]}
+                    />
                   </li>
                 ))}
               </ol>
@@ -217,7 +345,7 @@ export default function AdminProjekt({
 
           <section aria-labelledby="termine-titel" className={karte}>
             <Kopf id="termine-titel" titel="Termine">
-              <AdminDialog label="Termin hinzufügen" icon={<CalendarPlus size={15} aria-hidden="true" />}>
+              <AdminDialog label="Termin hinzufügen" icon={<Plus size={18} aria-hidden="true" />} nurIcon>
                 <AdminForm
                   id="termin-neu"
                   action={terminHinzufuegen}
@@ -249,7 +377,7 @@ export default function AdminProjekt({
                   const titel = terminTitel(t.titel_de, t.titel_en, 'de');
                   const vergangen = Date.parse(t.ende) < now.getTime();
                   return (
-                    <li key={t.id} className={`${zeile} sm:flex-row sm:items-center sm:justify-between sm:gap-4`}>
+                    <li key={t.id} className={zeileMitAktion}>
                       <div className="min-w-0">
                         <h3 className="text-[15px] font-bold break-words">{titel}</h3>
                         <p className="text-[13px] text-text2">
@@ -258,15 +386,22 @@ export default function AdminProjekt({
                           {t.meet_url && ' · mit Meet-Link'}
                         </p>
                       </div>
-                      <span className="flex flex-wrap gap-2">
-                        <ActionButton
-                          action={terminEntfernen}
-                          hidden={{ id: t.id }}
-                          label="Entfernen"
-                          name={`Entfernen: Termin ${titel}`}
-                          confirm={`Termin „${titel}“ entfernen?`}
-                        />
-                      </span>
+                      <AktionenMenue
+                        name={`Termin ${titel}`}
+                        eintraege={[
+                          ...(t.meet_url
+                            ? [{ art: 'link' as const, label: 'Meet öffnen', href: t.meet_url, extern: true }]
+                            : []),
+                          {
+                            art: 'aktion',
+                            label: 'Entfernen',
+                            aktion: terminEntfernen,
+                            hidden: { id: t.id },
+                            confirm: `Termin „${titel}“ entfernen?`,
+                            gefahr: true,
+                          },
+                        ]}
+                      />
                     </li>
                   );
                 })}
@@ -276,7 +411,7 @@ export default function AdminProjekt({
 
           <section aria-labelledby="dokumente-titel" className={karte}>
             <Kopf id="dokumente-titel" titel="Dokumente">
-              <AdminDialog label="Dokument hochladen" icon={<Upload size={15} aria-hidden="true" />}>
+              <AdminDialog label="Dokument hochladen" icon={<Plus size={18} aria-hidden="true" />} nurIcon>
                 <UploadForm
                   id="dokument-upload"
                   prepare={dokumentVorbereiten}
@@ -303,28 +438,25 @@ export default function AdminProjekt({
                     </div>
                     <ul role="list" className="flex flex-col gap-3">
                       {g.versionen.map((d, i) => (
-                        <li key={d.id} className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                          <span className="text-[13px] text-text2 min-w-0 flex-1 basis-48">
+                        <li key={d.id} className="flex items-center gap-x-3">
+                          <span className="text-[13px] text-text2 min-w-0 flex-1">
                             {i === 0 && <span className="font-semibold text-foreground">Aktuell: </span>}
                             {dateiInfo(d, 'de')}
                           </span>
-                          <span className="flex flex-wrap gap-2">
-                            <a
-                              href={`/kunden/dokumente/${d.id}`}
-                              className={buttonClass('secondary')}
-                              aria-label={`Herunterladen: ${d.titel}, Version ${d.version}`}
-                            >
-                              Herunterladen
-                              <Download size={14} aria-hidden="true" />
-                            </a>
-                            <ActionButton
-                              action={dokumentEntfernen}
-                              hidden={{ id: d.id }}
-                              label="Entfernen"
-                              name={`Entfernen: ${d.titel}, Version ${d.version}`}
-                              confirm={`„${d.titel}“ (Version ${d.version}) mit Datei entfernen?`}
-                            />
-                          </span>
+                          <AktionenMenue
+                            name={`${d.titel}, Version ${d.version}`}
+                            eintraege={[
+                              { art: 'link', label: 'Herunterladen', href: `/kunden/dokumente/${d.id}` },
+                              {
+                                art: 'aktion',
+                                label: 'Entfernen',
+                                aktion: dokumentEntfernen,
+                                hidden: { id: d.id },
+                                confirm: `„${d.titel}“ (Version ${d.version}) mit Datei entfernen?`,
+                                gefahr: true,
+                              },
+                            ]}
+                          />
                         </li>
                       ))}
                     </ul>
@@ -370,54 +502,6 @@ export default function AdminProjekt({
                 {p.beschreibung_de}
               </p>
             )}
-            <AdminDialog label="Projekt bearbeiten" icon={<Pencil size={15} aria-hidden="true" />}>
-              <AdminForm
-                id="projekt"
-                action={projektSpeichern}
-                submitLabel="Projekt speichern"
-                hidden={{ id: p.id }}
-                felder={[
-                  { name: 'titel', label: 'Titel', required: true, defaultValue: p.titel },
-                  {
-                    name: 'status',
-                    label: 'Status',
-                    type: 'select',
-                    options: PROJEKT_STATUS_OPTIONEN,
-                    defaultValue: p.status,
-                    half: true,
-                  },
-                  { name: 'phase', label: 'Aktuelle Phase', defaultValue: p.phase ?? '', half: true },
-                  {
-                    name: 'beschreibung_de',
-                    label: 'Beschreibung Deutsch',
-                    type: 'textarea',
-                    defaultValue: p.beschreibung_de ?? '',
-                  },
-                  {
-                    name: 'beschreibung_en',
-                    label: 'Beschreibung Englisch',
-                    type: 'textarea',
-                    defaultValue: p.beschreibung_en ?? '',
-                  },
-                  {
-                    name: 'website_url',
-                    label: 'Website',
-                    type: 'url',
-                    defaultValue: p.website_url ?? '',
-                    half: true,
-                    hint: 'Mit https://',
-                  },
-                  {
-                    name: 'staging_url',
-                    label: 'Testversion (Staging)',
-                    type: 'url',
-                    defaultValue: p.staging_url ?? '',
-                    half: true,
-                    hint: 'Mit https://',
-                  },
-                ]}
-              />
-            </AdminDialog>
           </section>
 
           {/* Nur für Admins, eigene Tabelle (admin-dashboard.md Verhalten 9) */}
@@ -431,38 +515,6 @@ export default function AdminProjekt({
               <dt className="text-text2">Abrechnung</dt>
               <dd>{u?.abrechnung_am ? datum(u.abrechnung_am, 'de') : keine}</dd>
             </dl>
-            <AdminDialog label="Umsatz bearbeiten" icon={<Pencil size={15} aria-hidden="true" />}>
-              <AdminForm
-                id="umsatz"
-                action={umsatzSpeichern}
-                submitLabel="Umsatz speichern"
-                hidden={{ projekt_id: p.id }}
-                felder={[
-                  {
-                    name: 'auftragswert_netto',
-                    label: 'Auftragswert netto in Euro',
-                    defaultValue: betragText(u?.auftragswert_netto),
-                    hint: 'Z. B. 12.500 oder 12.500,50. Nur für dich sichtbar.',
-                    half: true,
-                  },
-                  {
-                    name: 'wahrscheinlichkeit',
-                    label: 'Wahrscheinlichkeit in Prozent',
-                    type: 'number',
-                    defaultValue: String(u?.wahrscheinlichkeit ?? 50),
-                    hint: 'Zählt nur bei Angeboten.',
-                    half: true,
-                  },
-                  {
-                    name: 'abrechnung_am',
-                    label: 'Voraussichtliche Abrechnung',
-                    type: 'date',
-                    defaultValue: u?.abrechnung_am ?? '',
-                    half: true,
-                  },
-                ]}
-              />
-            </AdminDialog>
           </section>
 
           <section aria-labelledby="projekt-ap-titel" className={karte}>
@@ -480,27 +532,6 @@ export default function AdminProjekt({
                     ))}
                   </ul>
                 )}
-                <AdminDialog
-                  label="Zuordnung ändern"
-                  title="Ansprechpartner im Projekt"
-                  icon={<Users size={15} aria-hidden="true" />}
-                >
-                  <AdminForm
-                    id="projekt-ap"
-                    action={projektAnsprechpartner}
-                    submitLabel="Zuordnung speichern"
-                    hidden={{ projekt_id: p.id }}
-                    felder={[
-                      {
-                        name: 'ansprechpartner',
-                        label: 'Wer sieht dieses Projekt?',
-                        type: 'checkboxes',
-                        options: kunde.ansprechpartner.map((a) => ({ value: a.id, label: `${a.name} (${a.email})` })),
-                        checked: zugeordnet,
-                      },
-                    ]}
-                  />
-                </AdminDialog>
               </>
             ) : (
               <p className="text-[14px] text-text2">

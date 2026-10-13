@@ -28,6 +28,8 @@ vi.mock('@/app/actions/kundenbereich-admin', () =>
       'dokumentEntfernen',
       'umsatzSpeichern',
       'anfrageStatus',
+      'projektStatus',
+      'kundeStatus',
       'projektMitAssistent',
     ].map((n) => [n, vi.fn(async () => ({ status: 'idle' }))]),
   ),
@@ -49,6 +51,7 @@ const KUNDEN: KundeZeile[] = [
   {
     id: K,
     name: 'Bäckerei',
+    status: 'aktiv',
     logo_freigabe: 'erteilt',
     logo_freigabe_am: '2026-10-08T09:00:00Z',
     kundenprojekte: [{ count: 2 }],
@@ -57,6 +60,7 @@ const KUNDEN: KundeZeile[] = [
   {
     id: 'k2',
     name: 'Café',
+    status: 'aktiv',
     logo_freigabe: 'offen',
     logo_freigabe_am: null,
     kundenprojekte: [{ count: 0 }],
@@ -69,6 +73,7 @@ const KUNDE: KundeDetail = {
   name: 'Bäckerei',
   website_url: 'https://b.example',
   logo_pfad: `${K}/logo.svg`,
+  status: 'aktiv',
   logo_freigabe: 'widerrufen',
   logo_freigabe_am: '2026-10-09T09:00:00Z',
   ansprechpartner: [
@@ -148,12 +153,21 @@ const PROJEKT: ProjektDetail = {
   ],
 };
 
+/** Öffnet das ⋯-Menü „Aktionen: <ziel>“ (admin-sidebar.md AK-7) */
+const menue = (ziel: string) => {
+  fireEvent.click(screen.getByRole('button', { name: `Aktionen: ${ziel}` }));
+  return screen.getByRole('menu', { name: `Aktionen: ${ziel}` });
+};
+const imMenue = (ziel: string, eintrag: string) =>
+  fireEvent.click(within(menue(ziel)).getByRole('menuitem', { name: eintrag }));
+
 describe('Verwaltung', () => {
   it('AK-10: Kundenliste mit Zählern und Stand der Logo-Freigabe als Text, anlegen im Dialog', () => {
     render(<AdminKunden kunden={KUNDEN} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Kunden' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Bäckerei' })).toHaveAttribute('href', `/kunden/admin/kunden/${K}`);
-    expect(screen.getByText('2 Projekte, 1 Ansprechpartner')).toBeInTheDocument();
+    expect(screen.getByText('2 Projekte')).toBeInTheDocument();
+    expect(screen.getByText('1 Ansprechpartner')).toBeInTheDocument();
     expect(screen.getByText('Logo-Freigabe erteilt am 8. Okt. 2026')).toBeInTheDocument();
     expect(screen.getByText('Logo-Freigabe offen')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Kunde anlegen' }));
@@ -165,7 +179,7 @@ describe('Verwaltung', () => {
   it('AK-3/AK-4/AK-5/AK-10: Kundenseite mit Stammdaten, Logo, Protokoll, Ansprechpartnern, Projekten', () => {
     render(<AdminKunde kunde={KUNDE} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Bäckerei' })).toBeInTheDocument();
-    expect(screen.getByRole('navigation', { name: 'Pfad' })).toHaveTextContent('Verwaltung');
+    expect(screen.getByRole('navigation', { name: 'Pfad' })).toHaveTextContent('Kunden');
     expect(screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)).toEqual([
       'Projekte',
       'Ansprechpartner',
@@ -178,14 +192,19 @@ describe('Verwaltung', () => {
     );
     expect(screen.getByText('Logo-Freigabe widerrufen am 9. Okt. 2026')).toBeInTheDocument();
     expect(screen.getByText('9. Okt. 2026: widerrufen von Anna')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Anmeldelink schicken an Anna' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Entfernen: Anna' })).toBeInTheDocument();
+    const anna = menue('Anna');
+    expect(
+      within(anna)
+        .getAllByRole('menuitem')
+        .map((e) => e.textContent),
+    ).toEqual(['Anmeldelink schicken', 'Entfernen']);
+    fireEvent.keyDown(anna, { key: 'Escape' });
     expect(screen.getByText('Noch nicht angemeldet')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Relaunch' })).toHaveAttribute('href', `/kunden/admin/projekte/${P}`);
-    fireEvent.click(screen.getByRole('button', { name: 'Stammdaten bearbeiten' }));
+    imMenue('Bäckerei', 'Stammdaten bearbeiten');
     expect(within(screen.getByRole('dialog')).getByLabelText(/^Name/)).toHaveValue('Bäckerei');
     fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Neues Logo hochladen' }));
+    imMenue('Bäckerei', 'Neues Logo hochladen');
     expect(within(screen.getByRole('dialog')).getByLabelText(/^Datei/)).toHaveAttribute('type', 'file');
     fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
     fireEvent.click(screen.getByRole('button', { name: 'Ansprechpartner hinzufügen' }));
@@ -195,9 +214,13 @@ describe('Verwaltung', () => {
   it('AK-6/AK-7/AK-8/AK-9: Projektseite mit Zuordnung, Schritten, Terminen in deutscher Zeit, Dokumenten', () => {
     render(<AdminProjekt projekt={PROJEKT} now={new Date('2026-10-14T00:00:00Z')} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Relaunch' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'So sieht es der Kunde' })).toHaveAttribute('href', `/kunden?projekt=${P}`);
+    expect(within(menue('Relaunch')).getByRole('menuitem', { name: 'So sieht es der Kunde' })).toHaveAttribute(
+      'href',
+      `/kunden?projekt=${P}`,
+    );
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.getByRole('region', { name: 'Ansprechpartner' })).not.toHaveTextContent('Ben');
-    fireEvent.click(screen.getByRole('button', { name: 'Zuordnung ändern' }));
+    imMenue('Relaunch', 'Zuordnung ändern');
     expect(screen.getByRole('checkbox', { name: 'Anna (anna@b.example)' })).toBeChecked();
     expect(screen.getByRole('checkbox', { name: 'Ben (ben@b.example)' })).not.toBeChecked();
     fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
@@ -206,10 +229,11 @@ describe('Verwaltung', () => {
     expect(within(screen.getByRole('dialog')).getByLabelText(/^Reihenfolge/)).toHaveValue(5);
     fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
     expect(screen.getByText('Do., 15. Okt. 2026, 10:00–11:00 MESZ')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Herunterladen: Vertrag, Version 2' })).toHaveAttribute(
+    expect(within(menue('Vertrag, Version 2')).getByRole('menuitem', { name: 'Herunterladen' })).toHaveAttribute(
       'href',
       '/kunden/dokumente/d1',
     );
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.getByText(/PDF, 182 KB, Version 2/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Dokument hochladen' }));
     expect(within(screen.getByRole('dialog')).getByLabelText('Art')).toBeInTheDocument();
@@ -227,7 +251,7 @@ describe('Verwaltung', () => {
     const umsatz = screen.getByRole('region', { name: 'Umsatz' });
     expect(umsatz).toHaveTextContent('40 %');
     expect(umsatz).toHaveTextContent('1. März 2027');
-    fireEvent.click(within(umsatz).getByRole('button', { name: 'Umsatz bearbeiten' }));
+    imMenue('Relaunch', 'Umsatz bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Umsatz bearbeiten' });
     expect(within(dialog).getByLabelText(/^Auftragswert/)).toHaveValue('12.500,5');
     expect(within(dialog).getByLabelText(/^Wahrscheinlichkeit/)).toHaveValue(40);
@@ -247,9 +271,9 @@ describe('Verwaltung', () => {
       { ...PROJEKT.dokumente[0]!, id: 'd0', version: 1, dateiname: 'v1.pdf', storage_pfad: `${K}/${P}/v1.pdf` },
     ];
     const { container } = render(<AdminProjekt projekt={{ ...PROJEKT, dokumente: doks }} />);
-    // 2: eindeutige Namen der Bearbeiten-Buttons
-    expect(screen.getByRole('button', { name: 'Bearbeiten: Analyse' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Bearbeiten: Design' })).toBeInTheDocument();
+    // 2: eindeutige Namen der Zeilenmenüs
+    expect(screen.getByRole('button', { name: 'Aktionen: Schritt Analyse' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Aktionen: Schritt Design' })).toBeInTheDocument();
     // 3: Versionen unter einem Titel
     expect(screen.getAllByRole('heading', { level: 3, name: 'Vertrag' })).toHaveLength(1);
     expect(screen.getByText(/Aktuell:/).parentElement).toHaveTextContent('Version 2');
@@ -257,7 +281,7 @@ describe('Verwaltung', () => {
     const ids = [...container.querySelectorAll('[id]')].map((e) => e.id);
     expect(ids.filter((id, i) => ids.indexOf(id) !== i)).toEqual([]);
     // 5: keine Browser-Blasen statt eigener Meldungen; Titel-Feld hat einen Namen
-    fireEvent.click(screen.getByRole('button', { name: 'Projekt bearbeiten' }));
+    imMenue('Relaunch', 'Projekt bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Projekt bearbeiten' });
     for (const f of dialog.querySelectorAll('form')) expect(f).toHaveAttribute('novalidate');
     expect(within(dialog).getByRole('textbox', { name: /^Titel/ })).toHaveValue('Relaunch');

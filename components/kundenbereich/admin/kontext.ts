@@ -1,12 +1,16 @@
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import type { AdminApi } from '@/lib/kundenbereich/admin/aktionen';
 import { adminApi } from '@/lib/kundenbereich/admin/api';
 import { ACCESS } from '@/lib/kundenbereich/session';
 import { authApi } from '@/lib/kundenbereich/supabase';
 
-/** Seiten der Verwaltung nur für Admins, sonst 404 (functions/kundenbereich/admin.md AK-1) */
-export async function adminKontext(): Promise<AdminApi> {
+/**
+ * Seiten der Verwaltung nur für Admins, sonst 404 (functions/kundenbereich/admin.md AK-1).
+ * Je Anfrage einmal: Layout und Seite rufen es beide auf.
+ */
+export const adminKontext = cache(async (): Promise<AdminApi> => {
   const access = (await cookies()).get(ACCESS)?.value;
   const profil = access
     ? await authApi(process.env)
@@ -16,4 +20,4 @@ export async function adminKontext(): Promise<AdminApi> {
   const api = access && profil?.art === 'admin' ? adminApi(process.env, access) : null;
   if (!api) notFound();
   return api;
-}
+});

@@ -1,11 +1,13 @@
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { buttonClass } from '@/components/ui/Button';
+import { anfrageStatus } from '@/app/actions/kundenbereich-admin';
 import type { Anfrage } from '@/lib/kundenbereich/admin/dashboard';
+import { ANFRAGE_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
 import { datum } from '@/lib/kundenbereich/projekte';
 import { ANFRAGE_STATUS_TEXT, badge, budget, karte, kartenTitel, leistung, zeitrahmen } from './AdminListen';
 import AdminShell from './AdminShell';
-import AnfrageStatusForm from './AnfrageStatusForm';
+import AktionenMenue from './AktionenMenue';
 
 // Eine Anfrage mit allen Angaben (functions/kundenbereich/admin-aufbau.md Verhalten 3, AK-5)
 
@@ -18,7 +20,24 @@ export default function AdminAnfrage({ anfrage: a }: { anfrage: Anfrage }) {
       </a>,
     ],
     ['Telefon', a.telefon ?? 'keine Angabe'],
-    ['Website', a.website ?? 'keine Angabe'],
+    [
+      'Website',
+      a.website ? (
+        // admin-sidebar.md AK-17
+        <a
+          key="w"
+          href={/^https?:\/\//.test(a.website) ? a.website : `https://${a.website}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 hover:text-primary-text break-all"
+        >
+          {a.website.replace(/^https?:\/\//, '')}
+          <span className="sr-only"> (öffnet in neuem Tab)</span>
+        </a>
+      ) : (
+        'keine Angabe'
+      ),
+    ],
     ['Leistungen', a.leistungen.map(leistung).join(', ') || 'keine Angabe'],
     ['Zeitrahmen', a.zeitrahmen ? zeitrahmen(a.zeitrahmen) : 'keine Angabe'],
     ['Budget', a.budget ? budget(a.budget) : 'keine Angabe'],
@@ -28,12 +47,16 @@ export default function AdminAnfrage({ anfrage: a }: { anfrage: Anfrage }) {
   return (
     <AdminShell
       title={a.name}
-      bereich="anfragen"
-      unterseite
       pfad={[{ href: '/kunden/admin/anfragen', label: 'Anfragen' }]}
       aside={
         <>
           <span className={badge}>{ANFRAGE_STATUS_TEXT[a.status]}</span>
+          {/* admin-sidebar.md Verhalten 7: Status im ⋯-Menü */}
+          <AktionenMenue
+            name={a.name}
+            status={{ aktion: anfrageStatus, id: a.id, wert: a.status, optionen: ANFRAGE_STATUS_OPTIONEN }}
+            eintraege={[{ art: 'link', label: 'E-Mail schreiben', href: `mailto:${a.email}` }]}
+          />
           <Link
             href={`/kunden/admin/projekte/neu?anfrage=${a.id}`}
             aria-label={`Projekt anlegen: ${a.name}`}
@@ -65,12 +88,6 @@ export default function AdminAnfrage({ anfrage: a }: { anfrage: Anfrage }) {
                 </div>
               ))}
             </dl>
-          </section>
-          <section aria-labelledby="anfrage-status" className={karte}>
-            <h2 id="anfrage-status" className={`${kartenTitel} mb-3`}>
-              Status
-            </h2>
-            <AnfrageStatusForm id={a.id} name={a.name} status={a.status} />
           </section>
         </div>
       </div>

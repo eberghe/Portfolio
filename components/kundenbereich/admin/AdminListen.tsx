@@ -19,6 +19,24 @@ export const badge =
 export const zeile = 'flex flex-col gap-1 py-3 border-t border-border first:border-0 first:pt-0';
 export const titelLink =
   'inline-flex items-center min-h-11 text-[15px] font-bold underline underline-offset-2 hover:text-primary-text break-words min-w-0';
+/**
+ * Tabellen der Listen (admin-sidebar.md Verhalten 6): ab 768 px Tabelle, darunter dieselben Zeilen als Karten.
+ * Eine Tabelle für beide Größen, damit jede Aktion nur einmal im Baum steht.
+ */
+export const tabelle = {
+  rahmen: 'border border-border rounded-2xl bg-background',
+  table: 'w-full border-collapse text-[14px] max-md:block',
+  thead: 'max-md:sr-only',
+  th: 'px-4 py-3 text-left text-[12px] font-medium uppercase tracking-wide text-text3 border-b border-border whitespace-nowrap',
+  tbody: 'max-md:block',
+  tr: 'border-b border-border last:border-0 hover:bg-bg2 max-md:relative max-md:flex max-md:flex-wrap max-md:items-center max-md:gap-x-3 max-md:gap-y-1 max-md:px-4 max-md:py-3',
+  td: 'px-4 py-2.5 align-middle text-text2 max-md:p-0 max-md:text-[13px]',
+  /** Erste Spalte mit dem Namen als Link */
+  tdName: 'px-4 py-2.5 align-middle max-md:basis-full max-md:p-0 max-md:pr-12',
+  name: 'inline-flex items-center min-h-11 font-semibold text-foreground hover:underline underline-offset-2 break-words',
+  tdAktion: 'w-14 px-2 py-1 text-right align-middle max-md:absolute max-md:right-2 max-md:top-2 max-md:p-0',
+};
+
 export const mehrLink =
   'inline-flex items-center min-h-11 text-[14px] font-medium text-primary-text underline underline-offset-4 hover:no-underline';
 

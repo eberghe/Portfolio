@@ -28,12 +28,19 @@ const aktionen = vi.hoisted(() =>
       'dokumentEntfernen',
       'umsatzSpeichern',
       'anfrageStatus',
+      'projektStatus',
+      'kundeStatus',
       'projektMitAssistent',
     ].map((n) => [n, vi.fn(async (): Promise<AdminState> => ({ status: 'idle' }))]),
   ),
 );
 vi.mock('@/app/actions/kundenbereich-admin', () => aktionen);
-vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh: vi.fn() }), notFound: vi.fn() }));
+const adresse = vi.hoisted(() => ({ pfad: '/kunden/admin' }));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+  usePathname: () => adresse.pfad,
+  notFound: vi.fn(),
+}));
 
 const { default: AdminDashboard } = await import('@/components/kundenbereich/admin/AdminDashboard');
 const { default: AdminAnfragen } = await import('@/components/kundenbereich/admin/AdminAnfragen');
@@ -76,6 +83,7 @@ const KUNDEN: KundeZeile[] = [
   {
     id: K,
     name: 'Bäckerei',
+    status: 'aktiv',
     logo_freigabe: 'erteilt',
     logo_freigabe_am: '2026-10-08T09:00:00Z',
     kundenprojekte: [{ count: 2 }],
@@ -113,6 +121,7 @@ const KUNDE: KundeDetail = {
   name: 'Bäckerei',
   website_url: 'https://b.example',
   logo_pfad: null,
+  status: 'aktiv',
   logo_freigabe: 'offen',
   logo_freigabe_am: null,
   ansprechpartner: [
@@ -152,24 +161,17 @@ const PROJEKT: ProjektDetail = {
   dokumente: [],
 };
 
+/** Öffnet das ⋯-Menü „Aktionen: <ziel>“ (admin-sidebar.md AK-7) */
+const menue = (ziel: string) => {
+  fireEvent.click(screen.getByRole('button', { name: `Aktionen: ${ziel}` }));
+  return screen.getByRole('menu', { name: `Aktionen: ${ziel}` });
+};
+/** Wählt einen Eintrag im ⋯-Menü */
+const imMenue = (ziel: string, eintrag: string) =>
+  fireEvent.click(within(menue(ziel)).getByRole('menuitem', { name: eintrag }));
+
 /** Sichtbare Eingabefelder, ohne versteckte Felder der Formulare hinter Buttons */
 const felder = (c: HTMLElement) => c.querySelectorAll('input:not([type="hidden"]), textarea, select');
-
-describe('Bereiche der Verwaltung', () => {
-  it('AK-1: Leiste mit vier Bereichen, aktueller markiert', () => {
-    render(<AdminAnfragen anfragen={DATEN.anfragen} />);
-    const nav = screen.getByRole('navigation', { name: 'Bereiche der Verwaltung' });
-    const links = within(nav).getAllByRole('link');
-    expect(links.map((l) => [l.textContent, l.getAttribute('href')])).toEqual([
-      ['Übersicht', '/kunden/admin'],
-      ['Projekte', '/kunden/admin/projekte'],
-      ['Kunden', '/kunden/admin/kunden'],
-      ['Anfragen', '/kunden/admin/anfragen'],
-    ]);
-    expect(within(nav).getByRole('link', { name: 'Anfragen' })).toHaveAttribute('aria-current', 'page');
-    expect(within(nav).getByRole('link', { name: 'Übersicht' })).not.toHaveAttribute('aria-current');
-  });
-});
 
 describe('Dashboard aufs Wichtigste', () => {
   it('AK-2: höchstens 3 Termine, 3 Anfragen, 5 Projekte, kein Formular', () => {
@@ -277,7 +279,7 @@ describe('Eigene Seiten', () => {
       'href',
       '/kunden/admin/anfragen/40000000-0000-4000-8000-000000000005',
     );
-    expect(screen.getByText('Erledigt (1)').closest('details')).not.toHaveAttribute('open');
+    expect(screen.getByRole('table', { name: 'Anfragen' })).toBeInTheDocument();
     expect(document.body).not.toHaveTextContent('Beschreibung der Anfrage 5');
   });
 
@@ -290,14 +292,18 @@ describe('Eigene Seiten', () => {
     expect(werte).toMatchObject({
       'E-Mail': 'p1@example.org',
       Telefon: '0821 123',
-      Website: 'p1.example',
+      Website: 'p1.example (öffnet in neuem Tab)',
       Leistungen: 'Webdesign & Webentwicklung',
       Zeitrahmen: expect.any(String),
       Budget: '2.000 bis 5.000 €',
       Sprache: 'Deutsch',
     });
     expect(screen.getByText('Beschreibung der Anfrage 1, ausführlich.')).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'Status: Person 1' })).toHaveValue('neu');
+    expect(within(menue('Person 1')).getByRole('menuitemradio', { name: 'Neu' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    );
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
     expect(screen.getByRole('link', { name: 'Projekt anlegen: Person 1' })).toHaveAttribute(
       'href',
       '/kunden/admin/projekte/neu?anfrage=40000000-0000-4000-8000-000000000001',
@@ -309,13 +315,13 @@ describe('Eigene Seiten', () => {
     const { unmount } = render(<AdminProjekte projekte={DATEN.projekte} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Projekte' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Projekt a' })).toHaveAttribute('href', '/kunden/admin/projekte/a');
-    expect(screen.getByText('Abgeschlossen (1)').closest('details')).not.toHaveAttribute('open');
+    expect(screen.getByRole('table', { name: 'Projekte' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Neues Projekt' })).toHaveAttribute('href', '/kunden/admin/projekte/neu');
     unmount();
     const { container } = render(<AdminKunden kunden={KUNDEN} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Kunden' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Bäckerei' })).toHaveAttribute('href', `/kunden/admin/kunden/${K}`);
-    expect(screen.getByText('2 Projekte, 1 Ansprechpartner')).toBeInTheDocument();
+    expect(screen.getByRole('table', { name: 'Kunden' })).toBeInTheDocument();
     expect(felder(container)).toHaveLength(0);
     fireEvent.click(screen.getByRole('button', { name: 'Kunde anlegen' }));
     expect(screen.getByRole('dialog', { name: 'Kunde anlegen' })).toBeInTheDocument();
@@ -326,13 +332,18 @@ describe('Formulare hinter Buttons', () => {
   it('AK-7: Kundenseite ohne offenes Formular, Dialoge mit eindeutigen Buttons', () => {
     const { container } = render(<AdminKunde kunde={KUNDE} />);
     expect(felder(container)).toHaveLength(0);
-    for (const name of ['Stammdaten bearbeiten', 'Logo hochladen', 'Ansprechpartner hinzufügen'])
-      expect(screen.getByRole('button', { name })).toHaveAttribute('aria-haspopup', 'dialog');
-    expect(screen.getByRole('link', { name: 'Neues Projekt' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: 'Ansprechpartner hinzufügen' })).toHaveAttribute(
+      'aria-haspopup',
+      'dialog',
+    );
+    const m = menue('Bäckerei');
+    for (const name of ['Stammdaten bearbeiten', 'Logo hochladen'])
+      expect(within(m).getByRole('menuitem', { name })).toBeInTheDocument();
+    expect(within(m).getByRole('menuitem', { name: 'Neues Projekt' })).toHaveAttribute(
       'href',
       `/kunden/admin/projekte/neu?kunde=${K}`,
     );
-    fireEvent.click(screen.getByRole('button', { name: 'Stammdaten bearbeiten' }));
+    fireEvent.click(within(m).getByRole('menuitem', { name: 'Stammdaten bearbeiten' }));
     const dialog = screen.getByRole('dialog', { name: 'Stammdaten bearbeiten' });
     expect(within(dialog).getByLabelText(/^Name/)).toHaveValue('Bäckerei');
   });
@@ -340,23 +351,185 @@ describe('Formulare hinter Buttons', () => {
   it('AK-7: Projektseite ohne offenes Formular, Werte als Übersicht', () => {
     const { container } = render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
     expect(felder(container)).toHaveLength(0);
-    for (const name of [
-      'Projekt bearbeiten',
-      'Umsatz bearbeiten',
-      'Zuordnung ändern',
-      'Ablaufschritt hinzufügen',
-      'Bearbeiten: Design',
-      'Termin hinzufügen',
-      'Dokument hochladen',
-    ])
+    for (const name of ['Ablaufschritt hinzufügen', 'Termin hinzufügen', 'Dokument hochladen'])
       expect(screen.getByRole('button', { name })).toHaveAttribute('aria-haspopup', 'dialog');
+    const m = menue(PROJEKT.titel);
+    for (const name of ['Projekt bearbeiten', 'Umsatz bearbeiten', 'Zuordnung ändern'])
+      expect(within(m).getByRole('menuitem', { name })).toBeInTheDocument();
+    fireEvent.keyDown(m, { key: 'Escape' });
     const umsatz = screen.getByRole('region', { name: 'Umsatz' });
     expect(umsatz).toHaveTextContent('12.000 €');
     expect(umsatz).toHaveTextContent('100 %');
     expect(screen.getByRole('region', { name: 'Ansprechpartner' })).toHaveTextContent('Anna');
-    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Design' }));
+    imMenue('Schritt Design', 'Bearbeiten');
     const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
     expect(within(dialog).getByLabelText(/^Titel Deutsch/)).toHaveValue('Design');
     expect(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })).toBeInTheDocument();
+  });
+});
+
+describe('Dialog-Fuß und ruhigere Oberfläche (2026-10-13)', () => {
+  /** Buttons im Fuß in Lesereihenfolge */
+  const fussKnoepfe = (dialog: HTMLElement) => {
+    const fuss = dialog.querySelector<HTMLElement>('[data-dialog-fuss]');
+    expect(fuss).not.toBeNull();
+    return within(fuss!).getAllByRole('button');
+  };
+
+  it('AK-10: Hauptaktion rechts außen im Fuß, Abbrechen direkt davor, außerhalb des Scrollbereichs', () => {
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    for (const [knopf, titel, haupt] of [
+      ['Projekt bearbeiten', 'Projekt bearbeiten', 'Projekt speichern'],
+      ['Termin hinzufügen', 'Termin hinzufügen', 'Termin hinzufügen'],
+      ['Dokument hochladen', 'Dokument hochladen', 'Dokument hochladen'],
+    ] as const) {
+      if (knopf === 'Projekt bearbeiten') imMenue(PROJEKT.titel, knopf);
+      else fireEvent.click(screen.getByRole('button', { name: knopf }));
+      const dialog = screen.getByRole('dialog', { name: titel });
+      const knoepfe = fussKnoepfe(dialog);
+      const letzter = knoepfe.at(-1)!;
+      expect(letzter).toHaveAccessibleName(haupt);
+      expect(letzter).toHaveAttribute('type', 'submit');
+      // gehört zum Formular, auch wenn der Fuß außerhalb des <form> steht
+      expect((letzter as HTMLButtonElement).form).not.toBeNull();
+      expect(knoepfe.at(-2)).toHaveAccessibleName('Abbrechen');
+      const scroll = dialog.querySelector('[data-dialog-inhalt]');
+      expect(scroll).not.toBeNull();
+      expect(scroll!.contains(dialog.querySelector('[data-dialog-fuss]'))).toBe(false);
+      fireEvent.click(within(dialog).getByRole('button', { name: 'Schließen' }));
+    }
+  });
+
+  it('AK-10: Abbrechen schließt ohne Speichern, Fokus zurück auf den Auslöser', async () => {
+    aktionen.kundeAnlegen!.mockClear();
+    render(<AdminDashboard daten={DATEN} now={NOW} />);
+    const knopf = screen.getByRole('button', { name: 'Kunde anlegen' });
+    fireEvent.click(knopf);
+    const dialog = screen.getByRole('dialog', { name: 'Kunde anlegen' });
+    fireEvent.change(within(dialog).getByLabelText(/^Name/), { target: { value: 'Neu GmbH' } });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Abbrechen' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(aktionen.kundeAnlegen).not.toHaveBeenCalled();
+    await waitFor(() => expect(knopf).toHaveFocus());
+  });
+
+  it('AK-11: Entfernen links außen im Fuß des Schritt-Dialogs', () => {
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    imMenue('Schritt Design', 'Bearbeiten');
+    const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
+    const namen = fussKnoepfe(dialog).map((b) => b.getAttribute('aria-label') ?? b.textContent);
+    expect(namen).toEqual(['Entfernen: Schritt Design', 'Abbrechen', 'Schritt speichern']);
+  });
+
+  it('AK-13: Ladezustand nur im Inhalt', async () => {
+    const { default: Laden } = await import('@/app/(kunden-de)/kunden/admin/loading');
+    adresse.pfad = '/kunden/admin/kunden';
+    render(<Laden />);
+    // Die Sidebar steht im Layout und bleibt stehen, der Ladezustand zeigt nur den Inhalt (admin-sidebar.md)
+    expect(screen.queryByRole('navigation')).toBeNull();
+    expect(screen.getByRole('status')).toHaveTextContent('Wird geladen');
+    adresse.pfad = '/kunden/admin';
+  });
+
+  it('AK-14: Zeilenaktionen im ⋯-Menü mit Tooltip', () => {
+    const mit = {
+      ...PROJEKT,
+      termine: [
+        {
+          id: 't1',
+          beginn: '2026-10-15T08:00:00Z',
+          ende: '2026-10-15T09:00:00Z',
+          titel_de: 'Review',
+          titel_en: null,
+          meet_url: null,
+        },
+      ],
+      dokumente: [
+        {
+          id: 'd1',
+          created_at: '2026-10-08T10:00:00Z',
+          art: 'vertrag',
+          titel: 'Vertrag',
+          dateiname: 'v.pdf',
+          groesse_bytes: 1000,
+          mime_typ: 'application/pdf',
+          version: 1,
+          storage_pfad: 'x/v.pdf',
+        },
+      ],
+    } as unknown as ProjektDetail;
+    render(<AdminProjekt projekt={mit} now={NOW} />);
+    for (const [ziel, eintraege] of [
+      ['Schritt Design', ['Bearbeiten', 'Entfernen']],
+      ['Termin Review', ['Entfernen']],
+      ['Vertrag, Version 1', ['Herunterladen', 'Entfernen']],
+    ] as const) {
+      const knopf = screen.getByRole('button', { name: `Aktionen: ${ziel}` });
+      expect(knopf).toHaveAttribute('title', `Aktionen: ${ziel}`);
+      // nur Icon, kein sichtbarer Text
+      expect(knopf.textContent?.trim()).toBe('');
+      const m = menue(ziel);
+      expect(
+        within(m)
+          .getAllByRole('menuitem')
+          .map((e) => e.textContent),
+      ).toEqual(eintraege);
+      fireEvent.keyDown(m, { key: 'Escape' });
+    }
+  });
+});
+
+describe('Befunde Blinder Kritiker Dialoge (2026-10-13)', () => {
+  it('AK-16: Netzfehler beim Speichern bleibt im Dialog, Eingaben bleiben', async () => {
+    aktionen.kundeAnlegen!.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    render(<AdminDashboard daten={DATEN} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Kunde anlegen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Kunde anlegen' });
+    fireEvent.change(within(dialog).getByLabelText(/^Name/), { target: { value: 'Neu GmbH' } });
+    await act(async () => fireEvent.click(within(dialog).getAllByRole('button', { name: 'Kunde anlegen' }).at(-1)!));
+    await waitFor(() =>
+      expect(dialog).toHaveTextContent('Das hat nicht geklappt. Bitte prüf die Verbindung und versuch es noch einmal.'),
+    );
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(within(dialog).getByLabelText(/^Name/)).toHaveValue('Neu GmbH');
+  });
+
+  it('AK-16: Netzfehler beim Entfernen stürzt nicht ab', async () => {
+    aktionen.schrittEntfernen!.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    vi.spyOn(window, 'confirm').mockReturnValueOnce(true);
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    imMenue('Schritt Design', 'Bearbeiten');
+    const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
+    await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })));
+    await waitFor(() => expect(dialog).toHaveTextContent('Das hat nicht geklappt.'));
+  });
+
+  it('AK-17: Upload markiert leeren Titel und fehlende Datei gemeinsam', async () => {
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Dokument hochladen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Dokument hochladen' });
+    await act(async () =>
+      fireEvent.click(within(dialog).getAllByRole('button', { name: 'Dokument hochladen' }).at(-1)!),
+    );
+    await waitFor(() => expect(within(dialog).getByLabelText(/^Titel/)).toHaveAttribute('aria-invalid', 'true'));
+    expect(within(dialog).getByLabelText(/^Datei/)).toHaveAttribute('aria-invalid', 'true');
+    expect(within(dialog).getByLabelText(/^Titel/)).toHaveFocus();
+  });
+
+  it('AK-18: Klick neben den Dialog schließt ihn nicht', () => {
+    render(<AdminDashboard daten={DATEN} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Kunde anlegen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Kunde anlegen' });
+    fireEvent.mouseDown(dialog);
+    fireEvent.click(dialog);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('AK-19: Entfernen im Fuß in Fehlerfarbe', () => {
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    imMenue('Schritt Design', 'Bearbeiten');
+    const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
+    expect(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })).toHaveClass('text-error');
+    expect(within(dialog).getByRole('button', { name: 'Abbrechen' })).not.toHaveClass('text-error');
   });
 });

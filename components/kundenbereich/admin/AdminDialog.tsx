@@ -1,17 +1,27 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode } from 'react';
-import { buttonClass } from '@/components/ui/Button';
+import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { buttonClass, iconButtonClass } from '@/components/ui/Button';
 
 // Formular hinter einem Button in einem modalen Dialog (functions/kundenbereich/admin-aufbau.md Verhalten 7, AK-8)
 
-/** Meldung in der Live-Region der Verwaltung (AdminShell), wenn der eigene Platz verschwunden ist */
-export function melden(text: string) {
-  const ziel = document.getElementById('admin-meldung');
+/**
+ * Meldung in der Live-Region der Verwaltung; im Rahmen der Verwaltung zugleich ein kurzer sichtbarer Hinweis
+ * (admin-sidebar.md AK-7), der nach einigen Sekunden verschwindet.
+ */
+const meldungsTimer: Record<string, ReturnType<typeof setTimeout> | undefined> = {};
+/** `fehler`: eigene Meldung mit role="alert" (admin-sidebar.md AK-13) */
+export function melden(text: string, fehler = false) {
+  const id = fehler ? 'admin-fehler' : 'admin-meldung';
+  const ziel = document.getElementById(id);
   if (!ziel) return;
   ziel.textContent = '';
-  requestAnimationFrame(() => (ziel.textContent = text));
+  clearTimeout(meldungsTimer[id]);
+  requestAnimationFrame(() => {
+    ziel.textContent = text;
+    meldungsTimer[id] = setTimeout(() => (ziel.textContent = ''), fehler ? 8000 : 5000);
+  });
 }
 
 type DialogApi = { schliessen: (meldung?: string) => void };
@@ -26,6 +36,7 @@ export default function AdminDialog({
   name,
   icon,
   variant = 'secondary',
+  nurIcon = false,
   children,
 }: {
   /** Sichtbarer Text des Buttons */
@@ -36,20 +47,68 @@ export default function AdminDialog({
   name?: string;
   icon?: ReactNode;
   variant?: 'primary' | 'secondary';
+  /** Nur das Icon zeigen, z. B. in Listenzeilen; `name` ist dann Name und Tooltip (AK-14) */
+  nurIcon?: boolean;
   children: ReactNode;
 }) {
-  const [offen, setOffen] = useState(false);
   const [meldung, setMeldung] = useState('');
   const knopf = useRef<HTMLButtonElement>(null);
   const heading = title ?? label;
+  const steuerung = useDialogSteuerung(knopf, undefined, setMeldung);
 
+  return (
+    <span className="inline-flex flex-wrap items-center gap-y-1">
+      <button
+        ref={knopf}
+        type="button"
+        className={nurIcon ? iconButtonClass : buttonClass(variant)}
+        aria-haspopup="dialog"
+        aria-label={nurIcon ? (name ?? label) : name}
+        title={nurIcon ? (name ?? label) : undefined}
+        onClick={() => {
+          setMeldung('');
+          steuerung.oeffnen();
+        }}
+      >
+        {icon}
+        {!nurIcon && label}
+      </button>
+      {/* Kritiker Aufbau 4: Live-Region bleibt im Baum, auch leer; Abstand nur mit Text, sonst bricht der Kopf um */}
+      <span aria-live="polite" className="text-[13px] text-text2 [&:not(:empty)]:ml-3">
+        {meldung}
+      </span>
+      {steuerung.offen && (
+        <DialogFenster title={heading} steuerung={steuerung}>
+          {children}
+        </DialogFenster>
+      )}
+    </span>
+  );
+}
+
+type Steuerung = ReturnType<typeof useDialogSteuerung>;
+
+/**
+ * Öffnen und Schließen eines Dialogs mit Fokus-Rückgabe an den Auslöser (AK-8). `inline` zeigt die Meldung
+ * neben dem Auslöser; ohne sie geht die Meldung an die Live-Region der Verwaltung, z. B. bei ⋯-Menüs.
+ */
+export function useDialogSteuerung(
+  knopf: RefObject<HTMLElement | null>,
+  nachSchliessen?: () => void,
+  inline?: (meldung: string) => void,
+) {
+  const [offen, setOffen] = useState(false);
   const schliessen = (m?: string) => {
     const karte = knopf.current?.closest('section');
     setOffen(false);
-    setMeldung(m ?? '');
+    inline?.(m ?? '');
+    nachSchliessen?.();
     // Der Dialog wird entfernt; der Fokus geht zurück auf den Auslöser (AK-8)
     requestAnimationFrame(() => {
-      if (knopf.current?.isConnected) return knopf.current.focus();
+      if (knopf.current?.isConnected) {
+        if (m && !inline) melden(m);
+        return knopf.current.focus();
+      }
       // Kritiker Aufbau 3: Auslöser ist mit dem Eintrag verschwunden, z. B. nach „Entfernen“
       if (m) melden(m);
       const ziel = karte?.isConnected ? karte.querySelector<HTMLElement>('h2') : null;
@@ -59,41 +118,30 @@ export default function AdminDialog({
       }
     });
   };
+  return { offen, oeffnen: () => setOffen(true), schliessen };
+}
 
+/** Modaler Dialog mit Kontext für Formulare (schließen nach Erfolg) */
+export function DialogFenster({
+  title,
+  steuerung,
+  children,
+}: {
+  title: string;
+  steuerung: Steuerung;
+  children: ReactNode;
+}) {
   return (
-    <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
-      <button
-        ref={knopf}
-        type="button"
-        className={buttonClass(variant)}
-        aria-haspopup="dialog"
-        aria-label={name}
-        onClick={() => {
-          setMeldung('');
-          setOffen(true);
-        }}
-      >
-        {icon}
-        {label}
-      </button>
-      {/* Kritiker Aufbau 4: Live-Region bleibt im Baum, auch leer */}
-      <span aria-live="polite" className="text-[13px] text-text2">
-        {meldung}
-      </span>
-      {offen && (
-        <DialogContext.Provider value={{ schliessen }}>
-          <Fenster title={heading} onClose={() => schliessen()}>
-            {children}
-          </Fenster>
-        </DialogContext.Provider>
-      )}
-    </span>
+    <DialogContext.Provider value={{ schliessen: steuerung.schliessen }}>
+      <Fenster title={title} onClose={() => steuerung.schliessen()}>
+        {children}
+      </Fenster>
+    </DialogContext.Provider>
   );
 }
 
 function Fenster({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const druck = useRef(false);
   const titleId = useId();
 
   useEffect(() => {
@@ -116,15 +164,7 @@ function Fenster({ title, onClose, children }: { title: string; onClose: () => v
         e.preventDefault();
         onClose();
       }}
-      // Klick auf die abgedunkelte Fläche trifft das <dialog> selbst
-      // Kritiker Aufbau Rand: nur schließen, wenn Druck und Loslassen auf der Fläche liegen (Text markieren)
-      onMouseDown={(e) => {
-        druck.current = e.target === e.currentTarget;
-      }}
-      onClick={(e) => {
-        if (druck.current && e.target === e.currentTarget) onClose();
-        druck.current = false;
-      }}
+      // Kritiker Dialoge 4: Klick daneben schließt nicht mehr, Eingaben gehen sonst verloren (AK-18)
       // Kritiker Aufbau 5: Kopf fest, Inhalt scrollt, auch wenn der Titel umbricht
       className="admin-dialog m-auto w-[calc(100%-2rem)] max-w-[640px] max-h-[calc(100svh-2rem)] overflow-hidden flex-col open:flex rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
     >
@@ -142,7 +182,41 @@ function Fenster({ title, onClose, children }: { title: string; onClose: () => v
           <X size={18} aria-hidden="true" />
         </button>
       </div>
-      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">{children}</div>
+      {/* Inhalt und Fuß kommen vom Formular: DialogInhalt scrollt, DialogFuss bleibt unten (AK-10) */}
+      {children}
     </dialog>
+  );
+}
+
+/** Scrollbereich des Dialogs zwischen Kopf und Fuß */
+export function DialogInhalt({ children }: { children: ReactNode }) {
+  return (
+    <div data-dialog-inhalt className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Fester Fuß des Dialogs (admin-aufbau.md Verhalten 9, AK-10, AK-11): links außen eine zerstörende Aktion,
+ * rechts „Abbrechen“ und als letzter Button die Hauptaktion (`children`).
+ */
+export function DialogFuss({ links, children }: { links?: ReactNode; children: ReactNode }) {
+  const dialog = useAdminDialog();
+  return (
+    <div
+      data-dialog-fuss
+      className="shrink-0 flex flex-wrap items-stretch justify-end gap-2 border-t border-border px-5 py-3 sm:px-6"
+    >
+      {links && <div className="flex flex-wrap items-center gap-2 basis-full sm:basis-auto sm:mr-auto">{links}</div>}
+      <button
+        type="button"
+        className={buttonClass('secondary', 'max-sm:flex-1 max-sm:px-3')}
+        onClick={() => dialog?.schliessen()}
+      >
+        Abbrechen
+      </button>
+      {children}
+    </div>
   );
 }

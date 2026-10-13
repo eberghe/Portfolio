@@ -35,6 +35,7 @@ import {
   SPRACH_OPTIONEN,
   VERANTWORTLICH_OPTIONEN,
 } from '@/lib/kundenbereich/admin/texte';
+import { abgesichert } from './AdminForm';
 import AdminShell from './AdminShell';
 
 // Projekt anlegen in sechs Schritten (functions/kundenbereich/projekt-assistent.md).
@@ -60,7 +61,9 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
   const [ansage, setAnsage] = useState('');
   // Kritiker Assistent 5: aus „Prüfen“ zum Bearbeiten gekommen
   const [vonPruefung, setVonPruefung] = useState(false);
-  const [state, dispatch, pending] = useActionState<AdminState, FormData>(projektMitAssistent, { status: 'idle' });
+  const [state, dispatch, pending] = useActionState<AdminState, FormData>(abgesichert(projektMitAssistent), {
+    status: 'idle',
+  });
   const [gesehen, setGesehen] = useState(state);
   const titel = useRef<HTMLHeadingElement>(null);
   const fehlerBox = useRef<HTMLDivElement>(null);
@@ -184,7 +187,7 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
             className={`block h-1 rounded-full mb-1.5 ${i <= schritt ? 'bg-primary' : 'bg-bg3'}`}
           />
           <span
-            className={`text-[11px] truncate ${i === schritt ? 'block text-foreground font-medium' : 'hidden sm:block text-text3'}`}
+            className={`text-[11px] truncate ${i === schritt ? 'block text-foreground font-medium' : 'sr-only sm:not-sr-only sm:block text-text3'}`}
           >
             {s}
             {i < schritt && <span className="sr-only"> erledigt</span>}
@@ -205,12 +208,7 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
   const wert = betrag(d.projekt.auftragswert_netto);
 
   return (
-    <AdminShell
-      title="Neues Projekt"
-      bereich="projekte"
-      unterseite
-      pfad={[{ href: '/kunden/admin/projekte', label: 'Projekte' }]}
-    >
+    <AdminShell title="Neues Projekt" pfad={[{ href: '/kunden/admin/projekte', label: 'Projekte' }]}>
       <form onSubmit={submit} noValidate aria-label="Neues Projekt" className="max-w-[720px]">
         {fortschritt}
 

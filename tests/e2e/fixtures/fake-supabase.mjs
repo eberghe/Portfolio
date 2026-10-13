@@ -279,6 +279,13 @@ createServer((req, res) => {
       })),
     );
   }
+  // admin-sidebar.md AK-7: Projektstatus aus dem ⋯-Menü speichern
+  if (u.profil.art === 'admin' && path === '/rest/v1/kundenprojekte' && idParam && req.method === 'PATCH')
+    return void lies(req).then((row) => {
+      const p = idParam === P1 ? relaunch : neueProjekte.get(idParam);
+      if (p && row?.status) p.status = row.status;
+      send(200, p ? [{ ...p, id: idParam }] : []);
+    });
   if (u.profil.art === 'admin' && path === '/rest/v1/kundenprojekte' && idParam)
     return send(200, idParam === P1 ? [adminProjekt()] : neueProjekte.has(idParam) ? [neueProjekte.get(idParam)] : []);
   if (

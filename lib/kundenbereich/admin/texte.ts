@@ -7,8 +7,8 @@ export const PROJEKT_STATUS_OPTIONEN = [
   { value: 'angebot', label: 'Angebot' },
   { value: 'in_arbeit', label: 'In Arbeit' },
   { value: 'abstimmung', label: 'In Abstimmung' },
-  { value: 'abgeschlossen', label: 'Abgeschlossen' },
   { value: 'pausiert', label: 'Pausiert' },
+  { value: 'abgeschlossen', label: 'Abgeschlossen' },
 ];
 /** Status eines Kunden (functions/kundenbereich/admin-sidebar.md Verhalten 8) */
 export const KUNDEN_STATUS_OPTIONEN = [

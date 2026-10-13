@@ -127,7 +127,7 @@ test('Dashboard: Kennzahlen, Diagramme, Hilfe, Termine und Anfragen (admin-aufba
   await expect(page.getByRole('main')).toContainText('Wir brauchen eine neue Website.');
   // admin-sidebar.md AK-7: Status im ⋯-Menü, speichert sofort
   await (await menue(page, 'Clara Muster')).getByRole('menuitemradio', { name: 'Beantwortet' }).click();
-  await expect(page.locator('#admin-meldung')).toHaveText('Status geändert.');
+  await expect(page.locator('#admin-meldung')).toHaveText('Clara Muster: Status ist jetzt „Beantwortet“.');
   await expect(page.getByRole('main')).toContainText('Beantwortet');
   await expect(page.getByRole('link', { name: 'Projekt anlegen: Clara Muster' })).toHaveAttribute(
     'href',
@@ -202,19 +202,16 @@ test('AK-2/AK-3/AK-4/AK-5: Sidebar ab 1024 px, sonst Leiste unten', async ({ pag
     expect(leiste.height).toBeGreaterThanOrEqual(hoehe - 1);
     expect(main.x).toBeGreaterThanOrEqual(leiste.x + leiste.width - 1);
     // AK-3: einklappen, Namen bleiben, Wahl bleibt nach dem Neuladen
-    const ein = page.getByRole('button', { name: 'Seitenleiste einklappen' });
+    const ein = page.getByRole('button', { name: 'Seitenleiste' });
     await expect(ein).toHaveAttribute('aria-expanded', 'true');
     await ein.click();
     await expect(ein).toHaveAttribute('aria-expanded', 'false');
     await page.reload();
-    await expect(page.getByRole('button', { name: 'Seitenleiste einklappen' })).toHaveAttribute(
-      'aria-expanded',
-      'false',
-    );
+    await expect(page.getByRole('button', { name: 'Seitenleiste' })).toHaveAttribute('aria-expanded', 'false');
     expect((await page.getByRole('banner').boundingBox())!.width).toBeLessThanOrEqual(80);
     for (const name of namen) await expect(nav.getByRole('link', { name })).toBeVisible();
     expect(await axe(page)).toEqual([]);
-    await page.getByRole('button', { name: 'Seitenleiste einklappen' }).click();
+    await page.getByRole('button', { name: 'Seitenleiste' }).click();
   } else {
     // AK-4: Leiste unten, fünf Ziele nebeneinander, mindestens 44 px hoch
     const n = (await nav.boundingBox())!;
@@ -273,4 +270,13 @@ test('AK-20: ⋯-Menüs von Ablauf und Terminen rechts neben dem Titel', async (
   const t = (await termine.getByRole('heading', { name: 'Design-Review' }).boundingBox())!;
   const weg = (await termine.getByRole('button', { name: 'Aktionen: Termin Design-Review' }).boundingBox())!;
   expect(weg.y).toBeLessThan(t.y + t.height);
+});
+
+test('admin-sidebar.md AK-16: unbekannte ID zeigt „Nicht gefunden“ in der Verwaltung', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, '/kunden/admin/projekte/20000000-0000-4000-8000-0000000000ff');
+  await expect(page.getByRole('heading', { level: 1, name: 'Nicht gefunden' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Verwaltung' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Zur Übersicht' })).toHaveAttribute('href', '/kunden/admin');
+  expect(await axe(page)).toEqual([]);
 });

@@ -22,6 +22,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         aria-live="polite"
         className="pointer-events-none fixed bottom-20 right-4 z-50 max-w-[calc(100%-2rem)] rounded-lg bg-foreground px-4 py-2.5 text-[13px] font-medium text-background shadow-lg transition-opacity empty:opacity-0 lg:bottom-6 lg:right-6"
       />
+      {/* Fehler eigens und sofort angesagt (admin-sidebar.md AK-13) */}
+      <p
+        id="admin-fehler"
+        role="alert"
+        className="pointer-events-none fixed bottom-20 right-4 z-50 max-w-[calc(100%-2rem)] rounded-lg border border-error bg-background px-4 py-2.5 text-[13px] font-medium text-error shadow-lg transition-opacity empty:opacity-0 lg:bottom-6 lg:right-6"
+      />
     </div>
   );
 }

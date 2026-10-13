@@ -292,7 +292,7 @@ describe('Eigene Seiten', () => {
     expect(werte).toMatchObject({
       'E-Mail': 'p1@example.org',
       Telefon: '0821 123',
-      Website: 'p1.example',
+      Website: 'p1.example (öffnet in neuem Tab)',
       Leistungen: 'Webdesign & Webentwicklung',
       Zeitrahmen: expect.any(String),
       Budget: '2.000 bis 5.000 €',

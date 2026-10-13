@@ -187,7 +187,7 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
             className={`block h-1 rounded-full mb-1.5 ${i <= schritt ? 'bg-primary' : 'bg-bg3'}`}
           />
           <span
-            className={`text-[11px] truncate ${i === schritt ? 'block text-foreground font-medium' : 'hidden sm:block text-text3'}`}
+            className={`text-[11px] truncate ${i === schritt ? 'block text-foreground font-medium' : 'sr-only sm:not-sr-only sm:block text-text3'}`}
           >
             {s}
             {i < schritt && <span className="sr-only"> erledigt</span>}

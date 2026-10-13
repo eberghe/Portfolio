@@ -148,7 +148,7 @@ describe('Sidebar', () => {
 
   it('AK-3: Einklappen mit aria-expanded, Wahl im Cookie, Namen bleiben', () => {
     render(<AdminNavigation neueAnfragen={0} eingeklappt={false} />);
-    const knopf = screen.getByRole('button', { name: 'Seitenleiste einklappen' });
+    const knopf = screen.getByRole('button', { name: 'Seitenleiste' });
     expect(knopf).toHaveAttribute('aria-expanded', 'true');
     fireEvent.click(knopf);
     expect(knopf).toHaveAttribute('aria-expanded', 'false');
@@ -191,9 +191,10 @@ describe('Tabellen und ⋯-Menüs', () => {
     const { knopf, menue } = oeffne('Aktionen: Relaunch');
     expect(knopf).toHaveAttribute('aria-expanded', 'true');
     const eintraege = Array.from(menue.querySelectorAll<HTMLElement>('[role^="menuitem"]'));
-    await waitFor(() => expect(eintraege[0]).toHaveFocus());
+    // AK-12: Fokus startet auf dem gewählten Status „In Arbeit“
+    await waitFor(() => expect(eintraege[1]).toHaveFocus());
     fireEvent.keyDown(menue, { key: 'ArrowDown' });
-    expect(eintraege[1]).toHaveFocus();
+    expect(eintraege[2]).toHaveFocus();
     fireEvent.keyDown(menue, { key: 'End' });
     expect(eintraege.at(-1)).toHaveFocus();
     expect(within(menue).getByRole('menuitemradio', { name: 'In Arbeit' })).toHaveAttribute('aria-checked', 'true');
@@ -208,7 +209,9 @@ describe('Tabellen und ⋯-Menüs', () => {
     const fd = (aktionen.projektStatus!.mock.calls.at(-1) as unknown[])[1] as FormData;
     expect(fd.get('id')).toBe(P);
     expect(fd.get('status')).toBe('pausiert');
-    await waitFor(() => expect(document.getElementById('admin-meldung')).toHaveTextContent('Status geändert.'));
+    await waitFor(() =>
+      expect(document.getElementById('admin-meldung')).toHaveTextContent('Relaunch: Status ist jetzt „Pausiert“.'),
+    );
     expect(screen.queryByRole('menu')).toBeNull();
   });
 
@@ -317,5 +320,91 @@ describe('Status-Aktionen', async () => {
     expect(await A.kundeStatus(fd({ id: K, status: 'geheim' }), ctx(a))).toMatchObject({ status: 'error' });
     expect(await A.projektStatus(fd({ id: 'x', status: 'pausiert' }), ctx(a))).toMatchObject({ status: 'error' });
     expect(a.update).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('Befunde Blinder Kritiker Sidebar (2026-10-13)', () => {
+  const meldungen = () => (
+    <>
+      <p id="admin-meldung" aria-live="polite" />
+      <p id="admin-fehler" role="alert" />
+    </>
+  );
+
+  it('AK-12: Status-Menü öffnet auf dem gewählten Status, Reihenfolge wie im Dashboard', async () => {
+    render(<AdminProjekte projekte={[projekt]} />);
+    const { menue } = oeffne('Aktionen: Relaunch');
+    const radios = within(menue).getAllByRole('menuitemradio');
+    expect(radios.map((r) => r.textContent?.trim())).toEqual([
+      'Angebot',
+      'In Arbeit',
+      'In Abstimmung',
+      'Pausiert',
+      'Abgeschlossen',
+    ]);
+    await waitFor(() => expect(within(menue).getByRole('menuitemradio', { name: 'In Arbeit' })).toHaveFocus());
+  });
+
+  it('AK-13: Hinweis mit Name und neuem Status, Fehler als eigene Meldung', async () => {
+    render(
+      <>
+        {meldungen()}
+        <AdminProjekte projekte={[projekt]} />
+      </>,
+    );
+    aktionen.projektStatus!.mockResolvedValueOnce({ status: 'ok', message: 'Status geändert.' });
+    const menuePausiert = oeffne('Aktionen: Relaunch').menue;
+    await act(async () => fireEvent.click(within(menuePausiert).getByRole('menuitemradio', { name: 'Pausiert' })));
+    await waitFor(() =>
+      expect(document.getElementById('admin-meldung')).toHaveTextContent('Relaunch: Status ist jetzt „Pausiert“.'),
+    );
+    aktionen.projektStatus!.mockResolvedValueOnce({ status: 'error', message: 'Dieser Eintrag ist ungültig.' });
+    const menueAngebot = oeffne('Aktionen: Relaunch').menue;
+    await act(async () => fireEvent.click(within(menueAngebot).getByRole('menuitemradio', { name: 'Angebot' })));
+    await waitFor(() =>
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        'Status konnte nicht geändert werden. Dieser Eintrag ist ungültig.',
+      ),
+    );
+  });
+
+  it('AK-14: Button „Seitenleiste“ mit Zustand, eingeklappt bleibt die Zahl sichtbar', () => {
+    render(<AdminNavigation neueAnfragen={3} eingeklappt />);
+    const knopf = screen.getByRole('button', { name: 'Seitenleiste' });
+    expect(knopf).toHaveAttribute('aria-expanded', 'false');
+    expect(knopf).toHaveAttribute('title', 'Seitenleiste ausklappen');
+    const zahl = within(screen.getByRole('link', { name: 'Anfragen, 3 neu' })).getAllByText('3');
+    expect(zahl.some((z) => !/(^|\s)lg:hidden(\s|$)/.test(z.className))).toBe(true);
+    fireEvent.click(knopf);
+    expect(screen.getByRole('button', { name: 'Seitenleiste' })).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('AK-15: „Zur Website“ vor der Navigation in der Tab-Reihenfolge', () => {
+    render(<AdminNavigation neueAnfragen={0} eingeklappt={false} />);
+    const website = screen.getByRole('link', { name: 'Zur Website' });
+    const nav = screen.getByRole('navigation', { name: 'Verwaltung' });
+    expect(website.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('AK-16: unbekannte ID zeigt „Nicht gefunden“ der Verwaltung', async () => {
+    const { default: NichtGefunden } = await import('@/app/(kunden-de)/kunden/admin/not-found');
+    render(<NichtGefunden />);
+    expect(screen.getByRole('heading', { level: 1, name: 'Nicht gefunden' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Zur Übersicht' })).toHaveAttribute('href', '/kunden/admin');
+  });
+
+  it('AK-17: Website der Anfrage als Link, Schritte des Assistenten benannt', async () => {
+    const { default: AdminAnfrage } = await import('@/components/kundenbereich/admin/AdminAnfrage');
+    const { unmount } = render(<AdminAnfrage anfrage={{ ...anfrage, website: 'https://muster.example' }} />);
+    expect(screen.getByRole('link', { name: /muster\.example/ })).toHaveAttribute('href', 'https://muster.example');
+    unmount();
+    const { default: ProjektAssistent } = await import('@/components/kundenbereich/admin/ProjektAssistent');
+    const { leererAssistent } = await import('@/lib/kundenbereich/admin/assistent');
+    render(<ProjektAssistent kunden={[]} start={leererAssistent()} />);
+    const fortschritt = screen.getByRole('list', { name: 'Fortschritt' });
+    for (const li of within(fortschritt).getAllByRole('listitem')) {
+      const namen = [...li.querySelectorAll('span')].filter((s) => s.getAttribute('aria-hidden') !== 'true');
+      expect(namen.some((s) => s.textContent && !/(^|\s)hidden(\s|$)/.test(s.className))).toBe(true);
+    }
   });
 });

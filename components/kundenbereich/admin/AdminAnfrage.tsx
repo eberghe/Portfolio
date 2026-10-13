@@ -20,7 +20,24 @@ export default function AdminAnfrage({ anfrage: a }: { anfrage: Anfrage }) {
       </a>,
     ],
     ['Telefon', a.telefon ?? 'keine Angabe'],
-    ['Website', a.website ?? 'keine Angabe'],
+    [
+      'Website',
+      a.website ? (
+        // admin-sidebar.md AK-17
+        <a
+          key="w"
+          href={/^https?:\/\//.test(a.website) ? a.website : `https://${a.website}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 hover:text-primary-text break-all"
+        >
+          {a.website.replace(/^https?:\/\//, '')}
+          <span className="sr-only"> (öffnet in neuem Tab)</span>
+        </a>
+      ) : (
+        'keine Angabe'
+      ),
+    ],
     ['Leistungen', a.leistungen.map(leistung).join(', ') || 'keine Angabe'],
     ['Zeitrahmen', a.zeitrahmen ? zeitrahmen(a.zeitrahmen) : 'keine Angabe'],
     ['Budget', a.budget ? budget(a.budget) : 'keine Angabe'],

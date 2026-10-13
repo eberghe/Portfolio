@@ -10,15 +10,17 @@ import { buttonClass, iconButtonClass } from '@/components/ui/Button';
  * Meldung in der Live-Region der Verwaltung; im Rahmen der Verwaltung zugleich ein kurzer sichtbarer Hinweis
  * (admin-sidebar.md AK-7), der nach einigen Sekunden verschwindet.
  */
-let meldungsTimer: ReturnType<typeof setTimeout> | undefined;
-export function melden(text: string) {
-  const ziel = document.getElementById('admin-meldung');
+const meldungsTimer: Record<string, ReturnType<typeof setTimeout> | undefined> = {};
+/** `fehler`: eigene Meldung mit role="alert" (admin-sidebar.md AK-13) */
+export function melden(text: string, fehler = false) {
+  const id = fehler ? 'admin-fehler' : 'admin-meldung';
+  const ziel = document.getElementById(id);
   if (!ziel) return;
   ziel.textContent = '';
-  clearTimeout(meldungsTimer);
+  clearTimeout(meldungsTimer[id]);
   requestAnimationFrame(() => {
     ziel.textContent = text;
-    meldungsTimer = setTimeout(() => (ziel.textContent = ''), 5000);
+    meldungsTimer[id] = setTimeout(() => (ziel.textContent = ''), fehler ? 8000 : 5000);
   });
 }
 

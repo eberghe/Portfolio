@@ -56,7 +56,11 @@ export default function AktionenMenue({
 
   useEffect(() => {
     if (!offen) return;
-    requestAnimationFrame(() => punkte()[0]?.focus());
+    // admin-sidebar.md AK-12: Fokus auf den gewählten Status, sonst auf den ersten Eintrag
+    requestAnimationFrame(() => {
+      const liste = punkte();
+      (liste.find((p) => p.getAttribute('aria-checked') === 'true') ?? liste[0])?.focus();
+    });
     // Klick daneben schließt, ohne den Fokus zu verschieben
     const weg = (e: PointerEvent) => {
       if (!menue.current?.contains(e.target as Node) && !knopf.current?.contains(e.target as Node)) schliessen(false);
@@ -82,7 +86,13 @@ export default function AktionenMenue({
     } else if (e.key === 'Tab') schliessen(false);
   };
 
-  const ausfuehren = (aktion: AdminAction, hidden: Record<string, string>, confirm?: string) => {
+  const ausfuehren = (
+    aktion: AdminAction,
+    hidden: Record<string, string>,
+    confirm?: string,
+    /** Bei Statusänderungen: Texte für Erfolg und Fehler (admin-sidebar.md AK-13) */
+    texte?: { ok: string; fehler: string },
+  ) => {
     schliessen();
     if (confirm && !window.confirm(confirm)) return;
     const fd = new FormData();
@@ -90,8 +100,10 @@ export default function AktionenMenue({
     startTransition(async () => {
       const state = await abgesichert(aktion)({ status: 'idle' }, fd);
       // Ergebnis in der Live-Region der Verwaltung, sichtbar als Hinweis (admin-sidebar.md AK-7)
-      if (state.status !== 'idle' && state.message) melden(state.message);
-      if (state.status === 'ok') router.refresh();
+      if (state.status === 'ok') {
+        melden(texte?.ok ?? state.message ?? '');
+        router.refresh();
+      } else if (state.status === 'error') melden([texte?.fehler, state.message].filter(Boolean).join(' '), true);
     });
   };
 
@@ -143,7 +155,12 @@ export default function AktionenMenue({
                     tabIndex={-1}
                     className={punktKlasse()}
                     onClick={() =>
-                      aktiv ? schliessen() : ausfuehren(status.aktion, { id: status.id, status: o.value })
+                      aktiv
+                        ? schliessen()
+                        : ausfuehren(status.aktion, { id: status.id, status: o.value }, undefined, {
+                            ok: `${name}: Status ist jetzt „${o.label}“.`,
+                            fehler: 'Status konnte nicht geändert werden.',
+                          })
                     }
                   >
                     <Check size={15} aria-hidden="true" className={aktiv ? 'text-primary-text' : 'invisible'} />

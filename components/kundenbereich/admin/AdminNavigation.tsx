@@ -51,6 +51,8 @@ export default function AdminNavigation({
     document.cookie = `kb_sidebar=${neu ? 'zu' : 'auf'}; path=/; max-age=31536000; samesite=lax`;
   };
   const label = zu ? 'lg:sr-only' : '';
+  const zahlKlasse =
+    'min-w-5 rounded-full bg-primary px-1.5 text-center text-[11px] font-semibold leading-5 text-primary-foreground';
 
   return (
     <header
@@ -71,6 +73,33 @@ export default function AdminNavigation({
         ) : null}
         <Logo className={`h-3 w-auto ${zu ? 'lg:hidden' : ''}`} />
       </Link>
+
+      {/* AK-15: im Code vor der Navigation, damit „Zur Website“ unter 1024 px vor der unteren Leiste kommt */}
+      <div className="flex items-center gap-1 lg:order-last lg:flex-col lg:items-stretch lg:border-t lg:border-border lg:pt-3">
+        <Link
+          href="/"
+          title={zu ? 'Zur Website' : undefined}
+          className={`inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-[14px] font-medium text-text2 hover:text-foreground lg:gap-3 lg:px-3 lg:hover:bg-bg2 ${
+            zu ? 'lg:justify-center lg:px-0' : ''
+          }`}
+        >
+          <ArrowLeft size={16} aria-hidden="true" />
+          <span className={label}>Zur Website</span>
+        </Link>
+        {/* AK-14: fester sichtbarer Name, Zustand über aria-expanded, Aktion im Tooltip */}
+        <button
+          type="button"
+          onClick={umschalten}
+          aria-expanded={!zu}
+          title={zu ? 'Seitenleiste ausklappen' : 'Seitenleiste einklappen'}
+          className={`hidden min-h-11 items-center gap-3 rounded-lg px-3 text-[14px] font-medium text-text2 hover:bg-bg2 hover:text-foreground lg:inline-flex ${
+            zu ? 'lg:justify-center lg:px-0' : ''
+          }`}
+        >
+          {zu ? <PanelLeftOpen size={16} aria-hidden="true" /> : <PanelLeftClose size={16} aria-hidden="true" />}
+          <span className={label}>Seitenleiste</span>
+        </button>
+      </div>
 
       {/* Verhalten 4: dieselbe Navigation, unter 1024 px als feste Leiste unten */}
       <nav
@@ -94,21 +123,19 @@ export default function AdminNavigation({
                 >
                   <span className="relative">
                     <Icon size={18} aria-hidden="true" className={stand ? 'text-primary-text' : undefined} />
-                    {zahl > 0 && zu && (
+                    {/* AK-14/AK-15: Zahl am Icon, unten und in der eingeklappten Sidebar */}
+                    {zahl > 0 && (
                       <span
                         aria-hidden="true"
-                        className="absolute -right-1.5 -top-1.5 hidden h-2 w-2 rounded-full bg-primary lg:block"
-                      />
+                        className={`${zahlKlasse} absolute -right-3 -top-2 ${zu ? '' : 'lg:hidden'}`}
+                      >
+                        {zahl}
+                      </span>
                     )}
                   </span>
                   <span className={`truncate ${label}`}>{text}</span>
-                  {zahl > 0 && (
-                    <span
-                      aria-hidden="true"
-                      className={`absolute right-2 top-1.5 min-w-5 rounded-full bg-primary px-1.5 text-center text-[11px] font-semibold leading-5 text-primary-foreground lg:static lg:ml-auto ${
-                        zu ? 'lg:hidden' : ''
-                      }`}
-                    >
+                  {zahl > 0 && !zu && (
+                    <span aria-hidden="true" className={`${zahlKlasse} ml-auto hidden lg:inline-block`}>
                       {zahl}
                     </span>
                   )}
@@ -118,31 +145,6 @@ export default function AdminNavigation({
           })}
         </ul>
       </nav>
-
-      <div className="flex items-center gap-1 lg:flex-col lg:items-stretch lg:border-t lg:border-border lg:pt-3">
-        <Link
-          href="/"
-          title={zu ? 'Zur Website' : undefined}
-          className={`inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-[14px] font-medium text-text2 hover:text-foreground lg:gap-3 lg:px-3 lg:hover:bg-bg2 ${
-            zu ? 'lg:justify-center lg:px-0' : ''
-          }`}
-        >
-          <ArrowLeft size={16} aria-hidden="true" />
-          <span className={label}>Zur Website</span>
-        </Link>
-        <button
-          type="button"
-          onClick={umschalten}
-          aria-expanded={!zu}
-          title={zu ? 'Seitenleiste ausklappen' : undefined}
-          className={`hidden min-h-11 items-center gap-3 rounded-lg px-3 text-[14px] font-medium text-text2 hover:bg-bg2 hover:text-foreground lg:inline-flex ${
-            zu ? 'lg:justify-center lg:px-0' : ''
-          }`}
-        >
-          {zu ? <PanelLeftOpen size={16} aria-hidden="true" /> : <PanelLeftClose size={16} aria-hidden="true" />}
-          <span className={label}>Seitenleiste einklappen</span>
-        </button>
-      </div>
     </header>
   );
 }

@@ -7,7 +7,7 @@ import Button from '@/components/ui/Button';
 import { karte, kartenTitel } from './AdminListen';
 import AdminShell from './AdminShell';
 
-// Settings der Verwaltung: Konto, Darstellung, Abmelden (functions/kundenbereich/admin-sidebar.md Verhalten 10, AK-10)
+// Einstellungen der Verwaltung: Konto, Darstellung, Abmelden (functions/kundenbereich/admin-sidebar.md Verhalten 10, AK-10)
 
 type Modus = 'hell' | 'dunkel' | 'system';
 const MODI: { value: Modus; label: string }[] = [
@@ -48,7 +48,7 @@ export default function AdminSettings({ email }: { email: string | null }) {
   const modus = wahl ?? gespeichert;
 
   return (
-    <AdminShell title="Settings">
+    <AdminShell title="Einstellungen">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 md:gap-6 items-start max-w-[1100px]">
         <section aria-labelledby="konto-titel" className={karte}>
           <h2 id="konto-titel" className={`${kartenTitel} mb-3`}>

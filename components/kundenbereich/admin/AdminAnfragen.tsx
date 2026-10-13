@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { anfrageStatus } from '@/app/actions/kundenbereich-admin';
+import { anfrageLoeschen, anfrageStatus } from '@/app/actions/kundenbereich-admin';
 import type { Anfrage } from '@/lib/kundenbereich/admin/dashboard';
 import { ANFRAGE_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
 import { datum } from '@/lib/kundenbereich/projekte';
 import AktionenMenue from './AktionenMenue';
+import { anfrageLoeschenText } from './loeschenTexte';
 import { ANFRAGE_STATUS_TEXT, badge, leistung, tabelle as t } from './AdminListen';
 import AdminShell from './AdminShell';
 
@@ -49,6 +50,14 @@ export default function AdminAnfragen({ anfragen }: { anfragen: Anfrage[] }) {
                       eintraege={[
                         { art: 'link', label: 'Öffnen', href: `/kunden/admin/anfragen/${a.id}` },
                         { art: 'link', label: 'Projekt anlegen', href: `/kunden/admin/projekte/neu?anfrage=${a.id}` },
+                        {
+                          art: 'aktion',
+                          label: 'Löschen',
+                          aktion: anfrageLoeschen,
+                          hidden: { id: a.id },
+                          gefahr: true,
+                          bestaetigen: anfrageLoeschenText(a.name),
+                        },
                       ]}
                     />
                   </td>

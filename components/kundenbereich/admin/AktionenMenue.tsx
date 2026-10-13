@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { startTransition, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { iconButtonClass } from '@/components/ui/Button';
+import Rueckfrage, { type RueckfrageText } from './Rueckfrage';
 import { DialogFenster, melden, useDialogSteuerung } from './AdminDialog';
 import { abgesichert, type AdminAction } from './AdminForm';
 
@@ -18,10 +19,14 @@ export type MenueEintrag =
       label: string;
       aktion: AdminAction;
       hidden: Record<string, string>;
-      /** Rückfrage vor dem Ausführen */
-      confirm?: string;
+      /** Rückfrage im eigenen Dialog vor dem Ausführen (admin-bearbeiten.md Verhalten 2) */
+      bestaetigen?: RueckfrageText;
       gefahr?: boolean;
-    };
+      /** Nach Erfolg dorthin, z. B. nach dem Löschen auf der Detailseite zur Liste */
+      danach?: string;
+    }
+  /** Aktion im Browser, z. B. „Nach oben“ in einer sortierbaren Liste */
+  | { art: 'klick'; label: string; onSelect: () => void };
 
 export interface MenueStatus {
   aktion: AdminAction;
@@ -42,11 +47,13 @@ export default function AktionenMenue({
 }) {
   const [offen, setOffen] = useState(false);
   const [dialog, setDialog] = useState<Extract<MenueEintrag, { art: 'dialog' }> | null>(null);
+  const [frage, setFrage] = useState<Extract<MenueEintrag, { art: 'aktion' }> | null>(null);
   const knopf = useRef<HTMLButtonElement>(null);
   const menue = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const menueId = useId();
   const steuerung = useDialogSteuerung(knopf, () => setDialog(null));
+  const frageSteuerung = useDialogSteuerung(knopf, () => setFrage(null));
 
   const punkte = () => Array.from(menue.current?.querySelectorAll<HTMLElement>('[role^="menuitem"]') ?? []);
   const schliessen = (fokus = true) => {
@@ -89,12 +96,10 @@ export default function AktionenMenue({
   const ausfuehren = (
     aktion: AdminAction,
     hidden: Record<string, string>,
-    confirm?: string,
     /** Bei Statusänderungen: Texte für Erfolg und Fehler (admin-sidebar.md AK-13) */
     texte?: { ok: string; fehler: string },
+    danach?: string,
   ) => {
-    schliessen();
-    if (confirm && !window.confirm(confirm)) return;
     const fd = new FormData();
     for (const [k, v] of Object.entries(hidden)) fd.set(k, v);
     startTransition(async () => {
@@ -102,7 +107,8 @@ export default function AktionenMenue({
       // Ergebnis in der Live-Region der Verwaltung, sichtbar als Hinweis (admin-sidebar.md AK-7)
       if (state.status === 'ok') {
         melden(texte?.ok ?? state.message ?? '');
-        router.refresh();
+        if (danach) router.push(danach);
+        else router.refresh();
       } else if (state.status === 'error') melden([texte?.fehler, state.message].filter(Boolean).join(' '), true);
     });
   };
@@ -157,10 +163,15 @@ export default function AktionenMenue({
                     onClick={() =>
                       aktiv
                         ? schliessen()
-                        : ausfuehren(status.aktion, { id: status.id, status: o.value }, undefined, {
-                            ok: `${name}: Status ist jetzt „${o.label}“.`,
-                            fehler: 'Status konnte nicht geändert werden.',
-                          })
+                        : (schliessen(),
+                          ausfuehren(
+                            status.aktion,
+                            { id: status.id, status: o.value },
+                            {
+                              ok: `${name}: Status ist jetzt „${o.label}“.`,
+                              fehler: 'Status konnte nicht geändert werden.',
+                            },
+                          ))
                     }
                   >
                     <Check size={15} aria-hidden="true" className={aktiv ? 'text-primary-text' : 'invisible'} />
@@ -203,6 +214,22 @@ export default function AktionenMenue({
                   {e.label}
                 </button>
               );
+            if (e.art === 'klick')
+              return (
+                <button
+                  key={e.label}
+                  type="button"
+                  role="menuitem"
+                  tabIndex={-1}
+                  className={punktKlasse()}
+                  onClick={() => {
+                    schliessen();
+                    e.onSelect();
+                  }}
+                >
+                  {e.label}
+                </button>
+              );
             return (
               <button
                 key={e.label}
@@ -210,13 +237,32 @@ export default function AktionenMenue({
                 role="menuitem"
                 tabIndex={-1}
                 className={punktKlasse(e.gefahr)}
-                onClick={() => ausfuehren(e.aktion, e.hidden, e.confirm)}
+                onClick={() => {
+                  if (e.bestaetigen) {
+                    setOffen(false);
+                    setFrage(e);
+                    frageSteuerung.oeffnen();
+                  } else {
+                    schliessen();
+                    ausfuehren(e.aktion, e.hidden, undefined, e.danach);
+                  }
+                }}
               >
                 {e.label}
               </button>
             );
           })}
         </div>
+      )}
+      {frage?.bestaetigen && frageSteuerung.offen && (
+        <Rueckfrage
+          text={frage.bestaetigen}
+          steuerung={frageSteuerung}
+          onJa={() => {
+            frageSteuerung.schliessen();
+            ausfuehren(frage.aktion, frage.hidden, undefined, frage.danach);
+          }}
+        />
       )}
       {dialog && steuerung.offen && (
         <DialogFenster title={dialog.titel ?? dialog.label} steuerung={steuerung}>

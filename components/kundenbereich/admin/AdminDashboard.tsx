@@ -77,7 +77,7 @@ export default function AdminDashboard({ daten, now = new Date() }: { daten: Das
 
   return (
     <AdminShell
-      title="Home"
+      title="Übersicht"
       aside={
         <>
           <KundeAnlegen />

@@ -21,11 +21,11 @@ import Logo from '@/components/Logo';
 
 const START = '/kunden/admin';
 const BEREICHE: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: START, label: 'Home', icon: LayoutDashboard },
+  { href: START, label: 'Übersicht', icon: LayoutDashboard },
   { href: `${START}/projekte`, label: 'Projekte', icon: FolderKanban },
   { href: `${START}/kunden`, label: 'Kunden', icon: Building2 },
   { href: `${START}/anfragen`, label: 'Anfragen', icon: Inbox },
-  { href: `${START}/settings`, label: 'Settings', icon: Settings },
+  { href: `${START}/einstellungen`, label: 'Einstellungen', icon: Settings },
 ];
 
 /** aria-current: „page“ auf der Seite selbst, „true“ auf Unterseiten; Home nur auf der Übersicht */

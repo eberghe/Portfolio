@@ -1,13 +1,14 @@
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import { buttonClass } from '@/components/ui/Button';
-import { anfrageStatus } from '@/app/actions/kundenbereich-admin';
+import { anfrageLoeschen, anfrageStatus } from '@/app/actions/kundenbereich-admin';
 import type { Anfrage } from '@/lib/kundenbereich/admin/dashboard';
 import { ANFRAGE_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
 import { datum } from '@/lib/kundenbereich/projekte';
 import { ANFRAGE_STATUS_TEXT, badge, budget, karte, kartenTitel, leistung, zeitrahmen } from './AdminListen';
 import AdminShell from './AdminShell';
 import AktionenMenue from './AktionenMenue';
+import { anfrageLoeschenText } from './loeschenTexte';
 
 // Eine Anfrage mit allen Angaben (functions/kundenbereich/admin-aufbau.md Verhalten 3, AK-5)
 
@@ -55,7 +56,18 @@ export default function AdminAnfrage({ anfrage: a }: { anfrage: Anfrage }) {
           <AktionenMenue
             name={a.name}
             status={{ aktion: anfrageStatus, id: a.id, wert: a.status, optionen: ANFRAGE_STATUS_OPTIONEN }}
-            eintraege={[{ art: 'link', label: 'E-Mail schreiben', href: `mailto:${a.email}` }]}
+            eintraege={[
+              { art: 'link', label: 'E-Mail schreiben', href: `mailto:${a.email}` },
+              {
+                art: 'aktion',
+                label: 'Löschen',
+                aktion: anfrageLoeschen,
+                hidden: { id: a.id },
+                gefahr: true,
+                danach: '/kunden/admin/anfragen',
+                bestaetigen: anfrageLoeschenText(a.name),
+              },
+            ]}
           />
           <Link
             href={`/kunden/admin/projekte/neu?anfrage=${a.id}`}

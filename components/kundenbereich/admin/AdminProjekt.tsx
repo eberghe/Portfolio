@@ -6,39 +6,33 @@ import {
   dokumentVorbereiten,
   projektAnsprechpartner,
   projektSpeichern,
+  projektLoeschen,
   projektStatus,
-  schrittEntfernen,
   schrittHinzufuegen,
-  schrittSpeichern,
   terminEntfernen,
   terminHinzufuegen,
   umsatzSpeichern,
 } from '@/app/actions/kundenbereich-admin';
 import { dateiInfo } from '@/lib/kundenbereich/dokumente';
 import type { ProjektDetail } from '@/lib/kundenbereich/admin/laden';
-import {
-  DOKUMENT_ART_OPTIONEN,
-  optionLabel,
-  PROJEKT_STATUS_OPTIONEN,
-  SCHRITT_STATUS_OPTIONEN,
-  VERANTWORTLICH_OPTIONEN,
-} from '@/lib/kundenbereich/admin/texte';
+import { DOKUMENT_ART_OPTIONEN, optionLabel, PROJEKT_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
 import { euro } from '@/lib/kundenbereich/admin/dashboard';
 import { datum } from '@/lib/kundenbereich/projekte';
 import { terminTitel, zeitraum } from '@/lib/kundenbereich/termine';
-import ActionButton from './ActionButton';
+import AblaufListe from './AblaufListe';
 import AktionenMenue from './AktionenMenue';
+import { projektLoeschenText } from './loeschenTexte';
 import AdminDialog from './AdminDialog';
-import AdminForm, { type Feld } from './AdminForm';
+import AdminForm from './AdminForm';
 import { badge, karte, kartenTitel, zeile } from './AdminListen';
 import AdminShell from './AdminShell';
 import FokusHinweis from './FokusHinweis';
+import { schrittFelder } from './schrittFelder';
 import UploadForm from './UploadForm';
 
 // Ein Projekt als Übersicht, Formulare in Dialogen
 // (functions/kundenbereich/admin.md Verhalten 4, admin-aufbau.md Verhalten 5)
 
-type Schritt = ProjektDetail['projektschritte'][number];
 type Dok = ProjektDetail['dokumente'][number];
 
 /** Dokumente nach Art und Titel, neueste Version zuerst */
@@ -52,38 +46,6 @@ function dokumentStapel(dokumente: Dok[]) {
   }
   return [...map.values()].map((g) => ({ ...g, versionen: g.versionen.sort((a, b) => b.version - a.version) }));
 }
-
-const schrittFelder = (s?: Schritt, reihenfolge = 1): Feld[] => [
-  {
-    name: 'reihenfolge',
-    label: 'Reihenfolge',
-    type: 'number',
-    required: true,
-    defaultValue: String(s?.reihenfolge ?? reihenfolge),
-    half: true,
-  },
-  {
-    name: 'status',
-    label: 'Stand',
-    type: 'select',
-    options: SCHRITT_STATUS_OPTIONEN,
-    defaultValue: s?.status ?? 'offen',
-    half: true,
-  },
-  { name: 'titel_de', label: 'Titel Deutsch', required: true, defaultValue: s?.titel_de ?? '', half: true },
-  { name: 'titel_en', label: 'Titel Englisch', defaultValue: s?.titel_en ?? '', half: true },
-  { name: 'beschreibung_de', label: 'Beschreibung Deutsch', type: 'textarea', defaultValue: s?.beschreibung_de ?? '' },
-  { name: 'beschreibung_en', label: 'Beschreibung Englisch', type: 'textarea', defaultValue: s?.beschreibung_en ?? '' },
-  { name: 'faellig_am', label: 'Fällig am', type: 'date', defaultValue: s?.faellig_am ?? '', half: true },
-  {
-    name: 'verantwortlich',
-    label: 'Verantwortlich',
-    type: 'select',
-    options: VERANTWORTLICH_OPTIONEN,
-    defaultValue: s?.verantwortlich ?? 'erik',
-    half: true,
-  },
-];
 
 /** „12.500,50“ für das Eingabefeld */
 const betragText = (v: string | number | null | undefined) =>
@@ -246,24 +208,21 @@ export default function AdminProjekt({
       aside={
         <>
           <span className={badge}>{optionLabel(PROJEKT_STATUS_OPTIONEN, p.status)}</span>
-          {/* admin-sidebar.md Verhalten 9: alle Bearbeiten-Aktionen im ⋯-Menü */}
+          {/* admin-bearbeiten.md Verhalten 8: im Kopf Status, Links und Löschen; Bearbeiten in den Karten */}
           <AktionenMenue
             name={p.titel}
             status={{ aktion: projektStatus, id: p.id, wert: p.status, optionen: PROJEKT_STATUS_OPTIONEN }}
             eintraege={[
-              { art: 'dialog', label: 'Projekt bearbeiten', inhalt: projektForm },
-              { art: 'dialog', label: 'Umsatz bearbeiten', inhalt: umsatzForm },
-              ...(zuordnungForm
-                ? [
-                    {
-                      art: 'dialog' as const,
-                      label: 'Zuordnung ändern',
-                      titel: 'Ansprechpartner im Projekt',
-                      inhalt: zuordnungForm,
-                    },
-                  ]
-                : []),
               { art: 'link', label: 'So sieht es der Kunde', href: `/kunden?projekt=${p.id}` },
+              {
+                art: 'aktion',
+                label: 'Löschen',
+                aktion: projektLoeschen,
+                hidden: { id: p.id },
+                gefahr: true,
+                danach: '/kunden/admin/projekte',
+                bestaetigen: projektLoeschenText(p.titel),
+              },
             ]}
           />
         </>
@@ -284,63 +243,15 @@ export default function AdminProjekt({
                 />
               </AdminDialog>
             </Kopf>
-            {p.projektschritte.length === 0 ? (
-              <p className="text-[15px] text-text2">Noch keine Schritte.</p>
-            ) : (
-              <ol role="list" className="flex flex-col">
-                {p.projektschritte.map((s) => (
-                  <li key={s.id} className={zeileMitAktion}>
-                    <div className="min-w-0">
-                      <p className="font-bold text-[15px] break-words">
-                        {s.reihenfolge}. {s.titel_de}
-                      </p>
-                      <p className="text-[13px] text-text2">
-                        {optionLabel(SCHRITT_STATUS_OPTIONEN, s.status)} ·{' '}
-                        {optionLabel(VERANTWORTLICH_OPTIONEN, s.verantwortlich)}
-                        {s.faellig_am && ` · fällig ${datum(s.faellig_am, 'de')}`}
-                      </p>
-                    </div>
-                    <AktionenMenue
-                      name={`Schritt ${s.titel_de}`}
-                      eintraege={[
-                        {
-                          art: 'dialog',
-                          label: 'Bearbeiten',
-                          titel: `Ablaufschritt bearbeiten: ${s.titel_de}`,
-                          inhalt: (
-                            <AdminForm
-                              id={`schritt-${s.id}`}
-                              action={schrittSpeichern}
-                              submitLabel="Schritt speichern"
-                              hidden={{ id: s.id }}
-                              felder={schrittFelder(s)}
-                              fussLinks={
-                                <ActionButton
-                                  action={schrittEntfernen}
-                                  hidden={{ id: s.id }}
-                                  label="Entfernen"
-                                  name={`Entfernen: Schritt ${s.titel_de}`}
-                                  confirm={`Schritt „${s.titel_de}“ entfernen?`}
-                                  variant="gefahr"
-                                />
-                              }
-                            />
-                          ),
-                        },
-                        {
-                          art: 'aktion',
-                          label: 'Entfernen',
-                          aktion: schrittEntfernen,
-                          hidden: { id: s.id },
-                          confirm: `Schritt „${s.titel_de}“ entfernen?`,
-                          gefahr: true,
-                        },
-                      ]}
-                    />
-                  </li>
-                ))}
-              </ol>
-            )}
+            <AblaufListe
+              // Neu aufbauen nur, wenn Schritte dazukommen oder wegfallen; sonst bleiben Reihenfolge und Fokus
+              key={p.projektschritte
+                .map((x) => x.id)
+                .sort()
+                .join()}
+              projektId={p.id}
+              schritte={[...p.projektschritte].sort((x, y) => x.reihenfolge - y.reihenfolge)}
+            />
           </section>
 
           <section aria-labelledby="termine-titel" className={karte}>
@@ -397,7 +308,11 @@ export default function AdminProjekt({
                             label: 'Entfernen',
                             aktion: terminEntfernen,
                             hidden: { id: t.id },
-                            confirm: `Termin „${titel}“ entfernen?`,
+                            bestaetigen: {
+                              titel: 'Termin entfernen?',
+                              text: `„${titel}“ verschwindet aus dem Projekt, auch für den Kunden.`,
+                              knopf: 'Termin entfernen',
+                            },
                             gefahr: true,
                           },
                         ]}
@@ -452,7 +367,11 @@ export default function AdminProjekt({
                                 label: 'Entfernen',
                                 aktion: dokumentEntfernen,
                                 hidden: { id: d.id },
-                                confirm: `„${d.titel}“ (Version ${d.version}) mit Datei entfernen?`,
+                                bestaetigen: {
+                                  titel: 'Dokument entfernen?',
+                                  text: `„${d.titel}“, Version ${d.version}, wird mit der Datei gelöscht. Der Kunde kann sie danach nicht mehr herunterladen.`,
+                                  knopf: 'Dokument entfernen',
+                                },
                                 gefahr: true,
                               },
                             ]}
@@ -469,7 +388,12 @@ export default function AdminProjekt({
 
         <div className="flex flex-col gap-4 md:gap-6 min-w-0">
           <section aria-labelledby="projekt-titel" className={karte}>
-            <Kopf id="projekt-titel" titel="Projekt" />
+            <Kopf id="projekt-titel" titel="Projekt">
+              <AktionenMenue
+                name="Projekt"
+                eintraege={[{ art: 'dialog', label: 'Projekt bearbeiten', inhalt: projektForm }]}
+              />
+            </Kopf>
             <dl className={`${dl} mb-4`}>
               <dt className="text-text2">Kunde</dt>
               <dd className="break-words">
@@ -506,7 +430,12 @@ export default function AdminProjekt({
 
           {/* Nur für Admins, eigene Tabelle (admin-dashboard.md Verhalten 9) */}
           <section aria-labelledby="umsatz-titel" className={karte}>
-            <Kopf id="umsatz-titel" titel="Umsatz" />
+            <Kopf id="umsatz-titel" titel="Umsatz">
+              <AktionenMenue
+                name="Umsatz"
+                eintraege={[{ art: 'dialog', label: 'Umsatz bearbeiten', inhalt: umsatzForm }]}
+              />
+            </Kopf>
             <dl className={`${dl} mb-4`}>
               <dt className="text-text2">Auftragswert netto</dt>
               <dd className="tabular-nums">{betrag === null ? keine : euro(betrag)}</dd>
@@ -518,7 +447,21 @@ export default function AdminProjekt({
           </section>
 
           <section aria-labelledby="projekt-ap-titel" className={karte}>
-            <Kopf id="projekt-ap-titel" titel="Ansprechpartner" />
+            <Kopf id="projekt-ap-titel" titel="Ansprechpartner">
+              {zuordnungForm && (
+                <AktionenMenue
+                  name="Ansprechpartner"
+                  eintraege={[
+                    {
+                      art: 'dialog',
+                      label: 'Zuordnung ändern',
+                      titel: 'Ansprechpartner im Projekt',
+                      inhalt: zuordnungForm,
+                    },
+                  ]}
+                />
+              )}
+            </Kopf>
             {kunde && kunde.ansprechpartner.length > 0 ? (
               <>
                 {sichtbar.length === 0 ? (

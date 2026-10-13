@@ -40,7 +40,7 @@ test('AK-1/AK-4: Admin landet auf der Verwaltung, ohne Website-Rahmen', async ({
   await login(page, 'erik');
   await openHydrated(page, '/kunden?animationstest');
   await expect(page).toHaveURL(/\/kunden\/admin/);
-  await expect(page.getByRole('heading', { level: 1, name: 'Home' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: 'Übersicht' })).toBeVisible();
   await ohneWebsiteRahmen(page);
   // admin-sidebar.md AK-2: „Zur Website“ steht in der Sidebar bzw. oben in der schmalen Leiste
   await page.getByRole('banner').getByRole('link', { name: 'Zur Website', exact: true }).click();

@@ -201,7 +201,16 @@ export function DialogInhalt({ children }: { children: ReactNode }) {
  * Fester Fuß des Dialogs (admin-aufbau.md Verhalten 9, AK-10, AK-11): links außen eine zerstörende Aktion,
  * rechts „Abbrechen“ und als letzter Button die Hauptaktion (`children`).
  */
-export function DialogFuss({ links, children }: { links?: ReactNode; children: ReactNode }) {
+export function DialogFuss({
+  links,
+  abbrechenStart = false,
+  children,
+}: {
+  links?: ReactNode;
+  /** Fokus startet auf „Abbrechen“, z. B. bei Rückfragen (admin-bearbeiten.md AK-2) */
+  abbrechenStart?: boolean;
+  children: ReactNode;
+}) {
   const dialog = useAdminDialog();
   return (
     <div
@@ -212,6 +221,7 @@ export function DialogFuss({ links, children }: { links?: ReactNode; children: R
       <button
         type="button"
         className={buttonClass('secondary', 'max-sm:flex-1 max-sm:px-3')}
+        data-dialog-start={abbrechenStart || undefined}
         onClick={() => dialog?.schliessen()}
       >
         Abbrechen

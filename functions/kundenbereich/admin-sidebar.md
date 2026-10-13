@@ -14,7 +14,7 @@ Löst die Bereichsleiste aus `admin-aufbau.md` (Verhalten 1 und 10, AK-1, AK-12,
 
 ## Verhalten
 
-1. **Rahmen:** Alle Seiten unter `/kunden/admin` haben statt der Kopfleiste „Zur Website“ eine Sidebar links. Oben das Logo, darunter die Navigation „Verwaltung“ mit Home (`/kunden/admin`), Projekte, Kunden, Anfragen und Settings (`/kunden/admin/settings`), jeweils mit Icon. Unten „Zur Website“ und der Button „Seitenleiste“ zum Einklappen.
+1. **Rahmen:** Alle Seiten unter `/kunden/admin` haben statt der Kopfleiste „Zur Website“ eine Sidebar links. Oben das Logo, darunter die Navigation „Verwaltung“ mit Home (`/kunden/admin`), Projekte, Kunden, Anfragen und Settings (`/kunden/admin/settings`), jeweils mit Icon. Unten „Zur Website“ und der Button „Seitenleiste“ zum Einklappen. Seit `admin-bearbeiten.md` heißen Home und Settings „Übersicht“ und „Einstellungen“ (`/kunden/admin/einstellungen`).
 2. **Einklappen:** Die Sidebar lässt sich auf Icons einklappen. Die Wahl bleibt beim nächsten Besuch erhalten (Cookie `kb_sidebar`).
 3. **Anfragen-Zähler:** Neben „Anfragen“ steht die Zahl der Anfragen mit Status „Neu“, wenn es welche gibt.
 4. **Handy und Tablet (unter 1024 px):** Keine Sidebar. Oben eine schmale Leiste mit Logo, unten fest eine Leiste mit den fünf Bereichen (Icon und Text).
@@ -83,7 +83,7 @@ Nur Deutsch.
 - Erik am 2026-10-13 gefragt: Kundenstatus-Werte, Inhalt der Settings, untere Leiste oder Burger-Menü, Tabellen, einklappbare Sidebar, Kopfleiste, sofortiges Speichern im ⋯-Menü. Bis zur Antwort gelten die oben beschriebenen Vorschläge.
 - Standard-Ablaufschritte in den Settings bearbeitbar: vorgeschlagen, kommt nach Eriks Antwort.
 - Kritiker 2026-10-13, nicht behoben, mit Grund:
-  - „Home“ und „Settings“ sind englisch: so von Erik benannt, Frage dazu offen.
+  - „Home“ und „Settings“ waren englisch: seit `admin-bearbeiten.md` (Erik 2026-10-13) „Übersicht“ und „Einstellungen“.
   - Unbekannte IDs liefern HTTP 200, weil die Seite nach dem Ladezustand gestreamt wird; sichtbar ist „Nicht gefunden“ (AK-16).
   - Widersprüche bei Projektzahlen, Umsatz und gespeichertem Projektstatus kamen aus dem nachgebildeten Supabase der Tests (Projekt ohne gültige ID, kein Speichern des Projektstatus), nicht aus der echten Datenbank. Die Nachbildung speichert den Projektstatus jetzt.
-  - Eigene Rückfrage statt `window.confirm`, Termine und Ansprechpartner bearbeiten, sprechende Seitentitel der Detailseiten, Darstellung der Aufklapper und Toggletip auf 360 px: als Issues #70, #71 und #72 angelegt.
+  - Eigene Rückfrage statt `window.confirm` (seit `admin-bearbeiten.md` erledigt), Termine und Ansprechpartner bearbeiten, sprechende Seitentitel der Detailseiten, Darstellung der Aufklapper und Toggletip auf 360 px: als Issues #70, #71 und #72 angelegt.

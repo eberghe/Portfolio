@@ -4,6 +4,7 @@ import {
   ansprechpartnerEinladen,
   ansprechpartnerEntfernen,
   ansprechpartnerHinzufuegen,
+  kundeLoeschen,
   kundeSpeichern,
   kundeStatus,
   logoUebernehmen,
@@ -20,6 +21,7 @@ import {
 } from '@/lib/kundenbereich/admin/texte';
 import { datum } from '@/lib/kundenbereich/projekte';
 import AktionenMenue from './AktionenMenue';
+import { kundeLoeschenText } from './loeschenTexte';
 import AdminDialog from './AdminDialog';
 import AdminForm from './AdminForm';
 import { badge, karte, kartenTitel, zeile, titelLink } from './AdminListen';
@@ -67,14 +69,21 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
       aside={
         <>
           <span className={badge}>{optionLabel(KUNDEN_STATUS_OPTIONEN, k.status)}</span>
-          {/* admin-sidebar.md Verhalten 9: Bearbeiten-Aktionen im ⋯-Menü */}
+          {/* admin-bearbeiten.md Verhalten 8: im Kopf Status, Links und Löschen; Bearbeiten in den Karten */}
           <AktionenMenue
             name={k.name}
             status={{ aktion: kundeStatus, id: k.id, wert: k.status, optionen: KUNDEN_STATUS_OPTIONEN }}
             eintraege={[
-              { art: 'dialog', label: 'Stammdaten bearbeiten', inhalt: stammForm },
-              { art: 'dialog', label: k.logo_pfad ? 'Neues Logo hochladen' : 'Logo hochladen', inhalt: logoForm },
               { art: 'link', label: 'Neues Projekt', href: `/kunden/admin/projekte/neu?kunde=${k.id}` },
+              {
+                art: 'aktion',
+                label: 'Löschen',
+                aktion: kundeLoeschen,
+                hidden: { id: k.id },
+                gefahr: true,
+                danach: '/kunden/admin/kunden',
+                bestaetigen: kundeLoeschenText(k.name, k.kundenprojekte.length, k.ansprechpartner.length),
+              },
             ]}
           />
         </>
@@ -173,7 +182,11 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
                           label: 'Entfernen',
                           aktion: ansprechpartnerEntfernen,
                           hidden: { id: a.id },
-                          confirm: `${a.name} wirklich entfernen? Der Zugang zum Kundenbereich endet damit.`,
+                          bestaetigen: {
+                            titel: 'Ansprechpartner entfernen?',
+                            text: `${a.name} verliert den Zugang zum Kundenbereich.`,
+                            knopf: 'Ansprechpartner entfernen',
+                          },
                           gefahr: true,
                         },
                       ]}
@@ -187,9 +200,15 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
 
         <div className="flex flex-col gap-4 md:gap-6 min-w-0">
           <section aria-labelledby="stamm-titel" className={karte}>
-            <h2 id="stamm-titel" className={`${kartenTitel} mb-3`}>
-              Stammdaten
-            </h2>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h2 id="stamm-titel" className={kartenTitel}>
+                Stammdaten
+              </h2>
+              <AktionenMenue
+                name="Stammdaten"
+                eintraege={[{ art: 'dialog', label: 'Stammdaten bearbeiten', inhalt: stammForm }]}
+              />
+            </div>
             <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-[14px]">
               <dt className="text-text2">Name</dt>
               <dd className="break-words">{k.name}</dd>
@@ -213,9 +232,17 @@ export default function AdminKunde({ kunde: k }: { kunde: KundeDetail }) {
           </section>
 
           <section aria-labelledby="logo-titel" className={karte}>
-            <h2 id="logo-titel" className={`${kartenTitel} mb-3`}>
-              Logo
-            </h2>
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <h2 id="logo-titel" className={kartenTitel}>
+                Logo
+              </h2>
+              <AktionenMenue
+                name="Logo"
+                eintraege={[
+                  { art: 'dialog', label: k.logo_pfad ? 'Neues Logo hochladen' : 'Logo hochladen', inhalt: logoForm },
+                ]}
+              />
+            </div>
             <div className="flex flex-wrap items-center gap-4">
               {k.logo_pfad ? (
                 // eslint-disable-next-line @next/next/no-img-element -- privates Bild über die Verwaltungsroute

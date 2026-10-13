@@ -248,7 +248,7 @@ describe('Aktionen', () => {
 describe('Ansicht', () => {
   it('AK-1, AK-3 bis AK-6: Dashboard', () => {
     render(<AdminDashboard daten={DATEN} now={NOW} />);
-    expect(screen.getByRole('heading', { level: 1, name: 'Home' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Übersicht' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Neues Projekt' })).toHaveAttribute('href', '/kunden/admin/projekte/neu');
 
     const kz = screen.getByRole('list', { name: 'Kennzahlen' });

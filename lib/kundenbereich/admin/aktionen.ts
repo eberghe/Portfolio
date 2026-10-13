@@ -1,7 +1,7 @@
 import { AdminFehler, type adminApi } from './api';
 import { assistentDaten, normalisieren } from './assistent';
 import { ANFRAGE_STATUS, type AnfrageStatus } from './dashboard';
-import { KUNDEN_STATUS_OPTIONEN, PROJEKT_STATUS_OPTIONEN } from './texte';
+import { KUNDEN_STATUS_OPTIONEN, PROJEKT_STATUS_OPTIONEN, SCHRITT_STATUS_OPTIONEN } from './texte';
 import {
   ansprechpartnerDaten,
   dateiPruefen,
@@ -341,6 +341,38 @@ export const schrittEntfernen = (fd: FormData, ctx: AdminCtx) =>
     return ok(ADMIN_TEXT.entfernt);
   });
 
+/** Nur den Status eines Schritts ändern (admin-bearbeiten.md AK-8) */
+export const schrittStatus = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const sid = id(fd);
+    const status = str(fd, 'status');
+    if (!sid || !SCHRITT_STATUS_OPTIONEN.some((o) => o.value === status))
+      return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    await api.update('projektschritte', sid, { status });
+    return ok('Status geändert.');
+  });
+
+/** Neue Reihenfolge aller Schritte eines Projekts, z. B. nach dem Ziehen (admin-bearbeiten.md AK-7, AK-9) */
+export const schritteSortieren = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const pid = id(fd, 'projekt_id');
+    let ids: unknown;
+    try {
+      ids = JSON.parse(str(fd, 'ids'));
+    } catch {
+      ids = null;
+    }
+    if (!pid || !Array.isArray(ids) || !ids.every((x) => typeof x === 'string' && istId(x)))
+      return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    const vorhanden = await api.get<{ id: string }>('projektschritte', { select: 'id', projekt_id: `eq.${pid}` });
+    const soll = new Set(vorhanden.map((v) => v.id));
+    if (ids.length !== soll.size || new Set(ids).size !== ids.length || !ids.every((x) => soll.has(x)))
+      return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    for (const [i, sid] of (ids as string[]).entries())
+      await api.update('projektschritte', sid, { reihenfolge: i + 1 });
+    return ok('Reihenfolge gespeichert.');
+  });
+
 export const terminHinzufuegen = (fd: FormData, ctx: AdminCtx) =>
   run(ctx, async (api) => {
     const pid = id(fd, 'projekt_id');
@@ -419,6 +451,69 @@ export const dokumentEntfernen = (fd: FormData, ctx: AdminCtx) =>
     const pfade = rows.map((r) => r.storage_pfad);
     if (pfade.length) await api.removeFiles('kundendokumente', pfade);
     return ok(ADMIN_TEXT.entfernt);
+  });
+
+// Löschen (functions/kundenbereich/admin-bearbeiten.md AK-5) -------------------------------------------
+
+/** Dateien entfernen; ein Fehler im Speicher hält das Löschen der Daten nicht auf */
+async function dateienWeg(api: AdminApi, bucket: Bucket, pfade: string[]) {
+  if (!pfade.length) return;
+  try {
+    await api.removeFiles(bucket, pfade);
+  } catch (e) {
+    console.error('Verwaltung: Dateien nicht entfernt', bucket, e);
+  }
+}
+
+const geloescht = (name: string | undefined) => ok(name ? `${name} gelöscht.` : 'Gelöscht.');
+
+export const projektLoeschen = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const pid = id(fd);
+    if (!pid) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    const doks = await api.get<{ storage_pfad: string }>('dokumente', {
+      select: 'storage_pfad',
+      projekt_id: `eq.${pid}`,
+    });
+    const rows = await api.remove<{ titel: string }>('kundenprojekte', { id: `eq.${pid}` });
+    if (!rows[0]) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    await dateienWeg(
+      api,
+      'kundendokumente',
+      doks.map((d) => d.storage_pfad),
+    );
+    return geloescht(rows[0].titel);
+  });
+
+export const kundeLoeschen = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const kid = id(fd);
+    if (!kid) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    const projekte = await api.get<{ id: string }>('kundenprojekte', { select: 'id', kunde_id: `eq.${kid}` });
+    const doks = projekte.length
+      ? await api.get<{ storage_pfad: string }>('dokumente', {
+          select: 'storage_pfad',
+          projekt_id: `in.(${projekte.map((p) => p.id).join(',')})`,
+        })
+      : [];
+    const rows = await api.remove<{ name: string; logo_pfad: string | null }>('kunden', { id: `eq.${kid}` });
+    if (!rows[0]) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    await dateienWeg(
+      api,
+      'kundendokumente',
+      doks.map((d) => d.storage_pfad),
+    );
+    if (rows[0].logo_pfad) await dateienWeg(api, 'kundenlogos', [rows[0].logo_pfad]);
+    return geloescht(rows[0].name);
+  });
+
+export const anfrageLoeschen = (fd: FormData, ctx: AdminCtx) =>
+  run(ctx, async (api) => {
+    const aid = id(fd);
+    if (!aid) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    const rows = await api.remove<{ name: string }>('anfragen', { id: `eq.${aid}` });
+    if (!rows[0]) return { status: 'error', message: ADMIN_TEXT.ungueltig };
+    return geloescht(`Anfrage von ${rows[0].name}`);
   });
 
 export { DATEI_REGELN };

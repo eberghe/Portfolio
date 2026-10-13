@@ -19,6 +19,11 @@ const aktionen = vi.hoisted(() =>
       'ansprechpartnerEinladen',
       'projektSpeichern',
       'projektStatus',
+      'projektLoeschen',
+      'kundeLoeschen',
+      'anfrageLoeschen',
+      'schrittStatus',
+      'schritteSortieren',
       'projektAnsprechpartner',
       'schrittHinzufuegen',
       'schrittSpeichern',
@@ -125,20 +130,23 @@ describe('Sidebar', () => {
     const nav = screen.getByRole('navigation', { name: 'Verwaltung' });
     const links = within(nav).getAllByRole('link');
     expect(links.map((l) => l.getAttribute('aria-label') ?? l.textContent?.trim())).toEqual([
-      'Home',
+      'Übersicht',
       'Projekte',
       'Kunden',
       'Anfragen',
-      'Settings',
+      'Einstellungen',
     ]);
     expect(links[1]).toHaveAttribute('aria-current', 'true');
     expect(links[0]).not.toHaveAttribute('aria-current');
-    expect(within(nav).getByRole('link', { name: 'Settings' })).toHaveAttribute('href', '/kunden/admin/settings');
+    expect(within(nav).getByRole('link', { name: 'Einstellungen' })).toHaveAttribute(
+      'href',
+      '/kunden/admin/einstellungen',
+    );
   });
 
   it('AK-1: Home ist auf der Übersicht aktuelle Seite', () => {
     render(<AdminNavigation neueAnfragen={0} eingeklappt={false} />);
-    expect(screen.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('link', { name: 'Übersicht' })).toHaveAttribute('aria-current', 'page');
   });
 
   it('AK-2: Zur Website in der Sidebar', () => {
@@ -254,9 +262,8 @@ describe('Tabellen und ⋯-Menüs', () => {
     render(<AdminProjekt projekt={DETAIL} now={NOW} />);
     expect(screen.queryByRole('button', { name: 'Projekt bearbeiten' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Umsatz bearbeiten' })).toBeNull();
-    const { knopf, menue } = oeffne('Aktionen: Relaunch');
-    for (const name of ['Projekt bearbeiten', 'Umsatz bearbeiten', 'Zuordnung ändern'])
-      expect(within(menue).getByRole('menuitem', { name })).toBeInTheDocument();
+    // admin-bearbeiten.md AK-10: Bearbeiten im ⋯-Menü der Karte „Projekt“
+    const { knopf, menue } = oeffne('Aktionen: Projekt');
     fireEvent.click(within(menue).getByRole('menuitem', { name: 'Projekt bearbeiten' }));
     const dialog = screen.getByRole('dialog', { name: 'Projekt bearbeiten' });
     fireEvent.click(within(dialog).getByRole('button', { name: 'Abbrechen' }));

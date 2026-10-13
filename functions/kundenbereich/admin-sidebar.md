@@ -86,4 +86,4 @@ Nur Deutsch.
   - „Home“ und „Settings“ sind englisch: so von Erik benannt, Frage dazu offen.
   - Unbekannte IDs liefern HTTP 200, weil die Seite nach dem Ladezustand gestreamt wird; sichtbar ist „Nicht gefunden“ (AK-16).
   - Widersprüche bei Projektzahlen, Umsatz und gespeichertem Projektstatus kamen aus dem nachgebildeten Supabase der Tests (Projekt ohne gültige ID, kein Speichern des Projektstatus), nicht aus der echten Datenbank. Die Nachbildung speichert den Projektstatus jetzt.
-  - Eigene Rückfrage statt `window.confirm`, Termine und Ansprechpartner bearbeiten, sprechende Seitentitel der Detailseiten, Darstellung der Aufklapper und Toggletip auf 360 px: als Issues angelegt.
+  - Eigene Rückfrage statt `window.confirm`, Termine und Ansprechpartner bearbeiten, sprechende Seitentitel der Detailseiten, Darstellung der Aufklapper und Toggletip auf 360 px: als Issues #70, #71 und #72 angelegt.

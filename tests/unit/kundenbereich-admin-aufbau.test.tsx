@@ -33,7 +33,12 @@ const aktionen = vi.hoisted(() =>
   ),
 );
 vi.mock('@/app/actions/kundenbereich-admin', () => aktionen);
-vi.mock('next/navigation', () => ({ useRouter: () => ({ refresh: vi.fn() }), notFound: vi.fn() }));
+const adresse = vi.hoisted(() => ({ pfad: '/kunden/admin' }));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+  usePathname: () => adresse.pfad,
+  notFound: vi.fn(),
+}));
 
 const { default: AdminDashboard } = await import('@/components/kundenbereich/admin/AdminDashboard');
 const { default: AdminAnfragen } = await import('@/components/kundenbereich/admin/AdminAnfragen');
@@ -358,5 +363,111 @@ describe('Formulare hinter Buttons', () => {
     const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
     expect(within(dialog).getByLabelText(/^Titel Deutsch/)).toHaveValue('Design');
     expect(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })).toBeInTheDocument();
+  });
+});
+
+describe('Dialog-Fuß und ruhigere Oberfläche (2026-10-13)', () => {
+  /** Buttons im Fuß in Lesereihenfolge */
+  const fussKnoepfe = (dialog: HTMLElement) => {
+    const fuss = dialog.querySelector<HTMLElement>('[data-dialog-fuss]');
+    expect(fuss).not.toBeNull();
+    return within(fuss!).getAllByRole('button');
+  };
+
+  it('AK-10: Hauptaktion rechts außen im Fuß, Abbrechen direkt davor, außerhalb des Scrollbereichs', () => {
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    for (const [knopf, titel, haupt] of [
+      ['Projekt bearbeiten', 'Projekt bearbeiten', 'Projekt speichern'],
+      ['Termin hinzufügen', 'Termin hinzufügen', 'Termin hinzufügen'],
+      ['Dokument hochladen', 'Dokument hochladen', 'Dokument hochladen'],
+    ] as const) {
+      fireEvent.click(screen.getByRole('button', { name: knopf }));
+      const dialog = screen.getByRole('dialog', { name: titel });
+      const knoepfe = fussKnoepfe(dialog);
+      const letzter = knoepfe.at(-1)!;
+      expect(letzter).toHaveAccessibleName(haupt);
+      expect(letzter).toHaveAttribute('type', 'submit');
+      // gehört zum Formular, auch wenn der Fuß außerhalb des <form> steht
+      expect((letzter as HTMLButtonElement).form).not.toBeNull();
+      expect(knoepfe.at(-2)).toHaveAccessibleName('Abbrechen');
+      const scroll = dialog.querySelector('[data-dialog-inhalt]');
+      expect(scroll).not.toBeNull();
+      expect(scroll!.contains(dialog.querySelector('[data-dialog-fuss]'))).toBe(false);
+      fireEvent.click(within(dialog).getByRole('button', { name: 'Schließen' }));
+    }
+  });
+
+  it('AK-10: Abbrechen schließt ohne Speichern, Fokus zurück auf den Auslöser', async () => {
+    aktionen.kundeAnlegen!.mockClear();
+    render(<AdminDashboard daten={DATEN} now={NOW} />);
+    const knopf = screen.getByRole('button', { name: 'Kunde anlegen' });
+    fireEvent.click(knopf);
+    const dialog = screen.getByRole('dialog', { name: 'Kunde anlegen' });
+    fireEvent.change(within(dialog).getByLabelText(/^Name/), { target: { value: 'Neu GmbH' } });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Abbrechen' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(aktionen.kundeAnlegen).not.toHaveBeenCalled();
+    await waitFor(() => expect(knopf).toHaveFocus());
+  });
+
+  it('AK-11: Entfernen links außen im Fuß des Schritt-Dialogs', () => {
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Design' }));
+    const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
+    const namen = fussKnoepfe(dialog).map((b) => b.getAttribute('aria-label') ?? b.textContent);
+    expect(namen).toEqual(['Entfernen: Schritt Design', 'Abbrechen', 'Schritt speichern']);
+  });
+
+  it('AK-13: Ladezustand mit Bereichsleiste, Bereich aus der Adresse', async () => {
+    const { default: Laden } = await import('@/app/(kunden-de)/kunden/admin/loading');
+    adresse.pfad = '/kunden/admin/kunden';
+    render(<Laden />);
+    const nav = screen.getByRole('navigation', { name: 'Bereiche der Verwaltung' });
+    expect(within(nav).getByRole('link', { name: 'Kunden' })).toHaveAttribute('aria-current', 'page');
+    expect(within(nav).getByRole('link', { name: 'Übersicht' })).not.toHaveAttribute('aria-current');
+    expect(screen.getByRole('status')).toHaveTextContent('Wird geladen');
+    adresse.pfad = '/kunden/admin';
+  });
+
+  it('AK-14: Zeilenaktionen als Icon-Buttons mit Tooltip', () => {
+    const mit = {
+      ...PROJEKT,
+      termine: [
+        {
+          id: 't1',
+          beginn: '2026-10-15T08:00:00Z',
+          ende: '2026-10-15T09:00:00Z',
+          titel_de: 'Review',
+          titel_en: null,
+          meet_url: null,
+        },
+      ],
+      dokumente: [
+        {
+          id: 'd1',
+          created_at: '2026-10-08T10:00:00Z',
+          art: 'vertrag',
+          titel: 'Vertrag',
+          dateiname: 'v.pdf',
+          groesse_bytes: 1000,
+          mime_typ: 'application/pdf',
+          version: 1,
+          storage_pfad: 'x/v.pdf',
+        },
+      ],
+    } as unknown as ProjektDetail;
+    render(<AdminProjekt projekt={mit} now={NOW} />);
+    const namen = [
+      'Bearbeiten: Design',
+      'Entfernen: Termin Review',
+      'Herunterladen: Vertrag, Version 1',
+      'Entfernen: Vertrag, Version 1',
+    ];
+    for (const name of namen) {
+      const el = screen.getByRole(name.startsWith('Herunterladen') ? 'link' : 'button', { name });
+      expect(el).toHaveAttribute('title', name);
+      // nur Icon, kein sichtbarer Text
+      expect(el.textContent?.trim()).toBe('');
+    }
   });
 });

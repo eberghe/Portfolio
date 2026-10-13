@@ -12,6 +12,10 @@ const variants: Record<ButtonVariant, string> = {
   secondary: 'border border-border text-text2 hover:text-foreground',
 };
 
+/** Quadratischer Icon-Button für Zeilenaktionen, 44 × 44 px (functions/kundenbereich/admin-aufbau.md AK-14) */
+export const iconButtonClass =
+  'inline-flex items-center justify-center shrink-0 w-11 h-11 rounded-lg text-text2 transition-colors hover:text-foreground hover:bg-bg2 aria-disabled:opacity-60';
+
 export function buttonClass(variant: ButtonVariant = 'primary', className?: string) {
   return [base, variants[variant], className].filter(Boolean).join(' ');
 }

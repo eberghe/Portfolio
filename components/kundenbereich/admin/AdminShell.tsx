@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import AdminTabs, { type Bereich } from './AdminTabs';
 
 // Rahmen der Verwaltungsseiten: Pfadnavigation, Titel, Abschnitte (functions/kundenbereich/admin.md)
 
@@ -6,15 +7,7 @@ export const adminSection = 'border-t border-border pt-8 mt-10';
 // Trennlinie oben je Eintrag; die nächste Abschnittslinie schließt die Liste ab (Kritiker Verwaltung 8)
 export const listItem = 'flex flex-wrap items-center gap-x-4 gap-y-2 py-4 border-t border-border';
 
-export type Bereich = 'uebersicht' | 'projekte' | 'kunden' | 'anfragen';
-
-// Bereiche der Verwaltung (functions/kundenbereich/admin-aufbau.md Verhalten 1, AK-1)
-const BEREICHE: { key: Bereich; href: string; label: string }[] = [
-  { key: 'uebersicht', href: '/kunden/admin', label: 'Übersicht' },
-  { key: 'projekte', href: '/kunden/admin/projekte', label: 'Projekte' },
-  { key: 'kunden', href: '/kunden/admin/kunden', label: 'Kunden' },
-  { key: 'anfragen', href: '/kunden/admin/anfragen', label: 'Anfragen' },
-];
+export type { Bereich } from './AdminTabs';
 
 export default function AdminShell({
   title,
@@ -41,27 +34,7 @@ export default function AdminShell({
     <div className="max-w-page mx-auto px-6 sm:px-8 md:px-12 py-6 md:py-10">
       {/* Meldungen, deren Button nach der Aktion verschwunden ist (Kritiker Aufbau 3) */}
       <p id="admin-meldung" aria-live="polite" className="sr-only" />
-      {/* Kritiker Aufbau 7: Innenabstand, damit der Fokusrahmen nicht abgeschnitten wird */}
-      <nav aria-label="Bereiche der Verwaltung" className="mb-6 -mx-2 px-2 pt-2 overflow-x-auto">
-        <ul role="list" className="flex gap-1 min-w-max border-b border-border">
-          {BEREICHE.map((b) => {
-            const aktiv = b.key === bereich;
-            return (
-              <li key={b.key}>
-                <Link
-                  href={b.href}
-                  aria-current={aktiv ? (unterseite ? 'true' : 'page') : undefined}
-                  className={`inline-flex items-center min-h-11 px-3 -mb-px border-b-2 focus-visible:outline-offset-[-2px] text-[14px] font-medium transition-colors ${
-                    aktiv ? 'border-primary text-foreground' : 'border-transparent text-text2 hover:text-foreground'
-                  }`}
-                >
-                  {b.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+      <AdminTabs bereich={bereich} unterseite={unterseite} />
       {/* Kritiker Aufbau 11: „Verwaltung“ immer als erster Eintrag; auf der Übersicht selbst kein Pfad */}
       {!(bereich === 'uebersicht' && !unterseite) && (
         <nav aria-label="Pfad" className="mb-2">
@@ -91,7 +64,10 @@ export default function AdminShell({
         <h1 className="text-[28px] md:text-[36px] leading-[1.1] font-bold tracking-tight text-balance break-words min-w-0">
           {title}
         </h1>
-        {aside && <div className="flex flex-wrap items-center gap-2">{aside}</div>}
+        {/* Verhalten 12: schmaler Innenabstand, damit zwei Buttons bei 360 px in eine Zeile passen */}
+        {aside && (
+          <div className="flex flex-wrap items-center gap-2 max-sm:[&_a]:px-4 max-sm:[&_button]:px-4">{aside}</div>
+        )}
       </div>
       <div className={wide ? undefined : 'max-w-[860px]'}>{children}</div>
     </div>

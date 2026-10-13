@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button';
 import SelectField from '@/components/ui/SelectField';
 import TextField from '@/components/ui/TextField';
 import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
-import { useAdminDialog } from './AdminDialog';
+import { DialogFuss, DialogInhalt, useAdminDialog } from './AdminDialog';
 import { Meldung, type AdminAction } from './AdminForm';
 
 // Upload in drei Schritten: Server prüft und gibt einen signierten Upload-Link, der Browser lädt direkt
@@ -102,8 +102,19 @@ export default function UploadForm({
   }
 
   const errors = state.status === 'error' ? (state.errors ?? {}) : {};
-  return (
-    <form ref={form} onSubmit={submit} noValidate aria-labelledby={title ? `${id}-titel` : undefined}>
+  const formId = `${id}-formular`;
+  const knopf = (
+    <Button
+      type="submit"
+      form={formId}
+      aria-disabled={pending || undefined}
+      className={dialog ? 'max-sm:flex-1 max-sm:px-3' : undefined}
+    >
+      {pending ? 'Wird hochgeladen …' : submitLabel}
+    </Button>
+  );
+  const formular = (
+    <form ref={form} id={formId} onSubmit={submit} noValidate aria-labelledby={title ? `${id}-titel` : undefined}>
       {title && (
         <h3 id={`${id}-titel`} className="text-[16px] font-bold mb-3">
           {title}
@@ -113,7 +124,7 @@ export default function UploadForm({
       {Object.entries(hidden).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />
       ))}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+      <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${dialog ? '' : 'mb-5'}`}>
         {meta && (
           <>
             <SelectField id={`${id}-art`} name="art" label="Art" options={arten} error={errors.art} />
@@ -140,9 +151,16 @@ export default function UploadForm({
           inputClassName="file:mr-3 file:border-0 file:bg-transparent file:font-medium file:text-foreground"
         />
       </div>
-      <Button type="submit" aria-disabled={pending || undefined}>
-        {pending ? 'Wird hochgeladen …' : submitLabel}
-      </Button>
+      {!dialog && knopf}
     </form>
+  );
+
+  // Im Dialog: Hauptaktion im festen Fuß rechts außen (admin-aufbau.md AK-10)
+  if (!dialog) return formular;
+  return (
+    <>
+      <DialogInhalt>{formular}</DialogInhalt>
+      <DialogFuss>{knopf}</DialogFuss>
+    </>
   );
 }

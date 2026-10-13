@@ -2,7 +2,7 @@
 
 import { X } from 'lucide-react';
 import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode } from 'react';
-import { buttonClass } from '@/components/ui/Button';
+import { buttonClass, iconButtonClass } from '@/components/ui/Button';
 
 // Formular hinter einem Button in einem modalen Dialog (functions/kundenbereich/admin-aufbau.md Verhalten 7, AK-8)
 
@@ -26,6 +26,7 @@ export default function AdminDialog({
   name,
   icon,
   variant = 'secondary',
+  nurIcon = false,
   children,
 }: {
   /** Sichtbarer Text des Buttons */
@@ -36,6 +37,8 @@ export default function AdminDialog({
   name?: string;
   icon?: ReactNode;
   variant?: 'primary' | 'secondary';
+  /** Nur das Icon zeigen, z. B. in Listenzeilen; `name` ist dann Name und Tooltip (AK-14) */
+  nurIcon?: boolean;
   children: ReactNode;
 }) {
   const [offen, setOffen] = useState(false);
@@ -61,23 +64,24 @@ export default function AdminDialog({
   };
 
   return (
-    <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+    <span className="inline-flex flex-wrap items-center gap-y-1">
       <button
         ref={knopf}
         type="button"
-        className={buttonClass(variant)}
+        className={nurIcon ? iconButtonClass : buttonClass(variant)}
         aria-haspopup="dialog"
-        aria-label={name}
+        aria-label={nurIcon ? (name ?? label) : name}
+        title={nurIcon ? (name ?? label) : undefined}
         onClick={() => {
           setMeldung('');
           setOffen(true);
         }}
       >
         {icon}
-        {label}
+        {!nurIcon && label}
       </button>
-      {/* Kritiker Aufbau 4: Live-Region bleibt im Baum, auch leer */}
-      <span aria-live="polite" className="text-[13px] text-text2">
+      {/* Kritiker Aufbau 4: Live-Region bleibt im Baum, auch leer; Abstand nur mit Text, sonst bricht der Kopf um */}
+      <span aria-live="polite" className="text-[13px] text-text2 [&:not(:empty)]:ml-3">
         {meldung}
       </span>
       {offen && (
@@ -142,7 +146,41 @@ function Fenster({ title, onClose, children }: { title: string; onClose: () => v
           <X size={18} aria-hidden="true" />
         </button>
       </div>
-      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">{children}</div>
+      {/* Inhalt und Fuß kommen vom Formular: DialogInhalt scrollt, DialogFuss bleibt unten (AK-10) */}
+      {children}
     </dialog>
+  );
+}
+
+/** Scrollbereich des Dialogs zwischen Kopf und Fuß */
+export function DialogInhalt({ children }: { children: ReactNode }) {
+  return (
+    <div data-dialog-inhalt className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 py-5 sm:px-6">
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Fester Fuß des Dialogs (admin-aufbau.md Verhalten 9, AK-10, AK-11): links außen eine zerstörende Aktion,
+ * rechts „Abbrechen“ und als letzter Button die Hauptaktion (`children`).
+ */
+export function DialogFuss({ links, children }: { links?: ReactNode; children: ReactNode }) {
+  const dialog = useAdminDialog();
+  return (
+    <div
+      data-dialog-fuss
+      className="shrink-0 flex flex-wrap items-stretch justify-end gap-2 border-t border-border px-5 py-3 sm:px-6"
+    >
+      {links && <div className="flex flex-wrap items-center gap-2 basis-full sm:basis-auto sm:mr-auto">{links}</div>}
+      <button
+        type="button"
+        className={buttonClass('secondary', 'max-sm:flex-1 max-sm:px-3')}
+        onClick={() => dialog?.schliessen()}
+      >
+        Abbrechen
+      </button>
+      {children}
+    </div>
   );
 }

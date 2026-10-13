@@ -1,4 +1,4 @@
-import { CalendarPlus, Download, Eye, ListPlus, Pencil, Upload, Users } from 'lucide-react';
+import { CalendarPlus, Download, Eye, ListPlus, Pencil, Trash2, Upload, Users } from 'lucide-react';
 import Link from 'next/link';
 import {
   dokumentEntfernen,
@@ -13,7 +13,7 @@ import {
   terminHinzufuegen,
   umsatzSpeichern,
 } from '@/app/actions/kundenbereich-admin';
-import { buttonClass } from '@/components/ui/Button';
+import { buttonClass, iconButtonClass } from '@/components/ui/Button';
 import { dateiInfo } from '@/lib/kundenbereich/dokumente';
 import type { ProjektDetail } from '@/lib/kundenbereich/admin/laden';
 import {
@@ -190,7 +190,8 @@ export default function AdminProjekt({
                       label="Bearbeiten"
                       name={`Bearbeiten: ${s.titel_de}`}
                       title={`Ablaufschritt bearbeiten: ${s.titel_de}`}
-                      icon={<Pencil size={14} aria-hidden="true" />}
+                      icon={<Pencil size={16} aria-hidden="true" />}
+                      nurIcon
                     >
                       <AdminForm
                         id={`schritt-${s.id}`}
@@ -198,16 +199,16 @@ export default function AdminProjekt({
                         submitLabel="Schritt speichern"
                         hidden={{ id: s.id }}
                         felder={schrittFelder(s)}
+                        fussLinks={
+                          <ActionButton
+                            action={schrittEntfernen}
+                            hidden={{ id: s.id }}
+                            label="Entfernen"
+                            name={`Entfernen: Schritt ${s.titel_de}`}
+                            confirm={`Schritt „${s.titel_de}“ entfernen?`}
+                          />
+                        }
                       />
-                      <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-border">
-                        <ActionButton
-                          action={schrittEntfernen}
-                          hidden={{ id: s.id }}
-                          label="Entfernen"
-                          name={`Entfernen: Schritt ${s.titel_de}`}
-                          confirm={`Schritt „${s.titel_de}“ entfernen?`}
-                        />
-                      </div>
                     </AdminDialog>
                   </li>
                 ))}
@@ -258,13 +259,14 @@ export default function AdminProjekt({
                           {t.meet_url && ' · mit Meet-Link'}
                         </p>
                       </div>
-                      <span className="flex flex-wrap gap-2">
+                      <span className="flex flex-wrap gap-1">
                         <ActionButton
                           action={terminEntfernen}
                           hidden={{ id: t.id }}
                           label="Entfernen"
                           name={`Entfernen: Termin ${titel}`}
                           confirm={`Termin „${titel}“ entfernen?`}
+                          icon={<Trash2 size={16} aria-hidden="true" />}
                         />
                       </span>
                     </li>
@@ -308,14 +310,14 @@ export default function AdminProjekt({
                             {i === 0 && <span className="font-semibold text-foreground">Aktuell: </span>}
                             {dateiInfo(d, 'de')}
                           </span>
-                          <span className="flex flex-wrap gap-2">
+                          <span className="flex flex-wrap gap-1">
                             <a
                               href={`/kunden/dokumente/${d.id}`}
-                              className={buttonClass('secondary')}
+                              className={iconButtonClass}
                               aria-label={`Herunterladen: ${d.titel}, Version ${d.version}`}
+                              title={`Herunterladen: ${d.titel}, Version ${d.version}`}
                             >
-                              Herunterladen
-                              <Download size={14} aria-hidden="true" />
+                              <Download size={16} aria-hidden="true" />
                             </a>
                             <ActionButton
                               action={dokumentEntfernen}
@@ -323,6 +325,7 @@ export default function AdminProjekt({
                               label="Entfernen"
                               name={`Entfernen: ${d.titel}, Version ${d.version}`}
                               confirm={`„${d.titel}“ (Version ${d.version}) mit Datei entfernen?`}
+                              icon={<Trash2 size={16} aria-hidden="true" />}
                             />
                           </span>
                         </li>

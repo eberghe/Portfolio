@@ -1,6 +1,6 @@
 # Verwaltung übersichtlich: Bereiche, Dialoge, Hilfe
 
-Status: Umgesetzt (Preview, nicht live)
+Status: Live seit 2026-10-12; Überarbeitung Dialoge und Bereichsleiste (2026-10-13) in Arbeit
 
 ## Zweck
 
@@ -28,8 +28,13 @@ Erik am 2026-10-09: Die Verwaltung ist unübersichtlich. Alles sieht gleich aus,
    - Kunde: „Stammdaten bearbeiten“, „Logo hochladen“, „Ansprechpartner hinzufügen“.
    - Projekt: „Projekt bearbeiten“, „Umsatz bearbeiten“, „Zuordnung ändern“ (Ansprechpartner), „Ablaufschritt hinzufügen“, „Bearbeiten: <Schritt>“, „Termin hinzufügen“, „Dokument hochladen“.
    - Ab 1024 px stehen Stammdaten, Umsatz und Ansprechpartner rechts in einer schmalen Spalte, Ablauf, Termine und Dokumente links.
-7. **Dialoge:** Ein Button öffnet einen modalen Dialog mit Überschrift, Formular und „Schließen“. Escape oder der Klick daneben schließt ihn. Nach erfolgreichem Speichern schließt er sich, die Seite zeigt die neuen Daten, und neben dem Button steht kurz „Gespeichert.“. Bei Fehlern bleibt er offen, die Fehler stehen am Feld.
+7. **Dialoge:** Ein Button öffnet einen modalen Dialog mit Überschrift, Formular, „Schließen“ oben und dem Fuß aus Verhalten 9. Escape oder der Klick daneben schließt ihn. Nach erfolgreichem Speichern schließt er sich, die Seite zeigt die neuen Daten, und neben dem Button steht kurz „Gespeichert.“. Bei Fehlern bleibt er offen, die Fehler stehen am Feld.
 8. **Hilfe:** Das Fragezeichen ist ein Button „Erklärung: <Titel>“. Ein Klick zeigt die Erklärung in einer kleinen Blase, ein zweiter Klick, Escape oder ein Klick daneben schließt sie.
+
+9. **Dialog-Fuß (Erik, 2026-10-13):** Jeder Dialog mit Formular hat unten eine feste Leiste. Rechts außen steht die Hauptaktion (z. B. „Projekt speichern“), direkt links daneben „Abbrechen“. Die Leiste bleibt sichtbar, nur der Inhalt darüber scrollt. „Abbrechen“ schließt ohne zu speichern. Eine zerstörende Aktion wie „Entfernen“ steht links außen in derselben Leiste.
+10. **Bereichsleiste ruhig:** Die vier Bereiche passen ab 320 px ohne Scrollen in eine Zeile (auf dem Handy gleich breit). Ein Klick markiert den Bereich sofort und zeigt einen Ladezustand, statt bis zum fertigen Laden der neuen Seite stehen zu bleiben.
+11. **Weniger Knöpfe in Listen:** Aktionen je Zeile (Schritt bearbeiten, Termin entfernen, Dokument herunterladen oder entfernen) sind kleine Icon-Buttons mit Tooltip statt umrandeter Text-Buttons.
+12. **Kopf auf dem Handy:** Die Buttons neben dem Seitentitel haben unter 640 px weniger Innenabstand, damit zwei Buttons ab 360 px in eine Zeile passen.
 
 ## Akzeptanzkriterien
 
@@ -42,6 +47,12 @@ Erik am 2026-10-09: Die Verwaltung ist unübersichtlich. Alles sieht gleich aus,
 - AK-7: Auf Kunden- und Projektseite gibt es kein offenes Formular. Jedes Formular öffnet sich über einen Button mit eindeutigem Namen in einem Dialog.
 - AK-8: Ein Dialog hat `aria-modal`, eine Überschrift als Namen und „Schließen“. Nach Erfolg schließt er sich, der Fokus geht zurück auf den Button, und „Gespeichert.“ wird angesagt.
 - AK-9: Keine axe-Verstöße und kein horizontales Scrollen bei 360, 768 und 1280 px, hell und dunkel, auch mit offenem Dialog.
+- AK-10: Jeder Dialog mit Formular hat einen Fuß (`[data-dialog-fuss]`) außerhalb des Scrollbereichs. Sein letzter Button ist die Hauptaktion (Typ `submit`, gehört zum Formular), direkt davor steht „Abbrechen“. „Abbrechen“ schließt den Dialog ohne Speichern, der Fokus geht zurück auf den Auslöser.
+- AK-11: Im Dialog „Ablaufschritt bearbeiten“ steht „Entfernen“ im Fuß links außen, vor „Abbrechen“ und „Schritt speichern“.
+- AK-12: Bei 360 px sind alle vier Bereiche vollständig sichtbar; die Bereichsleiste scrollt nicht.
+- AK-13: Unter `/kunden/admin` gibt es einen Ladezustand (`loading.tsx`) mit Bereichsleiste; der Bereich ergibt sich dort aus der Adresse. Die Admin-Prüfung läuft vorher im Layout, Nicht-Admins bekommen weiter Status 404.
+- AK-14: Zeilenaktionen bei Ablauf, Terminen und Dokumenten sind Icon-Buttons mit eindeutigem Namen und gleichlautendem Tooltip (`title`), mindestens 44 × 44 px.
+- AK-15: Bei 360 px stehen die Kopf-Buttons des Dashboards („Kunde anlegen“, „Neues Projekt“) in einer Zeile.
 
 ## Barrierefreiheit
 
@@ -51,7 +62,8 @@ Erik am 2026-10-09: Die Verwaltung ist unübersichtlich. Alles sieht gleich aus,
 
 ## Mobile
 
-- Bereichsleiste waagerecht scrollbar, 44 px hohe Ziele.
+- Bereichsleiste ohne Scrollen, vier gleich breite Ziele, 44 px hoch.
+- Dialog-Fuß mit Buttons, die sich die Breite teilen.
 - Dialoge bis 360 px voll nutzbar, mit Scrollbereich im Dialog.
 
 ## Sprachen (DE/EN)
@@ -68,8 +80,8 @@ Keine neuen Tabellen. Anfragen lädt `anfrage(api, id)`, Projekte und Kunden die
 
 ## Tests
 
-- `tests/unit/kundenbereich-admin-aufbau.test.tsx`: Bereiche, Dashboard, Hilfe, Dialoge, neue Seiten (AK-1 bis AK-8)
-- `tests/e2e/kundenbereich-admin.spec.ts`: Dialoge im Browser, axe (AK-8, AK-9)
+- `tests/unit/kundenbereich-admin-aufbau.test.tsx`: Bereiche, Dashboard, Hilfe, Dialoge, neue Seiten (AK-1 bis AK-8, AK-10, AK-11, AK-13, AK-14)
+- `tests/e2e/kundenbereich-admin.spec.ts`: Dialoge im Browser, axe (AK-8, AK-9, AK-10, AK-12, AK-15)
 
 ## Befunde Blinder Kritiker (2026-10-09)
 

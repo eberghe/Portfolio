@@ -1,7 +1,7 @@
 'use client';
 
-import { startTransition, useActionState, useEffect, type FormEvent } from 'react';
-import Button from '@/components/ui/Button';
+import { startTransition, useActionState, useEffect, type FormEvent, type ReactNode } from 'react';
+import Button, { iconButtonClass } from '@/components/ui/Button';
 import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
 import { melden, useAdminDialog } from './AdminDialog';
 import { Meldung, type AdminAction } from './AdminForm';
@@ -15,6 +15,7 @@ export default function ActionButton({
   name,
   confirm,
   variant = 'secondary',
+  icon,
 }: {
   action: AdminAction;
   hidden: Record<string, string>;
@@ -25,6 +26,8 @@ export default function ActionButton({
   /** Rückfrage vor dem Ausführen */
   confirm?: string;
   variant?: 'primary' | 'secondary';
+  /** Nur Icon, z. B. in Listenzeilen; `name` ist dann Name und Tooltip (admin-aufbau.md AK-14) */
+  icon?: ReactNode;
 }) {
   const [state, dispatch, pending] = useActionState<AdminState, FormData>(action, { status: 'idle' });
   const dialog = useAdminDialog();
@@ -47,9 +50,21 @@ export default function ActionButton({
       {Object.entries(hidden).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />
       ))}
-      <Button type="submit" variant={variant} aria-label={name} aria-disabled={pending || undefined}>
-        {label}
-      </Button>
+      {icon ? (
+        <button
+          type="submit"
+          className={iconButtonClass}
+          aria-label={name ?? label}
+          title={name ?? label}
+          aria-disabled={pending || undefined}
+        >
+          {icon}
+        </button>
+      ) : (
+        <Button type="submit" variant={variant} aria-label={name} aria-disabled={pending || undefined}>
+          {label}
+        </Button>
+      )}
       {/* Kritiker Verwaltung 9: Meldung bricht die Button-Zeile nur um, wenn es eine gibt */}
       <p aria-live="polite" className="sr-only">
         {state.status !== 'idle' ? state.message : ''}

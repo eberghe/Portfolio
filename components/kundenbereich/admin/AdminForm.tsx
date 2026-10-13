@@ -1,8 +1,8 @@
 'use client';
 
-import { startTransition, useActionState, useEffect, useRef, type FormEvent } from 'react';
+import { startTransition, useActionState, useEffect, useRef, type FormEvent, type ReactNode } from 'react';
 import Button from '@/components/ui/Button';
-import { useAdminDialog } from './AdminDialog';
+import { DialogFuss, DialogInhalt, useAdminDialog } from './AdminDialog';
 import SelectField from '@/components/ui/SelectField';
 import TextField, { labelClass } from '@/components/ui/TextField';
 import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
@@ -52,6 +52,7 @@ export default function AdminForm({
   hidden = {},
   felder,
   reset = false,
+  fussLinks,
 }: {
   action: AdminAction;
   /** Eindeutiger Präfix für IDs im Formular */
@@ -65,6 +66,8 @@ export default function AdminForm({
   felder: Feld[];
   /** Felder nach Erfolg leeren (Hinzufügen-Formulare) */
   reset?: boolean;
+  /** Im Dialog links außen im Fuß, z. B. „Entfernen“ (admin-aufbau.md AK-11); eigenes Formular erlaubt */
+  fussLinks?: ReactNode;
 }) {
   const [state, dispatch, pending] = useActionState(action, { status: 'idle' });
   const form = useRef<HTMLFormElement>(null);
@@ -92,8 +95,20 @@ export default function AdminForm({
   const errors = state.status === 'error' ? (state.errors ?? {}) : {};
   const Heading = titleLevel === 2 ? 'h2' : 'h3';
 
-  return (
-    <form ref={form} onSubmit={submit} noValidate aria-labelledby={title ? `${id}-titel` : undefined}>
+  const formId = `${id}-formular`;
+  const knopf = (
+    <Button
+      type="submit"
+      form={formId}
+      aria-label={submitName}
+      aria-disabled={pending || undefined}
+      className={dialog ? 'max-sm:flex-1 max-sm:px-3' : undefined}
+    >
+      {submitLabel}
+    </Button>
+  );
+  const formular = (
+    <form ref={form} id={formId} onSubmit={submit} noValidate aria-labelledby={title ? `${id}-titel` : undefined}>
       {title && (
         <Heading
           id={`${id}-titel`}
@@ -106,7 +121,7 @@ export default function AdminForm({
       {Object.entries(hidden).map(([k, v]) => (
         <input key={k} type="hidden" name={k} value={v} />
       ))}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 mb-5">
+      <div className={`grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 ${dialog ? '' : 'mb-5'}`}>
         {felder.map((f) => {
           // Kritiker Dashboard 3: eigener Präfix, damit Feld-IDs nicht mit der Überschrift kollidieren
           const fid = `${id}-feld-${f.name}`;
@@ -171,9 +186,16 @@ export default function AdminForm({
           );
         })}
       </div>
-      <Button type="submit" aria-label={submitName} aria-disabled={pending || undefined}>
-        {submitLabel}
-      </Button>
+      {!dialog && knopf}
     </form>
+  );
+
+  // Im Dialog: Felder scrollen, Hauptaktion steht im festen Fuß rechts außen (admin-aufbau.md AK-10)
+  if (!dialog) return formular;
+  return (
+    <>
+      <DialogInhalt>{formular}</DialogInhalt>
+      <DialogFuss links={fussLinks}>{knopf}</DialogFuss>
+    </>
   );
 }

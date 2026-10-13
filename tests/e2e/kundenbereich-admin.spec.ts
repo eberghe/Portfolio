@@ -176,3 +176,41 @@ for (const scheme of ['light', 'dark'] as const) {
     }
   });
 }
+
+// admin-aufbau.md AK-10, AK-12, AK-15 (Erik, 2026-10-13)
+test('AK-10/AK-12/AK-15: Dialog-Fuß unten rechts, Bereiche ohne Scrollen, Kopf-Buttons in einer Zeile', async ({
+  page,
+}) => {
+  await login(page, 'erik');
+  await openHydrated(page, '/kunden/admin');
+  const breite = page.viewportSize()!.width;
+  const nav = page.getByRole('navigation', { name: 'Bereiche der Verwaltung' });
+  expect(await nav.evaluate((el) => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(0);
+  for (const name of ['Übersicht', 'Projekte', 'Kunden', 'Anfragen']) {
+    const box = (await nav.getByRole('link', { name }).boundingBox())!;
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width, name).toBeLessThanOrEqual(breite);
+  }
+  const anlegen = (await page.getByRole('button', { name: 'Kunde anlegen' }).boundingBox())!;
+  const neu = (await page.getByRole('link', { name: 'Neues Projekt' }).boundingBox())!;
+  expect(Math.abs(anlegen.y - neu.y)).toBeLessThan(2);
+
+  await openHydrated(page, `/kunden/admin/projekte/${P1}`);
+  await page.getByRole('button', { name: 'Projekt bearbeiten' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Projekt bearbeiten' });
+  const fuss = dialog.locator('[data-dialog-fuss]');
+  await expect(fuss).toBeVisible();
+  const d = (await dialog.boundingBox())!;
+  const f = (await fuss.boundingBox())!;
+  // Fuß schließt den Dialog unten ab und ist ohne Scrollen sichtbar
+  expect(Math.abs(d.y + d.height - (f.y + f.height))).toBeLessThan(2);
+  expect(f.y + f.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+  const speichern = (await fuss.getByRole('button', { name: 'Projekt speichern' }).boundingBox())!;
+  const abbrechen = (await fuss.getByRole('button', { name: 'Abbrechen' }).boundingBox())!;
+  expect(d.x + d.width - (speichern.x + speichern.width)).toBeLessThan(32);
+  expect(abbrechen.x + abbrechen.width).toBeLessThanOrEqual(speichern.x);
+  expect(Math.abs(abbrechen.y - speichern.y)).toBeLessThan(2);
+  await fuss.getByRole('button', { name: 'Abbrechen' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Projekt bearbeiten' })).toBeFocused();
+});

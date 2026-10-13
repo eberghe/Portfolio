@@ -52,6 +52,7 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Verwaltung übersichtlich: Bereiche, Dialoge, Hilfe](kundenbereich/admin-aufbau.md)
 - [Verwaltung als Dashboard mit Sidebar](kundenbereich/admin-sidebar.md)
 - [Verwaltung: Löschen, Ablauf sortieren, Aktionen in den Karten](kundenbereich/admin-bearbeiten.md)
+- [Kundenbereich: Dashboard mit Sidebar wie die Verwaltung](kundenbereich/kunden-sidebar.md)
 
 ## Qualität
 

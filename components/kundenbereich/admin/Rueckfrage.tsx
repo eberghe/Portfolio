@@ -1,5 +1,6 @@
 'use client';
 
+import { useId } from 'react';
 import { buttonClass } from '@/components/ui/Button';
 import { DialogFenster, DialogFuss, DialogInhalt, type useDialogSteuerung } from './AdminDialog';
 
@@ -24,10 +25,13 @@ export default function Rueckfrage({
   steuerung: ReturnType<typeof useDialogSteuerung>;
   onJa: () => void;
 }) {
+  const id = useId();
   return (
-    <DialogFenster title={text.titel} steuerung={steuerung}>
+    <DialogFenster title={text.titel} beschreibung={id} steuerung={steuerung}>
       <DialogInhalt>
-        <p className="text-[15px] leading-relaxed">{text.text}</p>
+        <p id={id} className="text-[15px] leading-relaxed">
+          {text.text}
+        </p>
       </DialogInhalt>
       <DialogFuss abbrechenStart>
         <button type="button" className={buttonClass('gefahr', 'max-sm:flex-1 max-sm:px-3')} onClick={onJa}>

@@ -4,11 +4,16 @@ import type { Locale } from '@/lib/i18n';
 import { ACCESS } from '@/lib/kundenbereich/session';
 import { authApi } from '@/lib/kundenbereich/supabase';
 import { kundenText } from '@/lib/kundenbereich/text';
+import type { KundenBereich } from '@/lib/kundenbereich/bereiche';
 import FocusTitle from './FocusTitle';
+import KundenEinstellungen from './KundenEinstellungen';
+import KundenNavigation from './KundenNavigation';
+import KundenRahmen from './KundenRahmen';
 import LoginForm from './LoginForm';
 import Projektuebersicht from './Projektuebersicht';
 
-// Einstieg in den Kundenbereich: Anmeldung oder Projektübersicht (functions/kundenbereich/login.md AK-1, AK-8)
+// Einstieg in den Kundenbereich: Anmeldung mit schmaler Leiste oder, angemeldet, die Seiten mit Sidebar
+// (functions/kundenbereich/login.md AK-1, AK-8, kunden-sidebar.md Verhalten 1, 7)
 
 const card =
   'min-w-0 sm:border sm:border-border sm:rounded-2xl bg-background sm:p-6 sm:shadow-[0_8px_30px_-16px_hsl(var(--primary)/0.25)]';
@@ -49,29 +54,58 @@ export function KundenShell({
 
 export const cardHeading = 'text-[11px] font-bold tracking-wider uppercase text-text3 mb-3';
 
-export default async function KundenPage({ locale, auswahl }: { locale: Locale; auswahl?: string }) {
+export default async function KundenPage({
+  locale,
+  auswahl,
+  bereich = 'uebersicht',
+}: {
+  locale: Locale;
+  auswahl?: string;
+  bereich?: KundenBereich;
+}) {
   const t = kundenText[locale];
-  const access = (await cookies()).get(ACCESS)?.value;
+  const store = await cookies();
+  const access = store.get(ACCESS)?.value;
   const api = authApi(process.env);
   const profil = access && api ? await api.profil(access).catch(() => null) : null;
 
   if (!profil || !access || !api)
     return (
-      <KundenShell title={t.title} intro={t.intro}>
-        <h2 id="kunden-karte" className={cardHeading}>
-          {t.loginTitle}
-        </h2>
-        <LoginForm locale={locale} />
-      </KundenShell>
+      <KundenRahmen locale={locale}>
+        <KundenShell title={t.title} intro={t.intro}>
+          <h2 id="kunden-karte" className={cardHeading}>
+            {t.loginTitle}
+          </h2>
+          <LoginForm locale={locale} />
+        </KundenShell>
+      </KundenRahmen>
     );
 
   // Admins landen direkt auf der Verwaltung; mit ?projekt sehen sie die Ansicht des Kunden (rahmen.md AK-4)
   if (profil.art === 'admin' && !auswahl) redirect('/kunden/admin');
 
   // Projektübersicht nach dem Login (functions/kundenbereich/projektuebersicht.md)
-  const [projekte, logo] = await Promise.all([
-    api.projekte(access),
-    profil.art === 'kunde' ? api.meinKunde(access) : null,
-  ]);
-  return <Projektuebersicht locale={locale} profil={profil} projekte={projekte} auswahl={auswahl} logo={logo} />;
+  const [projekte, logo] =
+    bereich === 'einstellungen'
+      ? [null, null]
+      : await Promise.all([api.projekte(access), profil.art === 'kunde' ? api.meinKunde(access) : null]);
+  return (
+    <div className="lg:flex lg:min-h-svh">
+      <KundenNavigation locale={locale} projekt={auswahl} eingeklappt={store.get('kb_sidebar')?.value === 'zu'} />
+      <main id="inhalt" tabIndex={-1} className="min-w-0 flex-1 pb-24 focus:outline-none lg:pb-0">
+        {bereich === 'einstellungen' ? (
+          <KundenEinstellungen locale={locale} profil={profil} />
+        ) : (
+          <Projektuebersicht
+            locale={locale}
+            profil={profil}
+            projekte={projekte}
+            auswahl={auswahl}
+            logo={logo}
+            bereich={bereich}
+          />
+        )}
+      </main>
+    </div>
+  );
 }

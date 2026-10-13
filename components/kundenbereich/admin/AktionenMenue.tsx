@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { startTransition, useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { iconButtonClass } from '@/components/ui/Button';
 import Rueckfrage, { type RueckfrageText } from './Rueckfrage';
-import { DialogFenster, melden, useDialogSteuerung } from './AdminDialog';
+import { DialogFenster, melden, titelFokussieren, useDialogSteuerung } from './AdminDialog';
 import { abgesichert, type AdminAction } from './AdminForm';
 
 // ⋯-Menü nach dem WAI-ARIA-Muster „Menu Button“ (functions/kundenbereich/admin-sidebar.md Verhalten 7, AK-7, AK-9)
@@ -99,6 +99,8 @@ export default function AktionenMenue({
     /** Bei Statusänderungen: Texte für Erfolg und Fehler (admin-sidebar.md AK-13) */
     texte?: { ok: string; fehler: string },
     danach?: string,
+    /** Nach dem Löschen den Fokus auf eine Überschrift setzen (Kritiker Bearbeiten 5) */
+    geloescht = false,
   ) => {
     const fd = new FormData();
     for (const [k, v] of Object.entries(hidden)) fd.set(k, v);
@@ -109,6 +111,7 @@ export default function AktionenMenue({
         melden(texte?.ok ?? state.message ?? '');
         if (danach) router.push(danach);
         else router.refresh();
+        if (geloescht) titelFokussieren(knopf.current, danach);
       } else if (state.status === 'error') melden([texte?.fehler, state.message].filter(Boolean).join(' '), true);
     });
   };
@@ -260,7 +263,7 @@ export default function AktionenMenue({
           steuerung={frageSteuerung}
           onJa={() => {
             frageSteuerung.schliessen();
-            ausfuehren(frage.aktion, frage.hidden, undefined, frage.danach);
+            ausfuehren(frage.aktion, frage.hidden, undefined, frage.danach, true);
           }}
         />
       )}

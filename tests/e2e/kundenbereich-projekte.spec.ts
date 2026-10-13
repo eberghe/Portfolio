@@ -19,7 +19,8 @@ const overflow = (page: Page) => page.evaluate(() => document.documentElement.sc
 test('AK-3/AK-4: Projekt mit Ablauf und nächsten Schritten', async ({ page }) => {
   await login(page, 'anna');
   await openHydrated(page, '/kunden');
-  await expect(page.getByRole('heading', { level: 1, name: 'Kundenbereich' })).toBeVisible();
+  // kunden-sidebar.md Verhalten 4: Seitenkopf wie in der Verwaltung
+  await expect(page.getByRole('heading', { level: 1, name: 'Übersicht' })).toBeVisible();
   await expect(page.getByText('Hallo, Anna')).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: 'Relaunch der Website' })).toBeVisible();
   const ablauf = page.getByRole('list', { name: 'Ablauf' });
@@ -37,9 +38,11 @@ test('kunden-dashboard.md AK-2/AK-3: Kacheln springen zu den Abschnitten', async
   await expect(kacheln.getByRole('progressbar', { name: 'Projektfortschritt' })).toHaveAttribute('aria-valuenow', '2');
   await expect(kacheln).toContainText('2 von 6 Schritten erledigt');
   await kacheln.getByRole('link', { name: /1 Schritt/ }).click();
-  await expect(page.getByRole('heading', { level: 3, name: 'Nächste Schritte' })).toBeInViewport();
+  await expect(page.getByRole('heading', { level: 2, name: 'Nächste Schritte' })).toBeInViewport();
+  // kunden-sidebar.md Verhalten 5: Dokumente haben eine eigene Seite
   await kacheln.getByRole('link', { name: 'Zu den Dokumenten' }).click();
-  await expect(page.getByRole('heading', { level: 3, name: 'Dokumente' })).toBeInViewport();
+  await expect(page).toHaveURL(/\/kunden\/dokumente$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Dokumente' })).toBeVisible();
 });
 
 test('termine.md AK-3/AK-6: nächster Termin mit Meet-Link und Kalenderdatei', async ({ page }) => {
@@ -63,7 +66,7 @@ test('termine.md AK-3/AK-6: nächster Termin mit Meet-Link und Kalenderdatei', a
 
 test('dokumente.md AK-3/AK-5: Dokumente mit Angaben, Download über signierten Link', async ({ page }) => {
   await login(page, 'anna');
-  await openHydrated(page, '/kunden');
+  await openHydrated(page, '/kunden/dokumente');
   const docs = page.getByRole('region', { name: 'Dokumente' });
   await expect(
     docs.getByRole('link', { name: 'Vertrag Relaunch, PDF, 182 KB, Version 2, 8. Okt. 2026, Aktuell' }),
@@ -122,7 +125,8 @@ test('AK-7: ohne Projekt Leer-Hinweis; Abmelden löscht die Cookies', async ({ p
   await login(page, 'leer');
   await openHydrated(page, '/kunden');
   await expect(page.getByText(/Hier ist noch kein Projekt hinterlegt/)).toBeVisible();
-  await page.getByRole('button', { name: 'Abmelden' }).click();
+  // kunden-sidebar.md AK-7: Abmelden steht in der Sidebar
+  await page.getByRole('banner').getByRole('button', { name: 'Abmelden' }).click();
   await expect(page.getByRole('button', { name: 'Anmeldelink schicken' })).toBeVisible();
   expect((await page.context().cookies()).filter((c) => c.name.startsWith('kb_'))).toEqual([]);
 });
@@ -134,14 +138,45 @@ for (const scheme of ['light', 'dark'] as const) {
       ['anna', '/kunden'],
       ['anna', '/en/clients'],
       ['erik', '/kunden?projekt=p-relaunch'],
+      // kunden-sidebar.md AK-10: alle Seiten mit Sidebar
+      ['anna', '/kunden/ablauf'],
+      ['anna', '/kunden/termine'],
+      ['anna', '/kunden/dokumente'],
+      ['anna', '/kunden/einstellungen'],
+      ['anna', '/en/clients/process'],
+      ['anna', '/en/clients/settings'],
     ] as const) {
       test(`AK-9: ${sub} ${path} ohne axe-Verstöße und ohne horizontales Scrollen`, async ({ page }) => {
         await login(page, sub);
         await openHydrated(page, path);
-        await expect(page.getByRole('list', { name: /Ablauf|Process/ })).toBeVisible();
+        await expect(page.getByRole('navigation', { name: /Kundenbereich|Client area/ })).toBeVisible();
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
         expect(await axe(page)).toEqual([]);
         expect(await overflow(page)).toBeLessThanOrEqual(0);
       });
     }
   });
 }
+
+// functions/kundenbereich/kunden-sidebar.md
+test('kunden-sidebar.md AK-1/AK-8: Seiten über die Sidebar, ohne Anmeldung ohne Sidebar', async ({ page }) => {
+  await openHydrated(page, '/kunden/ablauf');
+  await expect(page.getByRole('button', { name: 'Anmeldelink schicken' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Kundenbereich' })).toHaveCount(0);
+  await login(page, 'anna');
+  await openHydrated(page, '/kunden');
+  const nav = page.getByRole('navigation', { name: 'Kundenbereich' });
+  await expect(nav.getByRole('link')).toHaveText(['Übersicht', 'Ablauf', 'Termine', 'Dokumente', 'Einstellungen']);
+  await nav.getByRole('link', { name: 'Ablauf' }).click();
+  await expect(page).toHaveURL(/\/kunden\/ablauf$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Ablauf' })).toBeVisible();
+  await expect(nav.getByRole('link', { name: 'Ablauf' })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByText('Ich gestalte Startseite und Unterseiten')).toBeVisible();
+  await nav.getByRole('link', { name: 'Termine' }).click();
+  await expect(page.getByRole('region', { name: 'Nächster Termin' })).toContainText('Design-Review');
+  await nav.getByRole('link', { name: 'Einstellungen' }).click();
+  await expect(page.getByRole('region', { name: 'Konto' })).toContainText('Anna');
+  await page.getByRole('link', { name: 'English version' }).click();
+  await expect(page).toHaveURL(/\/en\/clients\/settings$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible();
+});

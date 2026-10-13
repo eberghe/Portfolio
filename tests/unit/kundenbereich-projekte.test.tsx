@@ -110,9 +110,9 @@ describe('Projekte laden und aufbereiten', () => {
 describe('Projektübersicht', () => {
   it('AK-3: Titel, Status als Text, Phase, Beschreibung, Ablauf als Liste mit aktuellem Schritt', () => {
     render(<Projektuebersicht locale="de" profil={ANNA} projekte={[PROJEKT]} />);
-    expect(screen.getByRole('heading', { level: 1, name: 'Kundenbereich' })).toBeInTheDocument();
+    // kunden-sidebar.md Verhalten 4: Seitenkopf wie in der Verwaltung, Abmelden steht in der Sidebar
+    expect(screen.getByRole('heading', { level: 1, name: 'Übersicht' })).toBeInTheDocument();
     expect(screen.getByText('Hallo, Anna')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Abmelden' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: 'Relaunch Website' })).toBeInTheDocument();
     expect(screen.getByText('In Arbeit')).toBeInTheDocument();
     expect(screen.getByText(/Aktuelle Phase: Design/)).toBeInTheDocument();
@@ -185,7 +185,7 @@ describe('Projektübersicht', () => {
 
   it('AK-8: Englisch, Admin sieht den Kundennamen', () => {
     render(<Projektuebersicht locale="en" profil={ERIK} projekte={[ZWEITES, PROJEKT]} auswahl="p1" />);
-    expect(screen.getByRole('heading', { level: 1, name: 'Client area' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Overview' })).toBeInTheDocument();
     expect(screen.getByText('Admin')).toBeInTheDocument();
     expect(screen.getByText('Kunde A')).toBeInTheDocument();
     expect(screen.getByText('In progress')).toBeInTheDocument();
@@ -319,12 +319,13 @@ describe('Kundensicht als Dashboard', () => {
     const bar = within(items[0]!).getByRole('progressbar', { name: 'Projektfortschritt' });
     expect(bar).toHaveAttribute('aria-valuenow', '1');
     expect(bar).toHaveAttribute('aria-valuemax', '5');
-    expect(within(items[1]!).getByRole('link')).toHaveAttribute('href', '#termin-titel');
+    // kunden-sidebar.md Verhalten 5: Kacheln führen zu den Seiten Termine und Dokumente
+    expect(within(items[1]!).getByRole('link')).toHaveAttribute('href', '/kunden/termine');
     expect(items[1]).toHaveTextContent(/15\. Okt\..*10:00/);
     expect(within(items[2]!).getByRole('link', { name: /1 Schritt/ })).toHaveAttribute('href', '#naechste-titel');
     expect(items[3]).toHaveTextContent('2 aktuell');
     expect(items[3]).toHaveTextContent('Neu: Vertrag, 5. Okt. 2026');
-    expect(within(items[3]!).getByRole('link')).toHaveAttribute('href', '#dokumente-titel');
+    expect(within(items[3]!).getByRole('link')).toHaveAttribute('href', '/kunden/dokumente');
   });
 
   it('AK-2/AK-3: ohne Schritte, Termine, Dokumente; „Du bist dran“ bei 0 ohne Link', () => {

@@ -45,15 +45,13 @@ describe('Kundenbereich Seiten', () => {
     expect(screen.getAllByRole('heading', { name: 'Dieser Link funktioniert nicht mehr' })).toHaveLength(1);
   });
 
-  it('AK-8: angemeldet mit Namen und Abmelden, Admin gekennzeichnet', () => {
+  it('AK-8: angemeldet mit Namen, Admin gekennzeichnet (Abmelden: kundenbereich-sidebar.test.tsx)', () => {
     const { unmount } = render(
       <Projektuebersicht locale="de" profil={{ art: 'kunde', name: 'Anna', sprache: 'de' }} projekte={[]} />,
     );
     expect(screen.getByText('Hallo, Anna')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Abmelden' })).toHaveAttribute('type', 'submit');
     unmount();
     render(<Projektuebersicht locale="en" profil={{ art: 'admin', name: 'Erik', sprache: 'de' }} projekte={[]} />);
     expect(screen.getByText(/Hello, Erik/)).toHaveTextContent('Hello, Erik Admin');
-    expect(screen.getByRole('button', { name: 'Sign out' })).toBeInTheDocument();
   });
 });

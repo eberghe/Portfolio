@@ -24,6 +24,29 @@ export function melden(text: string, fehler = false) {
   });
 }
 
+/**
+ * Fokus nach dem Löschen (Kritiker Bearbeiten 5): Mit `pfad` nach der Weiterleitung auf die Überschrift der neuen
+ * Seite, sonst auf die Überschrift der Karte, sobald der gelöschte Eintrag weg ist, ohne Karte auf das h1.
+ */
+export function titelFokussieren(ausloeser: HTMLElement | null, pfad?: string) {
+  const karte = ausloeser?.closest('section') ?? null;
+  const bis = Date.now() + 8000;
+  const pruefen = () => {
+    const fertig = pfad ? window.location.pathname === pfad : !ausloeser?.isConnected;
+    if (!fertig) {
+      if (Date.now() < bis) setTimeout(pruefen, 50);
+      return;
+    }
+    const ziel =
+      (!pfad && karte?.isConnected ? karte.querySelector<HTMLElement>('h2') : null) ??
+      document.querySelector<HTMLElement>('main h1');
+    if (!ziel) return;
+    ziel.tabIndex = -1;
+    ziel.focus();
+  };
+  pruefen();
+}
+
 type DialogApi = { schliessen: (meldung?: string) => void };
 const DialogContext = createContext<DialogApi | null>(null);
 
@@ -124,23 +147,36 @@ export function useDialogSteuerung(
 /** Modaler Dialog mit Kontext für Formulare (schließen nach Erfolg) */
 export function DialogFenster({
   title,
+  beschreibung,
   steuerung,
   children,
 }: {
   title: string;
+  /** ID des Textes, der den Dialog beschreibt (aria-describedby) */
+  beschreibung?: string;
   steuerung: Steuerung;
   children: ReactNode;
 }) {
   return (
     <DialogContext.Provider value={{ schliessen: steuerung.schliessen }}>
-      <Fenster title={title} onClose={() => steuerung.schliessen()}>
+      <Fenster title={title} beschreibung={beschreibung} onClose={() => steuerung.schliessen()}>
         {children}
       </Fenster>
     </DialogContext.Provider>
   );
 }
 
-function Fenster({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+function Fenster({
+  title,
+  beschreibung,
+  onClose,
+  children,
+}: {
+  title: string;
+  beschreibung?: string;
+  onClose: () => void;
+  children: ReactNode;
+}) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -159,6 +195,8 @@ function Fenster({ title, onClose, children }: { title: string; onClose: () => v
       ref={ref}
       aria-modal="true"
       aria-labelledby={titleId}
+      // Kritiker Bearbeiten 6: Rückfragen sagen ihren Text beim Öffnen mit an
+      aria-describedby={beschreibung}
       // Escape: Browser schließt den Dialog, wir räumen auf
       onCancel={(e) => {
         e.preventDefault();
@@ -166,7 +204,8 @@ function Fenster({ title, onClose, children }: { title: string; onClose: () => v
       }}
       // Kritiker Dialoge 4: Klick daneben schließt nicht mehr, Eingaben gehen sonst verloren (AK-18)
       // Kritiker Aufbau 5: Kopf fest, Inhalt scrollt, auch wenn der Titel umbricht
-      className="admin-dialog m-auto w-[calc(100%-2rem)] max-w-[640px] max-h-[calc(100svh-2rem)] overflow-hidden flex-col open:flex rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
+      // Kritiker Bearbeiten 7: linksbündig, auch wenn der Auslöser in einer rechtsbündigen Tabellenzelle steht
+      className="admin-dialog text-left m-auto w-[calc(100%-2rem)] max-w-[640px] max-h-[calc(100svh-2rem)] overflow-hidden flex-col open:flex rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
     >
       <div className="shrink-0 flex items-center justify-between gap-4 border-b border-border px-5 py-3 sm:px-6">
         <h2 id={titleId} className="text-[18px] font-bold break-words min-w-0">

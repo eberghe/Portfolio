@@ -36,14 +36,18 @@ export default function AblaufListe({ projektId, schritte }: { projektId: string
   const nachId = new Map(schritte.map((s) => [s.id, s]));
   const liste = reihe.map((id) => nachId.get(id)).filter((s): s is Schritt => !!s);
 
-  const speichern = (ids: string[], vorher: string[]) => {
+  /** Kritiker Bearbeiten 8: neue Position ansagen, nicht nur „gespeichert“ */
+  const positionText = (id: string, ids: string[]) =>
+    `${nachId.get(id)?.titel_de ?? 'Schritt'} jetzt an Position ${ids.indexOf(id) + 1} von ${ids.length}.`;
+
+  const speichern = (ids: string[], vorher: string[], bewegt: string) => {
     const fd = new FormData();
     fd.set('projekt_id', projektId);
     fd.set('ids', JSON.stringify(ids));
     startTransition(async () => {
       const state = await abgesichert(schritteSortieren)({ status: 'idle' }, fd);
       if (state.status === 'ok') {
-        melden(state.message);
+        melden(positionText(bewegt, ids));
         router.refresh();
       } else if (state.status === 'error') {
         setReihe(vorher);
@@ -52,14 +56,20 @@ export default function AblaufListe({ projektId, schritte }: { projektId: string
     });
   };
 
-  const bewegen = (id: string, um: number) => {
+  /** `fokus`: danach auf den Griff (Pfeiltasten) oder zurück aufs ⋯-Menü (Kritiker Bearbeiten 9) */
+  const bewegen = (id: string, um: number, fokus: 'griff' | 'menue' = 'griff') => {
     const i = reihe.indexOf(id);
     const ziel = i + um;
     if (i < 0 || ziel < 0 || ziel >= reihe.length) return;
     const neu = verschieben(reihe, i, ziel);
     setReihe(neu);
-    speichern(neu, reihe);
-    requestAnimationFrame(() => griffe.current.get(id)?.focus());
+    speichern(neu, reihe, id);
+    requestAnimationFrame(() =>
+      (fokus === 'griff'
+        ? griffe.current.get(id)
+        : zeilen.current.get(id)?.querySelector<HTMLElement>('[aria-haspopup="menu"]')
+      )?.focus(),
+    );
   };
 
   // Ziehen mit Maus, Finger oder Stift über Pointer Events (AK-7). Die Bewegung hört am Fenster zu: Beim
@@ -89,7 +99,7 @@ export default function AblaufListe({ projektId, schritte }: { projektId: string
     };
     const los = () => {
       setZieht(null);
-      if (start.current.join() !== aktuell.current.join()) speichern(aktuell.current, start.current);
+      if (start.current.join() !== aktuell.current.join()) speichern(aktuell.current, start.current, zieht);
       griffe.current.get(zieht)?.focus();
     };
     window.addEventListener('pointermove', ziehen);
@@ -169,9 +179,11 @@ export default function AblaufListe({ projektId, schritte }: { projektId: string
                     />
                   ),
                 },
-                ...(i > 0 ? [{ art: 'klick' as const, label: 'Nach oben', onSelect: () => bewegen(s.id, -1) }] : []),
+                ...(i > 0
+                  ? [{ art: 'klick' as const, label: 'Nach oben', onSelect: () => bewegen(s.id, -1, 'menue') }]
+                  : []),
                 ...(i < liste.length - 1
-                  ? [{ art: 'klick' as const, label: 'Nach unten', onSelect: () => bewegen(s.id, 1) }]
+                  ? [{ art: 'klick' as const, label: 'Nach unten', onSelect: () => bewegen(s.id, 1, 'menue') }]
                   : []),
                 {
                   art: 'aktion',

@@ -69,3 +69,20 @@ Nur Deutsch.
 ## Offene Fragen
 
 - Keine.
+
+## Blinder Kritiker (2026-10-13)
+
+Behoben (mit Test in `tests/unit/kundenbereich-admin-bearbeiten.test.tsx`):
+
+- 5: Nach dem Löschen geht der Fokus auf die Überschrift der neuen Seite bzw. der Karte, nicht ins Leere.
+- 6: Die Rückfrage ist über `aria-describedby` mit ihrem Text verbunden, er wird beim Öffnen mit angesagt.
+- 7: Rückfragen sind linksbündig, auch aus Tabellenzeilen; alle Namen stehen in „…“.
+- 8: Verschieben sagt die neue Position an, z. B. „Launch jetzt an Position 2 von 3.“
+- 9: „Nach oben“ und „Nach unten“ im Menü geben den Fokus ans ⋯-Menü des Schritts zurück.
+
+Kein Fehler der Seite: 1 bis 4 und 10 kommen vom nachgebildeten Supabase der Tests, das Status, Reihenfolge, Projekt- und Anfragelöschen nicht speichert und für „Neues Logo“ keine UUID hat.
+
+Offen, bewusst so gelassen:
+
+- 11: Die Karten-Menüs haben oft nur einen Eintrag. Erik wollte die Aktionen ausdrücklich im ⋯-Menü der Karte.
+- 12 bis 18 (niedrig): Tippen eines Buchstabens im Menü, „webflow“ klein geschrieben in Anfragen, Seitentitel ohne Namen, zwei Tabstopps je Schritt, „Einstellungen“ knapp am Rand der unteren Leiste bei 360 px. Sammeln für eine spätere Runde.

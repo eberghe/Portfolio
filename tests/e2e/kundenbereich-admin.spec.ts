@@ -319,5 +319,5 @@ test('admin-bearbeiten.md AK-12: Ablauf per Ziehen sortieren', async ({ page }) 
   await page.mouse.up();
   await expect(ablauf.getByText('3. Erstgespräch')).toBeVisible();
   await expect(ablauf.getByText('1. Analyse der bestehenden Website')).toBeVisible();
-  await expect(page.getByText('Reihenfolge gespeichert.')).toBeVisible();
+  await expect(page.getByText('Erstgespräch jetzt an Position 3 von 6.')).toBeVisible();
 });

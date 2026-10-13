@@ -127,9 +127,9 @@ describe('Ansicht', () => {
         ]}
       />,
     );
-    const titles = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent);
+    const titles = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
     expect(titles.indexOf('Nächster Termin')).toBeLessThan(titles.indexOf('Ablauf'));
-    expect(titles.indexOf('Ablauf')).toBeLessThan(titles.indexOf('Dokumente'));
+    expect(titles.indexOf('Ablauf')).toBeLessThan(titles.indexOf('Neueste Dokumente'));
   });
 
   it('AK-4: ohne Meet-Link kein Button, ohne Termin Hinweis', () => {

@@ -228,7 +228,7 @@ describe('Löschen', () => {
     render(<AdminKunden kunden={[kunde]} />);
     fireEvent.click(within(menue('Bäckerei').menue).getByRole('menuitem', { name: 'Löschen' }));
     expect(screen.getByRole('dialog', { name: 'Kunde löschen?' })).toHaveTextContent(
-      'Bäckerei wird mit 2 Projekten und 1 Ansprechpartner gelöscht',
+      '„Bäckerei“ wird mit 2 Projekten und 1 Ansprechpartner gelöscht',
     );
   });
 
@@ -425,5 +425,58 @@ describe('Aktionen in den Karten und deutsche Namen', () => {
     unmount();
     render(<AdminSettings email={null} />);
     expect(screen.getByRole('heading', { level: 1, name: 'Einstellungen' })).toBeInTheDocument();
+  });
+});
+
+describe('Befunde Blinder Kritiker Bearbeiten (2026-10-13)', () => {
+  it('6/7: Rückfrage beschreibt sich mit ihrem Text, linksbündig, Namen in Anführungszeichen', () => {
+    render(<AdminKunden kunden={[kunde]} />);
+    fireEvent.click(within(menue('Bäckerei').menue).getByRole('menuitem', { name: 'Löschen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Kunde löschen?' });
+    expect(dialog).toHaveAccessibleDescription(/^„Bäckerei“ wird mit 2 Projekten/);
+    expect(dialog).toHaveClass('text-left');
+  });
+
+  it('8: Verschieben sagt die neue Position an', async () => {
+    aktionen.schritteSortieren!.mockResolvedValueOnce({ status: 'ok', message: 'Reihenfolge gespeichert.' });
+    render(
+      <>
+        <p id="admin-meldung" />
+        <AdminProjekt projekt={DETAIL} now={NOW} />
+      </>,
+    );
+    await act(async () =>
+      fireEvent.keyDown(screen.getByRole('button', { name: 'Ziehen zum Sortieren: Launch' }), { key: 'ArrowUp' }),
+    );
+    await waitFor(() =>
+      expect(document.getElementById('admin-meldung')).toHaveTextContent('Launch jetzt an Position 2 von 3.'),
+    );
+  });
+
+  it('9: „Nach oben“ im Menü gibt den Fokus ans ⋯-Menü des Schritts zurück', async () => {
+    render(<AdminProjekt projekt={DETAIL} now={NOW} />);
+    const m = menue('Schritt Design').menue;
+    await act(async () => fireEvent.click(within(m).getByRole('menuitem', { name: 'Nach oben' })));
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Aktionen: Schritt Design' })).toHaveFocus());
+  });
+
+  it('5: nach dem Löschen aus der Liste liegt der Fokus auf der Überschrift', async () => {
+    aktionen.anfrageLoeschen!.mockResolvedValueOnce({ status: 'ok', message: 'Anfrage von Clara Muster gelöscht.' });
+    const { rerender } = render(
+      <main>
+        <AdminAnfragen anfragen={[anfrage]} />
+      </main>,
+    );
+    fireEvent.click(within(menue('Clara Muster').menue).getByRole('menuitem', { name: 'Löschen' }));
+    await act(async () =>
+      fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Anfrage löschen' })),
+    );
+    // nach router.refresh ist die Zeile weg
+    rerender(
+      <main>
+        <AdminAnfragen anfragen={[]} />
+      </main>,
+    );
+    await waitFor(() => expect(screen.getByRole('heading', { level: 1, name: 'Anfragen' })).toHaveFocus());
   });
 });

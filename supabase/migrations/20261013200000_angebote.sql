@@ -90,7 +90,8 @@ begin
   end if;
   insert into public.dokumente (projekt_id, art, titel, storage_pfad, dateiname, groesse_bytes, mime_typ, version, zu_dokument)
   values (
-    d.projekt_id, 'unterschrift', left(d.titel || ', unterschrieben', 200), p_pfad,
+    d.projekt_id, 'unterschrift',
+    left(d.titel || case when d.titel like 'Quote %' then ', signed' else ', unterschrieben' end, 200), p_pfad,
     left(coalesce(nullif(trim(p_dateiname), ''), split_part(p_pfad, '/', 3)), 200), groesse, mime, 1, d.id
   )
   returning id into neu;

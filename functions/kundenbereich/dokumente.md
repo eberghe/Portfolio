@@ -14,7 +14,7 @@ Vertrag, Rechnungen, aktuelle Logos und weitere Dateien eines Projekts zum Herun
 ## Verhalten
 
 1. Die Projekte werden mit ihren Dokumenten geladen (ohne Speicherpfad; Zugriffsregeln wie in `datenmodell.md`).
-2. Abschnitt **Dokumente** (h3) in der linken Spalte unter dem Ablauf, gruppiert nach Art in dieser Reihenfolge, je mit h4: „Verträge“, „Rechnungen“, „Logos“, „Weitere Dateien“. Leere Gruppen entfallen; ohne Dokumente: „Noch keine Dokumente.“
+2. Abschnitt **Dokumente** (h3) in der linken Spalte unter dem Ablauf, gruppiert nach Art in dieser Reihenfolge, je mit h4: „Angebote“ (mit Unterschriften, `angebot-unterschrift.md`), „Verträge“, „Rechnungen“, „Logos“, „Weitere Dateien“. Leere Gruppen entfallen; ohne Dokumente: „Noch keine Dokumente.“
 3. In einer Gruppe stehen Dokumente nach Titel, je Titel die höchste Version zuerst mit Hinweis „Aktuell“; ältere Versionen darunter.
 4. Jedes Dokument ist ein Link mit Titel und, ebenfalls im Linktext, Dateityp, Größe, Version und Datum, z. B. „Vertrag Relaunch, PDF, 1,2 MB, Version 2, 8. Okt. 2026, Aktuell“ (als `aria-label`, beginnt mit dem sichtbaren Titel).
 5. Logos zeigen eine kleine Vorschau; sie hat `alt=""`, weil der Link sie schon benennt.
@@ -22,7 +22,7 @@ Vertrag, Rechnungen, aktuelle Logos und weitere Dateien eines Projekts zum Herun
 
 ## Akzeptanzkriterien
 
-- AK-1: Die Abfrage der Projekte bettet `dokumente(id,created_at,art,titel,dateiname,groesse_bytes,mime_typ,version)` ein, nicht `storage_pfad`.
+- AK-1: Die Abfrage der Projekte bettet `dokumente(id,created_at,art,titel,dateiname,groesse_bytes,mime_typ,version,zu_dokument)` ein, nicht `storage_pfad` (`zu_dokument` seit `angebot-unterschrift.md`).
 - AK-2: Die Aufbereitung gruppiert nach Art in fester Reihenfolge, sortiert nach Titel und Version absteigend und markiert je Titel die höchste Version als aktuell.
 - AK-3: Linktext enthält Titel, Dateityp (aus MIME-Typ, sonst Dateiendung), Größe (B/KB/MB, deutsch mit Komma), Version und Datum; Link auf `/kunden/dokumente/<id>`.
 - AK-4: Logos haben eine Vorschau (`alt=""`, Name am Link) mit Quelle `/kunden/dokumente/<id>?vorschau=1`.

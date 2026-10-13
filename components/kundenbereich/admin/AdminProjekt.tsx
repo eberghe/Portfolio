@@ -16,7 +16,12 @@ import {
 import { dateiInfo } from '@/lib/kundenbereich/dokumente';
 import type { ProjektDetail } from '@/lib/kundenbereich/admin/laden';
 import type { AngebotVorlage } from '@/lib/kundenbereich/angebot/vorlage';
-import { DOKUMENT_ART_OPTIONEN, optionLabel, PROJEKT_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
+import {
+  DOKUMENT_ART_LABELS,
+  DOKUMENT_ART_OPTIONEN,
+  optionLabel,
+  PROJEKT_STATUS_OPTIONEN,
+} from '@/lib/kundenbereich/admin/texte';
 import { euro } from '@/lib/kundenbereich/admin/dashboard';
 import { datum } from '@/lib/kundenbereich/projekte';
 import { terminTitel, zeitraum } from '@/lib/kundenbereich/termine';
@@ -356,7 +361,7 @@ export default function AdminProjekt({
                   <li key={g.key} className={`${zeile} gap-2`}>
                     <div className="min-w-0">
                       <h3 className="text-[15px] font-bold break-words">{g.titel}</h3>
-                      <p className="text-[13px] text-text2">{optionLabel(DOKUMENT_ART_OPTIONEN, g.art)}</p>
+                      <p className="text-[13px] text-text2">{optionLabel(DOKUMENT_ART_LABELS, g.art)}</p>
                     </div>
                     <ul role="list" className="flex flex-col gap-3">
                       {g.versionen.map((d, i) => (

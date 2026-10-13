@@ -9,6 +9,7 @@ import { logoFreigabe as freigabe, type FreigabeState } from '@/lib/kundenbereic
 import { confirmPath, requestLink, type LoginState } from '@/lib/kundenbereich/login';
 import { ACCESS, REFRESH, sessionCookies } from '@/lib/kundenbereich/session';
 import { authApi, loginDeps } from '@/lib/kundenbereich/supabase';
+import * as U from '@/lib/kundenbereich/unterschrift';
 
 // Server Actions des Kundenbereichs (functions/kundenbereich/login.md)
 
@@ -58,5 +59,18 @@ export async function logout(fd: FormData) {
 export async function logoFreigabe(_prev: FreigabeState, fd: FormData): Promise<FreigabeState> {
   const state = await freigabe(fd, { access: (await cookies()).get(ACCESS)?.value, api: authApi(process.env) });
   if (state.status === 'ok') revalidatePath('/kunden', 'layout');
+  return state;
+}
+
+/** Unterschriebenes Angebot: Upload-Link holen und danach eintragen (functions/kundenbereich/angebot-unterschrift.md) */
+export async function unterschriftVorbereiten(_prev: U.UnterschriftState, fd: FormData) {
+  return U.unterschriftVorbereiten(fd, { access: (await cookies()).get(ACCESS)?.value, api: authApi(process.env) });
+}
+export async function unterschriftEintragen(_prev: U.UnterschriftState, fd: FormData) {
+  const state = await U.unterschriftEintragen(fd, {
+    access: (await cookies()).get(ACCESS)?.value,
+    api: authApi(process.env),
+  });
+  // Ohne revalidatePath: die Bestätigung im Browser soll stehen bleiben (angebot-unterschrift.md Verhalten 5)
   return state;
 }

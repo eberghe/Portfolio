@@ -133,6 +133,13 @@ export default function AktionenMenue({
         aria-expanded={offen}
         aria-controls={offen ? menueId : undefined}
         onClick={() => setOffen((o) => !o)}
+        // Escape schließt auch, solange der Fokus noch auf dem Knopf liegt
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && offen) {
+            e.preventDefault();
+            schliessen();
+          }
+        }}
       >
         <MoreHorizontal size={18} aria-hidden="true" />
       </button>
@@ -195,7 +202,10 @@ export default function AktionenMenue({
                   tabIndex={-1}
                   className={punktKlasse()}
                   onClick={() => schliessen(false)}
-                  {...(e.extern ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  // Kritiker Angebote 6: neuer Tab wird angesagt
+                  {...(e.extern
+                    ? { target: '_blank', rel: 'noopener noreferrer', 'aria-label': `${e.label} (öffnet in neuem Tab)` }
+                    : {})}
                 >
                   {e.label}
                 </Link>

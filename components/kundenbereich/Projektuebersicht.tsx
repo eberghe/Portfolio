@@ -7,6 +7,7 @@ import {
   CircleDot,
   Download,
   ExternalLink,
+  FileSignature,
   FileText,
   Hand,
   ListChecks,
@@ -18,7 +19,13 @@ import Link from 'next/link';
 import Button, { buttonClass } from '@/components/ui/Button';
 import type { Locale } from '@/lib/i18n';
 import { bereichPfad, type KundenBereich } from '@/lib/kundenbereich/bereiche';
-import { dateiInfo, dokumentGruppen, type DokumentRow } from '@/lib/kundenbereich/dokumente';
+import {
+  dateiInfo,
+  dokumentGruppen,
+  offeneAngebote,
+  unterschriftZu,
+  type DokumentRow,
+} from '@/lib/kundenbereich/dokumente';
 import type { MeinKunde } from '@/lib/kundenbereich/freigabe';
 import {
   datum,
@@ -36,6 +43,7 @@ import { badge, karte, kartenTitel } from './admin/AdminListen';
 import AdminShell from './admin/AdminShell';
 import LogoFreigabe from './LogoFreigabe';
 import TerminZeit from './TerminZeit';
+import UnterschriftHochladen from './UnterschriftHochladen';
 
 // Seiten des Kundenbereichs nach dem Login: Übersicht, Ablauf, Termine, Dokumente
 // (functions/kundenbereich/projektuebersicht.md, kunden-dashboard.md, kunden-sidebar.md).
@@ -71,6 +79,8 @@ export default function Projektuebersicht({
   // Mit mehreren Projekten bleibt die Wahl in allen Links erhalten (kunden-sidebar.md AK-2)
   const projekt = projekte && projekte.length > 1 ? gewaehlt?.id : auswahl;
   const pfad = (b: KundenBereich) => bereichPfad(b, locale, projekt);
+  // Admins in der Kundensicht laden nichts im Namen des Kunden hoch (angebot-unterschrift.md Verhalten 8)
+  const darfHochladen = profil.art === 'kunde';
 
   return (
     <AdminShell
@@ -154,10 +164,16 @@ export default function Projektuebersicht({
         </div>
       ) : bereich === 'dokumente' ? (
         <div className="max-w-[900px]">
-          <Documents t={t} locale={locale} dokumente={ansicht.dokumente} titel={t.allDocumentsLink} />
+          <Documents
+            t={t}
+            locale={locale}
+            dokumente={ansicht.dokumente}
+            titel={t.allDocumentsLink}
+            darfHochladen={darfHochladen}
+          />
         </div>
       ) : (
-        <Uebersicht t={t} locale={locale} projekt={ansicht} logo={logo} pfad={pfad} />
+        <Uebersicht t={t} locale={locale} projekt={ansicht} logo={logo} pfad={pfad} darfHochladen={darfHochladen} />
       )}
     </AdminShell>
   );
@@ -170,13 +186,16 @@ function Uebersicht({
   projekt: p,
   logo,
   pfad,
+  darfHochladen,
 }: {
   t: T;
   locale: Locale;
   projekt: Ansicht;
   logo: MeinKunde | null;
   pfad: (b: KundenBereich) => string;
+  darfHochladen: boolean;
 }) {
+  const offen = offeneAngebote(p.dokumente);
   const links = [
     p.websiteUrl && { href: p.websiteUrl, label: t.website },
     p.stagingUrl && { href: p.stagingUrl, label: t.staging },
@@ -208,6 +227,24 @@ function Uebersicht({
       {/* Kritiker Kunde 6: sichtbare Reihenfolge = DOM-Reihenfolge, Termin und nächste Schritte links */}
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-4 md:gap-6 mt-4 md:mt-6 items-start">
         <div className="min-w-0 flex flex-col gap-4 md:gap-6">
+          {offen.length > 0 && (
+            // Angebot wartet auf Unterschrift (angebot-unterschrift.md Verhalten 6, AK-6)
+            <section aria-labelledby="angebot-titel" className={`${karte} border-primary`}>
+              <h2 id="angebot-titel" tabIndex={-1} className={kopf}>
+                <FileSignature size={17} aria-hidden="true" className="text-primary-text" />
+                {t.offerWaiting}
+              </h2>
+              <p className="text-[15px] text-text2 leading-relaxed mb-3">{t.offerWaitingText}</p>
+              <ul role="list" className="flex flex-col divide-y divide-border border-y border-border">
+                {offen.map((d) => (
+                  <li key={d.id} className="pb-3">
+                    <DokumentLink t={t} locale={locale} d={d} logo={false} />
+                    {darfHochladen && <UnterschriftHochladen locale={locale} dokument={d.id} titel={d.titel} />}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           <Meeting t={t} locale={locale} next={p.naechsterTermin} later={p.weitereTermine} />
           <NaechsteSchritte t={t} locale={locale} projekt={p} />
           {links.length > 0 && (
@@ -313,14 +350,29 @@ function Kacheln({
           <p className={leer}>{t.noMeetingShort}</p>
         )}
       </li>
-      <li className={`${kachel} ${k.kundeOffen > 0 ? 'border-primary' : ''}`}>
+      <li className={`${kachel} ${k.kundeOffen + k.angeboteOffen > 0 ? 'border-primary' : ''}`}>
         <Bezeichnung icon={Hand}>{t.yourTurn}</Bezeichnung>
-        {k.kundeOffen > 0 ? (
+        {k.kundeOffen + k.angeboteOffen > 0 ? (
           <>
-            <p className={wert}>{t.yourTurnCount(k.kundeOffen)}</p>
-            <a href="#naechste-titel" className={kachelLink}>
-              {t.yourTurnCount(k.kundeOffen)} {t.yourTurnHint}
-            </a>
+            <p className={wert}>
+              {[
+                k.kundeOffen > 0 && t.yourTurnCount(k.kundeOffen),
+                k.angeboteOffen > 0 && t.offersCount(k.angeboteOffen),
+              ]
+                .filter(Boolean)
+                .join(', ')}
+            </p>
+            {k.angeboteOffen > 0 && (
+              // angebot-unterschrift.md AK-6: offene Angebote zählen mit
+              <a href="#angebot-titel" className={kachelLink}>
+                {t.offerLink}
+              </a>
+            )}
+            {k.kundeOffen > 0 && (
+              <a href="#naechste-titel" className={k.angeboteOffen > 0 ? mehrLink : kachelLink}>
+                {t.yourTurnCount(k.kundeOffen)} {t.yourTurnHint}
+              </a>
+            )}
           </>
         ) : (
           <p className={leer}>{t.allWithErik}</p>
@@ -640,7 +692,19 @@ function NeuesteDokumente({
 }
 
 /** Dokumente nach Art gruppiert, Download über den Server (functions/kundenbereich/dokumente.md) */
-function Documents({ t, locale, dokumente, titel }: { t: T; locale: Locale; dokumente: DokumentRow[]; titel: string }) {
+function Documents({
+  t,
+  locale,
+  dokumente,
+  titel,
+  darfHochladen,
+}: {
+  t: T;
+  locale: Locale;
+  dokumente: DokumentRow[];
+  titel: string;
+  darfHochladen: boolean;
+}) {
   const gruppen = dokumentGruppen(dokumente);
   return (
     <section aria-labelledby="dokumente-titel" className={karte}>
@@ -661,11 +725,30 @@ function Documents({ t, locale, dokumente, titel }: { t: T; locale: Locale; doku
                 aria-labelledby={`dokumente-${g.art}`}
                 className="flex flex-col divide-y divide-border border-y border-border"
               >
-                {g.dokumente.map((d) => (
-                  <li key={d.id}>
-                    <DokumentLink t={t} locale={locale} d={d} logo={g.art === 'logo'} />
-                  </li>
-                ))}
+                {g.dokumente.map((d) => {
+                  const angebot = d.art === 'angebot' && d.aktuell;
+                  const unterschrift = angebot ? unterschriftZu(dokumente, d.id) : null;
+                  return (
+                    <li key={d.id} className={angebot ? 'pb-3' : undefined}>
+                      <DokumentLink t={t} locale={locale} d={d} logo={g.art === 'logo'} />
+                      {/* Angebote: Stand der Unterschrift oder Upload (angebot-unterschrift.md Verhalten 2 und 5) */}
+                      {unterschrift ? (
+                        <p className="text-[13px] text-text2 sm:pl-16 flex items-center gap-1.5">
+                          <Check size={14} aria-hidden="true" className="text-primary-text" />
+                          {t.signedOn(datum(unterschrift.created_at.slice(0, 10), locale))}
+                        </p>
+                      ) : (
+                        angebot &&
+                        darfHochladen && (
+                          <div className="sm:pl-16">
+                            <p className="text-[13px] text-text2">{t.waitingSignature}</p>
+                            <UnterschriftHochladen locale={locale} dokument={d.id} titel={d.titel} />
+                          </div>
+                        )
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}

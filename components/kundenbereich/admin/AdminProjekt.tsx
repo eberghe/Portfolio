@@ -15,7 +15,13 @@ import {
 } from '@/app/actions/kundenbereich-admin';
 import { dateiInfo } from '@/lib/kundenbereich/dokumente';
 import type { ProjektDetail } from '@/lib/kundenbereich/admin/laden';
-import { DOKUMENT_ART_OPTIONEN, optionLabel, PROJEKT_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
+import type { AngebotVorlage } from '@/lib/kundenbereich/angebot/vorlage';
+import {
+  DOKUMENT_ART_LABELS,
+  DOKUMENT_ART_OPTIONEN,
+  optionLabel,
+  PROJEKT_STATUS_OPTIONEN,
+} from '@/lib/kundenbereich/admin/texte';
 import { euro } from '@/lib/kundenbereich/admin/dashboard';
 import { datum } from '@/lib/kundenbereich/projekte';
 import { terminTitel, zeitraum } from '@/lib/kundenbereich/termine';
@@ -26,6 +32,7 @@ import AdminDialog from './AdminDialog';
 import AdminForm from './AdminForm';
 import { badge, karte, kartenTitel, zeile } from './AdminListen';
 import AdminShell from './AdminShell';
+import Angebote from './Angebote';
 import FokusHinweis from './FokusHinweis';
 import { schrittFelder } from './schrittFelder';
 import UploadForm from './UploadForm';
@@ -90,9 +97,12 @@ export default function AdminProjekt({
   projekt: p,
   now = new Date(),
   hinweis,
+  angebotVorlage,
 }: {
   projekt: ProjektDetail;
   now?: Date;
+  /** Vorbelegung für „Angebot erstellen“ (angebote.md); ohne sie keine Karte Angebote */
+  angebotVorlage?: AngebotVorlage;
   /** Meldung nach dem Assistenten, z. B. „Projekt angelegt.“ */
   hinweis?: string;
 }) {
@@ -324,6 +334,8 @@ export default function AdminProjekt({
             )}
           </section>
 
+          {angebotVorlage && <Angebote projektId={p.id} angebote={p.angebote ?? []} vorlage={angebotVorlage} />}
+
           <section aria-labelledby="dokumente-titel" className={karte}>
             <Kopf id="dokumente-titel" titel="Dokumente">
               <AdminDialog label="Dokument hochladen" icon={<Plus size={18} aria-hidden="true" />} nurIcon>
@@ -349,7 +361,7 @@ export default function AdminProjekt({
                   <li key={g.key} className={`${zeile} gap-2`}>
                     <div className="min-w-0">
                       <h3 className="text-[15px] font-bold break-words">{g.titel}</h3>
-                      <p className="text-[13px] text-text2">{optionLabel(DOKUMENT_ART_OPTIONEN, g.art)}</p>
+                      <p className="text-[13px] text-text2">{optionLabel(DOKUMENT_ART_LABELS, g.art)}</p>
                     </div>
                     <ul role="list" className="flex flex-col gap-3">
                       {g.versionen.map((d, i) => (

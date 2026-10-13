@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import AdminProjekt from '@/components/kundenbereich/admin/AdminProjekt';
 import { adminKontext } from '@/components/kundenbereich/admin/kontext';
-import { projektDetail } from '@/lib/kundenbereich/admin/laden';
+import { angebotsNummern, projektDetail } from '@/lib/kundenbereich/admin/laden';
 import { istId } from '@/lib/kundenbereich/admin/pruefen';
+import { angebotVorlage } from '@/lib/kundenbereich/angebot/vorlage';
 
-// functions/kundenbereich/admin.md, projekt-assistent.md
+// functions/kundenbereich/admin.md, projekt-assistent.md, angebote.md
 export const metadata: Metadata = { title: 'Projekt | Verwaltung', robots: { index: false, follow: false } };
 
 /** Ergebnis des Assistenten (projekt-assistent.md AK-8) */
@@ -28,7 +29,16 @@ export default async function Page({
 }) {
   const api = await adminKontext();
   const { id } = await params;
-  const projekt = istId(id) ? await projektDetail(api, id) : null;
+  const [projekt, nummern] = istId(id) ? await Promise.all([projektDetail(api, id), angebotsNummern(api)]) : [null, []];
   if (!projekt) notFound();
-  return <AdminProjekt projekt={projekt} hinweis={hinweis(await searchParams)} />;
+  const zugeordnet = new Set(projekt.projekt_ansprechpartner.map((a) => a.ansprechpartner_id));
+  const vorlage = angebotVorlage(
+    {
+      titel: projekt.titel,
+      kunde: projekt.kunden?.name ?? null,
+      ansprechpartner: projekt.kunden?.ansprechpartner.filter((a) => zugeordnet.has(a.id)) ?? [],
+    },
+    nummern,
+  );
+  return <AdminProjekt projekt={projekt} hinweis={hinweis(await searchParams)} angebotVorlage={vorlage} />;
 }

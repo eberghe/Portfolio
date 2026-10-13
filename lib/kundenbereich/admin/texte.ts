@@ -42,6 +42,13 @@ export const DOKUMENT_ART_OPTIONEN = [
   { value: 'datei', label: 'Weitere Datei' },
 ];
 
+/** Bezeichnung jeder Art in der Verwaltung, auch der Angebote (angebote.md) */
+export const DOKUMENT_ART_LABELS = [
+  ...DOKUMENT_ART_OPTIONEN,
+  { value: 'angebot', label: 'Angebot' },
+  { value: 'unterschrift', label: 'Unterschriebenes Angebot' },
+];
+
 export const optionLabel = (opts: { value: string; label: string }[], v: string) =>
   opts.find((o) => o.value === v)?.label ?? v;
 

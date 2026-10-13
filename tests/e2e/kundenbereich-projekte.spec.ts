@@ -180,3 +180,40 @@ test('kunden-sidebar.md AK-1/AK-8: Seiten über die Sidebar, ohne Anmeldung ohne
   await expect(page).toHaveURL(/\/en\/clients\/settings$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible();
 });
+
+// functions/kundenbereich/angebot-unterschrift.md AK-5, AK-6, AK-8
+test.describe('Angebot unterschreiben', () => {
+  for (const scheme of ['light', 'dark'] as const)
+    test(`AK-6/AK-8: offenes Angebot auf der Übersicht, ${scheme}`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await login(page, 'cora');
+      await openHydrated(page, '/kunden');
+      const karte = page.getByRole('region', { name: 'Angebot wartet auf dich' });
+      await expect(karte.getByRole('link', { name: /^Angebot 2026-007/ })).toBeVisible();
+      await expect(page.getByRole('list', { name: 'Auf einen Blick' })).toContainText('1 Angebot');
+      expect(await axe(page)).toEqual([]);
+      expect(await overflow(page)).toBeLessThanOrEqual(0);
+    });
+
+  test('AK-5/AK-8: unterschriebenes Angebot hochladen', async ({ page }) => {
+    await login(page, 'cora');
+    await openHydrated(page, '/kunden/dokumente');
+    await expect(page.getByRole('heading', { level: 3, name: 'Angebote' })).toBeVisible();
+    const knopf = page.getByRole('button', { name: 'Unterschriebenes Angebot hochladen: Angebot 2026-007' });
+    await knopf.click();
+    await expect(knopf).toHaveAttribute('aria-expanded', 'true');
+    // ohne Datei: Fehler am Feld
+    await page.getByRole('button', { name: 'Hochladen', exact: true }).click();
+    await expect(page.getByLabel('Datei')).toBeFocused();
+    await expect(page.getByLabel('Datei')).toHaveAttribute('aria-invalid', 'true');
+    expect(await axe(page)).toEqual([]);
+    expect(await overflow(page)).toBeLessThanOrEqual(0);
+    await page.getByLabel('Datei').setInputFiles({
+      name: 'Angebot unterschrieben.pdf',
+      mimeType: 'application/pdf',
+      buffer: Buffer.from('%PDF-1.4\n%%EOF\n'),
+    });
+    await page.getByRole('button', { name: 'Hochladen', exact: true }).click();
+    await expect(page.getByText('Danke! Das unterschriebene Angebot ist da.')).toBeFocused();
+  });
+});

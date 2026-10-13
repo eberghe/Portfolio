@@ -1,4 +1,4 @@
-import { dokumentGruppen } from './dokumente';
+import { dokumentGruppen, offeneAngebote } from './dokumente';
 import type { Locale } from '@/lib/i18n';
 import { terminTitel, type Termin } from './termine';
 
@@ -32,12 +32,14 @@ export interface ProjektRow {
   dokumente: {
     id: string;
     created_at: string;
-    art: 'vertrag' | 'rechnung' | 'logo' | 'datei';
+    art: 'vertrag' | 'rechnung' | 'logo' | 'datei' | 'angebot' | 'unterschrift';
     titel: string;
     dateiname: string;
     groesse_bytes: number | null;
     mime_typ: string | null;
     version: number;
+    /** Unterschriebene Fassung: das Angebot, zu dem sie gehört (angebot-unterschrift.md) */
+    zu_dokument?: string | null;
   }[];
   termine: {
     id: string;
@@ -54,7 +56,7 @@ export const PROJEKT_SELECT =
   'id,titel,status,phase,beschreibung_de,beschreibung_en,website_url,staging_url,kunden(name),' +
   'projektschritte(id,reihenfolge,titel_de,titel_en,beschreibung_de,beschreibung_en,status,faellig_am,verantwortlich),' +
   'termine(id,beginn,ende,titel_de,titel_en,meet_url),' +
-  'dokumente(id,created_at,art,titel,dateiname,groesse_bytes,mime_typ,version)';
+  'dokumente(id,created_at,art,titel,dateiname,groesse_bytes,mime_typ,version,zu_dokument)';
 
 export interface Schritt {
   id: string;
@@ -130,6 +132,8 @@ export function kennzahlen(a: ReturnType<typeof projektAnsicht>) {
     kundeOffen: a.schritte.filter((s) => s.status !== 'erledigt' && s.verantwortlich === 'kunde').length,
     dokumenteAktuell: aktuelle.length,
     neuestes,
+    /** Angebote ohne Unterschrift (angebot-unterschrift.md AK-6) */
+    angeboteOffen: offeneAngebote(a.dokumente).length,
   };
 }
 

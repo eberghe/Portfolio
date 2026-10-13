@@ -5,15 +5,18 @@ import { datum, type ProjektRow } from './projekte';
 
 export type DokumentRow = ProjektRow['dokumente'][number];
 export type DokumentArt = DokumentRow['art'];
+/** Unterschriften stehen bei den Angeboten (angebot-unterschrift.md AK-1) */
+export type DokumentGruppe = Exclude<DokumentArt, 'unterschrift'>;
 
-const REIHENFOLGE: DokumentArt[] = ['vertrag', 'rechnung', 'logo', 'datei'];
+const REIHENFOLGE: DokumentGruppe[] = ['angebot', 'vertrag', 'rechnung', 'logo', 'datei'];
+const gruppe = (art: DokumentArt): DokumentGruppe => (art === 'unterschrift' ? 'angebot' : art);
 export const LINK_LAUFZEIT = 60;
 
 /** Nach Art gruppiert, je Titel höchste Version zuerst und als aktuell markiert (AK-2) */
 export function dokumentGruppen(dokumente: DokumentRow[]) {
   return REIHENFOLGE.map((art) => {
     const liste = dokumente
-      .filter((d) => d.art === art)
+      .filter((d) => gruppe(d.art) === art)
       .sort((a, b) => a.titel.localeCompare(b.titel, 'de') || b.version - a.version);
     return {
       art,
@@ -21,6 +24,18 @@ export function dokumentGruppen(dokumente: DokumentRow[]) {
     };
   }).filter((g) => g.dokumente.length > 0);
 }
+
+/** Aktuelle Angebote ohne hochgeladene Unterschrift (angebot-unterschrift.md AK-2, AK-6) */
+export function offeneAngebote(dokumente: DokumentRow[]) {
+  const unterschrieben = new Set(dokumente.map((d) => d.zu_dokument).filter(Boolean));
+  return dokumentGruppen(dokumente)
+    .flatMap((g) => g.dokumente)
+    .filter((d) => d.art === 'angebot' && d.aktuell && !unterschrieben.has(d.id));
+}
+
+/** Die hochgeladene Unterschrift zu einem Angebot */
+export const unterschriftZu = (dokumente: DokumentRow[], id: string) =>
+  dokumente.find((d) => d.art === 'unterschrift' && d.zu_dokument === id) ?? null;
 
 const TYPEN: Record<string, string> = {
   'application/pdf': 'PDF',

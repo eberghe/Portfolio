@@ -58,7 +58,9 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe('Dokumente aufbereiten', () => {
   it('AK-1: Projekte mit Dokumenten, ohne Speicherpfad', () => {
-    expect(PROJEKT_SELECT).toMatch(/dokumente\(id,created_at,art,titel,dateiname,groesse_bytes,mime_typ,version\)/);
+    expect(PROJEKT_SELECT).toMatch(
+      /dokumente\(id,created_at,art,titel,dateiname,groesse_bytes,mime_typ,version,zu_dokument\)/,
+    );
     expect(PROJEKT_SELECT).not.toMatch(/storage_pfad/);
   });
 

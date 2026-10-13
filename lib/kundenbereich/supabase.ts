@@ -4,6 +4,7 @@ import { PROJEKT_SELECT, type ProjektRow } from './projekte';
 import type { DokumentDownload } from './dokumente';
 import type { FreigabeApi, MeinKunde } from './freigabe';
 import type { TerminRow } from './termine';
+import type { UnterschriftApi } from './unterschrift';
 import type { Tokens } from './session';
 
 // Zugriff auf Supabase (Auth, REST) und Resend für den Kundenbereich. Nur auf dem Server verwenden.
@@ -273,6 +274,58 @@ export function authApi(env: Env) {
         return null;
       }
     },
+    /** Angebots-Dokument mit Kunde und ob es schon unterschrieben ist (angebot-unterschrift.md AK-3) */
+    angebotDokument: (async (access, id) => {
+      if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
+      const q = new URLSearchParams({
+        select: 'id,projekt_id,kundenprojekte(kunde_id)',
+        id: `eq.${id}`,
+        art: 'eq.angebot',
+      });
+      const res = await fetch(`${url}/rest/v1/dokumente?${q}`, { headers: headers(access), cache: 'no-store' });
+      if (!res.ok) return null;
+      const [d] = (await res.json()) as {
+        id: string;
+        projekt_id: string;
+        kundenprojekte: { kunde_id: string } | null;
+      }[];
+      if (!d?.kundenprojekte) return null;
+      const u = await fetch(
+        `${url}/rest/v1/dokumente?${new URLSearchParams({ select: 'id', zu_dokument: `eq.${id}` })}`,
+        {
+          headers: headers(access),
+          cache: 'no-store',
+        },
+      );
+      const unterschrieben = u.ok ? ((await u.json()) as unknown[]).length > 0 : false;
+      return { id: d.id, projekt_id: d.projekt_id, kunde_id: d.kundenprojekte.kunde_id, unterschrieben };
+    }) satisfies UnterschriftApi['angebotDokument'],
+    /** Signierter Upload-Link mit dem Token des Kunden; die Regel kundenbereich_unterschrift_hochladen greift */
+    signUpload: (async (access, pfad) => {
+      const path = pfad.split('/').map(encodeURIComponent).join('/');
+      const res = await fetch(`${url}/storage/v1/object/upload/sign/kundendokumente/${path}`, {
+        method: 'POST',
+        headers: headers(access),
+        body: '{}',
+        cache: 'no-store',
+      });
+      if (!res.ok) return null;
+      const { url: signed } = (await res.json()) as { url?: string };
+      return signed ? `${url}/storage/v1${signed}` : null;
+    }) satisfies UnterschriftApi['signUpload'],
+    /** Datenbankfunktion unterschrift_eintragen (angebot-unterschrift.md Verhalten 4) */
+    unterschriftEintragen: (async (access, dokument, pfad, dateiname) => {
+      const res = await fetch(`${url}/rest/v1/rpc/unterschrift_eintragen`, {
+        method: 'POST',
+        headers: headers(access),
+        body: JSON.stringify({ p_dokument: dokument, p_pfad: pfad, p_dateiname: dateiname }),
+        cache: 'no-store',
+      });
+      if (res.ok) return 'ok';
+      const fehler = (await res.json().catch(() => ({}))) as { code?: string };
+      if (fehler.code !== '23505') console.error('Unterschrift: Supabase', res.status, fehler.code);
+      return fehler.code === '23505' ? 'schon' : 'fehler';
+    }) satisfies UnterschriftApi['unterschriftEintragen'],
     /** Projekte mit dem Token des Nutzers, damit die Zugriffsregeln greifen; null bei Fehler (projektuebersicht.md AK-1) */
     projekte: async (access: string): Promise<ProjektRow[] | null> => {
       const q = new URLSearchParams({ select: PROJEKT_SELECT, order: 'created_at.desc' });

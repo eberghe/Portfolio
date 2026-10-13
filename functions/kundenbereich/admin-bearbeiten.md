@@ -86,3 +86,7 @@ Offen, bewusst so gelassen:
 
 - 11: Die Karten-Menüs haben oft nur einen Eintrag. Erik wollte die Aktionen ausdrücklich im ⋯-Menü der Karte.
 - 12 bis 18 (niedrig): Tippen eines Buchstabens im Menü, „webflow“ klein geschrieben in Anfragen, Seitentitel ohne Namen, zwei Tabstopps je Schritt, „Einstellungen“ knapp am Rand der unteren Leiste bei 360 px. Sammeln für eine spätere Runde.
+
+## Fehler 2026-10-13: Anfragen ließen sich nicht löschen
+
+Erik meldete, dass „Löschen“ bei Anfragen nicht klappt. Ursache: Die Tabelle `anfragen` vergibt Rechte einzeln (nur `select` und `update (status)`), die Migration hatte nur die Policy angelegt, nicht das Recht `delete`. Behoben mit `grant delete` in `20261013100000_anfragen_loeschen.sql` (auf Supabase ausgeführt), Test mit echter Datenbank in `tests/unit/kundenbereich-dashboard-db.test.ts`.

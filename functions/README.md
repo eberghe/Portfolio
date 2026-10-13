@@ -53,6 +53,9 @@ Quelle für Design und Inhalte der bisherigen Seite: Lovable-Repo `eberghe/erik-
 - [Verwaltung als Dashboard mit Sidebar](kundenbereich/admin-sidebar.md)
 - [Verwaltung: Löschen, Ablauf sortieren, Aktionen in den Karten](kundenbereich/admin-bearbeiten.md)
 - [Kundenbereich: Dashboard mit Sidebar wie die Verwaltung](kundenbereich/kunden-sidebar.md)
+- [Angebote erstellen und freigeben](kundenbereich/angebote.md)
+- [Angebot als PDF und AGB-Entwurf](kundenbereich/angebot-pdf.md)
+- [Angebot ansehen und unterschrieben hochladen](kundenbereich/angebot-unterschrift.md)
 
 ## Qualität
 

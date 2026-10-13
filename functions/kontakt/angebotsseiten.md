@@ -1,6 +1,6 @@
 # Angebotsseiten für Kunden
 
-Status: Entwurf
+Status: Entwurf (die Tabelle `angebote` und PDF-Angebote im Kundenbereich: `../kundenbereich/angebote.md`)
 
 ## Bestand
 

@@ -167,6 +167,12 @@ html.kundenbereich {
     outline-color: white;
   }
 
+  /* Fehlerhaftes Feld bleibt auch mit Fokus als Fehler erkennbar (Kritiker Dialoge 7) */
+  [aria-invalid='true']:focus-visible,
+  .dark [aria-invalid='true']:focus-visible {
+    outline-color: hsl(var(--error-text));
+  }
+
   /* Footer ist in beiden Modi dunkel: Fokusrahmen weiß (Kritiker Referenzen 2026-10-06) */
   footer a:focus-visible,
   footer button:focus-visible {

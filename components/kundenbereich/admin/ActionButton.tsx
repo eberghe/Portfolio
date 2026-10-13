@@ -4,7 +4,7 @@ import { startTransition, useActionState, useEffect, type FormEvent, type ReactN
 import Button, { iconButtonClass } from '@/components/ui/Button';
 import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
 import { melden, useAdminDialog } from './AdminDialog';
-import { Meldung, type AdminAction } from './AdminForm';
+import { abgesichert, Meldung, type AdminAction } from './AdminForm';
 
 // Einzelne Aktion als Button, z. B. „Entfernen“ oder „Anmeldelink schicken“ (functions/kundenbereich/admin.md)
 
@@ -25,11 +25,11 @@ export default function ActionButton({
   name?: string;
   /** Rückfrage vor dem Ausführen */
   confirm?: string;
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'gefahr';
   /** Nur Icon, z. B. in Listenzeilen; `name` ist dann Name und Tooltip (admin-aufbau.md AK-14) */
   icon?: ReactNode;
 }) {
-  const [state, dispatch, pending] = useActionState<AdminState, FormData>(action, { status: 'idle' });
+  const [state, dispatch, pending] = useActionState<AdminState, FormData>(abgesichert(action), { status: 'idle' });
   const dialog = useAdminDialog();
   // Im Dialog, z. B. „Entfernen“ beim Bearbeiten eines Schritts: nach Erfolg schließen
   useEffect(() => {

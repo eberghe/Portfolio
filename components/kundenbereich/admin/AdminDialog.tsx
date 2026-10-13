@@ -97,7 +97,6 @@ export default function AdminDialog({
 
 function Fenster({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const druck = useRef(false);
   const titleId = useId();
 
   useEffect(() => {
@@ -120,15 +119,7 @@ function Fenster({ title, onClose, children }: { title: string; onClose: () => v
         e.preventDefault();
         onClose();
       }}
-      // Klick auf die abgedunkelte Fläche trifft das <dialog> selbst
-      // Kritiker Aufbau Rand: nur schließen, wenn Druck und Loslassen auf der Fläche liegen (Text markieren)
-      onMouseDown={(e) => {
-        druck.current = e.target === e.currentTarget;
-      }}
-      onClick={(e) => {
-        if (druck.current && e.target === e.currentTarget) onClose();
-        druck.current = false;
-      }}
+      // Kritiker Dialoge 4: Klick daneben schließt nicht mehr, Eingaben gehen sonst verloren (AK-18)
       // Kritiker Aufbau 5: Kopf fest, Inhalt scrollt, auch wenn der Titel umbricht
       className="admin-dialog m-auto w-[calc(100%-2rem)] max-w-[640px] max-h-[calc(100svh-2rem)] overflow-hidden flex-col open:flex rounded-2xl border border-border bg-background p-0 text-foreground shadow-2xl"
     >

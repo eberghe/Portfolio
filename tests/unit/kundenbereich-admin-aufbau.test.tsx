@@ -471,3 +471,58 @@ describe('Dialog-Fuß und ruhigere Oberfläche (2026-10-13)', () => {
     }
   });
 });
+
+describe('Befunde Blinder Kritiker Dialoge (2026-10-13)', () => {
+  it('AK-16: Netzfehler beim Speichern bleibt im Dialog, Eingaben bleiben', async () => {
+    aktionen.kundeAnlegen!.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    render(<AdminDashboard daten={DATEN} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Kunde anlegen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Kunde anlegen' });
+    fireEvent.change(within(dialog).getByLabelText(/^Name/), { target: { value: 'Neu GmbH' } });
+    await act(async () => fireEvent.click(within(dialog).getAllByRole('button', { name: 'Kunde anlegen' }).at(-1)!));
+    await waitFor(() =>
+      expect(dialog).toHaveTextContent('Das hat nicht geklappt. Bitte prüf die Verbindung und versuch es noch einmal.'),
+    );
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(within(dialog).getByLabelText(/^Name/)).toHaveValue('Neu GmbH');
+  });
+
+  it('AK-16: Netzfehler beim Entfernen stürzt nicht ab', async () => {
+    aktionen.schrittEntfernen!.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    vi.spyOn(window, 'confirm').mockReturnValueOnce(true);
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Design' }));
+    const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
+    await act(async () => fireEvent.click(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })));
+    await waitFor(() => expect(dialog).toHaveTextContent('Das hat nicht geklappt.'));
+  });
+
+  it('AK-17: Upload markiert leeren Titel und fehlende Datei gemeinsam', async () => {
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Dokument hochladen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Dokument hochladen' });
+    await act(async () =>
+      fireEvent.click(within(dialog).getAllByRole('button', { name: 'Dokument hochladen' }).at(-1)!),
+    );
+    await waitFor(() => expect(within(dialog).getByLabelText(/^Titel/)).toHaveAttribute('aria-invalid', 'true'));
+    expect(within(dialog).getByLabelText(/^Datei/)).toHaveAttribute('aria-invalid', 'true');
+    expect(within(dialog).getByLabelText(/^Titel/)).toHaveFocus();
+  });
+
+  it('AK-18: Klick neben den Dialog schließt ihn nicht', () => {
+    render(<AdminDashboard daten={DATEN} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Kunde anlegen' }));
+    const dialog = screen.getByRole('dialog', { name: 'Kunde anlegen' });
+    fireEvent.mouseDown(dialog);
+    fireEvent.click(dialog);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('AK-19: Entfernen im Fuß in Fehlerfarbe', () => {
+    render(<AdminProjekt projekt={PROJEKT} now={NOW} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Bearbeiten: Design' }));
+    const dialog = screen.getByRole('dialog', { name: 'Ablaufschritt bearbeiten: Design' });
+    expect(within(dialog).getByRole('button', { name: 'Entfernen: Schritt Design' })).toHaveClass('text-error');
+    expect(within(dialog).getByRole('button', { name: 'Abbrechen' })).not.toHaveClass('text-error');
+  });
+});

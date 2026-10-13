@@ -3,13 +3,15 @@ import type { ButtonHTMLAttributes, ComponentProps } from 'react';
 
 // Gemeinsamer Button, siehe functions/infrastruktur/ui-bausteine.md
 
-export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonVariant = 'primary' | 'secondary' | 'gefahr';
 
 const base =
   'inline-flex items-center justify-center gap-2 min-h-11 px-5 py-2.5 rounded-lg text-[13px] font-medium transition-opacity aria-disabled:opacity-60';
 const variants: Record<ButtonVariant, string> = {
   primary: 'bg-primary text-primary-foreground hover:bg-primary-hover',
   secondary: 'border border-border text-text2 hover:text-foreground',
+  // Zerstörende Aktion wie „Entfernen“ (functions/kundenbereich/admin-aufbau.md AK-19)
+  gefahr: 'border border-error text-error hover:bg-bg2',
 };
 
 /** Quadratischer Icon-Button für Zeilenaktionen, 44 × 44 px (functions/kundenbereich/admin-aufbau.md AK-14) */

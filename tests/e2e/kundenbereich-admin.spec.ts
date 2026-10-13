@@ -214,3 +214,17 @@ test('AK-10/AK-12/AK-15: Dialog-Fuß unten rechts, Bereiche ohne Scrollen, Kopf-
   await expect(dialog).toBeHidden();
   await expect(page.getByRole('button', { name: 'Projekt bearbeiten' })).toBeFocused();
 });
+
+test('AK-20: Icon-Buttons von Ablauf und Terminen rechts neben dem Titel', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, `/kunden/admin/projekte/${P1}`);
+  const ablauf = page.getByRole('region', { name: 'Ablauf' });
+  const titel = (await ablauf.getByText('1. Erstgespräch').boundingBox())!;
+  const knopf = (await ablauf.getByRole('button', { name: 'Bearbeiten: Erstgespräch' }).boundingBox())!;
+  expect(knopf.x).toBeGreaterThan(titel.x + titel.width - 1);
+  expect(knopf.y).toBeLessThan(titel.y + titel.height);
+  const termine = page.getByRole('region', { name: 'Termine' });
+  const t = (await termine.getByRole('heading', { name: 'Design-Review' }).boundingBox())!;
+  const weg = (await termine.getByRole('button', { name: 'Entfernen: Termin Design-Review' }).boundingBox())!;
+  expect(weg.y).toBeLessThan(t.y + t.height);
+});

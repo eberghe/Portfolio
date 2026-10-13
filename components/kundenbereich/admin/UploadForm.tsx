@@ -50,13 +50,14 @@ export default function UploadForm({
     if (laeuft.current) return;
     const el = e.currentTarget;
     const file = (el.elements.namedItem('datei') as HTMLInputElement).files?.[0];
-    if (!file) {
-      setState({
-        status: 'error',
-        message: 'Bitte prüf die markierten Felder.',
-        errors: { datei: 'Bitte wähle eine Datei.' },
-      });
-      el.querySelector<HTMLElement>('[name="datei"]')?.focus();
+    // Kritiker Dialoge 3: alle Pflichtfelder gemeinsam prüfen, Fokus auf das erste
+    const fehlend: Record<string, string> = {};
+    const titel = el.elements.namedItem('titel') as HTMLInputElement | null;
+    if (meta && titel && !titel.value.trim()) fehlend.titel = 'Bitte gib einen Titel ein.';
+    if (!file) fehlend.datei = 'Bitte wähle eine Datei.';
+    if (!file || Object.keys(fehlend).length) {
+      setState({ status: 'error', message: 'Bitte prüf die markierten Felder.', errors: fehlend });
+      el.querySelector<HTMLElement>(`[name="${Object.keys(fehlend)[0]}"]`)?.focus();
       return;
     }
     setPending(true);

@@ -121,6 +121,8 @@ function UrlWert({ url }: { url: string | null }) {
 
 const dl = 'grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 text-[14px]';
 
+// Kritiker Dialoge 9: Icon-Buttons bleiben auch bei 360 px rechts neben dem Eintrag (AK-20)
+const zeileMitAktion = 'flex items-center justify-between gap-3 py-3 border-t border-border first:border-0 first:pt-0';
 export default function AdminProjekt({
   projekt: p,
   now = new Date(),
@@ -175,7 +177,7 @@ export default function AdminProjekt({
             ) : (
               <ol role="list" className="flex flex-col">
                 {p.projektschritte.map((s) => (
-                  <li key={s.id} className={`${zeile} sm:flex-row sm:items-center sm:justify-between sm:gap-4`}>
+                  <li key={s.id} className={zeileMitAktion}>
                     <div className="min-w-0">
                       <p className="font-bold text-[15px] break-words">
                         {s.reihenfolge}. {s.titel_de}
@@ -206,6 +208,7 @@ export default function AdminProjekt({
                             label="Entfernen"
                             name={`Entfernen: Schritt ${s.titel_de}`}
                             confirm={`Schritt „${s.titel_de}“ entfernen?`}
+                            variant="gefahr"
                           />
                         }
                       />
@@ -250,7 +253,7 @@ export default function AdminProjekt({
                   const titel = terminTitel(t.titel_de, t.titel_en, 'de');
                   const vergangen = Date.parse(t.ende) < now.getTime();
                   return (
-                    <li key={t.id} className={`${zeile} sm:flex-row sm:items-center sm:justify-between sm:gap-4`}>
+                    <li key={t.id} className={zeileMitAktion}>
                       <div className="min-w-0">
                         <h3 className="text-[15px] font-bold break-words">{titel}</h3>
                         <p className="text-[13px] text-text2">
@@ -305,8 +308,8 @@ export default function AdminProjekt({
                     </div>
                     <ul role="list" className="flex flex-col gap-3">
                       {g.versionen.map((d, i) => (
-                        <li key={d.id} className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                          <span className="text-[13px] text-text2 min-w-0 flex-1 basis-48">
+                        <li key={d.id} className="flex items-center gap-x-3">
+                          <span className="text-[13px] text-text2 min-w-0 flex-1">
                             {i === 0 && <span className="font-semibold text-foreground">Aktuell: </span>}
                             {dateiInfo(d, 'de')}
                           </span>

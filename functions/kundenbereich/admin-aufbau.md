@@ -28,7 +28,7 @@ Erik am 2026-10-09: Die Verwaltung ist unübersichtlich. Alles sieht gleich aus,
    - Kunde: „Stammdaten bearbeiten“, „Logo hochladen“, „Ansprechpartner hinzufügen“.
    - Projekt: „Projekt bearbeiten“, „Umsatz bearbeiten“, „Zuordnung ändern“ (Ansprechpartner), „Ablaufschritt hinzufügen“, „Bearbeiten: <Schritt>“, „Termin hinzufügen“, „Dokument hochladen“.
    - Ab 1024 px stehen Stammdaten, Umsatz und Ansprechpartner rechts in einer schmalen Spalte, Ablauf, Termine und Dokumente links.
-7. **Dialoge:** Ein Button öffnet einen modalen Dialog mit Überschrift, Formular, „Schließen“ oben und dem Fuß aus Verhalten 9. Escape oder der Klick daneben schließt ihn. Nach erfolgreichem Speichern schließt er sich, die Seite zeigt die neuen Daten, und neben dem Button steht kurz „Gespeichert.“. Bei Fehlern bleibt er offen, die Fehler stehen am Feld.
+7. **Dialoge:** Ein Button öffnet einen modalen Dialog mit Überschrift, Formular, „Schließen“ oben und dem Fuß aus Verhalten 9. Escape, „Abbrechen“ oder das X schließen ihn; ein Klick daneben nicht mehr, damit Eingaben nicht verloren gehen (Kritiker Dialoge 4). Nach erfolgreichem Speichern schließt er sich, die Seite zeigt die neuen Daten, und neben dem Button steht kurz „Gespeichert.“. Bei Fehlern bleibt er offen, die Fehler stehen am Feld.
 8. **Hilfe:** Das Fragezeichen ist ein Button „Erklärung: <Titel>“. Ein Klick zeigt die Erklärung in einer kleinen Blase, ein zweiter Klick, Escape oder ein Klick daneben schließt sie.
 
 9. **Dialog-Fuß (Erik, 2026-10-13):** Jeder Dialog mit Formular hat unten eine feste Leiste. Rechts außen steht die Hauptaktion (z. B. „Projekt speichern“), direkt links daneben „Abbrechen“. Die Leiste bleibt sichtbar, nur der Inhalt darüber scrollt. „Abbrechen“ schließt ohne zu speichern. Eine zerstörende Aktion wie „Entfernen“ steht links außen in derselben Leiste.
@@ -53,6 +53,11 @@ Erik am 2026-10-09: Die Verwaltung ist unübersichtlich. Alles sieht gleich aus,
 - AK-13: Unter `/kunden/admin` gibt es einen Ladezustand (`loading.tsx`) mit Bereichsleiste; der Bereich ergibt sich dort aus der Adresse. Die Admin-Prüfung läuft vorher im Layout, Nicht-Admins bekommen weiter Status 404.
 - AK-14: Zeilenaktionen bei Ablauf, Terminen und Dokumenten sind Icon-Buttons mit eindeutigem Namen und gleichlautendem Tooltip (`title`), mindestens 44 × 44 px.
 - AK-15: Bei 360 px stehen die Kopf-Buttons des Dashboards („Kunde anlegen“, „Neues Projekt“) in einer Zeile.
+- AK-16: Scheitert das Speichern, weil der Server nicht erreichbar ist, bleibt der Dialog offen, die Eingaben bleiben stehen, und im Dialog steht „Das hat nicht geklappt. Bitte prüf die Verbindung und versuch es noch einmal.“. Die Seite stürzt nicht ab. Gilt auch für „Entfernen“.
+- AK-17: „Dokument hochladen“ markiert einen leeren Titel und eine fehlende Datei gemeinsam, jeweils mit Text am Feld.
+- AK-18: Ein Klick neben den Dialog schließt ihn nicht.
+- AK-19: „Entfernen“ im Dialog-Fuß ist als zerstörende Aktion erkennbar (Fehlerfarbe), nicht wie „Abbrechen“.
+- AK-20: Bei 360 px stehen die Icon-Buttons von Ablauf und Terminen rechts neben dem Titel, nicht darunter.
 
 ## Barrierefreiheit
 
@@ -97,3 +102,15 @@ Keine neuen Tabellen. Anfragen lädt `anfrage(api, id)`, Projekte und Kunden die
 10. „Neue Anfragen“ bedeutete in Kachel und Karte Verschiedenes. Jetzt beide nur Status „Neu“.
 11. Pfad war uneinheitlich und führte über „Kundenbereich“ im Kreis. Jetzt beginnt er immer mit „Verwaltung“, auf der Übersicht gibt es keinen Pfad.
 12. Klick neben den Dialog schloss ihn auch beim Markieren von Text. Jetzt nur, wenn Drücken und Loslassen auf der Fläche liegen.
+
+## Befunde Blinder Kritiker Dialoge (2026-10-13)
+
+1. Schritt speichern meldete nur „Dieser Eintrag ist ungültig.“. Ursache: die Testdaten hatten keine UUIDs als Schritt-IDs; in echten Daten tritt das nicht auf. Testdaten haben jetzt UUIDs.
+2. Ein Netzfehler beim Speichern ersetzte die Seite durch die Fehlerseite. Jetzt Meldung im Dialog (AK-16).
+3. „Dokument hochladen“ markierte den leeren Titel nicht. Jetzt beide Felder (AK-17).
+4. Klick neben den Dialog verwarf Eingaben. Jetzt schließt nur noch X, „Abbrechen“ oder Escape (AK-18). Offen: Rückfrage bei geänderten Feldern vor „Abbrechen“/Escape.
+5. „Entfernen“ fragt mit dem Browser-Dialog nach und sah aus wie „Abbrechen“. Jetzt in Fehlerfarbe (AK-19). Offen: eigene Rückfrage statt Browser-Dialog.
+6. Nach dem Bereichswechsel liegt der Fokus auf der Seite, Next sagt den Titel an. Titel der Übersicht jetzt einheitlich „Übersicht | Verwaltung“. Offen: Fokus auf die Überschrift.
+7. Der Fokusrahmen überdeckte den roten Rand eines fehlerhaften Felds. Jetzt ist der Fokusrahmen dort rot.
+8. Lange Button-Texte brechen im Fuß bei 360 px in zwei Zeilen um. Offen: kürzere Texte auf dem Handy.
+9. Icon-Buttons rutschten bei 360 px unter jeden Eintrag. Jetzt rechts daneben (AK-20).

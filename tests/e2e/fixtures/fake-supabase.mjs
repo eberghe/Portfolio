@@ -4,8 +4,9 @@ import { createServer } from 'node:http';
 
 const port = Number(process.argv[2] ?? 3199);
 
+let schrittNr = 0;
 const schritt = (n, titel_de, status, extra = {}) => ({
-  id: `s${n}`,
+  id: `40000000-0000-4000-8000-${String(++schrittNr).padStart(12, '0')}`,
   reihenfolge: n,
   titel_de,
   titel_en: null,

@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import SelectField from '@/components/ui/SelectField';
 import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
 import type { AnfrageStatus } from '@/lib/kundenbereich/admin/dashboard';
+import { abgesichert } from './AdminForm';
 
 // Status einer Anfrage ändern (functions/kundenbereich/admin-dashboard.md Verhalten 7)
 
@@ -16,7 +17,9 @@ export const ANFRAGE_STATUS_OPTIONEN = [
 ];
 
 export default function AnfrageStatusForm({ id, name, status }: { id: string; name: string; status: AnfrageStatus }) {
-  const [state, dispatch, pending] = useActionState<AdminState, FormData>(anfrageStatus, { status: 'idle' });
+  const [state, dispatch, pending] = useActionState<AdminState, FormData>(abgesichert(anfrageStatus), {
+    status: 'idle',
+  });
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);

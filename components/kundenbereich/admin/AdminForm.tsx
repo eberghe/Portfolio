@@ -12,6 +12,23 @@ import type { AdminState } from '@/lib/kundenbereich/admin/aktionen';
 
 export type AdminAction = (state: AdminState, fd: FormData) => Promise<AdminState>;
 
+export const NETZFEHLER = 'Das hat nicht geklappt. Bitte prüf die Verbindung und versuch es noch einmal.';
+
+/**
+ * Fängt Netzfehler der Server-Aktion ab, statt die Seite durch die Fehlerseite zu ersetzen
+ * (functions/kundenbereich/admin-aufbau.md AK-16). Weiterleitungen von Next laufen durch.
+ */
+export function abgesichert(action: AdminAction): AdminAction {
+  return async (state, fd) => {
+    try {
+      return await action(state, fd);
+    } catch (e) {
+      if (e && typeof e === 'object' && 'digest' in e && String(e.digest).startsWith('NEXT_')) throw e;
+      return { status: 'error', message: NETZFEHLER };
+    }
+  };
+}
+
 export interface Feld {
   name: string;
   label: string;
@@ -69,7 +86,7 @@ export default function AdminForm({
   /** Im Dialog links außen im Fuß, z. B. „Entfernen“ (admin-aufbau.md AK-11); eigenes Formular erlaubt */
   fussLinks?: ReactNode;
 }) {
-  const [state, dispatch, pending] = useActionState(action, { status: 'idle' });
+  const [state, dispatch, pending] = useActionState(abgesichert(action), { status: 'idle' });
   const form = useRef<HTMLFormElement>(null);
 
   const dialog = useAdminDialog();

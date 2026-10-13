@@ -35,6 +35,7 @@ import {
   SPRACH_OPTIONEN,
   VERANTWORTLICH_OPTIONEN,
 } from '@/lib/kundenbereich/admin/texte';
+import { abgesichert } from './AdminForm';
 import AdminShell from './AdminShell';
 
 // Projekt anlegen in sechs Schritten (functions/kundenbereich/projekt-assistent.md).
@@ -60,7 +61,9 @@ export default function ProjektAssistent({ kunden, start }: { kunden: AssistentK
   const [ansage, setAnsage] = useState('');
   // Kritiker Assistent 5: aus „Prüfen“ zum Bearbeiten gekommen
   const [vonPruefung, setVonPruefung] = useState(false);
-  const [state, dispatch, pending] = useActionState<AdminState, FormData>(projektMitAssistent, { status: 'idle' });
+  const [state, dispatch, pending] = useActionState<AdminState, FormData>(abgesichert(projektMitAssistent), {
+    status: 'idle',
+  });
   const [gesehen, setGesehen] = useState(state);
   const titel = useRef<HTMLHeadingElement>(null);
   const fehlerBox = useRef<HTMLDivElement>(null);

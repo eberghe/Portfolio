@@ -83,6 +83,7 @@ describe('Angebote im Kundenbereich', () => {
     expect(knoepfe).toHaveLength(1);
     expect(knoepfe[0]).toHaveAccessibleName('Unterschriebenes Angebot hochladen: Angebot 2026-002');
     expect(screen.getByText('Unterschrieben hochgeladen am 14. Okt. 2026')).toBeInTheDocument();
+    expect(screen.getAllByText('Wartet auf deine Unterschrift')).toHaveLength(1);
     unmount();
     render(<Projektuebersicht locale="de" profil={ERIK} projekte={[projekt([OFFEN])]} bereich="dokumente" />);
     expect(screen.queryByRole('button', { name: /Unterschriebenes Angebot hochladen/ })).toBeNull();
@@ -117,7 +118,9 @@ describe('Angebote im Kundenbereich', () => {
       dateiname: 'Angebot unterschrieben.pdf',
     });
     expect(await screen.findByRole('status')).toHaveTextContent('Danke! Das unterschriebene Angebot ist da.');
-    expect(router.refresh).toHaveBeenCalled();
+    // Kein Neuladen, sonst verschwindet die Bestätigung mit der Karte (Verhalten 5)
+    expect(router.refresh).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByText('Danke! Das unterschriebene Angebot ist da.')).toHaveFocus());
     vi.unstubAllGlobals();
   });
 

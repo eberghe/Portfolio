@@ -126,11 +126,20 @@ export function useDialogSteuerung(
     setOffen(false);
     inline?.(m ?? '');
     nachSchliessen?.();
-    // Der Dialog wird entfernt; der Fokus geht zurück auf den Auslöser (AK-8)
+    // Der Dialog wird entfernt; der Fokus geht zurück auf den Auslöser (AK-8). Nach einer Server Action kann
+    // das Schließen einige Frames dauern; solange der modale Dialog offen ist, nimmt der Auslöser keinen Fokus.
+    let versuche = 0;
+    const zurueck = () => {
+      const k = knopf.current;
+      if (!k?.isConnected) return;
+      k.focus();
+      if (document.activeElement !== k && ++versuche < 60) requestAnimationFrame(zurueck);
+    };
     requestAnimationFrame(() => {
       if (knopf.current?.isConnected) {
         if (m && !inline) melden(m);
-        return knopf.current.focus();
+        zurueck();
+        return;
       }
       // Kritiker Aufbau 3: Auslöser ist mit dem Eintrag verschwunden, z. B. nach „Entfernen“
       if (m) melden(m);

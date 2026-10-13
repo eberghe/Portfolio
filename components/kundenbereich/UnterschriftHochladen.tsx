@@ -1,8 +1,7 @@
 'use client';
 
 import { Upload } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useId, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
 import { unterschriftEintragen, unterschriftVorbereiten } from '@/app/actions/kundenbereich';
 import Button, { buttonClass } from '@/components/ui/Button';
 import { labelClass } from '@/components/ui/TextField';
@@ -30,9 +29,13 @@ export default function UnterschriftHochladen({
   const sperre = useRef(false);
   const datei = useRef<HTMLInputElement>(null);
   const danke = useRef<HTMLParagraphElement>(null);
-  const router = useRouter();
+  const knopf = useRef<HTMLButtonElement>(null);
   const id = useId();
   const fertig = state.status === 'ok' && !!state.message;
+  // Fokus auf die Bestätigung, sobald sie gerendert ist
+  useEffect(() => {
+    if (fertig) danke.current?.focus();
+  }, [fertig]);
   const feldFehler = state.status === 'error' && state.feld ? state.message : null;
 
   async function senden(e: FormEvent<HTMLFormElement>) {
@@ -72,9 +75,8 @@ export default function UnterschriftHochladen({
       const r = await unterschriftEintragen({ status: 'idle' }, ein);
       setState(r);
       if (r.status === 'ok') {
+        // Kein Neuladen: die Bestätigung bleibt stehen, beim nächsten Aufruf steht „Unterschrieben …“ (Verhalten 5)
         setOffen(false);
-        router.refresh();
-        requestAnimationFrame(() => danke.current?.focus());
       }
     } catch {
       setState({ status: 'error', message: t.uploadError });
@@ -82,6 +84,13 @@ export default function UnterschriftHochladen({
       sperre.current = false;
       setLaeuft(false);
     }
+  }
+
+  /** Formular zu, Fokus zurück auf den Knopf, der es geöffnet hat */
+  function schliessen() {
+    setOffen(false);
+    setState({ status: 'idle' });
+    requestAnimationFrame(() => knopf.current?.focus());
   }
 
   return (
@@ -99,6 +108,7 @@ export default function UnterschriftHochladen({
       </div>
       {!fertig && (
         <button
+          ref={knopf}
           type="button"
           className={buttonClass('secondary', 'max-sm:w-full')}
           aria-expanded={offen}
@@ -114,7 +124,19 @@ export default function UnterschriftHochladen({
         </button>
       )}
       {offen && (
-        <form id={`${id}-form`} onSubmit={senden} noValidate className="mt-3 rounded-xl border border-border p-4">
+        <form
+          id={`${id}-form`}
+          onSubmit={senden}
+          // Escape wirkt wie „Abbrechen“ (Kritiker Angebote 5)
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') {
+              e.preventDefault();
+              schliessen();
+            }
+          }}
+          noValidate
+          className="mt-3 rounded-xl border border-border p-4"
+        >
           {state.status === 'error' && !state.feld && (
             <p role="alert" className="border border-error rounded-lg px-3 py-2 text-[13px] text-error mb-3">
               {state.message}
@@ -145,14 +167,7 @@ export default function UnterschriftHochladen({
             <Button type="submit" aria-disabled={laeuft || undefined} className="max-sm:flex-1">
               {laeuft ? t.uploading : t.uploadSubmit}
             </Button>
-            <button
-              type="button"
-              className={buttonClass('secondary', 'max-sm:flex-1')}
-              onClick={() => {
-                setOffen(false);
-                setState({ status: 'idle' });
-              }}
-            >
+            <button type="button" className={buttonClass('secondary', 'max-sm:flex-1')} onClick={schliessen}>
               {t.uploadCancel}
             </button>
           </div>

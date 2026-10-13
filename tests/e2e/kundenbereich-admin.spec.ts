@@ -343,6 +343,8 @@ test('angebote.md: Angebot als Entwurf erstellen und an den Kunden freigeben', a
   expect(await axe(page)).toEqual([]);
   await dialog.getByRole('button', { name: 'Entwurf speichern' }).click();
   await expect(dialog).toHaveCount(0);
+  // Kritiker Angebote 1: Fokus zurück auf den Auslöser
+  await expect(karte.getByRole('button', { name: 'Angebot erstellen' })).toBeFocused();
 
   const zeile = karte.getByRole('listitem').filter({ hasText: `Angebot ${nummer}` });
   await expect(zeile).toContainText('1.808,80 €');

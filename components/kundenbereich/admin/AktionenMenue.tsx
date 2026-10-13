@@ -202,7 +202,10 @@ export default function AktionenMenue({
                   tabIndex={-1}
                   className={punktKlasse()}
                   onClick={() => schliessen(false)}
-                  {...(e.extern ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  // Kritiker Angebote 6: neuer Tab wird angesagt
+                  {...(e.extern
+                    ? { target: '_blank', rel: 'noopener noreferrer', 'aria-label': `${e.label} (öffnet in neuem Tab)` }
+                    : {})}
                 >
                   {e.label}
                 </Link>

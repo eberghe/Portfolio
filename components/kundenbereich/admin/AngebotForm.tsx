@@ -174,6 +174,7 @@ export default function AngebotForm({
               id={fid('empfaenger')}
               name="empfaenger"
               label="Empfänger"
+              marker="(optional)"
               hint="Eine Angabe pro Zeile, z. B. Firma, Name, Straße, Ort"
               multiline
               rows={4}
@@ -259,6 +260,7 @@ export default function AngebotForm({
                       id={fid(n('einheit'))}
                       name={n('einheit')}
                       label="Einheit"
+                      marker="(optional)"
                       hint="z. B. Std., Tage, pauschal"
                       value={z.einheit}
                       onChange={(e) => aendern(i, 'einheit', e.target.value)}

@@ -83,6 +83,7 @@ const de = {
   // Angebote (functions/kundenbereich/angebot-unterschrift.md)
   uploadSigned: 'Unterschriebenes Angebot hochladen',
   signedOn: (d: string) => `Unterschrieben hochgeladen am ${d}`,
+  waitingSignature: 'Wartet auf deine Unterschrift',
   offerWaiting: 'Angebot wartet auf dich',
   offerWaitingText:
     'Lies dir das Angebot in Ruhe durch. Wenn alles passt, unterschreib es und lade es hier wieder hoch, als PDF oder Foto.',
@@ -227,6 +228,7 @@ const en: typeof de = {
   },
   uploadSigned: 'Upload signed quote',
   signedOn: (d) => `Signed, uploaded on ${d}`,
+  waitingSignature: 'Waiting for your signature',
   offerWaiting: 'A quote is waiting for you',
   offerWaitingText:
     'Take your time to read the quote. If everything fits, sign it and upload it here again, as a PDF or photo.',

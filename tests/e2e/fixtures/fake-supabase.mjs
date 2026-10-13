@@ -204,6 +204,8 @@ const coraProjekt = {
   id: P2,
   titel: 'Website für die Tischlerei',
   kunden: { name: 'Tischlerei Cora' },
+  beschreibung_de: 'Neue Website für die Tischlerei mit Referenzen und Kontaktformular.',
+  beschreibung_en: 'New website for the joinery with references and a contact form.',
   dokumente: [
     {
       ...dok(CORA_ANGEBOT, 'angebot', 'Angebot 2026-007', 1, 'Angebot-2026-007.pdf', 'application/pdf', 31_000),

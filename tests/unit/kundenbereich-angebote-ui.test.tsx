@@ -84,20 +84,26 @@ describe('Angebote in der Verwaltung', () => {
     expect(within(karte).getByText('Beim Kunden')).toBeInTheDocument();
     expect(within(karte).getByText(/Unterschrieben am 14\. Okt\. 2026/)).toBeInTheDocument();
 
-    const entwurf = [...(await menue('Angebot 2026-001'))].map((e) => e.textContent);
-    expect(entwurf).toEqual(['PDF ansehen', 'Bearbeiten', 'An Kunden freigeben', 'Löschen']);
-    const pdf = screen.getByRole('menuitem', { name: 'PDF ansehen' });
+    const entwurf = [...(await menue('Angebot 2026-001'))].map((e) => e.getAttribute('aria-label') ?? e.textContent);
+    expect(entwurf).toEqual(['PDF ansehen (öffnet in neuem Tab)', 'Bearbeiten', 'An Kunden freigeben', 'Löschen']);
+    const pdf = screen.getByRole('menuitem', { name: 'PDF ansehen (öffnet in neuem Tab)' });
     expect(pdf).toHaveAttribute('href', '/kunden/admin/angebote/60000000-0000-4000-8000-000000000001/pdf');
     expect(pdf).toHaveAttribute('target', '_blank');
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
 
-    const frei = [...(await menue('Angebot 2026-002'))].map((e) => e.textContent);
-    expect(frei).toEqual(['PDF ansehen', 'Löschen']);
+    const frei = [...(await menue('Angebot 2026-002'))].map((e) => e.getAttribute('aria-label') ?? e.textContent);
+    expect(frei).toEqual(['PDF ansehen (öffnet in neuem Tab)', 'Löschen']);
     fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' });
 
-    const unterschrieben = [...(await menue('Angebot 2026-003'))].map((e) => e.textContent);
-    expect(unterschrieben).toEqual(['PDF ansehen', 'Unterschriebenes ansehen', 'Löschen']);
-    expect(screen.getByRole('menuitem', { name: 'Unterschriebenes ansehen' })).toHaveAttribute(
+    const unterschrieben = [...(await menue('Angebot 2026-003'))].map(
+      (e) => e.getAttribute('aria-label') ?? e.textContent,
+    );
+    expect(unterschrieben).toEqual([
+      'PDF ansehen (öffnet in neuem Tab)',
+      'Unterschriebenes ansehen (öffnet in neuem Tab)',
+      'Löschen',
+    ]);
+    expect(screen.getByRole('menuitem', { name: 'Unterschriebenes ansehen (öffnet in neuem Tab)' })).toHaveAttribute(
       'href',
       '/kunden/dokumente/50000000-0000-4000-8000-000000000009',
     );

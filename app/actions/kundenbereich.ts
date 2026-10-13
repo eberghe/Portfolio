@@ -71,6 +71,6 @@ export async function unterschriftEintragen(_prev: U.UnterschriftState, fd: Form
     access: (await cookies()).get(ACCESS)?.value,
     api: authApi(process.env),
   });
-  if (state.status === 'ok') revalidatePath('/kunden', 'layout');
+  // Ohne revalidatePath: die Bestätigung im Browser soll stehen bleiben (angebot-unterschrift.md Verhalten 5)
   return state;
 }

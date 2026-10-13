@@ -230,7 +230,7 @@ function Uebersicht({
           {offen.length > 0 && (
             // Angebot wartet auf Unterschrift (angebot-unterschrift.md Verhalten 6, AK-6)
             <section aria-labelledby="angebot-titel" className={`${karte} border-primary`}>
-              <h2 id="angebot-titel" className={kopf}>
+              <h2 id="angebot-titel" tabIndex={-1} className={kopf}>
                 <FileSignature size={17} aria-hidden="true" className="text-primary-text" />
                 {t.offerWaiting}
               </h2>
@@ -741,6 +741,7 @@ function Documents({
                         angebot &&
                         darfHochladen && (
                           <div className="sm:pl-16">
+                            <p className="text-[13px] text-text2">{t.waitingSignature}</p>
                             <UnterschriftHochladen locale={locale} dokument={d.id} titel={d.titel} />
                           </div>
                         )

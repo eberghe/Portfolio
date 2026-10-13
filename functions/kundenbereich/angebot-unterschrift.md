@@ -14,7 +14,7 @@ Freigegebene Angebote (`angebote.md`) erscheinen im Kundenbereich. Der Kunde lä
 ## Verhalten
 
 1. Unter Dokumente gibt es die Gruppe „Angebote“ (EN „Quotes“) als erste Gruppe. Unterschriebene Fassungen stehen in derselben Gruppe mit dem Titel „Angebot 2026-002, unterschrieben“.
-2. Hat ein aktuelles Angebot noch keine unterschriebene Fassung, steht darunter der Button „Unterschriebenes Angebot hochladen“. Er öffnet einen Dialog mit Dateiauswahl (PDF, JPG oder PNG, höchstens 10 MB) und „Hochladen“.
+2. Hat ein aktuelles Angebot noch keine unterschriebene Fassung, steht darunter der Button „Unterschriebenes Angebot hochladen“. Er klappt direkt darunter ein kleines Formular auf (kein Dialog, `aria-expanded`) mit Dateiauswahl „Datei“ (PDF, JPG oder PNG, höchstens 10 MB), „Hochladen“ und „Abbrechen“.
 3. Hochladen läuft wie in der Verwaltung in drei Schritten: Der Server prüft Sitzung und Datei und holt mit dem Token des Kunden einen signierten Upload-Link für genau einen Pfad `<kunde>/<projekt>/unterschrift-<zufall>.<endung>`; der Browser lädt direkt in Supabase Storage; der Server trägt die Datei über die Datenbankfunktion `unterschrift_eintragen` ein.
 4. `unterschrift_eintragen` prüft, dass das Angebot zum Kunden gehört, freigegeben ist und noch keine Unterschrift hat, dass die Datei unter dem Pfad des Projekts liegt und Typ und Größe passen. Sie legt den Dokument-Eintrag an (Art `unterschrift`) und setzt das Angebot auf `unterschrieben`.
 5. Danach steht beim Angebot „Unterschrieben hochgeladen am 14. Okt. 2026“, der Button ist weg.
@@ -35,7 +35,7 @@ Freigegebene Angebote (`angebote.md`) erscheinen im Kundenbereich. Der Kunde lä
 
 ## Barrierefreiheit
 
-- Der Button nennt das Angebot („Unterschriebenes Angebot 2026-002 hochladen“ als zugänglicher Name).
+- Der Button nennt das Angebot („Unterschriebenes Angebot hochladen: Angebot 2026-002“ als zugänglicher Name).
 - Meldungen nach dem Hochladen in einer `role="status"`-Region, Fehler am Feld mit `aria-describedby`.
 
 ## Mobile

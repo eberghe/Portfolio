@@ -133,6 +133,13 @@ export default function AktionenMenue({
         aria-expanded={offen}
         aria-controls={offen ? menueId : undefined}
         onClick={() => setOffen((o) => !o)}
+        // Escape schließt auch, solange der Fokus noch auf dem Knopf liegt
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' && offen) {
+            e.preventDefault();
+            schliessen();
+          }
+        }}
       >
         <MoreHorizontal size={18} aria-hidden="true" />
       </button>

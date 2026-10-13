@@ -321,3 +321,48 @@ test('admin-bearbeiten.md AK-12: Ablauf per Ziehen sortieren', async ({ page }) 
   await expect(ablauf.getByText('1. Analyse der bestehenden Website')).toBeVisible();
   await expect(page.getByText('Erstgespräch jetzt an Position 3 von 6.')).toBeVisible();
 });
+
+// functions/kundenbereich/angebote.md AK-4, AK-6, AK-7, AK-11
+test('angebote.md: Angebot als Entwurf erstellen und an den Kunden freigeben', async ({ page }) => {
+  await login(page, 'erik');
+  await openHydrated(page, `/kunden/admin/projekte/${P1}`);
+  const karte = page.getByRole('region', { name: 'Angebote' });
+  await karte.getByRole('button', { name: 'Angebot erstellen' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Angebot erstellen' });
+  expect(await dialog.getByLabel(/^Nummer/).inputValue()).toMatch(/^\d{4}-\d{3,}$/);
+  // Tests laufen parallel gegen dieselben Daten, deshalb eine eigene Nummer je Lauf
+  const nummer = `2026-${1000 + Math.floor(Math.random() * 9000)}`;
+  await dialog.getByLabel(/^Nummer/).fill(nummer);
+  await expect(dialog.getByLabel(/^Empfänger/)).toHaveValue('Bäckerei Beispiel\nAnna');
+  const pos = dialog.getByRole('group', { name: 'Position 1' });
+  await pos.getByLabel(/^Bezeichnung/).fill('Konzept und Design');
+  await pos.getByLabel(/^Menge/).fill('2');
+  await pos.getByLabel(/^Einheit/).fill('Tage');
+  await pos.getByLabel(/^Einzelpreis/).fill('760');
+  await expect(dialog.getByRole('status')).toContainText('Gesamt 1.808,80 €');
+  expect(await axe(page)).toEqual([]);
+  await dialog.getByRole('button', { name: 'Entwurf speichern' }).click();
+  await expect(dialog).toHaveCount(0);
+
+  const zeile = karte.getByRole('listitem').filter({ hasText: `Angebot ${nummer}` });
+  await expect(zeile).toContainText('1.808,80 €');
+  await expect(zeile).toContainText('Entwurf');
+  const pdf = await page.request.get(`/kunden/admin/angebote/${await zeileId(page, nummer)}/pdf`, { maxRedirects: 0 });
+  expect(pdf.status()).toBe(303);
+
+  await zeile.getByRole('button', { name: `Aktionen: Angebot ${nummer}` }).click();
+  await page.getByRole('menuitem', { name: 'An Kunden freigeben' }).click();
+  const frage = page.getByRole('dialog', { name: `Angebot ${nummer} freigeben?` });
+  expect(await axe(page)).toEqual([]);
+  await frage.getByRole('button', { name: 'Freigeben' }).click();
+  await expect(zeile).toContainText('Beim Kunden');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)).toBeLessThanOrEqual(0);
+});
+
+/** ID eines Angebots aus dem Link „PDF ansehen“ */
+async function zeileId(page: Page, nummer: string) {
+  await page.getByRole('button', { name: `Aktionen: Angebot ${nummer}` }).click();
+  const href = await page.getByRole('menuitem', { name: 'PDF ansehen' }).getAttribute('href');
+  await page.keyboard.press('Escape');
+  return href!.split('/')[4];
+}

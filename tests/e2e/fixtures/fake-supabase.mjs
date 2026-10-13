@@ -161,6 +161,7 @@ const adminProjekt = () => ({
   kunde_id: K1,
   kunden: { id: K1, name: kunden[0].name, ansprechpartner: kunden[0].ansprechpartner },
   projekt_ansprechpartner: [{ ansprechpartner_id: 'a-anna' }],
+  angebote: angebote.filter((a) => a.projekt_id === P1).sort((a, b) => b.created_at.localeCompare(a.created_at)),
 });
 
 const annaFreigabe = { stand: 'offen', letzte: [] };
@@ -194,10 +195,31 @@ const lies = (req) =>
     req.on('end', () => resolve(body ? JSON.parse(body) : null));
   });
 
+// Angebote (angebot-unterschrift.md): Cora hat ein freigegebenes Angebot ohne Unterschrift
+const K2 = '10000000-0000-4000-8000-00000000000c';
+const P2 = '20000000-0000-4000-8000-00000000000c';
+const CORA_ANGEBOT = '50000000-0000-4000-8000-0000000000c1';
+const coraProjekt = {
+  ...logo,
+  id: P2,
+  titel: 'Website für die Tischlerei',
+  kunden: { name: 'Tischlerei Cora' },
+  dokumente: [
+    {
+      ...dok(CORA_ANGEBOT, 'angebot', 'Angebot 2026-007', 1, 'Angebot-2026-007.pdf', 'application/pdf', 31_000),
+      storage_pfad: `${K2}/${P2}/angebot-2026-007-a.pdf`,
+      zu_dokument: null,
+    },
+  ],
+};
+// Angebote der Verwaltung im Speicher (angebote.md)
+const angebote = [];
+
 const users = {
   anna: { profil: { art: 'kunde', name: 'Anna', sprache: 'de' }, projekte: [relaunch] },
   erik: { profil: { art: 'admin', name: 'Erik', sprache: 'de' }, projekte: [logo, relaunch] },
   leer: { profil: { art: 'kunde', name: 'Ben', sprache: 'de' }, projekte: [] },
+  cora: { profil: { art: 'kunde', name: 'Cora', sprache: 'de' }, projekte: [coraProjekt] },
 };
 
 function user(req) {
@@ -215,6 +237,20 @@ createServer((req, res) => {
     res.end(body === undefined ? '' : JSON.stringify(body));
   };
   const path = (req.url ?? '/').split('?')[0];
+  // Upload direkt aus dem Browser (angebot-unterschrift.md Verhalten 3): CORS wie bei Supabase
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'PUT, POST, GET',
+      'Access-Control-Allow-Headers': '*',
+    });
+    return res.end();
+  }
+  if (req.method === 'PUT' && path.startsWith('/storage/v1/object/upload/sign/')) {
+    req.resume();
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+    return res.end(JSON.stringify({ Key: path }));
+  }
   const u = user(req);
   if (path === '/') return send(200, { ok: true });
   if (path === '/auth/v1/logout') return send(204);
@@ -339,6 +375,53 @@ createServer((req, res) => {
     return send(200, idParam ? anfragen.filter((a) => a.id === idParam) : anfragen);
   }
   if (u.profil.art === 'admin' && path === '/rest/v1/projekt_umsatz') return send(201);
+  // Angebote der Verwaltung (angebote.md): Entwurf, Freigeben, Löschen
+  if (u.profil.art === 'admin' && path === '/rest/v1/angebote') {
+    if (req.method === 'POST')
+      return void lies(req).then((row) => {
+        const neu = {
+          id: `60000000-0000-4000-8000-${String(angebote.length + 1).padStart(12, '0')}`,
+          created_at: new Date().toISOString(),
+          dokument_id: null,
+          unterschrift_id: null,
+          unterschrieben_am: null,
+          ...row,
+        };
+        if (angebote.some((a) => a.nummer === neu.nummer)) return send(409, { code: '23505' });
+        angebote.push(neu);
+        send(201, [neu]);
+      });
+    if (req.method === 'PATCH')
+      return void lies(req).then((row) => {
+        const a = angebote.find((x) => x.id === idParam);
+        if (a) Object.assign(a, row);
+        send(200, a ? [a] : []);
+      });
+    if (req.method === 'DELETE') {
+      const i = angebote.findIndex((x) => x.id === idParam);
+      return send(200, i < 0 ? [] : angebote.splice(i, 1));
+    }
+    return send(200, idParam ? angebote.filter((a) => a.id === idParam) : angebote);
+  }
+  if (u.profil.art === 'admin' && req.method === 'POST' && path.startsWith('/storage/v1/object/kundendokumente/')) {
+    req.resume();
+    return send(200, { Key: path });
+  }
+  if (u.profil.art === 'admin' && req.method === 'GET' && path.startsWith('/storage/v1/object/info/kundendokumente/'))
+    return send(200, { size: 31000, content_type: 'application/pdf' });
+  if (
+    u.profil.art === 'admin' &&
+    req.method === 'POST' &&
+    path.startsWith('/storage/v1/object/sign/kundendokumente/') &&
+    path.includes('/angebot-')
+  )
+    return send(200, { signedURL: `/object/sign/kundendokumente/angebot.pdf?token=signiert` });
+  // Freigeben: das Dokument gehört nicht in die Daten der anderen Tests
+  if (u.profil.art === 'admin' && path === '/rest/v1/dokumente' && req.method === 'POST')
+    return void lies(req).then((row) =>
+      send(201, [{ id: `50000000-0000-4000-8000-${String(Date.now()).slice(-12)}`, ...row }]),
+    );
+  if (u.profil.art === 'admin' && path === '/rest/v1/dokumente' && req.method === 'DELETE') return send(200, []);
   if (u.profil.art === 'admin' && path === '/rest/v1/rpc/projekt_anlegen')
     return void lies(req).then(({ daten }) => {
       const id = `20000000-0000-4000-8000-${String(neueProjekte.size + 100).padStart(12, '0')}`;
@@ -388,6 +471,24 @@ createServer((req, res) => {
     });
     return;
   }
+  // Unterschrift hochladen (angebot-unterschrift.md): ändert die Daten nicht, damit jeder Lauf gleich startet
+  if (path === '/rest/v1/dokumente' && params.get('zu_dokument')) return send(200, []);
+  if (path === '/rest/v1/dokumente' && (params.get('select') ?? '').includes('kundenprojekte(kunde_id)')) {
+    const p = u.projekte.find((x) => x.dokumente.some((d) => d.id === idParam && d.art === 'angebot'));
+    return send(200, p ? [{ id: idParam, projekt_id: p.id, kundenprojekte: { kunde_id: K2 } }] : []);
+  }
+  if (req.method === 'POST' && path.startsWith('/storage/v1/object/upload/sign/kundendokumente/')) {
+    const pfad = decodeURIComponent(path.slice('/storage/v1/object/upload/sign/kundendokumente/'.length));
+    return pfad.startsWith(`${K2}/${P2}/unterschrift-`) && u === users.cora
+      ? send(200, { url: `/object/upload/sign/kundendokumente/${encodeURI(pfad)}?token=hochladen` })
+      : send(403, { message: 'new row violates row-level security policy' });
+  }
+  if (path === '/rest/v1/rpc/unterschrift_eintragen')
+    return void lies(req).then((b) =>
+      u === users.cora && b?.p_dokument === CORA_ANGEBOT && String(b.p_pfad).startsWith(`${K2}/${P2}/unterschrift-`)
+        ? send(200, '50000000-0000-4000-8000-0000000000c2')
+        : send(400, { code: 'P0002' }),
+    );
   if (path === '/rest/v1/dokumente') {
     const id = new URL(req.url ?? '/', 'http://x').searchParams.get('id')?.replace(/^eq\./, '');
     const d = u.projekte.flatMap((p) => p.dokumente).find((d) => d.id === id);

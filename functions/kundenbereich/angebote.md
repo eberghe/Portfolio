@@ -84,6 +84,6 @@ Migration `20261013200000_angebote.sql`:
 
 ## Offene Fragen
 
-- Umsatzsteuer: Erik hat noch keine Steuernummer. Vorbelegt ist „19 % ausweisen“; Erik entscheidet, ob er die Kleinunternehmerregelung nutzt.
-- Bankverbindung und Steuernummer stehen noch nicht im PDF.
+- Umsatzsteuer: Erik hat am 13.10.2026 entschieden, vorerst 19 % auszuweisen. Die Auswahl 0 % bleibt für die Kleinunternehmerregelung.
+- Bankverbindung und Steuernummer reicht Erik später nach (13.10.2026); bis dahin stehen sie nicht im PDF.
 - Mail an den Kunden bei Freigabe und an Erik bei Unterschrift: später.

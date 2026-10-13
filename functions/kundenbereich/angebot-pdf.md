@@ -64,5 +64,5 @@ Keine eigene Tabelle; Daten aus `angebote`. Schrift aus `@fontsource/mona-sans` 
 ## Offene Fragen
 
 - AGB müssen rechtlich geprüft werden, bevor `AGB_FREIGEGEBEN` auf `true` geht.
-- Du oder Sie im Angebot: vorerst „du“ wie im Kundenbereich.
+- Du oder Sie: „du“, von Erik am 13.10.2026 bestätigt.
 - Getaggtes PDF für Screenreader.

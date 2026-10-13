@@ -14,6 +14,8 @@ export interface RueckfrageText {
   text: string;
   /** Roter Button, z. B. „Projekt löschen“ */
   knopf: string;
+  /** false: kein Löschen, der Button ist die normale Hauptaktion, z. B. „Freigeben“ (angebote.md Verhalten 4) */
+  gefahr?: boolean;
 }
 
 export default function Rueckfrage({
@@ -34,7 +36,11 @@ export default function Rueckfrage({
         </p>
       </DialogInhalt>
       <DialogFuss abbrechenStart>
-        <button type="button" className={buttonClass('gefahr', 'max-sm:flex-1 max-sm:px-3')} onClick={onJa}>
+        <button
+          type="button"
+          className={buttonClass(text.gefahr === false ? 'primary' : 'gefahr', 'max-sm:flex-1 max-sm:px-3')}
+          onClick={onJa}
+        >
           {text.knopf}
         </button>
       </DialogFuss>

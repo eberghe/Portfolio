@@ -89,6 +89,17 @@ export function adminApi(env: Env, access: string) {
         throw e;
       }
     },
+    /** Datei vom Server aus ablegen, z. B. ein erzeugtes PDF (angebote.md AK-4) */
+    upload: async (bucket: Bucket, pfad: string, body: Uint8Array, type: string) => {
+      const res = await fetch(`${url}/storage/v1/object/${objekt(bucket, pfad)}`, {
+        method: 'POST',
+        headers: { apikey: anon, Authorization: `Bearer ${access}`, 'Content-Type': type, 'x-upsert': 'false' },
+        body: body as BodyInit,
+        cache: 'no-store',
+      });
+      if (!res.ok)
+        throw new AdminFehler(res.status, null, `Storage ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    },
     removeFiles: (bucket: Bucket, pfade: string[]) =>
       call<unknown[]>(`/storage/v1/object/${bucket}`, { method: 'DELETE', body: JSON.stringify({ prefixes: pfade }) }),
     /** Kurz gültiger Link zum Ansehen (Logo-Vorschau in der Verwaltung) */

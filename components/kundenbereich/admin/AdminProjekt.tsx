@@ -15,6 +15,7 @@ import {
 } from '@/app/actions/kundenbereich-admin';
 import { dateiInfo } from '@/lib/kundenbereich/dokumente';
 import type { ProjektDetail } from '@/lib/kundenbereich/admin/laden';
+import type { AngebotVorlage } from '@/lib/kundenbereich/angebot/vorlage';
 import { DOKUMENT_ART_OPTIONEN, optionLabel, PROJEKT_STATUS_OPTIONEN } from '@/lib/kundenbereich/admin/texte';
 import { euro } from '@/lib/kundenbereich/admin/dashboard';
 import { datum } from '@/lib/kundenbereich/projekte';
@@ -26,6 +27,7 @@ import AdminDialog from './AdminDialog';
 import AdminForm from './AdminForm';
 import { badge, karte, kartenTitel, zeile } from './AdminListen';
 import AdminShell from './AdminShell';
+import Angebote from './Angebote';
 import FokusHinweis from './FokusHinweis';
 import { schrittFelder } from './schrittFelder';
 import UploadForm from './UploadForm';
@@ -90,9 +92,12 @@ export default function AdminProjekt({
   projekt: p,
   now = new Date(),
   hinweis,
+  angebotVorlage,
 }: {
   projekt: ProjektDetail;
   now?: Date;
+  /** Vorbelegung für „Angebot erstellen“ (angebote.md); ohne sie keine Karte Angebote */
+  angebotVorlage?: AngebotVorlage;
   /** Meldung nach dem Assistenten, z. B. „Projekt angelegt.“ */
   hinweis?: string;
 }) {
@@ -323,6 +328,8 @@ export default function AdminProjekt({
               </ul>
             )}
           </section>
+
+          {angebotVorlage && <Angebote projektId={p.id} angebote={p.angebote ?? []} vorlage={angebotVorlage} />}
 
           <section aria-labelledby="dokumente-titel" className={karte}>
             <Kopf id="dokumente-titel" titel="Dokumente">

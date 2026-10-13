@@ -1,4 +1,6 @@
+import type { AngebotEingabe } from '../angebot/pruefen';
 import type { DokumentRow } from '../dokumente';
+import type { AngebotStatus } from './angebote-text';
 import type { ProjektRow, ProjektStatus } from '../projekte';
 import type { AdminApi } from './aktionen';
 import type { AssistentKunde } from './assistent';
@@ -48,9 +50,25 @@ export interface KundeDetail {
   }[];
 }
 
+/** Angebot eines Projekts (angebote.md) */
+export type AngebotZeile = AngebotEingabe & {
+  id: string;
+  created_at: string;
+  gesamt_cent: number;
+  status: AngebotStatus;
+  dokument_id: string | null;
+  unterschrift_id: string | null;
+  unterschrieben_am: string | null;
+};
+
 export type ProjektDetail = Omit<ProjektRow, 'kunden' | 'dokumente'> & {
   kunde_id: string;
-  kunden: { id: string; name: string; ansprechpartner: Pick<Ansprechpartner, 'id' | 'name' | 'email'>[] } | null;
+  kunden: {
+    id: string;
+    name: string;
+    ansprechpartner: (Pick<Ansprechpartner, 'id' | 'name' | 'email'> & { sprache?: 'de' | 'en' })[];
+  } | null;
+  angebote?: AngebotZeile[];
   projekt_ansprechpartner: { ansprechpartner_id: string }[];
   dokumente: (DokumentRow & { storage_pfad: string })[];
   projekt_umsatz?: Umsatz | null;
@@ -81,9 +99,12 @@ export async function projektDetail(api: AdminApi, id: string) {
   const [p] = await api.get<ProjektDetail>('kundenprojekte', {
     select:
       'id,kunde_id,titel,status,phase,beschreibung_de,beschreibung_en,website_url,staging_url,' +
-      'kunden(id,name,ansprechpartner(id,name,email)),projekt_ansprechpartner(ansprechpartner_id),' +
-      'projektschritte(*),termine(*),dokumente(*),projekt_umsatz(auftragswert_netto,wahrscheinlichkeit,abrechnung_am)',
+      'kunden(id,name,ansprechpartner(id,name,email,sprache)),projekt_ansprechpartner(ansprechpartner_id),' +
+      'projektschritte(*),termine(*),dokumente(*),projekt_umsatz(auftragswert_netto,wahrscheinlichkeit,abrechnung_am),' +
+      'angebote(id,created_at,nummer,titel,sprache,datum,gueltig_bis,empfaenger,einleitung,positionen,ust_satz,' +
+      'gesamt_cent,status,dokument_id,unterschrift_id,unterschrieben_am)',
     id: `eq.${id}`,
+    'angebote.order': 'created_at.desc',
     'projektschritte.order': 'reihenfolge.asc',
     'termine.order': 'beginn.desc',
     'dokumente.order': 'created_at.desc',
@@ -153,3 +174,8 @@ export const projektListe = (api: AdminApi) =>
       'projektschritte(titel_de,status,reihenfolge,verantwortlich)',
     order: 'titel.asc',
   });
+
+/** Alle vergebenen Angebotsnummern, für die nächste freie Nummer (angebote.md AK-3) */
+export async function angebotsNummern(api: AdminApi) {
+  return (await api.get<{ nummer: string }>('angebote', { select: 'nummer' })).map((a) => a.nummer);
+}

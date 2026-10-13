@@ -517,3 +517,6 @@ export const anfrageLoeschen = (fd: FormData, ctx: AdminCtx) =>
   });
 
 export { DATEI_REGELN };
+
+/** Bausteine für Aktionen in eigenen Dateien, z. B. Angebote (angebote.md) */
+export const helfer = { run, fehler, ok, id, dateienWeg };

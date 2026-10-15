@@ -150,6 +150,13 @@ describe('Footer', () => {
       expect(link).toHaveAttribute('aria-current', 'page');
   });
 
+  it('Issue #68: Copyright und „made with love“ sind für Screenreader durch Leerraum getrennt', () => {
+    const { container } = render(<Footer locale="de" />);
+    const copyright = container.querySelector('span[lang="en"]')!.closest('p')!.cloneNode(true) as HTMLElement;
+    copyright.querySelectorAll('[aria-hidden="true"]').forEach((el) => el.remove());
+    expect(copyright.textContent).toMatch(/Erik Bergheimer\s+made with/);
+  });
+
   it('AK-15: Footer ist im Dunkelmodus durch eine Linie abgegrenzt', () => {
     const { container } = render(<Footer locale="de" />);
     expect(container.querySelector('footer')).toHaveClass('dark:border-t', 'dark:border-white/10');

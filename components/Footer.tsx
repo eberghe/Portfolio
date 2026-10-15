@@ -172,9 +172,11 @@ export default function Footer({ locale }: { locale: Locale }) {
           </div>
           <p className="order-1 md:order-2 text-[12px] text-white/60">
             © {year} Erik Bergheimer
+            <span className="sr-only"> </span>
             <span aria-hidden="true" className="mx-2">
               ·
             </span>
+            <span className="sr-only"> </span>
             <span lang="en">
               <MadeWith text={t.madeWith} />
             </span>
